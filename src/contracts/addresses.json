@@ -1,0 +1,21 @@
+{
+  "31337": {
+    "Roles": "0x130b0c0Ce01a9b0500cA797BD4903b4373c87823",
+    "DependencyController": "0x1D30Cf01BAF908528DE6c4D4a1839623B84fcBc0",
+    "ChainlinkOracle": "0xBD5636241d1a1c1ad2056B4F213dfB307ACE6542",
+    "EquivalentScaledOracle": "0xD66aC79782040a01aDF0ba2b241F123C85c61955",
+    "Fund": "0xFa3a44E488e93421AcB952fE7aF49f9b11e5d19a",
+    "IsolatedLending": "0x41eBac40c54b36Ee8484Da060c1f9444c6f6323f",
+    "OracleRegistry": "0x620E41705c081aFD0AEC9EA4C3Fa528231F8A44A",
+    "ProxyOracle": "0xDf6bB82fb69a1AEdeEa2E7020C5C2EE818c5aeE5",
+    "TrancheIDService": "0xfd69771a67FDE9F1ff6462f34363344Ad05563d4",
+    "StrategyRegistry": "0x012a46200f84bC5e7752Ef5f71f3C83984b9A07c",
+    "SimpleHoldingStrategy": "0x2e3242dB339a9e60AcD8c521E96E7C54dB365CD7",
+    "Stablecoin": "0x9B420c1165cb7881229C0a82a6937133f21bc7A0",
+    "TwapOracle": "0x239a7e2C75Cd204742f6678bB80609A04d6f4D39",
+    "UniswapV2LPTOracle": "0xc9451666823fa19D7Beb8ecCbe0d3e20e25FD8b4",
+    "OracleActivation": "0x5DE7782B4428C0457Fe1FD72e8e5B9030Ff2AE97",
+    "TokenActivation": "0xF820b255461295bc95A8be67d38576652d66246a",
+    "StrategyTokenActivation": "0x9a29acA024357e1C9E3068f85b1FBC71Bee03c3B"
+  }
+}

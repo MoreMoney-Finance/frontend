@@ -7,7 +7,7 @@ import {
 } from "@usedapp/core";
 import { formatEther } from "@usedapp/core/node_modules/@ethersproject/units";
 import { BigNumber, ethers } from "ethers";
-import { Interface } from "ethers/lib/utils";
+import { Interface, parseBytes32String } from "ethers/lib/utils";
 import IsolatedLending from "../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json";
 import { addressToken, tokenAmount } from "./tokens";
 /* eslint-disable */
@@ -98,7 +98,7 @@ function parseStratMeta(
     colRatioPercent: row.colRatio.toNumber() / 100,
     usdPrice:
       parseFloat(formatEther(row.valuePer1e18)) / 10 ** (18 - token.decimals),
-    strategyName: row.strategyName,
+    strategyName: parseBytes32String(row.strategyName),
     liqRatioPercent: row.liqRatio.toNumber() / 100,
   };
 }

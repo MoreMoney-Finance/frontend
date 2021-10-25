@@ -11,6 +11,8 @@ export function IsolatedLending() {
   // const stratMeta:ParsedStratMetaRow[] = [];
   const stratMeta: ParsedStratMetaRow[] = useIsolatedStrategyMetadata();
   console.log(stratMeta);
+
+
   return (
     <Accordion allowToggle allowMultiple defaultIndex={[0]}>
       {stratMeta.map((meta, i) => (

@@ -11,26 +11,34 @@ import { ParsedStratMetaRow } from "../chain-interaction/contracts";
 import { addressIcons } from "../chain-interaction/tokens";
 import { useWalletBalance } from "./WalletBalancesContext";
 import { useForm } from 'react-hook-form';
+import { useMintDepositBorrowTrans } from "../chain-interaction/transactions";
 
 export function IsolatedTranche({
   token,
   APY,
-  strategyName
+  strategyName,
+  strategyAddress
 }: React.PropsWithChildren<ParsedStratMetaRow>) {
 
-  const { handleSubmit, /*watch,*/ register, formState: { errors, isSubmitting } } = useForm();
+  const { handleSubmit, register, setValue, formState: { errors, isSubmitting } } = useForm();
+
+  const { sendMintDepositBorrow, depositBorrowState } = useMintDepositBorrowTrans();
+  console.log(depositBorrowState);
 
   const tokenBalance = parseFloat((useWalletBalance(token.address) ?? '0').toString());
 
-  function onDepositBorrow() {
-    console.log(`deposit and borrow`);
+  // const collateralDeposit = watch('collateral-deposit');
+
+  function onDepositBorrow(data: {[x:string]: any}) {
+    console.log(data);
+    sendMintDepositBorrow(token, strategyAddress, data['collateral-deposit'], data['usdm-borrow']);
   }
   return (
     <AccordionItem>
       <h4>
         <AccordionButton>
           <HStack spacing="0.5rem">
-            <AvatarGroup size="sm" max={2}>
+            <AvatarGroup size="xs" max={2}>
               {(addressIcons.get(token.address) ?? []).map((iconUrl, i) => (
                 <Avatar src={iconUrl} key={i + 1} />
               ))}
@@ -58,7 +66,7 @@ export function IsolatedTranche({
 
                 </NumberInputField>
                 <InputRightElement width="4.5rem">
-                  <Button size="xs">MAX</Button>
+                  <Button size="xs" onClick={() => setValue('collateral-deposit', tokenBalance)}>MAX</Button>
                 </InputRightElement>
               </NumberInput>
 

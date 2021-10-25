@@ -28,7 +28,7 @@ export type DeploymentAddresses = {
   TrancheIDService: string;
 };
 
-function useAddresses() {
+export function useAddresses() {
   const { chainId } = useEthers();
 
   // TODO make the default avalanche once it's supported by useDApp

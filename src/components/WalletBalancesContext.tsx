@@ -18,8 +18,22 @@ export function WalletBalancesCtxProvider({ children }: React.PropsWithChildren<
       args: [account]
     };
   }
-  const calls: ContractCall[] = Array.from(addressToken.entries()).filter((aT) => aT[1].chainId === chainId).map(convert2ContractCall);
-  useContractCalls(calls);
+  const tokensInQuestion = Array.from(addressToken.entries()).filter((aT) => aT[1].chainId === chainId);
+  console.log('tokens in question');
+  console.log(Array.from(addressToken.entries()));
+  console.log(tokensInQuestion);
+  const calls: ContractCall[] = tokensInQuestion.map(convert2ContractCall);
+  const results = useContractCalls(calls) ?? [];
+  results?.forEach((result:any[] | undefined, index:number) => {
+    if (result) {
+      const [tokenAddress, token] = tokensInQuestion[index];
+      tokenBalances.set(tokenAddress, new CurrencyValue(token, result[0]));
+      console.log(`Set balance for ${token.name}: ${result[0]}`);
+    } else {
+      const [tokenAddress, token] = tokensInQuestion[index];
+      console.log(`No result for ${token.name} at ${tokenAddress}`);
+    }
+  })
 
   return (
     <WalletBalancesContext.Provider value={tokenBalances}>

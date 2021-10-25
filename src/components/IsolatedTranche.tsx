@@ -12,6 +12,8 @@ import { addressIcons } from "../chain-interaction/tokens";
 import { useWalletBalance } from "./WalletBalancesContext";
 import { useForm } from 'react-hook-form';
 import { useMintDepositBorrowTrans } from "../chain-interaction/transactions";
+import { CurrencyValue } from "@usedapp/core";
+import { BigNumber } from "ethers";
 
 export function IsolatedTranche({
   token,
@@ -19,17 +21,18 @@ export function IsolatedTranche({
   strategyName,
   strategyAddress
 }: React.PropsWithChildren<ParsedStratMetaRow>) {
+  console.log(`rendering ${token.name} - ${strategyName}`);
 
   const { handleSubmit, register, setValue, formState: { errors, isSubmitting } } = useForm();
 
-  const { sendMintDepositBorrow, depositBorrowState } = useMintDepositBorrowTrans();
-  console.log(depositBorrowState);
+  const { sendMintDepositBorrow, /*depositBorrowState*/ } = useMintDepositBorrowTrans();
 
-  const tokenBalance = parseFloat((useWalletBalance(token.address) ?? '0').toString());
+  const tokenBalance = parseFloat((useWalletBalance(token.address) ?? new CurrencyValue(token, BigNumber.from('0'))).format());
 
   // const collateralDeposit = watch('collateral-deposit');
 
   function onDepositBorrow(data: {[x:string]: any}) {
+    console.log('deposit borrow');
     console.log(data);
     sendMintDepositBorrow(token, strategyAddress, data['collateral-deposit'], data['usdm-borrow']);
   }

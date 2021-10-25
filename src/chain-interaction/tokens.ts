@@ -1,5 +1,5 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import { ChainId, CurrencyValue, Token } from "@usedapp/core";
+import { ChainId, CurrencyValue, NativeCurrency, Token } from "@usedapp/core";
 import tokenlist from "../constants/tokenlist.json";
 import deployAddresses from "../contracts/addresses.json";
 
@@ -38,3 +38,12 @@ addressToken.set(
     18
   )
 );
+
+
+export const nativeCurrency: Map<ChainId, NativeCurrency> = new Map();
+
+nativeCurrency.set(ChainId.Localhost, new NativeCurrency('Avalanche', 'AVAX', ChainId.Localhost));
+
+export const wrappedNativeCurrency: Map<ChainId, Token> = new Map();
+
+wrappedNativeCurrency.set(ChainId.Localhost, addressToken.get('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7')!);

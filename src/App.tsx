@@ -5,6 +5,7 @@ import { IsolatedLending } from "./components/IsolatedLending";
 import ConnectButton from "./components/ConnectButton";
 import { UserAddressCtxProvider } from "./components/UserAddressContext";
 import { WalletBalancesCtxProvider } from "./components/WalletBalancesContext";
+import { WrapNativeCurrency } from "./components/WrapNativeCurrency";
 
 export const App = () => (
   <ChakraProvider theme={theme}>
@@ -16,6 +17,7 @@ export const App = () => (
             <VStack spacing={8}>
               <ConnectButton />
               <IsolatedLending />
+              <WrapNativeCurrency />
             </VStack>
           </Grid>
         </Box>

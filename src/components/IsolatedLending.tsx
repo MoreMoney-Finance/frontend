@@ -7,10 +7,7 @@ import {
 import { IsolatedTranche } from "./IsolatedTranche";
 
 export function IsolatedLending() {
-  console.log("getting strat meta");
-  // const stratMeta:ParsedStratMetaRow[] = [];
   const stratMeta: ParsedStratMetaRow[] = useIsolatedStrategyMetadata();
-  console.log(stratMeta);
 
 
   return (

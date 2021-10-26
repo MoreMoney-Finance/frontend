@@ -62,7 +62,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint --ext .ts --ext .tsx --fix src/"
+    "lint": "prettier -w src/components; prettier -w src/chain-interaction; prettier -w src/*.tsx; prettier -w src/*.ts; eslint --ext .ts --ext .tsx --fix src/"
   },
   "browserslist": {
     "production": [

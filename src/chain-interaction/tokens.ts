@@ -1,7 +1,7 @@
-import { BigNumber } from "@ethersproject/bignumber";
-import { ChainId, CurrencyValue, NativeCurrency, Token } from "@usedapp/core";
-import tokenlist from "../constants/tokenlist.json";
-import deployAddresses from "../contracts/addresses.json";
+import { BigNumber } from '@ethersproject/bignumber';
+import { ChainId, CurrencyValue, NativeCurrency, Token } from '@usedapp/core';
+import tokenlist from '../constants/tokenlist.json';
+import deployAddresses from '../contracts/addresses.json';
 
 export const addressToken: Map<string, Token> = new Map();
 export const addressIcons: Map<string, string[]> = new Map();
@@ -31,19 +31,24 @@ for (const {
 addressToken.set(
   deployAddresses[31337].Stablecoin,
   new Token(
-    "USD Money",
-    "USDm",
-    ChainId.Localhost,
+    'USD Money',
+    'USDm',
+    ChainId.Hardhat,
     deployAddresses[31337].Stablecoin,
     18
   )
 );
 
-
 export const nativeCurrency: Map<ChainId, NativeCurrency> = new Map();
 
-nativeCurrency.set(ChainId.Localhost, new NativeCurrency('Avalanche', 'AVAX', ChainId.Localhost));
+nativeCurrency.set(
+  ChainId.Hardhat,
+  new NativeCurrency('Avalanche', 'AVAX', ChainId.Hardhat)
+);
 
 export const wrappedNativeCurrency: Map<ChainId, Token> = new Map();
 
-wrappedNativeCurrency.set(ChainId.Localhost, addressToken.get('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7')!);
+wrappedNativeCurrency.set(
+  ChainId.Hardhat,
+  addressToken.get('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7')!
+);

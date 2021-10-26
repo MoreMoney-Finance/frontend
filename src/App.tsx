@@ -1,11 +1,11 @@
-import * as React from "react";
-import { ChakraProvider, Box, VStack, theme, Grid } from "@chakra-ui/react";
-import { ColorModeSwitcher } from "./components/ColorModeSwitcher";
-import { IsolatedLending } from "./components/IsolatedLending";
-import ConnectButton from "./components/ConnectButton";
-import { UserAddressCtxProvider } from "./components/UserAddressContext";
-import { WalletBalancesCtxProvider } from "./components/WalletBalancesContext";
-import { WrapNativeCurrency } from "./components/WrapNativeCurrency";
+import * as React from 'react';
+import { ChakraProvider, Box, VStack, theme, Grid } from '@chakra-ui/react';
+import { ColorModeSwitcher } from './components/ColorModeSwitcher';
+import { IsolatedLending } from './components/IsolatedLending';
+import ConnectButton from './components/ConnectButton';
+import { UserAddressCtxProvider } from './components/UserAddressContext';
+import { WalletBalancesCtxProvider } from './components/WalletBalancesContext';
+import { WrapNativeCurrency } from './components/WrapNativeCurrency';
 
 export const App = () => (
   <ChakraProvider theme={theme}>
@@ -25,4 +25,3 @@ export const App = () => (
     </UserAddressCtxProvider>
   </ChakraProvider>
 );
-  

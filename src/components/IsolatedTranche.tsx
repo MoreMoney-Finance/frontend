@@ -3,39 +3,83 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-} from "@chakra-ui/accordion";
-import { Avatar, AvatarGroup } from "@chakra-ui/avatar";
-import { Button, FormControl, HStack, InputRightElement, NumberInput, NumberInputField, Text } from "@chakra-ui/react";
-import React from "react";
-import { ParsedStratMetaRow } from "../chain-interaction/contracts";
-import { addressIcons } from "../chain-interaction/tokens";
-import { useWalletBalance } from "./WalletBalancesContext";
+} from '@chakra-ui/accordion';
+import { Avatar, AvatarGroup } from '@chakra-ui/avatar';
+import {
+  Button,
+  FormControl,
+  HStack,
+  InputRightElement,
+  NumberInput,
+  NumberInputField,
+  Text,
+} from '@chakra-ui/react';
+import React from 'react';
+import { ParsedStratMetaRow } from '../chain-interaction/contracts';
+import { addressIcons } from '../chain-interaction/tokens';
+import { useWalletBalance } from './WalletBalancesContext';
 import { useForm } from 'react-hook-form';
-import { useMintDepositBorrowTrans } from "../chain-interaction/transactions";
-import { CurrencyValue } from "@usedapp/core";
-import { BigNumber } from "ethers";
+import {
+  useApproveTrans,
+  useMintDepositBorrowTrans,
+} from '../chain-interaction/transactions';
+import { CurrencyValue, useEthers, useTokenAllowance } from '@usedapp/core';
+import { BigNumber } from 'ethers';
 
 export function IsolatedTranche({
   token,
   APY,
   strategyName,
-  strategyAddress
+  strategyAddress,
+  debtCeiling,
 }: React.PropsWithChildren<ParsedStratMetaRow>) {
-  console.log(`rendering ${token.name} - ${strategyName}`);
 
-  const { handleSubmit, register, setValue, formState: { errors, isSubmitting } } = useForm();
+  const {
+    handleSubmit,
+    register,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm();
 
-  const { sendMintDepositBorrow, /*depositBorrowState*/ } = useMintDepositBorrowTrans();
+  const { sendMintDepositBorrow /*depositBorrowState*/ } =
+    useMintDepositBorrowTrans();
 
-  const tokenBalance = parseFloat((useWalletBalance(token.address) ?? new CurrencyValue(token, BigNumber.from('0'))).format());
+  const { account } = useEthers();
+
+  const allowance = new CurrencyValue(
+    token,
+    useTokenAllowance(token.address, account, strategyAddress) ??
+      BigNumber.from('0')
+  );
+
+  console.log(`allowance for ${token.name}: ${allowance.format()}`);
+  console.log(`debt ceiling for ${token.name}: ${debtCeiling.format()}`);
+
+  const walletBalance =
+    useWalletBalance(token.address) ??
+    new CurrencyValue(token, BigNumber.from('0'));
+  console.log(`wallet balance for ${token.name}: ${walletBalance.format()}`);
+
+  const depositMax = parseFloat(
+    (allowance.gt(walletBalance) ? walletBalance : allowance).format()
+  );
 
   // const collateralDeposit = watch('collateral-deposit');
 
-  function onDepositBorrow(data: {[x:string]: any}) {
+  function onDepositBorrow(data: { [x: string]: any }) {
     console.log('deposit borrow');
     console.log(data);
-    sendMintDepositBorrow(token, strategyAddress, data['collateral-deposit'], data['usdm-borrow']);
+
+    sendMintDepositBorrow(
+      token,
+      strategyAddress,
+      data['collateral-deposit'],
+      data['usdm-borrow']
+    );
   }
+
+  const { sendApprove } = useApproveTrans(token.address);
+
   return (
     <AccordionItem>
       <h4>
@@ -55,37 +99,47 @@ export function IsolatedTranche({
       </h4>
 
       <AccordionPanel>
+        <Button onClick={() => sendApprove(strategyAddress)}>
+          Approve {token.name}{' '}
+        </Button>
         <form onSubmit={handleSubmit(onDepositBorrow)}>
           <FormControl isInvalid={errors.name}>
             <HStack spacing="0.5rem">
-              <NumberInput min={0} max={tokenBalance}>
-                <NumberInputField {
-                  ...register('collateral-deposit', {
+
+              <NumberInput min={0} max={depositMax}>
+                <NumberInputField
+                  {...register('collateral-deposit', {
                     required: 'This is required',
                     min: 0,
-                    max: tokenBalance
-                  })
-                } placeholder={'Collateral deposit'}>
+                    max: depositMax,
+                  })}
+                  placeholder={'Collateral deposit'}
+                ></NumberInputField>
 
-                </NumberInputField>
                 <InputRightElement width="4.5rem">
-                  <Button size="xs" onClick={() => setValue('collateral-deposit', tokenBalance)}>MAX</Button>
+                  <Button
+                    size="xs"
+                    onClick={() => setValue('collateral-deposit', depositMax)}
+                  >
+                    MAX
+                  </Button>
                 </InputRightElement>
-              </NumberInput>
 
+              </NumberInput>
 
               <NumberInput min={0}>
-                <NumberInputField {
-                  ...register('usdm-borrow', {
+                <NumberInputField
+                  {...register('usdm-borrow', {
                     required: 'This is required',
-                    min: 0
-                  })
-                } placeholder={'USDm borrow'}>
-
-                </NumberInputField>
+                    min: 0,
+                  })}
+                  placeholder={'USDm borrow'}
+                ></NumberInputField>
               </NumberInput>
 
-              <Button type="submit" isLoading={isSubmitting}>Deposit &amp; Borrow</Button>
+              <Button type="submit" isLoading={isSubmitting}>
+                Deposit &amp; Borrow
+              </Button>
 
             </HStack>
           </FormControl>

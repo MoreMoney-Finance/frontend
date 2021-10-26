@@ -9,9 +9,13 @@ import { ChainId, DAppProvider } from '@usedapp/core';
 ReactDOM.render(
   <React.StrictMode>
     <ColorModeScript />
-    <DAppProvider config={{ multicallAddresses: {
-      [ChainId.Hardhat]:  '0x0FB54156B496b5a040b51A71817aED9e2927912E'
-    }}}>
+    <DAppProvider
+      config={{
+        multicallAddresses: {
+          [ChainId.Hardhat]: '0x0FB54156B496b5a040b51A71817aED9e2927912E',
+        },
+      }}
+    >
       <App />
     </DAppProvider>
   </React.StrictMode>,

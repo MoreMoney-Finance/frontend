@@ -3,17 +3,17 @@ import {
   Token,
   useContractCall,
   useEthers,
-} from "@usedapp/core";
-import { formatEther } from "@usedapp/core/node_modules/@ethersproject/units";
-import { BigNumber } from "ethers";
-import { Interface, parseBytes32String } from "ethers/lib/utils";
-import IsolatedLending from "../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json";
-import { addressToken, tokenAmount } from "./tokens";
+} from '@usedapp/core';
+import { formatEther } from '@usedapp/core/node_modules/@ethersproject/units';
+import { BigNumber } from 'ethers';
+import { Interface, parseBytes32String } from 'ethers/lib/utils';
+import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
+import { addressToken, tokenAmount } from './tokens';
 /* eslint-disable */
 export const addresses: Record<
   string,
   DeploymentAddresses
-> = require("../contracts/addresses.json");
+> = require('../contracts/addresses.json');
 
 export type DeploymentAddresses = {
   Fund: string;
@@ -31,21 +31,19 @@ export function useAddresses() {
   const { chainId } = useEthers();
 
   // TODO make the default avalanche once it's supported by useDApp
-  const chainIdStr = chainId ? chainId.toString() : "31337";
+  const chainIdStr = chainId ? chainId.toString() : '31337';
   return addresses[chainIdStr];
 }
 
 export function useIsolatedLendingView(method: string, args: any[]) {
   const address = useAddresses().IsolatedLending;
   const abi = new Interface(IsolatedLending.abi);
-  return (
-    useContractCall({
-      abi,
-      address,
-      method,
-      args,
-    }) ?? [[]]
-  )[0];
+  return (useContractCall({
+    abi,
+    address,
+    method,
+    args,
+  }) ?? [[]])[0];
 }
 
 type RawStratMetaRow = {
@@ -114,8 +112,8 @@ export function useStable() {
 
 export function useIsolatedStrategyMetadata() {
   const stable = useStable();
-  const allStratMeta = useIsolatedLendingView("viewAllStrategyMetadata", []);
+  const allStratMeta = useIsolatedLendingView('viewAllStrategyMetadata', []);
   return stable
-    ? allStratMeta.map((row:RawStratMetaRow) => parseStratMeta(row, stable))
+    ? allStratMeta.map((row: RawStratMetaRow) => parseStratMeta(row, stable))
     : [];
 }

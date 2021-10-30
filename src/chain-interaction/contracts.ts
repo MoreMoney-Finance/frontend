@@ -7,6 +7,8 @@ import {
 import { formatEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber } from 'ethers';
 import { Interface, parseBytes32String } from 'ethers/lib/utils';
+import { useContext } from 'react';
+import { UserAddressContext } from '../components/UserAddressContext';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import { addressToken, tokenAmount } from './tokens';
 /* eslint-disable */
@@ -116,4 +118,52 @@ export function useIsolatedStrategyMetadata() {
   return stable
     ? allStratMeta.map((row: RawStratMetaRow) => parseStratMeta(row, stable))
     : [];
+}
+
+export type ParsedPositionMetaRow = {
+  trancheId: number;
+  strategy: string;
+  collateral: CurrencyValue | undefined;
+  debt: CurrencyValue;
+  token: Token;
+};
+
+type RawPositionMetaRow = {
+  trancheId: BigNumber;
+  strategy: string;
+  collateral: BigNumber;
+  debt: BigNumber;
+  token: string;
+};
+
+function parsePositionMeta(
+  row: RawPositionMetaRow,
+  stable: Token
+): ParsedPositionMetaRow {
+  return {
+    trancheId: row.trancheId.toNumber(),
+    strategy: row.strategy,
+    debt: new CurrencyValue(stable, row.debt),
+    collateral: tokenAmount(row.token, row.collateral),
+    token: addressToken.get(row.token)!,
+  };
+}
+
+export function useIsolatedPositionMetadata(): Record<
+  string,
+  ParsedPositionMetaRow
+> {
+  const account = useContext(UserAddressContext);
+  const positionMeta = useIsolatedLendingView('viewPositionsByOwner', [
+    account,
+  ]);
+  const stable = useStable();
+  return stable
+    ? Object.fromEntries(
+        positionMeta.map((row: RawPositionMetaRow) => [
+          `${row.strategy}-${row.token}`,
+          parsePositionMeta(row, stable),
+        ])
+      )
+    : {};
 }

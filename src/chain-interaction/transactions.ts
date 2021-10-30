@@ -79,3 +79,34 @@ export function useApproveTrans(tokenAddress: string) {
     approveState: state,
   };
 }
+
+export function useRepayWithdrawTrans(
+  trancheId: number | null | undefined,
+  collateralToken: Token | null | undefined
+) {
+  const ilAddress = useAddresses().IsolatedLending;
+  const ilContract = new Contract(
+    ilAddress,
+    new Interface(IsolatedLending.abi)
+  );
+
+  const { send, state } = useContractFunction(ilContract, 'repayAndWithdraw');
+
+  const account = useContext(UserAddressContext);
+
+  return {
+    sendRepayWithdraw: (
+      collateralAmount: string | number,
+      repayAmount: string | number
+    ) =>
+      account && trancheId && collateralToken
+        ? send(
+          trancheId,
+          parseUnits(collateralAmount.toString(), collateralToken.decimals),
+          parseEther(repayAmount.toString()),
+          account
+        )
+        : console.error('Trying to withdraw but parameters not set'),
+    repayWithdrawState: state,
+  };
+}

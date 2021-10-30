@@ -923,7 +923,7 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "token",
+          "name": "",
           "type": "address"
         }
       ],

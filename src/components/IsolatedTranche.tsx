@@ -15,34 +15,55 @@ import {
   Text,
 } from '@chakra-ui/react';
 import React from 'react';
-import { ParsedStratMetaRow } from '../chain-interaction/contracts';
+import {
+  ParsedPositionMetaRow,
+  ParsedStratMetaRow,
+} from '../chain-interaction/contracts';
 import { addressIcons } from '../chain-interaction/tokens';
 import { useWalletBalance } from './WalletBalancesContext';
 import { useForm } from 'react-hook-form';
 import {
   useApproveTrans,
   useMintDepositBorrowTrans,
+  useRepayWithdrawTrans,
 } from '../chain-interaction/transactions';
 import { CurrencyValue, useEthers, useTokenAllowance } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 
-export function IsolatedTranche({
-  token,
-  APY,
-  strategyName,
-  strategyAddress,
-  debtCeiling,
-}: React.PropsWithChildren<ParsedStratMetaRow>) {
+export function IsolatedTranche(
+  params: React.PropsWithChildren<
+    ParsedStratMetaRow | (ParsedStratMetaRow & ParsedPositionMetaRow)
+  >
+) {
+  const { token, APY, strategyName, strategyAddress, debtCeiling } = params;
+  // todo: get positions by owner (either to context or toplevel hook and merge data in isolatedlending)
+  // either merge or query the data stucture
+  // hand that to form.
+  // next up display balances somehow
+  // sendRepayWithdraw
 
   const {
-    handleSubmit,
-    register,
-    setValue,
-    formState: { errors, isSubmitting },
+    handleSubmit: handleSubmitDepForm,
+    register: registerDepForm,
+    setValue: setValueDepForm,
+    formState: { errors: errorsDepForm, isSubmitting: isSubmittingDepForm },
   } = useForm();
+
+  const {
+    handleSubmit: handleSubmitRepayForm,
+    register: registerRepayForm,
+    setValue: setValueRepayForm,
+    formState: { errors: errorsRepayForm, isSubmitting: isSubmittingRepayForm },
+  } = useForm();
+
 
   const { sendMintDepositBorrow /*depositBorrowState*/ } =
     useMintDepositBorrowTrans();
+
+  const { sendRepayWithdraw } = useRepayWithdrawTrans(
+    'trancheId' in params ? params.trancheId : null,
+    token
+  );
 
   const { account } = useEthers();
 
@@ -64,6 +85,12 @@ export function IsolatedTranche({
     (allowance.gt(walletBalance) ? walletBalance : allowance).format()
   );
 
+  const withdrawMax =
+    'collateral' in params && params.collateral
+      ? parseFloat(params.collateral.format())
+      : 0;
+  const repayMax = 'debt' in params ? parseFloat(params.debt.format()) : 0;
+
   // const collateralDeposit = watch('collateral-deposit');
 
   function onDepositBorrow(data: { [x: string]: any }) {
@@ -76,6 +103,13 @@ export function IsolatedTranche({
       data['collateral-deposit'],
       data['usdm-borrow']
     );
+  }
+
+  function onRepayWithdraw(data: { [x: string]: any }) {
+    console.log('repay withdraw');
+    console.log(data);
+
+    sendRepayWithdraw(data['collateral-withdraw'], data['usdm-repay']);
   }
 
   const { sendApprove } = useApproveTrans(token.address);
@@ -102,13 +136,12 @@ export function IsolatedTranche({
         <Button onClick={() => sendApprove(strategyAddress)}>
           Approve {token.name}{' '}
         </Button>
-        <form onSubmit={handleSubmit(onDepositBorrow)}>
-          <FormControl isInvalid={errors.name}>
+        <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
+          <FormControl isInvalid={errorsDepForm.name}>
             <HStack spacing="0.5rem">
-
               <NumberInput min={0} max={depositMax}>
                 <NumberInputField
-                  {...register('collateral-deposit', {
+                  {...registerDepForm('collateral-deposit', {
                     required: 'This is required',
                     min: 0,
                     max: depositMax,
@@ -119,17 +152,16 @@ export function IsolatedTranche({
                 <InputRightElement width="4.5rem">
                   <Button
                     size="xs"
-                    onClick={() => setValue('collateral-deposit', depositMax)}
+                    onClick={() => setValueDepForm('collateral-deposit', depositMax)}
                   >
                     MAX
                   </Button>
                 </InputRightElement>
-
               </NumberInput>
 
               <NumberInput min={0}>
                 <NumberInputField
-                  {...register('usdm-borrow', {
+                  {...registerDepForm('usdm-borrow', {
                     required: 'This is required',
                     min: 0,
                   })}
@@ -137,10 +169,59 @@ export function IsolatedTranche({
                 ></NumberInputField>
               </NumberInput>
 
-              <Button type="submit" isLoading={isSubmitting}>
+              <Button type="submit" isLoading={isSubmittingDepForm}>
                 Deposit &amp; Borrow
               </Button>
+            </HStack>
+          </FormControl>
+        </form>
 
+        <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
+          <FormControl isInvalid={errorsRepayForm.name}>
+            <HStack spacing="0.5rem">
+              <NumberInput min={0} max={withdrawMax}>
+                <NumberInputField
+                  {...registerRepayForm('collateral-withdraw', {
+                    required: 'This is required',
+                    min: 0,
+                    max: withdrawMax,
+                  })}
+                  placeholder={'Collateral withdraw'}
+                ></NumberInputField>
+
+                <InputRightElement width="4.5rem">
+                  <Button
+                    size="xs"
+                    onClick={() => setValueRepayForm('collateral-withdraw', withdrawMax)}
+                  >
+                    MAX
+                  </Button>
+                </InputRightElement>
+              </NumberInput>
+
+              <NumberInput min={0} max={repayMax}>
+                <NumberInputField
+                  {...registerRepayForm('usdm-repay', {
+                    required: 'This is required',
+                    min: 0,
+                    max: repayMax,
+                  })}
+                  placeholder={'USDm repay'}
+                ></NumberInputField>
+
+                <InputRightElement width="4.5rem">
+                  <Button
+                    size="xs"
+                    onClick={() => setValueRepayForm('collateral-withdraw', repayMax)}
+                  >
+                    MAX
+                  </Button>
+                </InputRightElement>
+              </NumberInput>
+
+              <Button type="submit" isLoading={isSubmittingRepayForm}>
+                Repay &amp; Withdraw
+              </Button>
             </HStack>
           </FormControl>
         </form>

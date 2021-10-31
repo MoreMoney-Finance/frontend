@@ -20,7 +20,8 @@ export function IsolatedLending() {
         <IsolatedTranche
           key={i + 1}
           {...meta}
-          {...(positionMeta[`${meta.strategyAddress}-${meta.token.address}`] ?? {})}
+          {...(positionMeta[`${meta.strategyAddress}-${meta.token.address}`] ??
+            {})}
         />
       ))}
     </Accordion>

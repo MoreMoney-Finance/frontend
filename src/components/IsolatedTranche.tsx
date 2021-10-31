@@ -36,11 +36,6 @@ export function IsolatedTranche(
   >
 ) {
   const { token, APY, strategyName, strategyAddress, debtCeiling } = params;
-  // todo: get positions by owner (either to context or toplevel hook and merge data in isolatedlending)
-  // either merge or query the data stucture
-  // hand that to form.
-  // next up display balances somehow
-  // sendRepayWithdraw
 
   const {
     handleSubmit: handleSubmitDepForm,
@@ -55,7 +50,6 @@ export function IsolatedTranche(
     setValue: setValueRepayForm,
     formState: { errors: errorsRepayForm, isSubmitting: isSubmittingRepayForm },
   } = useForm();
-
 
   const { sendMintDepositBorrow /*depositBorrowState*/ } =
     useMintDepositBorrowTrans();
@@ -85,11 +79,11 @@ export function IsolatedTranche(
     (allowance.gt(walletBalance) ? walletBalance : allowance).format()
   );
 
-  const withdrawMax =
+  const collateralBalance =
     'collateral' in params && params.collateral
       ? parseFloat(params.collateral.format())
       : 0;
-  const repayMax = 'debt' in params ? parseFloat(params.debt.format()) : 0;
+  const debtBalance = 'debt' in params ? parseFloat(params.debt.format()) : 0;
 
   // const collateralDeposit = watch('collateral-deposit');
 
@@ -127,6 +121,10 @@ export function IsolatedTranche(
             <Text>{token.name}</Text>
             <Text>{strategyName}</Text>
             <Text>{APY.toPrecision(4)} % APY</Text>
+            <Text>
+              {collateralBalance.toPrecision(4)} {token.ticker}
+            </Text>
+            <Text> {debtBalance.toPrecision(4)} debt </Text>
             <AccordionIcon />
           </HStack>
         </AccordionButton>
@@ -152,7 +150,9 @@ export function IsolatedTranche(
                 <InputRightElement width="4.5rem">
                   <Button
                     size="xs"
-                    onClick={() => setValueDepForm('collateral-deposit', depositMax)}
+                    onClick={() =>
+                      setValueDepForm('collateral-deposit', depositMax)
+                    }
                   >
                     MAX
                   </Button>
@@ -179,12 +179,12 @@ export function IsolatedTranche(
         <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
           <FormControl isInvalid={errorsRepayForm.name}>
             <HStack spacing="0.5rem">
-              <NumberInput min={0} max={withdrawMax}>
+              <NumberInput min={0} max={collateralBalance}>
                 <NumberInputField
                   {...registerRepayForm('collateral-withdraw', {
                     required: 'This is required',
                     min: 0,
-                    max: withdrawMax,
+                    max: collateralBalance,
                   })}
                   placeholder={'Collateral withdraw'}
                 ></NumberInputField>
@@ -192,19 +192,24 @@ export function IsolatedTranche(
                 <InputRightElement width="4.5rem">
                   <Button
                     size="xs"
-                    onClick={() => setValueRepayForm('collateral-withdraw', withdrawMax)}
+                    onClick={() =>
+                      setValueRepayForm(
+                        'collateral-withdraw',
+                        collateralBalance
+                      )
+                    }
                   >
                     MAX
                   </Button>
                 </InputRightElement>
               </NumberInput>
 
-              <NumberInput min={0} max={repayMax}>
+              <NumberInput min={0} max={debtBalance}>
                 <NumberInputField
                   {...registerRepayForm('usdm-repay', {
                     required: 'This is required',
                     min: 0,
-                    max: repayMax,
+                    max: debtBalance,
                   })}
                   placeholder={'USDm repay'}
                 ></NumberInputField>
@@ -212,7 +217,9 @@ export function IsolatedTranche(
                 <InputRightElement width="4.5rem">
                   <Button
                     size="xs"
-                    onClick={() => setValueRepayForm('collateral-withdraw', repayMax)}
+                    onClick={() =>
+                      setValueRepayForm('collateral-withdraw', debtBalance)
+                    }
                   >
                     MAX
                   </Button>

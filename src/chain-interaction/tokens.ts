@@ -2,6 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { ChainId, CurrencyValue, NativeCurrency, Token } from '@usedapp/core';
 import tokenlist from '../constants/tokenlist.json';
 import deployAddresses from '../contracts/addresses.json';
+import lptokens from '../contracts/lptokens.json';
 
 export const addressToken: Map<string, Token> = new Map();
 export const addressIcons: Map<string, string[]> = new Map();
@@ -26,6 +27,33 @@ for (const {
     new Token(name, symbol, chainId, address, decimals)
   );
   addressIcons.set(address, [logoURI]);
+}
+
+// TODO make this more complete
+const chainIds: Record<string, ChainId> = {
+  31337: ChainId.Hardhat,
+};
+
+for (const [chainId, lpTokensPerChain] of Object.entries(lptokens)) {
+  for (const [amm, records] of Object.entries(lpTokensPerChain)) {
+    for (const [ticker, record] of Object.entries(records)) {
+      addressToken.set(
+        record.pairAddress,
+        new Token(
+          [amm, ticker, 'LPT'].join('-'),
+          ticker,
+          chainIds[chainId],
+          record.pairAddress,
+          18
+        )
+      );
+      const icons: string[] = [];
+      icons.push(...(addressIcons.get(record.addresses[0]) ?? []));
+      icons.push(...(addressIcons.get(record.addresses[1]) ?? []));
+
+      addressIcons.set(record.pairAddress, icons);
+    }
+  }
 }
 
 addressToken.set(

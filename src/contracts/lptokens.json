@@ -1,0 +1,60 @@
+{
+  "31337": {
+    "traderJoe": {
+      "USDC-WAVAX": {
+        "addresses": [
+          "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+          "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"
+        ],
+        "pairAddress": "0xA389f9430876455C36478DeEa9769B7Ca4E3DDB1",
+        "pid": 39,
+        "anchorName": "USDC"
+      },
+      "WAVAX-ETH": {
+        "addresses": [
+          "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+          "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"
+        ],
+        "pairAddress": "0xFE15c2695F1F920da45C30AAE47d11dE51007AF9",
+        "pid": 26,
+        "anchorName": "WAVAX"
+      },
+      "USDC-ETH": {
+        "addresses": [
+          "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+          "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664"
+        ],
+        "pairAddress": "0x199fb78019A08af2Cb6a078409D0C8233Eba8a0c",
+        "pid": 55,
+        "anchorName": "USDC"
+      },
+      "WAVAX-USDT": {
+        "addresses": [
+          "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+          "0xc7198437980c041c805A1EDcbA50c1Ce5db95118"
+        ],
+        "pairAddress": "0xeD8CBD9F0cE3C6986b22002F03c6475CEb7a6256",
+        "pid": 28,
+        "anchorName": "WAVAX"
+      },
+      "USDC-USDT": {
+        "addresses": [
+          "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+          "0xc7198437980c041c805A1EDcbA50c1Ce5db95118"
+        ],
+        "pairAddress": "0x2E02539203256c83c7a9F6fA6f8608A32A2b1Ca2",
+        "pid": 49,
+        "anchorName": "USDC"
+      },
+      "WAVAX-USDC": {
+        "addresses": [
+          "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+          "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"
+        ],
+        "pairAddress": "0xA389f9430876455C36478DeEa9769B7Ca4E3DDB1",
+        "pid": 39,
+        "anchorName": "WAVAX"
+      }
+    }
+  }
+}

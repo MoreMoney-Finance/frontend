@@ -143,7 +143,7 @@
           "type": "address"
         }
       ],
-      "name": "collectYieldValueColRatio",
+      "name": "collectYieldValueBorrowable",
       "outputs": [
         {
           "internalType": "uint256",
@@ -157,7 +157,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "colRatio",
+          "name": "borrowablePer10k",
           "type": "uint256"
         }
       ],
@@ -419,7 +419,7 @@
             },
             {
               "internalType": "uint256",
-              "name": "colRatio",
+              "name": "borrowablePer10k",
               "type": "uint256"
             },
             {
@@ -449,7 +449,7 @@
           "type": "uint256"
         }
       ],
-      "name": "viewColRatioTargetPer10k",
+      "name": "viewBorrowable",
       "outputs": [
         {
           "internalType": "uint256",
@@ -494,7 +494,7 @@
             },
             {
               "internalType": "uint256",
-              "name": "colRatio",
+              "name": "borrowablePer10k",
               "type": "uint256"
             },
             {
@@ -563,6 +563,35 @@
       "inputs": [
         {
           "internalType": "uint256",
+          "name": "trancheId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "valueCurrency",
+          "type": "address"
+        }
+      ],
+      "name": "viewValueBorrowable",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
           "name": "tokenId",
           "type": "uint256"
         },
@@ -601,7 +630,7 @@
           "type": "address"
         }
       ],
-      "name": "viewYieldValueColRatio",
+      "name": "viewYieldValueBorrowable",
       "outputs": [
         {
           "internalType": "uint256",
@@ -615,7 +644,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "colRatio",
+          "name": "borrowablePer10k",
           "type": "uint256"
         }
       ],

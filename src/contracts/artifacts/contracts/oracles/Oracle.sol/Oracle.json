@@ -80,19 +80,6 @@
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "charactersPlayed",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "",
-          "type": "uint256[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "inputs": [
         {
           "internalType": "address",
@@ -100,12 +87,25 @@
           "type": "address"
         }
       ],
-      "name": "colRatios",
+      "name": "borrowablePer10ks",
       "outputs": [
         {
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "charactersPlayed",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
         }
       ],
       "stateMutability": "view",
@@ -184,7 +184,7 @@
           "type": "address"
         }
       ],
-      "name": "getPegAmountAndColRatio",
+      "name": "getPegAmountAndBorrowable",
       "outputs": [
         {
           "internalType": "uint256",
@@ -278,11 +278,11 @@
         },
         {
           "internalType": "uint256",
-          "name": "colRatio",
+          "name": "borrowablePer10k",
           "type": "uint256"
         }
       ],
-      "name": "setColRatio",
+      "name": "setBorrowable",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -301,7 +301,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "colRatio",
+          "name": "borrowablePer10k",
           "type": "uint256"
         },
         {
@@ -393,7 +393,7 @@
           "type": "address"
         }
       ],
-      "name": "viewPegAmountAndColRatio",
+      "name": "viewPegAmountAndBorrowable",
       "outputs": [
         {
           "internalType": "uint256",

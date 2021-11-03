@@ -78,7 +78,7 @@
           "type": "address"
         }
       ],
-      "name": "collectYieldValueColRatio",
+      "name": "collectYieldValueBorrowable",
       "outputs": [
         {
           "internalType": "uint256",
@@ -92,7 +92,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "colRatio",
+          "name": "borrowablePer10k",
           "type": "uint256"
         }
       ],
@@ -192,7 +192,7 @@
           "type": "uint256"
         }
       ],
-      "name": "viewColRatioTargetPer10k",
+      "name": "viewBorrowable",
       "outputs": [
         {
           "internalType": "uint256",
@@ -269,7 +269,7 @@
           "type": "address"
         }
       ],
-      "name": "viewYieldValueColRatio",
+      "name": "viewYieldValueBorrowable",
       "outputs": [
         {
           "internalType": "uint256",
@@ -283,7 +283,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "colRatio",
+          "name": "borrowablePer10k",
           "type": "uint256"
         }
       ],

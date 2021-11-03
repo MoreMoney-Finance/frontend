@@ -322,7 +322,7 @@
           "type": "address"
         }
       ],
-      "name": "collectYieldValueColRatio",
+      "name": "collectYieldValueBorrowable",
       "outputs": [
         {
           "internalType": "uint256",
@@ -336,7 +336,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "colRatio",
+          "name": "borrowablePer10k",
           "type": "uint256"
         }
       ],
@@ -1122,9 +1122,14 @@
           "internalType": "uint256",
           "name": "vaultId",
           "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "currency",
+          "type": "address"
         }
       ],
-      "name": "viewColRatioTargetPer10k",
+      "name": "viewBorrowable",
       "outputs": [
         {
           "internalType": "uint256",

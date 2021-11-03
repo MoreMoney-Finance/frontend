@@ -51,8 +51,8 @@ export function useIsolatedLendingView(method: string, args: any[]) {
 type RawStratMetaRow = {
   debtCeiling: BigNumber;
   APF: BigNumber;
-  colRatio: BigNumber;
-  liqRatio: BigNumber;
+  borrowablePer10k: BigNumber;
+  liqThresh: BigNumber;
   mintingFee: BigNumber;
   stabilityFee: BigNumber;
   strategy: string;
@@ -72,10 +72,10 @@ export type ParsedStratMetaRow = {
   token: Token;
   APY: number;
   totalCollateral: CurrencyValue;
-  colRatioPercent: number;
+  borrowablePercent: number;
   usdPrice: number;
   strategyName: string;
-  liqRatioPercent: number;
+  liqThreshPercent: number;
 };
 
 function parseStratMeta(
@@ -92,11 +92,11 @@ function parseStratMeta(
     token,
     APY: convertAPF2APY(row.APF),
     totalCollateral: tokenAmount(row.token, row.totalCollateral)!,
-    colRatioPercent: row.colRatio.toNumber() / 100,
+    borrowablePercent: row.borrowablePer10k.toNumber() / 100,
     usdPrice:
       parseFloat(formatEther(row.valuePer1e18)) / 10 ** (18 - token.decimals),
     strategyName: parseBytes32String(row.strategyName),
-    liqRatioPercent: row.liqRatio.toNumber() / 100,
+    liqThreshPercent: row.liqThresh.toNumber() / 100,
   };
 }
 

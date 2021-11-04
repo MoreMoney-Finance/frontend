@@ -21,7 +21,6 @@
     "plugin:react-hooks/recommended"
   ],
   "rules": {
-    "indent": ["warn", 2],
     "@typescript-eslint/explicit-function-return-type": "off",
     // Not a good thing, we should get rid of this and use any only as a last resort
     "@typescript-eslint/no-explicit-any": "off",

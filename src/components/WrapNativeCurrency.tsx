@@ -1,9 +1,7 @@
+import React from 'react';
 import {
   Button,
   FormControl,
-  InputRightElement,
-  NumberInput,
-  NumberInputField,
 } from '@chakra-ui/react';
 import { BigNumber } from '@ethersproject/bignumber';
 import {
@@ -13,9 +11,9 @@ import {
   useEtherBalance,
   useEthers,
 } from '@usedapp/core';
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useWrapNative } from '../chain-interaction/transactions';
+import { TokenAmountInputField } from './TokenAmountInputField';
 
 export function WrapNativeCurrency() {
   const {
@@ -40,26 +38,18 @@ export function WrapNativeCurrency() {
   return (
     <form onSubmit={handleSubmit(onWrap)}>
       <FormControl isInvalid={errors.name}>
-        <NumberInput min={0} max={parseFloat(ethBalance.format())}>
-          <NumberInputField
-            {...register('wrap-amount', {
-              required: 'This is required',
-              min: 0,
-              max: parseFloat(ethBalance.format()),
-            })}
-            placeholder={'Amount to wrap'}
-          ></NumberInputField>
-          <InputRightElement width="4.5rem">
-            <Button
-              size="xs"
-              onClick={() => setValue('wrap-amount', ethBalance.format())}
-            >
-              MAX
-            </Button>
-          </InputRightElement>
-        </NumberInput>
 
-        <Button type="submit" isLoading={isSubmitting}>
+        <TokenAmountInputField
+          name="wrap-amount"
+          min={0}
+          max={parseFloat(ethBalance.format())}
+          showMaxButton={true}
+          placeholder={'Collateral Deposit'}
+          registerForm={register}
+          setValueForm={setValue}
+        />
+
+        <Button type="submit" isLoading={isSubmitting}> 
           Wrap native currency
         </Button>
       </FormControl>

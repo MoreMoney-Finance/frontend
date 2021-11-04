@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button, InputRightElement, Input, InputGroup } from '@chakra-ui/react';
 
-export function TokenAmountInputField(props) {
+export function TokenAmountInputField(props: any) {
   const {
     name,
     min,
@@ -22,6 +22,7 @@ export function TokenAmountInputField(props) {
         })}
         placeholder={placeholder}
         type="number"
+        step="any"
       />
       {showMaxButton ? (
         <InputRightElement width="4.5rem">

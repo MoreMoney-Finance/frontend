@@ -37,21 +37,23 @@ const chainIds: Record<string, ChainId> = {
 for (const [chainId, lpTokensPerChain] of Object.entries(lptokens)) {
   for (const [amm, records] of Object.entries(lpTokensPerChain)) {
     for (const [ticker, record] of Object.entries(records)) {
-      addressToken.set(
-        record.pairAddress,
-        new Token(
-          [amm, ticker, 'LPT'].join('-'),
-          ticker,
-          chainIds[chainId],
+      if ('pairAddress' in record) {
+        addressToken.set(
           record.pairAddress,
-          18
-        )
-      );
-      const icons: string[] = [];
-      icons.push(...(addressIcons.get(record.addresses[0]) ?? []));
-      icons.push(...(addressIcons.get(record.addresses[1]) ?? []));
+          new Token(
+            [amm, ticker, 'LPT'].join('-'),
+            ticker,
+            chainIds[chainId],
+            record.pairAddress,
+            18
+          )
+        );
+        const icons: string[] = [];
+        icons.push(...(addressIcons.get(record.addresses[0]) ?? []));
+        icons.push(...(addressIcons.get(record.addresses[1]) ?? []));
 
-      addressIcons.set(record.pairAddress, icons);
+        addressIcons.set(record.pairAddress, icons);
+      }
     }
   }
 }

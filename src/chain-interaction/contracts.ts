@@ -113,7 +113,10 @@ function parseStratMeta(
     strategyName: parseBytes32String(row.strategyName),
     liqThreshPercent: row.liqThresh.toNumber() / 100,
     tvlInToken,
-    tvlInPeg: new CurrencyValue(stable, row.tvl.mul(row.valuePer1e18).div(parseUnits('1', token.decimals))),
+    tvlInPeg: new CurrencyValue(
+      stable,
+      row.tvl.mul(row.valuePer1e18).div(parseUnits('1', token.decimals))
+    ),
     harvestBalance2Tally: new CurrencyValue(stable, row.harvestBalance2Tally),
     yieldType: [YieldType.REPAYING, YieldType.COMPOUNDING, YieldType.NOYIELD][
       row.yieldType

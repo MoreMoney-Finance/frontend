@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  FormControl,
-} from '@chakra-ui/react';
+import { Button, FormControl } from '@chakra-ui/react';
 import { BigNumber } from '@ethersproject/bignumber';
 import {
   ChainId,
@@ -38,7 +35,6 @@ export function WrapNativeCurrency() {
   return (
     <form onSubmit={handleSubmit(onWrap)}>
       <FormControl isInvalid={errors.name}>
-
         <TokenAmountInputField
           name="wrap-amount"
           min={0}
@@ -49,7 +45,7 @@ export function WrapNativeCurrency() {
           setValueForm={setValue}
         />
 
-        <Button type="submit" isLoading={isSubmitting}> 
+        <Button type="submit" isLoading={isSubmitting}>
           Wrap native currency
         </Button>
       </FormControl>

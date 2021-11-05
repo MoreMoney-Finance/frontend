@@ -1,3 +1,4 @@
+import { parseUnits } from '@ethersproject/units';
 import {
   CurrencyValue,
   Token,
@@ -85,7 +86,8 @@ export type ParsedStratMetaRow = {
   usdPrice: number;
   strategyName: string;
   liqThreshPercent: number;
-  tvl: CurrencyValue;
+  tvlInToken: CurrencyValue;
+  tvlInPeg: CurrencyValue;
   harvestBalance2Tally: CurrencyValue;
   yieldType: YieldType;
 };
@@ -94,8 +96,8 @@ function parseStratMeta(
   row: RawStratMetaRow,
   stable: Token
 ): ParsedStratMetaRow {
-  console.log(row);
   const token = addressToken.get(row.token)!;
+  const tvlInToken = tokenAmount(row.token, row.tvl)!;
   return {
     debtCeiling: new CurrencyValue(stable, row.debtCeiling)!,
     totalDebt: new CurrencyValue(stable, row.totalDebt),
@@ -110,7 +112,8 @@ function parseStratMeta(
       parseFloat(formatEther(row.valuePer1e18)) / 10 ** (18 - token.decimals),
     strategyName: parseBytes32String(row.strategyName),
     liqThreshPercent: row.liqThresh.toNumber() / 100,
-    tvl: tokenAmount(row.token, row.tvl)!,
+    tvlInToken,
+    tvlInPeg: new CurrencyValue(stable, row.tvl.mul(row.valuePer1e18).div(parseUnits('1', token.decimals))),
     harvestBalance2Tally: new CurrencyValue(stable, row.harvestBalance2Tally),
     yieldType: [YieldType.REPAYING, YieldType.COMPOUNDING, YieldType.NOYIELD][
       row.yieldType

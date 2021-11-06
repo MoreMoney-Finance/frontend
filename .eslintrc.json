@@ -8,8 +8,12 @@
       "jsx": true
     }
   },
-  "plugins": ["import"],
-  "ignorePatterns": ["node_modules/**/*"],
+  "plugins": [
+    "import"
+  ],
+  "ignorePatterns": [
+    "node_modules/**/*"
+  ],
   "settings": {
     "react": {
       "version": "detect"
@@ -21,6 +25,10 @@
     "plugin:react-hooks/recommended"
   ],
   "rules": {
+    "indent": [
+      "warn",
+      2
+    ],
     "@typescript-eslint/explicit-function-return-type": "off",
     // Not a good thing, we should get rid of this and use any only as a last resort
     "@typescript-eslint/no-explicit-any": "off",
@@ -29,12 +37,19 @@
     "no-console": [
       0,
       {
-        "allow": ["error"]
+        "allow": [
+          "error"
+        ]
       }
     ],
     "no-alert": 0,
     "no-debugger": 2,
-    "import/no-extraneous-dependencies": [2, { "devDependencies": false }],
+    "import/no-extraneous-dependencies": [
+      2,
+      {
+        "devDependencies": false
+      }
+    ],
     // I believe we should remove this too
     "@typescript-eslint/explicit-module-boundary-types": 0,
     "react/prop-types": 0,

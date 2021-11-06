@@ -39,12 +39,12 @@ export function useMintDepositBorrowTrans() {
     ) =>
       stable
         ? send(
-            collateralToken.address,
-            strategyAddress,
-            parseUnits(collateralAmount.toString(), collateralToken.decimals),
-            parseEther(borrowAmount.toString()),
-            account
-          )
+          collateralToken.address,
+          strategyAddress,
+          parseUnits(collateralAmount.toString(), collateralToken.decimals),
+          parseEther(borrowAmount.toString()),
+          account
+        )
         : console.error('Trying to send transaction but stable not defined!'),
     depositBorrowState: state,
   };
@@ -101,11 +101,11 @@ export function useRepayWithdrawTrans(
     ) =>
       account && trancheId && collateralToken
         ? send(
-            trancheId,
-            parseUnits(collateralAmount.toString(), collateralToken.decimals),
-            parseEther(repayAmount.toString()),
-            account
-          )
+          trancheId,
+          parseUnits(collateralAmount.toString(), collateralToken.decimals),
+          parseEther(repayAmount.toString()),
+          account
+        )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
   };

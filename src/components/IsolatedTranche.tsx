@@ -16,7 +16,7 @@ import { useWalletBalance } from './WalletBalancesContext';
 import { useForm } from 'react-hook-form';
 import {
   useApproveTrans,
-  useMintDepositBorrowTrans,
+  useDepositBorrowTrans,
   useRepayWithdrawTrans,
 } from '../chain-interaction/transactions';
 import { CurrencyValue, useEthers, useTokenAllowance } from '@usedapp/core';
@@ -44,13 +44,11 @@ export function IsolatedTranche(
     formState: { errors: errorsRepayForm, isSubmitting: isSubmittingRepayForm },
   } = useForm();
 
-  const { sendMintDepositBorrow /*depositBorrowState*/ } =
-    useMintDepositBorrowTrans();
+  const trancheId = 'trancheId' in params ? params.trancheId : null;
+  const { sendDepositBorrow /*depositBorrowState*/ } =
+    useDepositBorrowTrans(trancheId);
 
-  const { sendRepayWithdraw } = useRepayWithdrawTrans(
-    'trancheId' in params ? params.trancheId : null,
-    token
-  );
+  const { sendRepayWithdraw } = useRepayWithdrawTrans(trancheId, token);
 
   const { account } = useEthers();
 
@@ -84,7 +82,7 @@ export function IsolatedTranche(
     console.log('deposit borrow');
     console.log(data);
 
-    sendMintDepositBorrow(
+    sendDepositBorrow(
       token,
       strategyAddress,
       data['collateral-deposit'],

@@ -67,7 +67,7 @@ type RawStratMetaRow = {
   yieldType: number;
 };
 
-enum YieldType {
+export enum YieldType {
   REPAYING,
   COMPOUNDING,
   NOYIELD,

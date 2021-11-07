@@ -5,19 +5,12 @@ import {
   AccordionPanel,
 } from '@chakra-ui/accordion';
 import { Avatar, AvatarGroup } from '@chakra-ui/avatar';
-import {
-  Button,
-  FormControl,
-  Grid,
-  GridItem,
-  HStack,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
+  TxStatus,
   YieldType,
 } from '../chain-interaction/contracts';
 import { addressIcons } from '../chain-interaction/tokens';
@@ -107,7 +100,10 @@ export function IsolatedTranche(
     sendRepayWithdraw(data['collateral-withdraw'], data['usdm-repay']);
   }
 
-  const { sendApprove } = useApproveTrans(token.address);
+  const { approveState, sendApprove } = useApproveTrans(token.address);
+
+  const depositBorrowDisabled = depositMax === 0;
+  const repayWithdrawDisabled = collateralBalance === 0 || debtBalance === 0;
 
   return (
     <AccordionItem>
@@ -132,42 +128,50 @@ export function IsolatedTranche(
       </h4>
 
       <AccordionPanel>
-        <Button onClick={() => sendApprove(strategyAddress)}>
-          Approve {token.name}{' '}
-        </Button>
-        <Grid templateColumns="repeat(3, 1fr)" gap={6}>
-          <GridItem colSpan={1}>
-            <IsolatedTrancheTable
-              rows={[
-                {
-                  debtCeiling: allowance,
-                  totalDebt: allowance,
-                  stabilityFeePercent: 2.0,
-                  mintingFeePercent: 2.0,
-                  strategyAddress: '0x00000000',
-                  token: token,
-                  APY: 72.3,
-                  totalCollateral: allowance,
-                  borrowablePercent: 2.0,
-                  usdPrice: 100,
-                  strategyName: 'Strategy Name',
-                  liqThreshPercent: 2.0,
-                  tvlInToken: allowance,
-                  tvlInPeg: allowance,
-                  harvestBalance2Tally: allowance,
-                  yieldType: YieldType.NOYIELD,
-                } as ParsedStratMetaRow,
-              ]}
-            />
-          </GridItem>
-          <GridItem colSpan={1}>
-            <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
-              <FormControl isInvalid={errorsDepForm.name}>
+        {allowance.gt(walletBalance) === false ? (
+          <Button
+            onClick={() => sendApprove(strategyAddress)}
+            isLoading={
+              approveState.status == TxStatus.SUCCESS &&
+              allowance.gt(walletBalance) === false
+            }
+          >
+            Approve {token.name}{' '}
+          </Button>
+        ) : (
+          <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+            <GridItem colSpan={1}>
+              <IsolatedTrancheTable
+                rows={[
+                  {
+                    debtCeiling: allowance,
+                    totalDebt: allowance,
+                    stabilityFeePercent: 2.0,
+                    mintingFeePercent: 2.0,
+                    strategyAddress: '0x00000000',
+                    token: token,
+                    APY: 72.3,
+                    totalCollateral: allowance,
+                    borrowablePercent: 2.0,
+                    usdPrice: 100,
+                    strategyName: 'Strategy Name',
+                    liqThreshPercent: 2.0,
+                    tvlInToken: allowance,
+                    tvlInPeg: allowance,
+                    harvestBalance2Tally: allowance,
+                    yieldType: YieldType.NOYIELD,
+                  } as ParsedStratMetaRow,
+                ]}
+              />
+            </GridItem>
+            <GridItem colSpan={1}>
+              <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
                 <VStack spacing="0.5rem">
                   <TokenAmountInputField
                     name="collateral-deposit"
                     min={0}
                     max={depositMax}
+                    isDisabled={depositBorrowDisabled}
                     showMaxButton={true}
                     placeholder={'Collateral Deposit'}
                     registerForm={registerDepForm}
@@ -178,27 +182,31 @@ export function IsolatedTranche(
                   <TokenAmountInputField
                     name="usdm-borrow"
                     min={0}
+                    isDisabled={depositBorrowDisabled}
                     placeholder={'USDm borrow'}
                     registerForm={registerDepForm}
                     setValueForm={setValueDepForm}
                     errorsForm={errorsDepForm}
                   />
 
-                  <Button type="submit" isLoading={isSubmittingDepForm}>
+                  <Button
+                    type="submit"
+                    isLoading={isSubmittingDepForm}
+                    isDisabled={depositBorrowDisabled}
+                  >
                     Deposit &amp; Borrow
                   </Button>
                 </VStack>
-              </FormControl>
-            </form>
-          </GridItem>
-          <GridItem colSpan={1}>
-            <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
-              <FormControl isInvalid={errorsRepayForm.name}>
+              </form>
+            </GridItem>
+            <GridItem colSpan={1}>
+              <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
                 <VStack spacing="0.5rem">
                   <TokenAmountInputField
                     name="collateral-withdraw"
                     min={0}
                     max={collateralBalance}
+                    isDisabled={repayWithdrawDisabled}
                     showMaxButton={true}
                     placeholder={'Collateral withdraw'}
                     registerForm={registerRepayForm}
@@ -210,20 +218,21 @@ export function IsolatedTranche(
                     name="usdm-repay"
                     min={0}
                     max={debtBalance}
+                    isDisabled={repayWithdrawDisabled}
                     placeholder={'USDm repay'}
                     registerForm={registerRepayForm}
                     setValueForm={setValueRepayForm}
                     errorsForm={errorsRepayForm}
                   />
 
-                  <Button type="submit" isLoading={isSubmittingRepayForm}>
+                  <Button type="submit" isLoading={isSubmittingRepayForm} isDisabled={repayWithdrawDisabled}>
                     Repay &amp; Withdraw
                   </Button>
                 </VStack>
-              </FormControl>
-            </form>
-          </GridItem>
-        </Grid>
+              </form>
+            </GridItem>
+          </Grid>
+        )}
       </AccordionPanel>
     </AccordionItem>
   );

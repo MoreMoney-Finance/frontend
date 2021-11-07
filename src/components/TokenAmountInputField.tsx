@@ -18,12 +18,13 @@ export function TokenAmountInputField(props: any) {
     setValueForm,
     showMaxButton,
     errorsForm,
+    isDisabled,
   } = props;
 
   const error = errorsForm?.[name];
 
   return (
-    <FormControl isInvalid={error}>
+    <FormControl isInvalid={error} isDisabled={isDisabled}>
       <InputGroup size="md">
         <Input
           {...registerForm(name, {
@@ -37,7 +38,11 @@ export function TokenAmountInputField(props: any) {
         />
         {showMaxButton ? (
           <InputRightElement width="4.5rem">
-            <Button size="xs" onClick={() => setValueForm(name, max)}>
+            <Button
+              size="xs"
+              isDisabled={isDisabled}
+              onClick={() => setValueForm(name, max)}
+            >
               MAX
             </Button>
           </InputRightElement>

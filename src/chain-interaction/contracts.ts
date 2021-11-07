@@ -67,6 +67,12 @@ type RawStratMetaRow = {
   yieldType: number;
 };
 
+export enum TxStatus {
+  NONE = 'None',
+  MINING = 'Mining',
+  SUCCESS = 'Success',
+}
+
 export enum YieldType {
   REPAYING,
   COMPOUNDING,

@@ -17,7 +17,7 @@ import {
 } from '@usedapp/core/node_modules/@ethersproject/units';
 import { ethers } from 'ethers';
 
-export function useMintDepositBorrowTrans() {
+export function useDepositBorrowTrans(trancheId: number | null | undefined) {
   const ilAddress = useAddresses().IsolatedLending;
   const ilContract = new Contract(
     ilAddress,
@@ -25,27 +25,36 @@ export function useMintDepositBorrowTrans() {
   );
   const { send, state } = useContractFunction(
     ilContract,
-    'mintDepositAndBorrow'
+    trancheId ? 'depositAndBorrow' : 'mintDepositAndBorrow'
   );
   const account = useContext(UserAddressContext);
   const stable = useStable();
 
   return {
-    sendMintDepositBorrow: (
+    sendDepositBorrow: (
       collateralToken: Token,
       strategyAddress: string,
       collateralAmount: string | number,
       borrowAmount: string | number
-    ) =>
-      stable
-        ? send(
-          collateralToken.address,
-          strategyAddress,
-          parseUnits(collateralAmount.toString(), collateralToken.decimals),
-          parseEther(borrowAmount.toString()),
-          account
-        )
-        : console.error('Trying to send transaction but stable not defined!'),
+    ) => {
+      const cAmount = parseUnits(
+        collateralAmount.toString(),
+        collateralToken.decimals
+      );
+      const bAmount = parseEther(borrowAmount.toString());
+
+      return stable
+        ? trancheId
+          ? send(trancheId, cAmount, bAmount, account)
+          : send(
+            collateralToken.address,
+            strategyAddress,
+            cAmount,
+            bAmount,
+            account
+          )
+        : console.error('Trying to send transaction but stable not defined!');
+    },
     depositBorrowState: state,
   };
 }

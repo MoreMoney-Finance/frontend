@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { ChainId, CurrencyValue, NativeCurrency, Token } from '@usedapp/core';
+import { getAddress } from 'ethers/lib/utils';
 import tokenlist from '../constants/tokenlist.json';
 import deployAddresses from '../contracts/addresses.json';
 import lptokens from '../contracts/lptokens.json';
@@ -35,29 +36,30 @@ const chainIds: Record<string, ChainId> = {
 };
 
 for (const [chainId, lpTokensPerChain] of Object.entries(lptokens)) {
-  for (const [amm, records] of Object.entries(lpTokensPerChain)) {
+  for (const records of Object.values(lpTokensPerChain)) {
     for (const [ticker, record] of Object.entries(records)) {
       if ('pairAddress' in record) {
         addressToken.set(
-          record.pairAddress,
+          getAddress(record.pairAddress),
           new Token(
-            [amm, ticker, 'LPT'].join('-'),
+            [ticker, 'LPT'].join('-'),
             ticker,
             chainIds[chainId],
-            record.pairAddress,
+            getAddress(record.pairAddress),
             18
           )
         );
         const icons: string[] = [];
-        icons.push(...(addressIcons.get(record.addresses[0]) ?? []));
-        icons.push(...(addressIcons.get(record.addresses[1]) ?? []));
+        icons.push(...(addressIcons.get(getAddress(record.addresses[0])) ?? []));
+        icons.push(...(addressIcons.get(getAddress(record.addresses[1])) ?? []));
 
-        addressIcons.set(record.pairAddress, icons);
+        addressIcons.set(getAddress(record.pairAddress), icons);
       }
     }
   }
 }
 
+console.log(addressToken);
 addressToken.set(
   deployAddresses[31337].Stablecoin,
   new Token(

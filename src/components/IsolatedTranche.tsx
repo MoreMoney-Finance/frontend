@@ -5,11 +5,20 @@ import {
   AccordionPanel,
 } from '@chakra-ui/accordion';
 import { Avatar, AvatarGroup } from '@chakra-ui/avatar';
-import { Button, FormControl, HStack, Text } from '@chakra-ui/react';
+import {
+  Button,
+  FormControl,
+  Grid,
+  GridItem,
+  HStack,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import React from 'react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
+  YieldType,
 } from '../chain-interaction/contracts';
 import { addressIcons } from '../chain-interaction/tokens';
 import { useWalletBalance } from './WalletBalancesContext';
@@ -22,6 +31,7 @@ import {
 import { CurrencyValue, useEthers, useTokenAllowance } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import { TokenAmountInputField } from './TokenAmountInputField';
+import { IsolatedTrancheTable } from './IsolatedTrancheTable';
 
 export function IsolatedTranche(
   params: React.PropsWithChildren<
@@ -127,66 +137,95 @@ export function IsolatedTranche(
         <Button onClick={() => sendApprove(strategyAddress)}>
           Approve {token.name}{' '}
         </Button>
-        <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
-          <FormControl isInvalid={errorsDepForm.name}>
-            <HStack spacing="0.5rem">
-              <TokenAmountInputField
-                name="collateral-deposit"
-                min={0}
-                max={depositMax}
-                showMaxButton={true}
-                placeholder={'Collateral Deposit'}
-                registerForm={registerDepForm}
-                setValueForm={setValueDepForm}
-                errorsForm={errorsDepForm}
-              />
+        <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+          <GridItem colSpan={1}>
+            <IsolatedTrancheTable
+              rows={[
+                {
+                  debtCeiling: allowance,
+                  totalDebt: allowance,
+                  stabilityFeePercent: 2.0,
+                  mintingFeePercent: 2.0,
+                  strategyAddress: '0x00000000',
+                  token: token,
+                  APY: 72.3,
+                  totalCollateral: allowance,
+                  borrowablePercent: 2.0,
+                  usdPrice: 100,
+                  strategyName: 'Strategy Name',
+                  liqThreshPercent: 2.0,
+                  tvlInToken: allowance,
+                  tvlInPeg: allowance,
+                  harvestBalance2Tally: allowance,
+                  yieldType: YieldType.NOYIELD,
+                } as ParsedStratMetaRow,
+              ]}
+            />
+          </GridItem>
+          <GridItem colSpan={1}>
+            <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
+              <FormControl isInvalid={errorsDepForm.name}>
+                <VStack spacing="0.5rem">
+                  <TokenAmountInputField
+                    name="collateral-deposit"
+                    min={0}
+                    max={depositMax}
+                    showMaxButton={true}
+                    placeholder={'Collateral Deposit'}
+                    registerForm={registerDepForm}
+                    setValueForm={setValueDepForm}
+                    errorsForm={errorsDepForm}
+                  />
 
-              <TokenAmountInputField
-                name="usdm-borrow"
-                min={0}
-                placeholder={'USDm borrow'}
-                registerForm={registerDepForm}
-                setValueForm={setValueDepForm}
-                errorsForm={errorsDepForm}
-              />
+                  <TokenAmountInputField
+                    name="usdm-borrow"
+                    min={0}
+                    placeholder={'USDm borrow'}
+                    registerForm={registerDepForm}
+                    setValueForm={setValueDepForm}
+                    errorsForm={errorsDepForm}
+                  />
 
-              <Button type="submit" isLoading={isSubmittingDepForm}>
-                Deposit &amp; Borrow
-              </Button>
-            </HStack>
-          </FormControl>
-        </form>
+                  <Button type="submit" isLoading={isSubmittingDepForm}>
+                    Deposit &amp; Borrow
+                  </Button>
+                </VStack>
+              </FormControl>
+            </form>
+          </GridItem>
+          <GridItem colSpan={1}>
+            <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
+              <FormControl isInvalid={errorsRepayForm.name}>
+                <VStack spacing="0.5rem">
+                  <TokenAmountInputField
+                    name="collateral-withdraw"
+                    min={0}
+                    max={collateralBalance}
+                    showMaxButton={true}
+                    placeholder={'Collateral withdraw'}
+                    registerForm={registerRepayForm}
+                    setValueForm={setValueRepayForm}
+                    errorsForm={errorsRepayForm}
+                  />
 
-        <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
-          <FormControl isInvalid={errorsRepayForm.name}>
-            <HStack spacing="0.5rem">
-              <TokenAmountInputField
-                name="collateral-withdraw"
-                min={0}
-                max={collateralBalance}
-                showMaxButton={true}
-                placeholder={'Collateral withdraw'}
-                registerForm={registerRepayForm}
-                setValueForm={setValueRepayForm}
-                errorsForm={errorsRepayForm}
-              />
+                  <TokenAmountInputField
+                    name="usdm-repay"
+                    min={0}
+                    max={debtBalance}
+                    placeholder={'USDm repay'}
+                    registerForm={registerRepayForm}
+                    setValueForm={setValueRepayForm}
+                    errorsForm={errorsRepayForm}
+                  />
 
-              <TokenAmountInputField
-                name="usdm-repay"
-                min={0}
-                max={debtBalance}
-                placeholder={'USDm repay'}
-                registerForm={registerRepayForm}
-                setValueForm={setValueRepayForm}
-                errorsForm={errorsRepayForm}
-              />
-
-              <Button type="submit" isLoading={isSubmittingRepayForm}>
-                Repay &amp; Withdraw
-              </Button>
-            </HStack>
-          </FormControl>
-        </form>
+                  <Button type="submit" isLoading={isSubmittingRepayForm}>
+                    Repay &amp; Withdraw
+                  </Button>
+                </VStack>
+              </FormControl>
+            </form>
+          </GridItem>
+        </Grid>
       </AccordionPanel>
     </AccordionItem>
   );

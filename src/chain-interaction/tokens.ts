@@ -50,8 +50,12 @@ for (const [chainId, lpTokensPerChain] of Object.entries(lptokens)) {
           )
         );
         const icons: string[] = [];
-        icons.push(...(addressIcons.get(getAddress(record.addresses[0])) ?? []));
-        icons.push(...(addressIcons.get(getAddress(record.addresses[1])) ?? []));
+        icons.push(
+          ...(addressIcons.get(getAddress(record.addresses[0])) ?? [])
+        );
+        icons.push(
+          ...(addressIcons.get(getAddress(record.addresses[1])) ?? [])
+        );
 
         addressIcons.set(getAddress(record.pairAddress), icons);
       }

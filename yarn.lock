@@ -3811,9 +3811,9 @@
     "@typescript-eslint/types" "5.2.0"
     eslint-visitor-keys "^3.0.0"
 
-"@usedapp/core@https://gitpkg.now.sh/MoreMoney-Finance/useDApp/packages/core?built-branch":
-  version "0.5.4"
-  resolved "https://gitpkg.now.sh/MoreMoney-Finance/useDApp/packages/core?built-branch#3d3211573aeecdd4176aa50f8837097aaa4a16fe"
+"@usedapp/core@https://gitpkg.now.sh/MoreMoney-Finance/useDApp/packages/core?built-branch-2":
+  version "0.5.5"
+  resolved "https://gitpkg.now.sh/MoreMoney-Finance/useDApp/packages/core?built-branch-2#8a87f767df207601e086884f5578f0f2ef9f1825"
   dependencies:
     "@types/react" "17.0.1"
     "@web3-react/core" "6.1.1"

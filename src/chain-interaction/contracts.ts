@@ -34,7 +34,7 @@ export function useAddresses() {
   const { chainId } = useEthers();
 
   // TODO make the default avalanche once it's supported by useDApp
-  const chainIdStr = chainId ? chainId.toString() : '31337';
+  const chainIdStr = chainId ? chainId.toString() : '43114';
   return addresses[chainIdStr];
 }
 

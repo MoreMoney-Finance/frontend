@@ -23,7 +23,11 @@ export function WrapNativeCurrency() {
   const bignumBalance = useEtherBalance(account) ?? BigNumber.from('0');
   // TODO change from localhost to sensible default
   const ethBalance = new CurrencyValue(
-    new NativeCurrency('Native currency', 'BLANK', chainId ?? ChainId.Hardhat),
+    new NativeCurrency(
+      'Native currency',
+      'BLANK',
+      chainId ?? ChainId.Avalanche
+    ),
     bignumBalance
   );
 

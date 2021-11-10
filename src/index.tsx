@@ -5,6 +5,7 @@ import { App } from './App';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
 import { ChainId, DAppProvider } from '@usedapp/core';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -16,7 +17,11 @@ ReactDOM.render(
         },
       }}
     >
-      <App />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/isolated-lending/" element={<App />} />
+        </Routes>
+      </BrowserRouter>
     </DAppProvider>
   </React.StrictMode>,
   document.getElementById('root')

@@ -5,7 +5,7 @@ import {
   AccordionPanel,
 } from '@chakra-ui/accordion';
 import { Avatar, AvatarGroup } from '@chakra-ui/avatar';
-import { Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react';
+import { Button, Grid, GridItem, HStack, Text } from '@chakra-ui/react';
 import React from 'react';
 import {
   ParsedPositionMetaRow,
@@ -15,16 +15,12 @@ import {
 } from '../chain-interaction/contracts';
 import { addressIcons } from '../chain-interaction/tokens';
 import { useWalletBalance } from './WalletBalancesContext';
-import { useForm } from 'react-hook-form';
-import {
-  useApproveTrans,
-  useDepositBorrowTrans,
-  useRepayWithdrawTrans,
-} from '../chain-interaction/transactions';
+import { useApproveTrans } from '../chain-interaction/transactions';
 import { CurrencyValue, useEthers, useTokenAllowance } from '@usedapp/core';
 import { BigNumber } from 'ethers';
-import { TokenAmountInputField } from './TokenAmountInputField';
 import { IsolatedTrancheTable } from './IsolatedTrancheTable';
+import DepositBorrowForm from './DepositBorrowForm';
+import RepayWithdrawForm from './RepayWithdrawForm';
 
 export function IsolatedTranche(
   params: React.PropsWithChildren<
@@ -33,25 +29,7 @@ export function IsolatedTranche(
 ) {
   const { token, APY, strategyName, strategyAddress, debtCeiling } = params;
 
-  const {
-    handleSubmit: handleSubmitDepForm,
-    register: registerDepForm,
-    setValue: setValueDepForm,
-    formState: { errors: errorsDepForm, isSubmitting: isSubmittingDepForm },
-  } = useForm();
-
-  const {
-    handleSubmit: handleSubmitRepayForm,
-    register: registerRepayForm,
-    setValue: setValueRepayForm,
-    formState: { errors: errorsRepayForm, isSubmitting: isSubmittingRepayForm },
-  } = useForm();
-
   const trancheId = 'trancheId' in params ? params.trancheId : null;
-  const { sendDepositBorrow /*depositBorrowState*/ } =
-    useDepositBorrowTrans(trancheId);
-
-  const { sendRepayWithdraw } = useRepayWithdrawTrans(trancheId, token);
 
   const { account } = useEthers();
 
@@ -69,41 +47,13 @@ export function IsolatedTranche(
     new CurrencyValue(token, BigNumber.from('0'));
   console.log(`wallet balance for ${token.name}: ${walletBalance.format()}`);
 
-  const depositMax = parseFloat(
-    (allowance.gt(walletBalance) ? walletBalance : allowance).format()
-  );
+  const { approveState, sendApprove } = useApproveTrans(token.address);
 
   const collateralBalance =
     'collateral' in params && params.collateral
       ? parseFloat(params.collateral.format())
       : 0;
   const debtBalance = 'debt' in params ? parseFloat(params.debt.format()) : 0;
-
-  // const collateralDeposit = watch('collateral-deposit');
-
-  function onDepositBorrow(data: { [x: string]: any }) {
-    console.log('deposit borrow');
-    console.log(data);
-
-    sendDepositBorrow(
-      token,
-      strategyAddress,
-      data['collateral-deposit'],
-      data['usdm-borrow']
-    );
-  }
-
-  function onRepayWithdraw(data: { [x: string]: any }) {
-    console.log('repay withdraw');
-    console.log(data);
-
-    sendRepayWithdraw(data['collateral-withdraw'], data['usdm-repay']);
-  }
-
-  const { approveState, sendApprove } = useApproveTrans(token.address);
-
-  const depositBorrowDisabled = depositMax === 0;
-  const repayWithdrawDisabled = collateralBalance === 0 || debtBalance === 0;
 
   return (
     <AccordionItem>
@@ -165,71 +115,15 @@ export function IsolatedTranche(
               />
             </GridItem>
             <GridItem colSpan={1}>
-              <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
-                <VStack spacing="0.5rem">
-                  <TokenAmountInputField
-                    name="collateral-deposit"
-                    min={0}
-                    max={depositMax}
-                    isDisabled={depositBorrowDisabled}
-                    showMaxButton={true}
-                    placeholder={'Collateral Deposit'}
-                    registerForm={registerDepForm}
-                    setValueForm={setValueDepForm}
-                    errorsForm={errorsDepForm}
-                  />
-
-                  <TokenAmountInputField
-                    name="usdm-borrow"
-                    min={0}
-                    isDisabled={depositBorrowDisabled}
-                    placeholder={'USDm borrow'}
-                    registerForm={registerDepForm}
-                    setValueForm={setValueDepForm}
-                    errorsForm={errorsDepForm}
-                  />
-
-                  <Button
-                    type="submit"
-                    isLoading={isSubmittingDepForm}
-                    isDisabled={depositBorrowDisabled}
-                  >
-                    Deposit &amp; Borrow
-                  </Button>
-                </VStack>
-              </form>
+              <DepositBorrowForm trancheId={trancheId} {...params} />
             </GridItem>
             <GridItem colSpan={1}>
-              <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
-                <VStack spacing="0.5rem">
-                  <TokenAmountInputField
-                    name="collateral-withdraw"
-                    min={0}
-                    max={collateralBalance}
-                    isDisabled={repayWithdrawDisabled}
-                    showMaxButton={true}
-                    placeholder={'Collateral withdraw'}
-                    registerForm={registerRepayForm}
-                    setValueForm={setValueRepayForm}
-                    errorsForm={errorsRepayForm}
-                  />
-
-                  <TokenAmountInputField
-                    name="usdm-repay"
-                    min={0}
-                    max={debtBalance}
-                    isDisabled={repayWithdrawDisabled}
-                    placeholder={'USDm repay'}
-                    registerForm={registerRepayForm}
-                    setValueForm={setValueRepayForm}
-                    errorsForm={errorsRepayForm}
-                  />
-
-                  <Button type="submit" isLoading={isSubmittingRepayForm} isDisabled={repayWithdrawDisabled}>
-                    Repay &amp; Withdraw
-                  </Button>
-                </VStack>
-              </form>
+              <RepayWithdrawForm
+                collateralBalance={collateralBalance}
+                debtBalance={debtBalance}
+                trancheId={trancheId}
+                {...params}
+              />
             </GridItem>
           </Grid>
         )}

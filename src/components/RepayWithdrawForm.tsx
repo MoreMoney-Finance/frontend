@@ -23,7 +23,7 @@ export default function DepositBorrowForm(params: any) {
     sendRepayWithdraw(data['collateral-withdraw'], data['usdm-repay']);
   }
 
-  const repayWithdrawDisabled = collateralBalance === 0 || debtBalance === 0;
+  const repayWithdrawDisabled = collateralBalance === 0 && debtBalance === 0;
 
   return (
     <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
@@ -48,6 +48,7 @@ export default function DepositBorrowForm(params: any) {
           placeholder={'USDm repay'}
           registerForm={registerRepayForm}
           setValueForm={setValueRepayForm}
+          showMaxButton={true}
           errorsForm={errorsRepayForm}
         />
 

@@ -64,10 +64,6 @@ export const IsolatedTrancheTable: React.FC<TableProps> = ({
                 <Td>{row.strategyName.toString()}</Td>
               </Tr>
               <Tr>
-                <Th>Liquidation Threshold</Th>
-                <Td>{row.liqThreshPercent.toString()}</Td>
-              </Tr>
-              <Tr>
                 <Th>TVL in Token</Th>
                 <Td>{row.tvlInToken.toString()}</Td>
               </Tr>

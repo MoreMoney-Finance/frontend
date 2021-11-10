@@ -105,7 +105,6 @@ export function IsolatedTranche(
                     borrowablePercent: 2.0,
                     usdPrice: 100,
                     strategyName: 'Strategy Name',
-                    liqThreshPercent: 2.0,
                     tvlInToken: allowance,
                     tvlInPeg: allowance,
                     harvestBalance2Tally: allowance,

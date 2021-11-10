@@ -93,30 +93,6 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "pegCurrency",
-          "type": "address"
-        }
-      ],
-      "name": "_listenForOracle",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "oracle",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
           "name": "",
           "type": "address"
         },
@@ -272,29 +248,6 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "trancheId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "yieldToken",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        }
-      ],
-      "name": "burnTranche",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "inputs": [],
       "name": "charactersPlayed",
       "outputs": [
@@ -384,12 +337,12 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "conversionAmount",
+          "name": "rewardAmount",
           "type": "uint256"
         },
         {
           "internalType": "uint256",
-          "name": "usdmBid",
+          "name": "targetBid",
           "type": "uint256"
         }
       ],
@@ -658,6 +611,52 @@
         }
       ],
       "name": "registerMintTranche",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        }
+      ],
+      "name": "rescueCollateral",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        }
+      ],
+      "name": "rescueStrandedTokens",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -1023,7 +1022,7 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "",
+          "name": "token",
           "type": "address"
         }
       ],

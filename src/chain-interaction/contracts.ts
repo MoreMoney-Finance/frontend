@@ -53,7 +53,6 @@ type RawStratMetaRow = {
   debtCeiling: BigNumber;
   APF: BigNumber;
   borrowablePer10k: BigNumber;
-  liqThresh: BigNumber;
   mintingFee: BigNumber;
   stabilityFee: BigNumber;
   strategy: string;
@@ -91,7 +90,6 @@ export type ParsedStratMetaRow = {
   borrowablePercent: number;
   usdPrice: number;
   strategyName: string;
-  liqThreshPercent: number;
   tvlInToken: CurrencyValue;
   tvlInPeg: CurrencyValue;
   harvestBalance2Tally: CurrencyValue;
@@ -117,7 +115,6 @@ function parseStratMeta(
     usdPrice:
       parseFloat(formatEther(row.valuePer1e18)) / 10 ** (18 - token.decimals),
     strategyName: parseBytes32String(row.strategyName),
-    liqThreshPercent: row.liqThresh.toNumber() / 100,
     tvlInToken,
     tvlInPeg: new CurrencyValue(
       stable,

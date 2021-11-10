@@ -11,7 +11,6 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   TxStatus,
-  YieldType,
 } from '../chain-interaction/contracts';
 import { addressIcons } from '../chain-interaction/tokens';
 import { useWalletBalance } from './WalletBalancesContext';
@@ -91,27 +90,7 @@ export function IsolatedTranche(
         ) : (
           <Grid templateColumns="repeat(3, 1fr)" gap={6}>
             <GridItem colSpan={1}>
-              <IsolatedTrancheTable
-                rows={[
-                  {
-                    debtCeiling: allowance,
-                    totalDebt: allowance,
-                    stabilityFeePercent: 2.0,
-                    mintingFeePercent: 2.0,
-                    strategyAddress: '0x00000000',
-                    token: token,
-                    APY: 72.3,
-                    totalCollateral: allowance,
-                    borrowablePercent: 2.0,
-                    usdPrice: 100,
-                    strategyName: 'Strategy Name',
-                    tvlInToken: allowance,
-                    tvlInPeg: allowance,
-                    harvestBalance2Tally: allowance,
-                    yieldType: YieldType.NOYIELD,
-                  } as ParsedStratMetaRow,
-                ]}
-              />
+              <IsolatedTrancheTable rows={[params]} />
             </GridItem>
             <GridItem colSpan={1}>
               <DepositBorrowForm trancheId={trancheId} {...params} />

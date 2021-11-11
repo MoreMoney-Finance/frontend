@@ -66,10 +66,10 @@ for (const [chainId, lpTokensPerChain] of Object.entries(lptokens)) {
 
 console.log(addressToken);
 
-for (const addresses of Object.values(deployAddresses)) {
+for (const [chainId, addresses] of Object.entries(deployAddresses)) {
   addressToken.set(
     addresses.Stablecoin,
-    new Token('USD Money', 'USDm', ChainId.Hardhat, addresses.Stablecoin, 18)
+    new Token('USD Money', 'USDm', chainIds[chainId], addresses.Stablecoin, 18)
   );
 }
 

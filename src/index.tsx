@@ -7,6 +7,7 @@ import * as serviceWorker from './serviceWorker';
 import { ChainId, DAppProvider } from '@usedapp/core';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Dashboard } from './pages/Dashboard';
+import { TokenPage } from './pages/TokenPage';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -22,6 +23,7 @@ ReactDOM.render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<Dashboard />} />
+            <Route path="/token/:tokenAddress" element={<TokenPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

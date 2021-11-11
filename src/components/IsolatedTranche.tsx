@@ -13,7 +13,7 @@ import {
   TxStatus,
 } from '../chain-interaction/contracts';
 import { addressIcons } from '../chain-interaction/tokens';
-import { useWalletBalance } from './WalletBalancesContext';
+import { useWalletBalance } from '../contexts/WalletBalancesContext';
 import { useApproveTrans } from '../chain-interaction/transactions';
 import { CurrencyValue, useEthers, useTokenAllowance } from '@usedapp/core';
 import { BigNumber } from 'ethers';

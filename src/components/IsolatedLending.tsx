@@ -4,12 +4,14 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   useIsolatedPositionMetadata,
-  useIsolatedStrategyMetadata,
 } from '../chain-interaction/contracts';
 import { IsolatedTranche } from './IsolatedTranche';
+import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
 
 export function IsolatedLending() {
-  const stratMeta: ParsedStratMetaRow[] = useIsolatedStrategyMetadata();
+  const stratMeta: ParsedStratMetaRow[] = Object.values(
+    React.useContext(StrategyMetadataContext)
+  ).flatMap((x) => x);
 
   const positionMeta: Record<string, ParsedPositionMetaRow> =
     useIsolatedPositionMetadata();

@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { ChakraProvider, Box, VStack, theme, Grid } from '@chakra-ui/react';
 import { ColorModeSwitcher } from './components/ColorModeSwitcher';
-import { IsolatedLending } from './components/IsolatedLending';
 import ConnectButton from './components/ConnectButton';
 import { UserAddressCtxProvider } from './contexts/UserAddressContext';
 import { WalletBalancesCtxProvider } from './contexts/WalletBalancesContext';
-import { WrapNativeCurrency } from './components/WrapNativeCurrency';
 import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
+import { Outlet } from 'react-router-dom';
 
-export const App = () => (
+export const App = (params: React.PropsWithChildren<unknown>) => (
   <ChakraProvider theme={theme}>
     <UserAddressCtxProvider>
       <WalletBalancesCtxProvider>
@@ -18,8 +17,8 @@ export const App = () => (
               <ColorModeSwitcher justifySelf="flex-end" />
               <VStack spacing={8}>
                 <ConnectButton />
-                <IsolatedLending />
-                <WrapNativeCurrency />
+                {params.children}
+                <Outlet />
               </VStack>
             </Grid>
           </Box>

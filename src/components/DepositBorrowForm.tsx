@@ -5,7 +5,7 @@ import React from 'react';
 import { useDepositBorrowTrans } from '../chain-interaction/transactions';
 import { CurrencyValue, useEthers, useTokenAllowance } from '@usedapp/core';
 import { BigNumber } from 'ethers';
-import { useWalletBalance } from './WalletBalancesContext';
+import { useWalletBalance } from '../contexts/WalletBalancesContext';
 
 export default function DepositBorrowForm(params: any) {
   const { token, strategyAddress, trancheId } = params;

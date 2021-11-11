@@ -17,43 +17,43 @@ export const IsolatedTrancheTable: React.FC<TableProps> = ({
             <div key={'tablerow' + index}>
               <Tr>
                 <Th>Debt Ceiling</Th>
-                <Td>{row.debtCeiling.toString()}</Td>
+                <Td>{row.debtCeiling.format()}</Td>
               </Tr>
               <Tr>
                 <Th>Total Debt</Th>
-                <Td>{row.totalDebt.toString()}</Td>
+                <Td>{row.totalDebt.format()}</Td>
               </Tr>
               <Tr>
                 <Th>Stability Fee</Th>
-                <Td>{row.stabilityFeePercent.toString()}</Td>
+                <Td>{row.stabilityFeePercent.toString()} %</Td>
               </Tr>
               <Tr>
                 <Th>Minting Fee</Th>
-                <Td>{row.mintingFeePercent.toString()}</Td>
+                <Td>{row.mintingFeePercent.toString()} %</Td>
               </Tr>
               <Tr>
-                <Th>Strategy Name</Th>
+                <Th>Strategy Address</Th>
                 <Td>{row.strategyAddress.toString()}</Td>
               </Tr>
               <Tr>
-                <Th>USD Price</Th>
-                <Td>{row.token.toString()}</Td>
+                <Th>Token</Th>
+                <Td>{row.token.address.toString()}</Td>
               </Tr>
               <Tr>
                 <Th>APY</Th>
-                <Td>{row.APY.toString()}</Td>
+                <Td>{row.APY.toString()} %</Td>
               </Tr>
               <Tr>
                 <Th>Total Collateral</Th>
-                <Td>{row.totalCollateral.toString()}</Td>
+                <Td>{row.totalCollateral.format()}</Td>
               </Tr>
               <Tr>
-                <Th>TVL in USD</Th>
-                <Td>{row.borrowablePercent.toString()}</Td>
+                <Th>Minimum colateralization ratio</Th>
+                <Td>{(100 / row.borrowablePercent).toString()} %</Td>
               </Tr>
               <Tr>
-                <Th>Harvest Balance Totally</Th>
-                <Td>{row.harvestBalance2Tally.toString()}</Td>
+                <Th>Harvest Balance To tally</Th>
+                <Td>{row.harvestBalance2Tally.format()}</Td>
               </Tr>
               <Tr>
                 <Th>USD Price</Th>
@@ -65,11 +65,11 @@ export const IsolatedTrancheTable: React.FC<TableProps> = ({
               </Tr>
               <Tr>
                 <Th>TVL in Token</Th>
-                <Td>{row.tvlInToken.toString()}</Td>
+                <Td>{row.tvlInToken.format()}</Td>
               </Tr>
               <Tr>
                 <Th>TVL in Peg</Th>
-                <Td>{row.tvlInPeg.toString()}</Td>
+                <Td>{row.tvlInPeg.format()}</Td>
               </Tr>
               <Tr>
                 <Th>Yield Type</Th>

@@ -6,7 +6,7 @@ import { useAddresses, useStable } from './contracts';
 
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import { useContext } from 'react';
-import { UserAddressContext } from '../components/UserAddressContext';
+import { UserAddressContext } from '../contexts/UserAddressContext';
 // import { wrappedNativeCurrency } from "./tokens";
 
 import IWETH from '../contracts/artifacts/interfaces/IWETH.sol/IWETH.json';

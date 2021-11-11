@@ -6,6 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
 import { ChainId, DAppProvider } from '@usedapp/core';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Dashboard } from './pages/Dashboard';
+import { TokenPage } from './pages/TokenPage';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -19,7 +21,10 @@ ReactDOM.render(
     >
       <BrowserRouter>
         <Routes>
-          <Route path="/isolated-lending/" element={<App />} />
+          <Route path="/" element={<App />}>
+            <Route index element={<Dashboard />} />
+            <Route path="/token/:tokenAddress" element={<TokenPage />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </DAppProvider>

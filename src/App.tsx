@@ -1,11 +1,24 @@
 import * as React from 'react';
-import { ChakraProvider, Box, VStack, theme, Grid } from '@chakra-ui/react';
+import {
+  ChakraProvider,
+  Box,
+  VStack,
+  Grid,
+  extendTheme,
+  ThemeConfig,
+} from '@chakra-ui/react';
 import { ColorModeSwitcher } from './components/ColorModeSwitcher';
 import ConnectButton from './components/ConnectButton';
 import { UserAddressCtxProvider } from './contexts/UserAddressContext';
 import { WalletBalancesCtxProvider } from './contexts/WalletBalancesContext';
 import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
 import { Outlet } from 'react-router-dom';
+
+const config: ThemeConfig = {
+  initialColorMode: 'dark',
+};
+
+const theme = extendTheme({ config });
 
 export const App = (params: React.PropsWithChildren<unknown>) => (
   <ChakraProvider theme={theme}>

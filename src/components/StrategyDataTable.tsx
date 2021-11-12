@@ -4,7 +4,7 @@ import { Table, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 
 export function StrategyDataTable(row: ParsedStratMetaRow) {
   return (
-    <Table variant="simple">
+    <Table variant="simple" width="auto">
       <Tbody>
         <Tr>
           <Th>Stability Fee</Th>

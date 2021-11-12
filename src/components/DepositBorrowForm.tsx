@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { Button, VStack } from '@chakra-ui/react';
+import { Button, HStack } from '@chakra-ui/react';
 import { TokenAmountInputField } from './TokenAmountInputField';
 import React from 'react';
 import { useDepositBorrowTrans } from '../chain-interaction/transactions';
@@ -48,7 +48,7 @@ export default function DepositBorrowForm(params: any) {
 
   return (
     <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
-      <VStack spacing="0.5rem">
+      <HStack spacing="0.5rem">
         <TokenAmountInputField
           name="collateral-deposit"
           min={0}
@@ -78,7 +78,7 @@ export default function DepositBorrowForm(params: any) {
         >
           Deposit &amp; Borrow
         </Button>
-      </VStack>
+      </HStack>
     </form>
   );
 }

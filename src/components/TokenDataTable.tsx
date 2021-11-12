@@ -8,7 +8,7 @@ export function TokenDataTable({
   tokenData: ParsedStratMetaRow | null | undefined;
 }) {
   return tokenData ? (
-    <Table variant="simple">
+    <Table variant="simple" width="auto">
       <Tbody>
         <Tr>
           <Th>Debt Ceiling</Th>

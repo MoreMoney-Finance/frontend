@@ -9,14 +9,14 @@ import DepositBorrowForm from './DepositBorrowForm';
 import { StrategyDataTable } from './StrategyDataTable';
 
 export function MintNewTranche(params: ParsedStratMetaRow) {
-  const { token, strategyAddress, debtCeiling } = params;
+  const { token, strategyAddress, debtCeiling, strategyName } = params;
 
   const { account } = useEthers();
 
   const allowance = new CurrencyValue(
     token,
     useTokenAllowance(token.address, account, strategyAddress) ??
-    BigNumber.from('0')
+      BigNumber.from('0')
   );
 
   console.log(`allowance for ${token.name}: ${allowance.format()}`);
@@ -36,15 +36,15 @@ export function MintNewTranche(params: ParsedStratMetaRow) {
           <StrategyDataTable {...params} />
         </GridItem>
         <GridItem colSpan={1}>
-
           {allowance.gt(walletBalance) === false ? (
             <Button
               onClick={() => sendApprove(strategyAddress)}
               isLoading={
                 approveState.status == TxStatus.SUCCESS &&
                 allowance.gt(walletBalance) === false
-              }>
-              Approve {token.name}{' '}
+              }
+            >
+              Approve {strategyName} for {token.name}{' '}
             </Button>
           ) : (
             <DepositBorrowForm trancheId={undefined} {...params} />

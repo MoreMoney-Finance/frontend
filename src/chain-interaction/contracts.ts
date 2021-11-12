@@ -139,7 +139,10 @@ export function useStable() {
   return addresses ? addressToken.get(addresses.Stablecoin) : undefined;
 }
 
-export type StrategyMetadata = Record<string, ParsedStratMetaRow[]>;
+export type StrategyMetadata = Record<
+  string,
+  Record<string, ParsedStratMetaRow>
+>;
 
 export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const stable = useStable();
@@ -150,7 +153,10 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
         const tokenAddress = parsedRow.token.address;
         return {
           ...result,
-          [tokenAddress]: [...(result[tokenAddress] || []), parsedRow],
+          [tokenAddress]: {
+            [parsedRow.strategyAddress]: parsedRow,
+            ...(result[tokenAddress] || {}),
+          },
         };
       }, {})
     : {};
@@ -185,21 +191,29 @@ function parsePositionMeta(
   };
 }
 
-export function useIsolatedPositionMetadata(): Record<
+export type TokenStratPositionMetadata = Record<
   string,
-  ParsedPositionMetaRow
-> {
+  ParsedPositionMetaRow[]
+>;
+export function useIsolatedPositionMetadata(): TokenStratPositionMetadata {
   const account = useContext(UserAddressContext);
   const positionMeta = useIsolatedLendingView('viewPositionsByOwner', [
     account,
   ]);
   const stable = useStable();
+
   return stable
-    ? Object.fromEntries(
-        positionMeta.map((row: RawPositionMetaRow) => [
-          `${row.strategy}-${row.token}`,
-          parsePositionMeta(row, stable),
-        ])
+    ? positionMeta.reduce(
+        (result: TokenStratPositionMetadata, row: RawPositionMetaRow) => {
+          const parsedRow = parsePositionMeta(row, stable);
+          const tokenAddress = parsedRow.token.address;
+          const list = result[tokenAddress] || [];
+          return {
+            ...result,
+            [tokenAddress]: [...list, parsedRow],
+          };
+        },
+        {}
       )
     : {};
 }

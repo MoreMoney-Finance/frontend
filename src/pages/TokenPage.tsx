@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useParams } from 'react-router-dom';
 import { ParsedPositionMetaRow, ParsedStratMetaRow, TokenStratPositionMetadata, useIsolatedPositionMetadata } from '../chain-interaction/contracts';
 import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
-import { Box, HStack, VStack } from '@chakra-ui/react';
+import { Box, VStack } from '@chakra-ui/react';
 import { TokenDataTable } from '../components/TokenDataTable';
 import { MintNewTranche } from '../components/MintNewTranche';
 import { TrancheTable } from '../components/TrancheTable';
@@ -19,34 +19,29 @@ export function TokenPage(props: React.PropsWithChildren<unknown>) {
   const allPositionMeta: TokenStratPositionMetadata = useIsolatedPositionMetadata();
   const positionMeta: ParsedPositionMetaRow[] = tokenAddress ? allPositionMeta[tokenAddress] ?? [] : [];
   return (
-    <>
+    <VStack>
+      {token ? (
+        <h1>
+          <TokenDescription token={token} />
+        </h1>
+      ) : undefined}
+      <Box>
+        {positionMeta.length > 0 ? (<TrancheTable positions={positionMeta} />) : undefined}
+      </Box>
+      <Box>
+        <VStack>
+          {Object.values(stratMeta).map((meta, i) => (
+            <VStack key={i}>
+              <Box>
+                <h3 text-align="center"> Open new position using {meta.strategyName}: </h3>
+              </Box>
+              <MintNewTranche {...meta} />
+            </VStack>
+          ))}
+        </VStack>
+      </Box>
+      <TokenDataTable tokenData={(Object.keys(stratMeta).length > 0 ? stratMeta[0] : undefined)} />
       {props.children}
-      <VStack>
-        {token ? (
-          <h1>
-            <TokenDescription token={token} />
-          </h1>
-        ) : undefined}
-        <HStack>
-          <TokenDataTable tokenData={(Object.keys(stratMeta).length > 0 ? stratMeta[0] : undefined)} />
-          <Box>
-            {positionMeta.length > 0 ? (<TrancheTable positions={positionMeta} />) : undefined}
-          </Box>
-        </HStack>
-        <Box>
-          <VStack>
-            <h2> Open new position </h2>
-            {Object.values(stratMeta).map((meta, i) => (
-              <VStack key={i}>
-                <Box>
-                  <h3 text-align="center"> {meta.strategyName} </h3>
-                </Box>
-                <MintNewTranche {...meta} />
-              </VStack>
-            ))}
-          </VStack>
-        </Box>
-      </VStack>
-    </>
+    </VStack>
   );
 }

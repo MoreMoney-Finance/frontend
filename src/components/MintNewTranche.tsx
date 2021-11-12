@@ -1,4 +1,4 @@
-import { Button, Grid, GridItem } from '@chakra-ui/react';
+import { Button, VStack } from '@chakra-ui/react';
 import { CurrencyValue, useEthers, useTokenAllowance } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import React from 'react';
@@ -30,27 +30,20 @@ export function MintNewTranche(params: ParsedStratMetaRow) {
   const { approveState, sendApprove } = useApproveTrans(token.address);
 
   return (
-    <>
-      <Grid templateColumns="repeat(3, 1fr)" gap={6}>
-        <GridItem colSpan={1}>
-          <StrategyDataTable {...params} />
-        </GridItem>
-        <GridItem colSpan={1}>
-          {allowance.gt(walletBalance) === false ? (
-            <Button
-              onClick={() => sendApprove(strategyAddress)}
-              isLoading={
-                approveState.status == TxStatus.SUCCESS &&
-                allowance.gt(walletBalance) === false
-              }
-            >
-              Approve {strategyName} for {token.name}{' '}
-            </Button>
-          ) : (
-            <DepositBorrowForm trancheId={undefined} {...params} />
-          )}
-        </GridItem>
-      </Grid>
-    </>
+    <VStack>
+      {allowance.gt(walletBalance) === false ? (
+        <Button
+          onClick={() => sendApprove(strategyAddress)}
+          isLoading={
+            approveState.status == TxStatus.SUCCESS &&
+            allowance.gt(walletBalance) === false
+          }>
+          Approve {strategyName} to withdraw {token.name}{' '}
+        </Button>
+      ) : (
+        <DepositBorrowForm trancheId={undefined} {...params} />
+      )}
+      <StrategyDataTable {...params} />
+    </VStack>
   );
 }

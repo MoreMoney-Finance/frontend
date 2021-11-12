@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { Button, HStack } from '@chakra-ui/react';
+import { Button, HStack, Text } from '@chakra-ui/react';
 import { TokenAmountInputField } from './TokenAmountInputField';
 import React from 'react';
 import { useDepositBorrowTrans } from '../chain-interaction/transactions';
@@ -75,8 +75,11 @@ export default function DepositBorrowForm(params: any) {
           type="submit"
           isLoading={isSubmittingDepForm}
           isDisabled={depositBorrowDisabled}
+          width="22rem"
         >
-          Deposit &amp; Borrow
+          <Text>
+            Deposit &amp; Borrow
+          </Text>
         </Button>
       </HStack>
     </form>

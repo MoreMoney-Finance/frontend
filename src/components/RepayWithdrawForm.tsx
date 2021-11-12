@@ -56,6 +56,7 @@ export default function DepositBorrowForm(params: any) {
           type="submit"
           isLoading={isSubmittingRepayForm}
           isDisabled={repayWithdrawDisabled}
+          width="22rem"
         >
           Repay &amp; Withdraw
         </Button>

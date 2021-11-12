@@ -1,5 +1,5 @@
-import { Box, Text, Button } from '@chakra-ui/react';
-import { useEthers, shortenAddress } from '@usedapp/core';
+import { Button } from '@chakra-ui/react';
+import { useEthers } from '@usedapp/core';
 import React, { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 
@@ -13,9 +13,7 @@ export default function ConnectButton() {
   const account = useContext(UserAddressContext);
 
   return account ? (
-    <Box sx={{ float: 'right' }}>
-      <Text>{shortenAddress(account)}</Text>
-    </Box>
+    <></>
   ) : (
     <Button onClick={handleConnectWallet} sx={{ fontSize: 'larger' }}>
       Connect to wallet

@@ -1,8 +1,13 @@
 import * as React from 'react';
 import { ParsedStratMetaRow } from '../chain-interaction/contracts';
-import { Table, Tbody, Tr, Th, Td } from '@chakra-ui/react';
+import { Table, Tbody, Tr, Th, Td, Button } from '@chakra-ui/react';
+import { useTallyHarvestBalance } from '../chain-interaction/transactions';
 
 export function StrategyDataTable(row: ParsedStratMetaRow) {
+  const { sendTallyHarvestBalance } = useTallyHarvestBalance(
+    row.strategyAddress
+  );
+  const balance2Tally = row.harvestBalance2Tally;
   return (
     <Table variant="simple" width="auto">
       <Tbody>
@@ -28,7 +33,18 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
         </Tr>
         <Tr>
           <Th>Harvest Balance To tally</Th>
-          <Td>{row.harvestBalance2Tally.format()}</Td>
+          <Td>
+            {balance2Tally.isZero() ? (
+              balance2Tally.format()
+            ) : (
+              <Button
+                onClick={() => sendTallyHarvestBalance(row.token.address)}
+              >
+                {' '}
+                Tally {balance2Tally.format}{' '}
+              </Button>
+            )}
+          </Td>
         </Tr>
         <Tr>
           <Th>Strategy Name</Th>

@@ -77,9 +77,7 @@ export default function DepositBorrowForm(params: any) {
           isDisabled={depositBorrowDisabled}
           width="22rem"
         >
-          <Text>
-            Deposit &amp; Borrow
-          </Text>
+          <Text>Deposit &amp; Borrow</Text>
         </Button>
       </HStack>
     </form>

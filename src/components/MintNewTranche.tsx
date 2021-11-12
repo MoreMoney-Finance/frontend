@@ -37,7 +37,8 @@ export function MintNewTranche(params: ParsedStratMetaRow) {
           isLoading={
             approveState.status == TxStatus.SUCCESS &&
             allowance.gt(walletBalance) === false
-          }>
+          }
+        >
           Approve {strategyName} to withdraw {token.name}{' '}
         </Button>
       ) : (

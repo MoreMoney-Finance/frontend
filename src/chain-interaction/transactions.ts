@@ -5,6 +5,7 @@ import { Token } from '@usedapp/core/dist/esm/src/model';
 import { useAddresses, useStable } from './contracts';
 
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
+import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 // import { wrappedNativeCurrency } from "./tokens";
@@ -117,5 +118,15 @@ export function useRepayWithdrawTrans(
         )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
+  };
+}
+
+export function useTallyHarvestBalance(strategyAddress: string) {
+  const strategy = new Contract(strategyAddress, new Interface(Strategy.abi));
+  const { send, state } = useContractFunction(strategy, 'tallyHarvestBalance');
+
+  return {
+    sendTallyHarvestBalance: (tokenAddress: string) => send(tokenAddress),
+    tallyHarvestState: state,
   };
 }

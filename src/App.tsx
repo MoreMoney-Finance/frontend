@@ -14,7 +14,8 @@ import { UserAddressCtxProvider } from './contexts/UserAddressContext';
 import { WalletBalancesCtxProvider } from './contexts/WalletBalancesContext';
 import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
 import { Outlet } from 'react-router-dom';
-import { UserBalanceComponent } from './components/WalletBalance';
+import { UserBalanceComponent } from './components/UserBalanceComponent';
+import { UserAddressComponent } from './components/UserAddressComponent';
 
 const config: ThemeConfig = {
   initialColorMode: 'dark',
@@ -32,6 +33,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => (
               <GridItem justifySelf={'flex-end'}>
                 <ColorModeSwitcher />
                 <UserBalanceComponent />
+                <UserAddressComponent />
               </GridItem>
               <VStack spacing={8}>
                 <ConnectButton />

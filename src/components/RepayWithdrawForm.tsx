@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { Button, VStack } from '@chakra-ui/react';
+import { Button, HStack } from '@chakra-ui/react';
 import { TokenAmountInputField } from './TokenAmountInputField';
 import React from 'react';
 import { useRepayWithdrawTrans } from '../chain-interaction/transactions';
@@ -27,7 +27,7 @@ export default function DepositBorrowForm(params: any) {
 
   return (
     <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
-      <VStack spacing="0.5rem">
+      <HStack spacing="0.5rem">
         <TokenAmountInputField
           name="collateral-withdraw"
           min={0}
@@ -59,7 +59,7 @@ export default function DepositBorrowForm(params: any) {
         >
           Repay &amp; Withdraw
         </Button>
-      </VStack>
+      </HStack>
     </form>
   );
 }

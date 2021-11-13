@@ -16,6 +16,7 @@ import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext'
 import { Outlet } from 'react-router-dom';
 import { UserBalanceComponent } from './components/UserBalanceComponent';
 import { UserAddressComponent } from './components/UserAddressComponent';
+import { NotificationsComponent } from './components/NotificationsComponent';
 
 const config: ThemeConfig = {
   initialColorMode: 'dark',
@@ -29,6 +30,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => (
       <WalletBalancesCtxProvider>
         <StrategyMetadataCtxProvider>
           <Box textAlign="center" fontSize="xl">
+            <NotificationsComponent />
             <Grid minH="100vh" p={3}>
               <GridItem justifySelf={'flex-end'}>
                 <ColorModeSwitcher />

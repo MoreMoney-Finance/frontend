@@ -25,8 +25,11 @@ export function MintNewTranche(params: ParsedStratMetaRow) {
   const walletBalance =
     useWalletBalance(token.address) ??
     new CurrencyValue(token, BigNumber.from('0'));
-  console.log(`wallet balance for ${token.name}: ${walletBalance.format()}`);
-
+  console.log(
+    `wallet balance for ${token.name}: ${walletBalance.format({
+      significantDigits: 30,
+    })}`
+  );
   const { approveState, sendApprove } = useApproveTrans(token.address);
 
   return (

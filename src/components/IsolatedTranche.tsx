@@ -32,15 +32,22 @@ export function IsolatedTranche(
   const walletBalance =
     useWalletBalance(token.address) ??
     new CurrencyValue(token, BigNumber.from('0'));
-  console.log(`wallet balance for ${token.name}: ${walletBalance.format()}`);
+  console.log(
+    `wallet balance for ${token.name}: ${walletBalance.format({
+      significantDigits: 30,
+    })} (${token.address})`
+  );
 
   const { approveState, sendApprove } = useApproveTrans(token.address);
 
   const collateralBalance =
     'collateral' in params && params.collateral
-      ? parseFloat(params.collateral.format())
+      ? parseFloat(params.collateral.format({ significantDigits: 30 }))
       : 0;
-  const debtBalance = 'debt' in params ? parseFloat(params.debt.format()) : 0;
+  const debtBalance =
+    'debt' in params
+      ? parseFloat(params.debt.format({ significantDigits: 30 }))
+      : 0;
 
   return (
     <>
@@ -50,7 +57,11 @@ export function IsolatedTranche(
         </Td>
         <Td>{strategyName}</Td>
         <Td>{APY.toPrecision(4)} % APY</Td>
-        <Td>{params.debtCeiling.sub(params.totalDebt).format()}</Td>
+        <Td>
+          {params.debtCeiling
+            .sub(params.totalDebt)
+            .format({ significantDigits: 6 })}
+        </Td>
 
         <Td>{(100 / params.borrowablePercent).toPrecision(4)} %</Td>
         <Td>

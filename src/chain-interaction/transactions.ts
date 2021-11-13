@@ -2,13 +2,13 @@ import { Interface } from '@ethersproject/abi';
 import { Contract } from '@ethersproject/contracts';
 import { useContractFunction } from '@usedapp/core';
 import { Token } from '@usedapp/core/dist/esm/src/model';
-import { useAddresses, useStable } from './contracts';
+import { useAddresses } from './contracts';
 
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
+import YieldConversionBidStrategy from '../contracts/artifacts/contracts/YieldConversionBidStrategy.sol/YieldConversionBidStrategy.json';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
-// import { wrappedNativeCurrency } from "./tokens";
 
 import IWETH from '../contracts/artifacts/interfaces/IWETH.sol/IWETH.json';
 import IERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json';
@@ -16,7 +16,7 @@ import {
   parseEther,
   parseUnits,
 } from '@usedapp/core/node_modules/@ethersproject/units';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 
 export function useDepositBorrowTrans(trancheId: number | null | undefined) {
   const ilAddress = useAddresses().IsolatedLending;
@@ -29,7 +29,6 @@ export function useDepositBorrowTrans(trancheId: number | null | undefined) {
     trancheId ? 'depositAndBorrow' : 'mintDepositAndBorrow'
   );
   const account = useContext(UserAddressContext);
-  const stable = useStable();
 
   return {
     sendDepositBorrow: (
@@ -44,17 +43,15 @@ export function useDepositBorrowTrans(trancheId: number | null | undefined) {
       );
       const bAmount = parseEther(borrowAmount.toString());
 
-      return stable
-        ? trancheId
-          ? send(trancheId, cAmount, bAmount, account)
-          : send(
-            collateralToken.address,
-            strategyAddress,
-            cAmount,
-            bAmount,
-            account
-          )
-        : console.error('Trying to send transaction but stable not defined!');
+      return trancheId
+        ? send(trancheId, cAmount, bAmount, account)
+        : send(
+          collateralToken.address,
+          strategyAddress,
+          cAmount,
+          bAmount,
+          account
+        );
     },
     depositBorrowState: state,
   };
@@ -128,5 +125,19 @@ export function useTallyHarvestBalance(strategyAddress: string) {
   return {
     sendTallyHarvestBalance: (tokenAddress: string) => send(tokenAddress),
     tallyHarvestState: state,
+  };
+}
+
+export function useConvertReward2Stable(contractAddress: string) {
+  const strategy = new Contract(
+    contractAddress,
+    new Interface(YieldConversionBidStrategy.abi)
+  );
+  const { send, state } = useContractFunction(strategy, 'convertReward2Stable');
+
+  return {
+    sendConvertReward2Stable: (rewardAmount: BigNumber, targetBid: BigNumber) =>
+      send(rewardAmount, targetBid),
+    convertReward2StableState: state,
   };
 }

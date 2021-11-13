@@ -2,6 +2,7 @@ import { Box } from '@chakra-ui/react';
 import * as React from 'react';
 import { Outlet } from 'react-router-dom';
 import { TokenStratPositionMetadata, useIsolatedPositionMetadata } from '../chain-interaction/contracts';
+import { ConvertAllRewards } from '../components/ConvertAllRewards';
 import { IsolatedLending } from '../components/IsolatedLending';
 import { TrancheTable } from '../components/TrancheTable';
 import { WrapNativeCurrency } from '../components/WrapNativeCurrency';
@@ -21,6 +22,7 @@ export function Dashboard(params: React.PropsWithChildren<unknown>) {
       ) : undefined}
       <IsolatedLending />
       <WrapNativeCurrency />
+      <ConvertAllRewards />
     </>
   );
 }

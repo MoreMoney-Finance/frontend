@@ -28,6 +28,8 @@ export type DeploymentAddresses = {
   Stablecoin: string;
   StrategyRegistry: string;
   TrancheIDService: string;
+  TraderJoeMasterChefStrategy: string;
+  PangolinStakingRewardsStrategy: string;
 };
 
 export function useAddresses() {
@@ -137,7 +139,7 @@ function convertAPF2APY(APF: BigNumber): number {
 
 export function useStable() {
   const addresses = useAddresses();
-  return addresses ? addressToken.get(getAddress(addresses.Stablecoin)) : undefined;
+  return addressToken.get(getAddress(addresses.Stablecoin))!;
 }
 
 export type StrategyMetadata = Record<
@@ -148,19 +150,20 @@ export type StrategyMetadata = Record<
 export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const stable = useStable();
   const allStratMeta = useIsolatedLendingView('viewAllStrategyMetadata', []);
-  return stable
-    ? allStratMeta.reduce((result: StrategyMetadata, row: RawStratMetaRow) => {
-        const parsedRow = parseStratMeta(row, stable);
-        const tokenAddress = parsedRow.token.address;
-        return {
-          ...result,
-          [tokenAddress]: {
-            [parsedRow.strategyAddress]: parsedRow,
-            ...(result[tokenAddress] || {}),
-          },
-        };
-      }, {})
-    : {};
+  return allStratMeta.reduce(
+    (result: StrategyMetadata, row: RawStratMetaRow) => {
+      const parsedRow = parseStratMeta(row, stable);
+      const tokenAddress = parsedRow.token.address;
+      return {
+        ...result,
+        [tokenAddress]: {
+          [parsedRow.strategyAddress]: parsedRow,
+          ...(result[tokenAddress] || {}),
+        },
+      };
+    },
+    {}
+  );
 }
 
 export type ParsedPositionMetaRow = {
@@ -204,18 +207,16 @@ export function useIsolatedPositionMetadata(): TokenStratPositionMetadata {
   ]);
   const stable = useStable();
 
-  return stable
-    ? positionMeta.reduce(
-        (result: TokenStratPositionMetadata, row: RawPositionMetaRow) => {
-          const parsedRow = parsePositionMeta(row, stable);
-          const tokenAddress = parsedRow.token.address;
-          const list = result[tokenAddress] || [];
-          return {
-            ...result,
-            [tokenAddress]: [...list, parsedRow],
-          };
-        },
-        {}
-      )
-    : {};
+  return positionMeta.reduce(
+    (result: TokenStratPositionMetadata, row: RawPositionMetaRow) => {
+      const parsedRow = parsePositionMeta(row, stable);
+      const tokenAddress = parsedRow.token.address;
+      const list = result[tokenAddress] || [];
+      return {
+        ...result,
+        [tokenAddress]: [...list, parsedRow],
+      };
+    },
+    {}
+  );
 }

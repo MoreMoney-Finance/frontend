@@ -1,9 +1,17 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { ChainId, CurrencyValue, NativeCurrency, Token } from '@usedapp/core';
-import { getAddress } from 'ethers/lib/utils';
+import {
+  ChainId,
+  CurrencyValue,
+  NativeCurrency,
+  Token,
+  useContractCall,
+} from '@usedapp/core';
+import { getAddress, Interface, parseUnits } from 'ethers/lib/utils';
 import tokenlist from '../constants/tokenlist.json';
 import deployAddresses from '../contracts/addresses.json';
 import lptokens from '../contracts/lptokens.json';
+import { useAddresses, useStable } from './contracts';
+import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 
 export const addressToken: Map<string, Token> = new Map();
 export const addressIcons: Map<string, string[]> = new Map();
@@ -94,3 +102,29 @@ wrappedNativeCurrency.set(
   ChainId.Avalanche,
   addressToken.get('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7')!
 );
+
+export function useOraclePrices(tokens: Token[]) {
+  const addresses = useAddresses();
+
+  const address = addresses.OracleRegistry;
+  const abi = new Interface(OracleRegistry.abi);
+  const tokenAddresses = tokens.map((token) => token.address);
+  const tokenInAmounts = tokens.map((token) => parseUnits('1', token.decimals));
+  const stable = useStable();
+  const method = 'viewAmountsInPeg';
+  const args = [tokenAddresses, tokenInAmounts, stable.address];
+
+  const pegValues = (useContractCall({
+    abi,
+    address,
+    method,
+    args,
+  }) ?? [[]])[0];
+
+  return Object.fromEntries(
+    pegValues.map((v: BigNumber, i: number) => [
+      tokens[i].address,
+      new CurrencyValue(stable, v),
+    ])
+  );
+}

@@ -44,8 +44,8 @@ export function WalletBalancesCtxProvider({
   results?.forEach((result: any[] | undefined, index: number) => {
     if (result) {
       const [tokenAddress, token] = tokensInQuestion[index];
-      tokenBalances.set(tokenAddress, new CurrencyValue(token, result[0]));
-      console.log(`Set balance for ${token.name}: ${result[0]}`);
+      tokenBalances.set(getAddress(tokenAddress), new CurrencyValue(token, result[0]));
+      console.log(`Set balance for ${token.name}: ${result[0]} (${tokenAddress})`);
     } else {
       const [tokenAddress, token] = tokensInQuestion[index];
       console.log(`No result for ${token.name} at ${tokenAddress}`);
@@ -63,7 +63,8 @@ export function useWalletBalance(tokenAddress: string | undefined | null) {
   const { account } = useEthers();
   const ctxAccount = useContext(UserAddressContext);
   const balancesCtx = useContext(WalletBalancesContext);
-  return tokenAddress && account == ctxAccount
+
+  return tokenAddress && account === ctxAccount
     ? balancesCtx.get(getAddress(tokenAddress))
     : undefined;
 }

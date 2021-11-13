@@ -8,12 +8,13 @@ import { MintNewTranche } from '../components/MintNewTranche';
 import { TrancheTable } from '../components/TrancheTable';
 import { TokenDescription } from '../components/TokenDescription';
 import { addressToken } from '../chain-interaction/tokens';
+import { getAddress } from 'ethers/lib/utils';
 
 export function TokenPage(props: React.PropsWithChildren<unknown>) {
   const params = useParams<'tokenAddress'>();
   const tokenAddress = params.tokenAddress;
   const allStratMeta = React.useContext(StrategyMetadataContext);
-  const token = tokenAddress ? addressToken.get(tokenAddress) : undefined;
+  const token = tokenAddress ? addressToken.get(getAddress(tokenAddress)) : undefined;
 
   const stratMeta: Record<string, ParsedStratMetaRow> = tokenAddress && tokenAddress in allStratMeta ? allStratMeta[tokenAddress] : {};
   const allPositionMeta: TokenStratPositionMetadata = useIsolatedPositionMetadata();

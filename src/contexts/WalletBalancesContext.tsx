@@ -1,4 +1,5 @@
 import {
+  ChainId,
   ContractCall,
   CurrencyValue,
   ERC20Interface,
@@ -6,6 +7,7 @@ import {
   useContractCalls,
   useEthers,
 } from '@usedapp/core';
+import { getAddress } from 'ethers/lib/utils';
 import React, { useContext } from 'react';
 import { addressToken } from '../chain-interaction/tokens';
 import { UserAddressContext } from './UserAddressContext';
@@ -18,6 +20,7 @@ export function WalletBalancesCtxProvider({
   children,
 }: React.PropsWithChildren<any>) {
   const { chainId } = useEthers();
+  const _chainId = chainId === ChainId.Hardhat ? ChainId.Avalanche : chainId;
   const account = useContext(UserAddressContext);
 
   const tokenBalances = new Map<string, CurrencyValue>();
@@ -31,7 +34,7 @@ export function WalletBalancesCtxProvider({
     };
   }
   const tokensInQuestion = Array.from(addressToken.entries()).filter(
-    (aT) => aT[1].chainId === chainId
+    (aT) => aT[1].chainId === _chainId
   );
   console.log('tokens in question');
   console.log(Array.from(addressToken.entries()));
@@ -61,6 +64,6 @@ export function useWalletBalance(tokenAddress: string | undefined | null) {
   const ctxAccount = useContext(UserAddressContext);
   const balancesCtx = useContext(WalletBalancesContext);
   return tokenAddress && account == ctxAccount
-    ? balancesCtx.get(tokenAddress)
+    ? balancesCtx.get(getAddress(tokenAddress))
     : undefined;
 }

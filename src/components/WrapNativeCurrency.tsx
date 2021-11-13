@@ -21,7 +21,7 @@ export function WrapNativeCurrency() {
   } = useForm();
   const { account, chainId } = useEthers();
   const bignumBalance = useEtherBalance(account) ?? BigNumber.from('0');
-  // TODO change from localhost to sensible default
+
   const ethBalance = new CurrencyValue(
     new NativeCurrency(
       'Native currency',
@@ -44,7 +44,7 @@ export function WrapNativeCurrency() {
           min={0}
           max={parseFloat(ethBalance.format())}
           showMaxButton={true}
-          placeholder={'Collateral Deposit'}
+          placeholder={'Native currency to wrap'}
           registerForm={register}
           setValueForm={setValue}
         />

@@ -7,7 +7,7 @@ import {
 } from '@usedapp/core';
 import { formatEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber } from 'ethers';
-import { Interface, parseBytes32String } from 'ethers/lib/utils';
+import { getAddress, Interface, parseBytes32String } from 'ethers/lib/utils';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
@@ -100,7 +100,8 @@ function parseStratMeta(
   row: RawStratMetaRow,
   stable: Token
 ): ParsedStratMetaRow {
-  const token = addressToken.get(row.token)!;
+  const tokenAddress = getAddress(row.token);
+  const token = addressToken.get(tokenAddress)!;
   const tvlInToken = tokenAmount(row.token, row.tvl)!;
   return {
     debtCeiling: new CurrencyValue(stable, row.debtCeiling)!,
@@ -110,7 +111,7 @@ function parseStratMeta(
     strategyAddress: row.strategy,
     token,
     APY: convertAPF2APY(row.APF),
-    totalCollateral: tokenAmount(row.token, row.totalCollateral)!,
+    totalCollateral: tokenAmount(tokenAddress, row.totalCollateral)!,
     borrowablePercent: row.borrowablePer10k.toNumber() / 100,
     usdPrice:
       parseFloat(formatEther(row.valuePer1e18)) / 10 ** (18 - token.decimals),
@@ -136,7 +137,7 @@ function convertAPF2APY(APF: BigNumber): number {
 
 export function useStable() {
   const addresses = useAddresses();
-  return addresses ? addressToken.get(addresses.Stablecoin) : undefined;
+  return addresses ? addressToken.get(getAddress(addresses.Stablecoin)) : undefined;
 }
 
 export type StrategyMetadata = Record<
@@ -182,12 +183,13 @@ function parsePositionMeta(
   row: RawPositionMetaRow,
   stable: Token
 ): ParsedPositionMetaRow {
+  const tokenAddress = getAddress(row.token);
   return {
     trancheId: row.trancheId.toNumber(),
     strategy: row.strategy,
     debt: new CurrencyValue(stable, row.debt),
-    collateral: tokenAmount(row.token, row.collateral),
-    token: addressToken.get(row.token)!,
+    collateral: tokenAmount(tokenAddress, row.collateral),
+    token: addressToken.get(tokenAddress)!,
   };
 }
 

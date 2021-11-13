@@ -24,15 +24,15 @@ for (const {
   logoURI,
 } of tokenlist.tokens) {
   addressToken.set(
-    address,
-    new Token(name, symbol, chainId, address, decimals)
+    getAddress(address),
+    new Token(name, symbol, chainId, getAddress(address), decimals)
   );
-  addressIcons.set(address, [logoURI]);
+  addressIcons.set(getAddress(address), [logoURI]);
 }
 
 // TODO make this more complete
 const chainIds: Record<string, ChainId> = {
-  31337: ChainId.Hardhat,
+  31337: ChainId.Avalanche,
   43114: ChainId.Avalanche,
 };
 
@@ -68,7 +68,7 @@ console.log(addressToken);
 
 for (const [chainId, addresses] of Object.entries(deployAddresses)) {
   addressToken.set(
-    addresses.Stablecoin,
+    getAddress(addresses.Stablecoin),
     new Token('USD Money', 'USDm', chainIds[chainId], addresses.Stablecoin, 18)
   );
 }

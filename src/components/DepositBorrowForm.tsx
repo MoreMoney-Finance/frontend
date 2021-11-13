@@ -30,7 +30,9 @@ export default function DepositBorrowForm(params: any) {
     new CurrencyValue(token, BigNumber.from('0'));
 
   const depositMax = parseFloat(
-    (allowance.gt(walletBalance) ? walletBalance : allowance).format()
+    (allowance.gt(walletBalance) ? walletBalance : allowance).format({
+      significantDigits: 30,
+    })
   );
 
   function onDepositBorrow(data: { [x: string]: any }) {

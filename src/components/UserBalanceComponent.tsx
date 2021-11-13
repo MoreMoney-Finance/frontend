@@ -3,6 +3,7 @@ import { IconButton, IconButtonProps, Text } from '@chakra-ui/react';
 import { useStable } from '../chain-interaction/contracts';
 import { BigNumber } from 'ethers';
 import { CurrencyValue } from '@usedapp/core';
+import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 
 type UserBalanceComponentProps = Omit<IconButtonProps, 'aria-label'>;
 
@@ -10,7 +11,10 @@ export const UserBalanceComponent: React.FC<UserBalanceComponentProps> = (
   props
 ) => {
   const stable = useStable();
-  const walletBalance = new CurrencyValue(stable!, BigNumber.from('0'));
+  const balanceCtx = React.useContext(WalletBalancesContext);
+  const walletBalance =
+    balanceCtx.get(stable.address) ||
+    new CurrencyValue(stable, BigNumber.from('0'));
 
   return (
     <IconButton

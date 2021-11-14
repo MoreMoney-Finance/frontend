@@ -35,6 +35,7 @@ export function TokenAmountInputField(props: any) {
           placeholder={placeholder}
           type="number"
           step="any"
+          defaultValue={0}
         />
         {showMaxButton ? (
           <InputRightElement width="4.5rem">

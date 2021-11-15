@@ -3,8 +3,14 @@ import { Button, HStack } from '@chakra-ui/react';
 import { TokenAmountInputField } from './TokenAmountInputField';
 import React from 'react';
 import { useRepayWithdrawTrans } from '../chain-interaction/transactions';
+import { CurrencyValue, Token } from '@usedapp/core';
 
-export default function DepositBorrowForm(params: any) {
+export default function RepayWithdrawForm(params: {
+  token: Token;
+  trancheId: number;
+  collateralBalance: CurrencyValue;
+  debtBalance: CurrencyValue;
+}) {
   const { token, trancheId, collateralBalance, debtBalance } = params;
 
   const {
@@ -23,17 +29,16 @@ export default function DepositBorrowForm(params: any) {
     sendRepayWithdraw(data['collateral-withdraw'], data['usdm-repay']);
   }
 
-  const repayWithdrawDisabled = collateralBalance === 0 && debtBalance === 0;
+  const repayWithdrawDisabled =
+    collateralBalance.isZero() && debtBalance.isZero();
 
   return (
     <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
       <HStack spacing="0.5rem">
         <TokenAmountInputField
           name="collateral-withdraw"
-          min={0}
           max={collateralBalance}
           isDisabled={repayWithdrawDisabled}
-          showMaxButton={true}
           placeholder={'Collateral withdraw'}
           registerForm={registerRepayForm}
           setValueForm={setValueRepayForm}
@@ -42,13 +47,11 @@ export default function DepositBorrowForm(params: any) {
 
         <TokenAmountInputField
           name="usdm-repay"
-          min={0}
           max={debtBalance}
           isDisabled={repayWithdrawDisabled}
           placeholder={'USDm repay'}
           registerForm={registerRepayForm}
           setValueForm={setValueRepayForm}
-          showMaxButton={true}
           errorsForm={errorsRepayForm}
         />
 

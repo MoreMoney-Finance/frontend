@@ -27,7 +27,7 @@ export const UserBalanceComponent: React.FC<UserBalanceComponentProps> = (
       aria-label={`Wallet Balance`}
       {...props}
     >
-      <Text size="md">{walletBalance?.format()}</Text>
+      <Text size="md">{walletBalance?.format({ significantDigits: 12 })}</Text>
     </IconButton>
   );
 };

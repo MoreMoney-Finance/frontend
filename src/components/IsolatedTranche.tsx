@@ -4,6 +4,7 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   TxStatus,
+  useStable,
 } from '../chain-interaction/contracts';
 import { useWalletBalance } from '../contexts/WalletBalancesContext';
 import { useApproveTrans } from '../chain-interaction/transactions';
@@ -19,6 +20,8 @@ export function IsolatedTranche(
 ) {
   const { token, APY, strategyName, strategyAddress, debtCeiling } = params;
   const { account } = useEthers();
+
+  const stable = useStable();
 
   const allowance = new CurrencyValue(
     token,
@@ -42,12 +45,12 @@ export function IsolatedTranche(
 
   const collateralBalance =
     'collateral' in params && params.collateral
-      ? parseFloat(params.collateral.format({ significantDigits: 30 }))
-      : 0;
+      ? params.collateral
+      : new CurrencyValue(token, BigNumber.from(0));
   const debtBalance =
     'debt' in params
-      ? parseFloat(params.debt.format({ significantDigits: 30 }))
-      : 0;
+      ? params.debt
+      : new CurrencyValue(stable, BigNumber.from(0));
 
   return (
     <>
@@ -65,9 +68,9 @@ export function IsolatedTranche(
 
         <Td>{(100 / params.borrowablePercent).toPrecision(4)} %</Td>
         <Td>
-          {collateralBalance.toPrecision(4)} {token.ticker}
+          {collateralBalance.format()}
         </Td>
-        <Td> {debtBalance.toPrecision(4)} debt </Td>
+        <Td> {debtBalance.format()} debt </Td>
       </Tr>
       <Td colspan="7">
         <Center>

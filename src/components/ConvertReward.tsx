@@ -4,7 +4,7 @@ import { CurrencyValue, Token, useTokenBalance } from '@usedapp/core';
 import { useForm } from 'react-hook-form';
 import { useConvertReward2Stable } from '../chain-interaction/transactions';
 import { TokenAmountInputField } from './TokenAmountInputField';
-import { formatEther, parseEther, parseUnits } from '@ethersproject/units';
+import { parseEther, parseUnits } from '@ethersproject/units';
 import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import { BigNumber } from '@usedapp/core/node_modules/ethers';
 import { useStable } from '../chain-interaction/contracts';
@@ -35,19 +35,21 @@ export function ConvertReward({
   const stableBalance =
     useContext(WalletBalancesContext).get(stable.address) ||
     new CurrencyValue(stable, BigNumber.from('0'));
+
   const strategyConvertibleBalance = useTokenBalance(
     rewardToken.address,
     strategyAddress
   );
+
   const maxConversion = usdPrice
-    ? parseFloat(
-      formatEther(
-        usdPrice
-          .mul(strategyConvertibleBalance)
-          .div(parseUnits('1', rewardToken.decimals))
-      )
+    ? new CurrencyValue(
+      stable,
+      usdPrice
+        .mul(strategyConvertibleBalance)
+        .div(parseUnits('1', rewardToken.decimals))
     )
-    : 0;
+    : new CurrencyValue(stable, BigNumber.from(0));
+
   const { sendConvertReward2Stable } = useConvertReward2Stable(strategyAddress);
 
   const conversionAmountState = watch('conversion-amount', 0);
@@ -77,12 +79,7 @@ export function ConvertReward({
         {/* <FormLabel>Convert stable to {rewardToken.name}</FormLabel> */}
         <TokenAmountInputField
           name="conversion-amount"
-          min={0.0001}
-          max={Math.min(
-            maxConversion,
-            parseFloat(stableBalance.format({ significantDigits: 30 }))
-          )}
-          showMaxButton={true}
+          max={maxConversion.gt(stableBalance) ? stableBalance : maxConversion}
           placeholder={`${rewardToken.name} amount`}
           registerForm={register}
           setValueForm={setValue}

@@ -25,7 +25,7 @@ export function WrapNativeCurrency() {
   const ethBalance = new CurrencyValue(
     new NativeCurrency(
       'Native currency',
-      'BLANK',
+      'NATIVE',
       chainId ?? ChainId.Avalanche
     ),
     bignumBalance
@@ -41,9 +41,7 @@ export function WrapNativeCurrency() {
       <FormControl isInvalid={errors.name}>
         <TokenAmountInputField
           name="wrap-amount"
-          min={0}
-          max={parseFloat(ethBalance.format())}
-          showMaxButton={true}
+          max={ethBalance}
           placeholder={'Native currency to wrap'}
           registerForm={register}
           setValueForm={setValue}

@@ -7,16 +7,23 @@ import {
   FormControl,
   FormErrorMessage,
 } from '@chakra-ui/react';
+import { CurrencyValue } from '@usedapp/core';
 
-export function TokenAmountInputField(props: any) {
+export function TokenAmountInputField(props: {
+  name: string;
+  max?: CurrencyValue;
+  placeholder: string;
+  registerForm: (name: string, params: { required: string }) => any;
+  setValueForm: (name: string, max: string) => any;
+  errorsForm?: Record<string, any>;
+  isDisabled?: boolean;
+}) {
   const {
     name,
-    min,
     max,
     placeholder,
     registerForm,
     setValueForm,
-    showMaxButton,
     errorsForm,
     isDisabled,
   } = props;
@@ -29,20 +36,30 @@ export function TokenAmountInputField(props: any) {
         <Input
           {...registerForm(name, {
             required: 'This is required',
-            min: min,
-            max: max,
           })}
           placeholder={placeholder}
-          type="number"
-          step="any"
+          type="text"
+          inputMode="decimal"
+          autoComplete="off"
+          autoCorrect="off"
           defaultValue={0}
+          pattern="^[0-9]*[.,]?[0-9]?*$"
         />
-        {showMaxButton ? (
+        {max ? (
           <InputRightElement width="4.5rem">
             <Button
               size="xs"
               isDisabled={isDisabled}
-              onClick={() => setValueForm(name, max)}
+              onClick={() =>
+                setValueForm(
+                  name,
+                  max.format({
+                    significantDigits: Infinity,
+                    prefix: '',
+                    suffix: '',
+                  })
+                )
+              }
             >
               MAX
             </Button>

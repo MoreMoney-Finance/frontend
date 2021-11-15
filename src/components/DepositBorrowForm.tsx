@@ -29,11 +29,7 @@ export default function DepositBorrowForm(params: any) {
     useWalletBalance(token.address) ??
     new CurrencyValue(token, BigNumber.from('0'));
 
-  const depositMax = parseFloat(
-    (allowance.gt(walletBalance) ? walletBalance : allowance).format({
-      significantDigits: 30,
-    })
-  );
+  const depositMax = allowance.gt(walletBalance) ? walletBalance : allowance;
 
   function onDepositBorrow(data: { [x: string]: any }) {
     console.log('deposit borrow');
@@ -46,17 +42,15 @@ export default function DepositBorrowForm(params: any) {
       data['usdm-borrow']
     );
   }
-  const depositBorrowDisabled = depositMax === 0;
+  const depositBorrowDisabled = depositMax.isZero();
 
   return (
     <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
       <HStack spacing="0.5rem">
         <TokenAmountInputField
           name="collateral-deposit"
-          min={0}
           max={depositMax}
           isDisabled={depositBorrowDisabled}
-          showMaxButton={true}
           placeholder={'Collateral Deposit'}
           registerForm={registerDepForm}
           setValueForm={setValueDepForm}
@@ -65,7 +59,6 @@ export default function DepositBorrowForm(params: any) {
 
         <TokenAmountInputField
           name="usdm-borrow"
-          min={0}
           isDisabled={depositBorrowDisabled}
           placeholder={'USDm borrow'}
           registerForm={registerDepForm}

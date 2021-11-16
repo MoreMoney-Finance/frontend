@@ -2,15 +2,35 @@ import * as React from 'react';
 import { ParsedStratMetaRow } from '../chain-interaction/contracts';
 import { Table, Tbody, Tr, Th, Td, Button } from '@chakra-ui/react';
 import { useTallyHarvestBalance } from '../chain-interaction/transactions';
+import { getExplorerAddressLink } from '@usedapp/core';
 
 export function StrategyDataTable(row: ParsedStratMetaRow) {
   const { sendTallyHarvestBalance } = useTallyHarvestBalance(
     row.strategyAddress
   );
   const balance2Tally = row.harvestBalance2Tally;
+
+  const explorerLink = getExplorerAddressLink(
+    row.strategyAddress,
+    row.token.chainId
+  );
+
   return (
     <Table variant="simple" width="auto">
       <Tbody>
+        <Tr>
+          <Th>Strategy</Th>
+          <Td>
+            <a
+              href={explorerLink}
+              target={'_blank'}
+              rel="noreferrer"
+              style={{ textDecoration: 'underline' }}
+            >
+              {row.strategyName.toString()}
+            </a>
+          </Td>
+        </Tr>
         <Tr>
           <Th>Stability Fee</Th>
           <Td>{row.stabilityFeePercent.toString()} %</Td>
@@ -32,6 +52,10 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
           <Td>{(100 / row.borrowablePercent).toString()} %</Td>
         </Tr>
         <Tr>
+          <Th>Loan to value ratio</Th>
+          <Td>{row.borrowablePercent.toString()} %</Td>
+        </Tr>
+        <Tr>
           <Th>Harvest Balance To tally</Th>
           <Td>
             {balance2Tally.isZero() ? (
@@ -45,10 +69,6 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
               </Button>
             )}
           </Td>
-        </Tr>
-        <Tr>
-          <Th>Strategy Name</Th>
-          <Td>{row.strategyName.toString()}</Td>
         </Tr>
         <Tr>
           <Th>TVL in Token</Th>

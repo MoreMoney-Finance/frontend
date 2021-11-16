@@ -75,9 +75,9 @@ export enum TxStatus {
 }
 
 export enum YieldType {
-  REPAYING,
-  COMPOUNDING,
-  NOYIELD,
+  REPAYING = 'REPAYING',
+  COMPOUNDING = 'COMPOUNDING',
+  NOYIELD = 'NO YIELD',
 }
 
 export type ParsedStratMetaRow = {

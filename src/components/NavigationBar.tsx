@@ -12,15 +12,13 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
-  Grid,
-  GridItem,
   Link as LinkComponent,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { UserBalanceComponent } from './UserBalanceComponent';
 import { UserAddressComponent } from './UserAddressComponent';
+import AccountModal from './AccountModal';
 
 const Links = [{ title: 'Dashboard', link: '/' }];
 
@@ -77,13 +75,15 @@ export default function NavigationBar() {
               </MenuList>
             </Menu>
           </Flex>
-          <Grid p={3}>
-            <GridItem justifySelf={'flex-end'}>
-              <ColorModeSwitcher />
-              <UserBalanceComponent />
-              <UserAddressComponent />
-            </GridItem>
-          </Grid>
+          <Flex
+            flexDirection="row"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <ColorModeSwitcher />
+            <UserAddressComponent handleOpenModal={onOpen} />
+            <AccountModal isOpen={isOpen} onClose={onClose} />
+          </Flex>
         </Flex>
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>

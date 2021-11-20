@@ -311,6 +311,11 @@
         },
         {
           "internalType": "address",
+          "name": "yieldCurrency",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
           "name": "recipient",
           "type": "address"
         }

@@ -48,6 +48,19 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "depositToken",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "uint256",

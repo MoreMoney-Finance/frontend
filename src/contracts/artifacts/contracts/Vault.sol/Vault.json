@@ -1144,7 +1144,7 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "vaultId",
+          "name": "tokenId",
           "type": "uint256"
         },
         {
@@ -1204,6 +1204,11 @@
           "internalType": "uint256",
           "name": "tokenAmount",
           "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "yieldCurrency",
+          "type": "address"
         },
         {
           "internalType": "address",

@@ -4,6 +4,10 @@
   "sourceName": "contracts/Strategy.sol",
   "abi": [
     {
+      "stateMutability": "payable",
+      "type": "fallback"
+    },
+    {
       "inputs": [
         {
           "internalType": "uint256",
@@ -205,6 +209,11 @@
           "type": "address"
         },
         {
+          "internalType": "uint256",
+          "name": "depositLimit",
+          "type": "uint256"
+        },
+        {
           "internalType": "bytes",
           "name": "data",
           "type": "bytes"
@@ -362,24 +371,6 @@
     {
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "trancheId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "deposit",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "address",
           "name": "token",
           "type": "address"
@@ -391,6 +382,19 @@
         }
       ],
       "name": "disapproveToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "harvestPartially",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -518,6 +522,11 @@
           "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "yieldRecipient",
+          "type": "address"
         }
       ],
       "name": "registerDepositFor",
@@ -577,6 +586,24 @@
         }
       ],
       "name": "rescueCollateral",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        }
+      ],
+      "name": "rescueNative",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -671,6 +698,24 @@
       "inputs": [
         {
           "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "limit",
+          "type": "uint256"
+        }
+      ],
+      "name": "setDepositLimit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
           "name": "",
           "type": "address"
         }
@@ -711,12 +756,7 @@
       "outputs": [
         {
           "internalType": "uint256",
-          "name": "cumulYieldPerCollateralFP",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "totalCollateralPast",
+          "name": "totalCollateralThisPhase",
           "type": "uint256"
         },
         {
@@ -732,6 +772,11 @@
         {
           "internalType": "uint256",
           "name": "apf",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "depositLimit",
           "type": "uint256"
         }
       ],
@@ -1204,6 +1249,11 @@
         },
         {
           "internalType": "address",
+          "name": "yieldToken",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
           "name": "recipient",
           "type": "address"
         }
@@ -1238,6 +1288,10 @@
       ],
       "stateMutability": "view",
       "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
     }
   ],
   "bytecode": "0x",

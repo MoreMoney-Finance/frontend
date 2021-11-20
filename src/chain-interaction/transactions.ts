@@ -11,7 +11,7 @@ import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 
 import IWETH from '../contracts/artifacts/interfaces/IWETH.sol/IWETH.json';
-import IERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json';
+import IERC20 from '@openzeppelin/contracts/build/contracts/IERC20.json';
 import {
   parseEther,
   parseUnits,

@@ -45,7 +45,8 @@ export function ConvertReward({
     ? new CurrencyValue(
       stable,
       usdPrice
-        .mul(strategyConvertibleBalance)
+        .value
+        .mul(strategyConvertibleBalance ?? 0)
         .div(parseUnits('1', rewardToken.decimals))
     )
     : new CurrencyValue(stable, BigNumber.from(0));
@@ -71,7 +72,6 @@ export function ConvertReward({
       sendConvertReward2Stable(rewardTokenConverted, targetBid);
     }
   }
-
   const rewardTokenValue = new CurrencyValue(rewardToken, rewardTokenConverted);
   return (
     <form onSubmit={handleSubmit(onConvert)}>

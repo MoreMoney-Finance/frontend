@@ -26,7 +26,7 @@ export default function RepayWithdrawForm(params: {
     console.log('repay withdraw');
     console.log(data);
 
-    sendRepayWithdraw(data['collateral-withdraw'], data['usdm-repay']);
+    sendRepayWithdraw(data['collateral-withdraw'], data['money-repay']);
   }
 
   const repayWithdrawDisabled =
@@ -46,7 +46,7 @@ export default function RepayWithdrawForm(params: {
         />
 
         <TokenAmountInputField
-          name="usdm-repay"
+          name="money-repay"
           max={debtBalance}
           isDisabled={repayWithdrawDisabled}
           placeholder={'MONEY repay'}

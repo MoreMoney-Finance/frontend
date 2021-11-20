@@ -39,7 +39,7 @@ export default function DepositBorrowForm(params: any) {
       token,
       strategyAddress,
       data['collateral-deposit'],
-      data['usdm-borrow']
+      data['money-borrow']
     );
   }
   const depositBorrowDisabled = depositMax.isZero();
@@ -58,7 +58,7 @@ export default function DepositBorrowForm(params: any) {
         />
 
         <TokenAmountInputField
-          name="usdm-borrow"
+          name="money-borrow"
           isDisabled={depositBorrowDisabled}
           placeholder={'MONEY borrow'}
           registerForm={registerDepForm}

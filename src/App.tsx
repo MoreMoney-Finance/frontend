@@ -7,7 +7,6 @@ import {
   extendTheme,
   ThemeConfig,
 } from '@chakra-ui/react';
-import ConnectButton from './components/ConnectButton';
 import { UserAddressCtxProvider } from './contexts/UserAddressContext';
 import { WalletBalancesCtxProvider } from './contexts/WalletBalancesContext';
 import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
@@ -37,7 +36,6 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                 <NavigationBar />
                 <Grid minH="100vh" p={3}>
                   <VStack spacing={8}>
-                    <ConnectButton />
                     {params.children}
                     <Outlet />
                   </VStack>

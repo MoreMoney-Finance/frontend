@@ -77,7 +77,7 @@ console.log(addressToken);
 for (const [chainId, addresses] of Object.entries(deployAddresses)) {
   addressToken.set(
     getAddress(addresses.Stablecoin),
-    new Token('USD Money', 'USDm', chainIds[chainId], addresses.Stablecoin, 18)
+    new Token('USD Money', 'MONEY', chainIds[chainId], addresses.Stablecoin, 18)
   );
 }
 

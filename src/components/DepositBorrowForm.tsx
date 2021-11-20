@@ -60,7 +60,7 @@ export default function DepositBorrowForm(params: any) {
         <TokenAmountInputField
           name="usdm-borrow"
           isDisabled={depositBorrowDisabled}
-          placeholder={'USDm borrow'}
+          placeholder={'MONEY borrow'}
           registerForm={registerDepForm}
           setValueForm={setValueDepForm}
           errorsForm={errorsDepForm}

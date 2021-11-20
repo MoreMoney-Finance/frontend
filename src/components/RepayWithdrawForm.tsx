@@ -49,7 +49,7 @@ export default function RepayWithdrawForm(params: {
           name="usdm-repay"
           max={debtBalance}
           isDisabled={repayWithdrawDisabled}
-          placeholder={'USDm repay'}
+          placeholder={'MONEY repay'}
           registerForm={registerRepayForm}
           setValueForm={setValueRepayForm}
           errorsForm={errorsRepayForm}

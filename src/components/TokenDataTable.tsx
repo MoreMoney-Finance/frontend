@@ -4,10 +4,11 @@ import { Table, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 
 export function TokenDataTable({
   tokenData,
+  liquidationFee,
 }: {
   tokenData: ParsedStratMetaRow | null | undefined;
+  liquidationFee: number;
 }) {
-
   return tokenData ? (
     <Table variant="simple" width="auto">
       <Tbody>
@@ -25,7 +26,7 @@ export function TokenDataTable({
         </Tr>
         <Tr>
           <Th>Liquidation Fee</Th>
-          <Td>Fee %</Td>
+          <Td>{(liquidationFee / 100).toFixed(2)}%</Td>
         </Tr>
         <Tr>
           <Th>Token</Th>

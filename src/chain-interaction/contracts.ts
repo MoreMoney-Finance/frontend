@@ -11,6 +11,7 @@ import { getAddress, Interface, parseBytes32String } from 'ethers/lib/utils';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
+import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
 import { addressToken, tokenAmount } from './tokens';
 /* eslint-disable */
 export const addresses: Record<
@@ -219,4 +220,15 @@ export function useIsolatedPositionMetadata(): TokenStratPositionMetadata {
     },
     {}
   );
+}
+
+export function useIsolatedLendingLiquidationView(method: string, args: any[]) {
+  const address = useAddresses().IsolatedLendingLiquidation;
+  const abi = new Interface(IsolatedLendingLiquidation.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method,
+    args,
+  }) ?? [[]])[0];
 }

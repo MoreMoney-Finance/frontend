@@ -1,7 +1,7 @@
 {
   "31337": {
-    "traderJoe": {
-      "traderJoe-WETHe-WAVAX": {
+    "JPL": {
+      "JPL-WETHe-WAVAX": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -10,7 +10,7 @@
         "pid": 26,
         "anchorName": "WETHe"
       },
-      "traderJoe-USDCe-WAVAX": {
+      "JPL-USDCe-WAVAX": {
         "addresses": [
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -19,7 +19,7 @@
         "pid": 39,
         "anchorName": "USDCe"
       },
-      "traderJoe-WAVAX-WETHe": {
+      "JPL-WAVAX-WETHe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -28,7 +28,7 @@
         "pid": 26,
         "anchorName": "WAVAX"
       },
-      "traderJoe-USDCe-WETHe": {
+      "JPL-USDCe-WETHe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
@@ -37,14 +37,14 @@
         "pid": 55,
         "anchorName": "USDCe"
       },
-      "traderJoe-WETHe-PNG": {
+      "JPL-WETHe-PNG": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0x60781c2586d68229fde47564546784ab3faca982"
         ],
         "anchorName": "WETHe"
       },
-      "traderJoe-WAVAX-PNG": {
+      "JPL-WAVAX-PNG": {
         "addresses": [
           "0x60781c2586d68229fde47564546784ab3faca982",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -53,14 +53,14 @@
         "pid": 6,
         "anchorName": "WAVAX"
       },
-      "traderJoe-USDCe-PNG": {
+      "JPL-USDCe-PNG": {
         "addresses": [
           "0x60781c2586d68229fde47564546784ab3faca982",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
         ],
         "anchorName": "USDCe"
       },
-      "traderJoe-WETHe-USDTe": {
+      "JPL-WETHe-USDTe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
@@ -69,7 +69,7 @@
         "pid": 33,
         "anchorName": "WETHe"
       },
-      "traderJoe-WAVAX-USDTe": {
+      "JPL-WAVAX-USDTe": {
         "addresses": [
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
@@ -78,7 +78,7 @@
         "pid": 28,
         "anchorName": "WAVAX"
       },
-      "traderJoe-USDCe-USDTe": {
+      "JPL-USDCe-USDTe": {
         "addresses": [
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
@@ -87,14 +87,14 @@
         "pid": 49,
         "anchorName": "USDCe"
       },
-      "traderJoe-WETHe-JOE": {
+      "JPL-WETHe-JOE": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd"
         ],
         "anchorName": "WETHe"
       },
-      "traderJoe-WAVAX-JOE": {
+      "JPL-WAVAX-JOE": {
         "addresses": [
           "0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -103,7 +103,7 @@
         "pid": 0,
         "anchorName": "WAVAX"
       },
-      "traderJoe-USDCe-JOE": {
+      "JPL-USDCe-JOE": {
         "addresses": [
           "0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
@@ -112,7 +112,7 @@
         "pid": 58,
         "anchorName": "USDCe"
       },
-      "traderJoe-WETHe-USDCe": {
+      "JPL-WETHe-USDCe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
@@ -121,7 +121,7 @@
         "pid": 55,
         "anchorName": "WETHe"
       },
-      "traderJoe-WAVAX-USDCe": {
+      "JPL-WAVAX-USDCe": {
         "addresses": [
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -131,8 +131,8 @@
         "anchorName": "WAVAX"
       }
     },
-    "pangolin": {
-      "pangolin-WETHe-WAVAX": {
+    "PGL": {
+      "PGL-WETHe-WAVAX": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -141,7 +141,7 @@
         "anchorName": "WETHe",
         "stakingContract": "0x830A966B9B447c9B15aB24c0369c4018E75F31C9"
       },
-      "pangolin-USDCe-WAVAX": {
+      "PGL-USDCe-WAVAX": {
         "addresses": [
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -150,7 +150,7 @@
         "anchorName": "USDCe",
         "stakingContract": "0x84B536dA1A2D9b0609f9Da73139674cc2D75AF2D"
       },
-      "pangolin-WAVAX-WETHe": {
+      "PGL-WAVAX-WETHe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -159,7 +159,7 @@
         "anchorName": "WAVAX",
         "stakingContract": "0x830A966B9B447c9B15aB24c0369c4018E75F31C9"
       },
-      "pangolin-USDCe-WETHe": {
+      "PGL-USDCe-WETHe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
@@ -167,7 +167,7 @@
         "pairAddress": "0xD3C14566bbA068Ec07F8cC768eC65614f71d49Dc",
         "anchorName": "USDCe"
       },
-      "pangolin-WETHe-PNG": {
+      "PGL-WETHe-PNG": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0x60781c2586d68229fde47564546784ab3faca982"
@@ -176,7 +176,7 @@
         "anchorName": "WETHe",
         "stakingContract": "0x03a9091620CACeE4968c915232B175C16a584733"
       },
-      "pangolin-WAVAX-PNG": {
+      "PGL-WAVAX-PNG": {
         "addresses": [
           "0x60781c2586d68229fde47564546784ab3faca982",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -185,7 +185,7 @@
         "anchorName": "WAVAX",
         "stakingContract": "0x574d3245e36Cf8C9dc86430EaDb0fDB2F385F829"
       },
-      "pangolin-USDCe-PNG": {
+      "PGL-USDCe-PNG": {
         "addresses": [
           "0x60781c2586d68229fde47564546784ab3faca982",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
@@ -194,7 +194,7 @@
         "anchorName": "USDCe",
         "stakingContract": "0x73d1cC4B8dA555005E949B3ECEE490A7206C14DF"
       },
-      "pangolin-WETHe-USDTe": {
+      "PGL-WETHe-USDTe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
@@ -202,7 +202,7 @@
         "pairAddress": "0xaE194A23a503793498D76769114e7c13350789a0",
         "anchorName": "WETHe"
       },
-      "pangolin-WAVAX-USDTe": {
+      "PGL-WAVAX-USDTe": {
         "addresses": [
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
@@ -211,7 +211,7 @@
         "anchorName": "WAVAX",
         "stakingContract": "0x006cC053bdb84C2d6380B3C4a573d84636378A47"
       },
-      "pangolin-USDCe-USDTe": {
+      "PGL-USDCe-USDTe": {
         "addresses": [
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
@@ -219,14 +219,14 @@
         "pairAddress": "0xc13E562d92F7527c4389Cd29C67DaBb0667863eA",
         "anchorName": "USDCe"
       },
-      "pangolin-WETHe-JOE": {
+      "PGL-WETHe-JOE": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd"
         ],
         "anchorName": "WETHe"
       },
-      "pangolin-WAVAX-JOE": {
+      "PGL-WAVAX-JOE": {
         "addresses": [
           "0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -235,7 +235,7 @@
         "anchorName": "WAVAX",
         "stakingContract": "0xC0B2D45b8617997bcDad0F33AEE03e4DF4C4f81E"
       },
-      "pangolin-USDCe-JOE": {
+      "PGL-USDCe-JOE": {
         "addresses": [
           "0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
@@ -243,7 +243,7 @@
         "pairAddress": "0xF77F6Ba8D910e937598110c92A0599E19446BC74",
         "anchorName": "USDCe"
       },
-      "pangolin-WETHe-USDCe": {
+      "PGL-WETHe-USDCe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
@@ -251,7 +251,7 @@
         "pairAddress": "0xD3C14566bbA068Ec07F8cC768eC65614f71d49Dc",
         "anchorName": "WETHe"
       },
-      "pangolin-WAVAX-USDCe": {
+      "PGL-WAVAX-USDCe": {
         "addresses": [
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -263,8 +263,8 @@
     }
   },
   "43114": {
-    "traderJoe": {
-      "traderJoe-WETHe-WAVAX": {
+    "JPL": {
+      "JPL-WETHe-WAVAX": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -273,7 +273,7 @@
         "pid": 26,
         "anchorName": "WETHe"
       },
-      "traderJoe-USDCe-WAVAX": {
+      "JPL-USDCe-WAVAX": {
         "addresses": [
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -282,7 +282,7 @@
         "pid": 39,
         "anchorName": "USDCe"
       },
-      "traderJoe-WAVAX-WETHe": {
+      "JPL-WAVAX-WETHe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -291,7 +291,7 @@
         "pid": 26,
         "anchorName": "WAVAX"
       },
-      "traderJoe-USDCe-WETHe": {
+      "JPL-USDCe-WETHe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
@@ -300,14 +300,14 @@
         "pid": 55,
         "anchorName": "USDCe"
       },
-      "traderJoe-WETHe-PNG": {
+      "JPL-WETHe-PNG": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0x60781c2586d68229fde47564546784ab3faca982"
         ],
         "anchorName": "WETHe"
       },
-      "traderJoe-WAVAX-PNG": {
+      "JPL-WAVAX-PNG": {
         "addresses": [
           "0x60781c2586d68229fde47564546784ab3faca982",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -316,14 +316,14 @@
         "pid": 6,
         "anchorName": "WAVAX"
       },
-      "traderJoe-USDCe-PNG": {
+      "JPL-USDCe-PNG": {
         "addresses": [
           "0x60781c2586d68229fde47564546784ab3faca982",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
         ],
         "anchorName": "USDCe"
       },
-      "traderJoe-WETHe-USDTe": {
+      "JPL-WETHe-USDTe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
@@ -332,7 +332,7 @@
         "pid": 33,
         "anchorName": "WETHe"
       },
-      "traderJoe-WAVAX-USDTe": {
+      "JPL-WAVAX-USDTe": {
         "addresses": [
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
@@ -341,7 +341,7 @@
         "pid": 28,
         "anchorName": "WAVAX"
       },
-      "traderJoe-USDCe-USDTe": {
+      "JPL-USDCe-USDTe": {
         "addresses": [
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
@@ -350,14 +350,14 @@
         "pid": 49,
         "anchorName": "USDCe"
       },
-      "traderJoe-WETHe-JOE": {
+      "JPL-WETHe-JOE": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd"
         ],
         "anchorName": "WETHe"
       },
-      "traderJoe-WAVAX-JOE": {
+      "JPL-WAVAX-JOE": {
         "addresses": [
           "0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -366,7 +366,7 @@
         "pid": 0,
         "anchorName": "WAVAX"
       },
-      "traderJoe-USDCe-JOE": {
+      "JPL-USDCe-JOE": {
         "addresses": [
           "0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
@@ -375,7 +375,7 @@
         "pid": 58,
         "anchorName": "USDCe"
       },
-      "traderJoe-WETHe-USDCe": {
+      "JPL-WETHe-USDCe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
@@ -384,7 +384,7 @@
         "pid": 55,
         "anchorName": "WETHe"
       },
-      "traderJoe-WAVAX-USDCe": {
+      "JPL-WAVAX-USDCe": {
         "addresses": [
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -394,8 +394,8 @@
         "anchorName": "WAVAX"
       }
     },
-    "pangolin": {
-      "pangolin-WETHe-WAVAX": {
+    "PGL": {
+      "PGL-WETHe-WAVAX": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -404,7 +404,7 @@
         "anchorName": "WETHe",
         "stakingContract": "0x830A966B9B447c9B15aB24c0369c4018E75F31C9"
       },
-      "pangolin-USDCe-WAVAX": {
+      "PGL-USDCe-WAVAX": {
         "addresses": [
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -413,7 +413,7 @@
         "anchorName": "USDCe",
         "stakingContract": "0x84B536dA1A2D9b0609f9Da73139674cc2D75AF2D"
       },
-      "pangolin-WAVAX-WETHe": {
+      "PGL-WAVAX-WETHe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -422,7 +422,7 @@
         "anchorName": "WAVAX",
         "stakingContract": "0x830A966B9B447c9B15aB24c0369c4018E75F31C9"
       },
-      "pangolin-USDCe-WETHe": {
+      "PGL-USDCe-WETHe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
@@ -430,7 +430,7 @@
         "pairAddress": "0xD3C14566bbA068Ec07F8cC768eC65614f71d49Dc",
         "anchorName": "USDCe"
       },
-      "pangolin-WETHe-PNG": {
+      "PGL-WETHe-PNG": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0x60781c2586d68229fde47564546784ab3faca982"
@@ -439,7 +439,7 @@
         "anchorName": "WETHe",
         "stakingContract": "0x03a9091620CACeE4968c915232B175C16a584733"
       },
-      "pangolin-WAVAX-PNG": {
+      "PGL-WAVAX-PNG": {
         "addresses": [
           "0x60781c2586d68229fde47564546784ab3faca982",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -448,7 +448,7 @@
         "anchorName": "WAVAX",
         "stakingContract": "0x574d3245e36Cf8C9dc86430EaDb0fDB2F385F829"
       },
-      "pangolin-USDCe-PNG": {
+      "PGL-USDCe-PNG": {
         "addresses": [
           "0x60781c2586d68229fde47564546784ab3faca982",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
@@ -457,7 +457,7 @@
         "anchorName": "USDCe",
         "stakingContract": "0x73d1cC4B8dA555005E949B3ECEE490A7206C14DF"
       },
-      "pangolin-WETHe-USDTe": {
+      "PGL-WETHe-USDTe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
@@ -465,7 +465,7 @@
         "pairAddress": "0xaE194A23a503793498D76769114e7c13350789a0",
         "anchorName": "WETHe"
       },
-      "pangolin-WAVAX-USDTe": {
+      "PGL-WAVAX-USDTe": {
         "addresses": [
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
@@ -474,7 +474,7 @@
         "anchorName": "WAVAX",
         "stakingContract": "0x006cC053bdb84C2d6380B3C4a573d84636378A47"
       },
-      "pangolin-USDCe-USDTe": {
+      "PGL-USDCe-USDTe": {
         "addresses": [
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
@@ -482,14 +482,14 @@
         "pairAddress": "0xc13E562d92F7527c4389Cd29C67DaBb0667863eA",
         "anchorName": "USDCe"
       },
-      "pangolin-WETHe-JOE": {
+      "PGL-WETHe-JOE": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd"
         ],
         "anchorName": "WETHe"
       },
-      "pangolin-WAVAX-JOE": {
+      "PGL-WAVAX-JOE": {
         "addresses": [
           "0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
@@ -498,7 +498,7 @@
         "anchorName": "WAVAX",
         "stakingContract": "0xC0B2D45b8617997bcDad0F33AEE03e4DF4C4f81E"
       },
-      "pangolin-USDCe-JOE": {
+      "PGL-USDCe-JOE": {
         "addresses": [
           "0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
@@ -506,7 +506,7 @@
         "pairAddress": "0xF77F6Ba8D910e937598110c92A0599E19446BC74",
         "anchorName": "USDCe"
       },
-      "pangolin-WETHe-USDCe": {
+      "PGL-WETHe-USDCe": {
         "addresses": [
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
@@ -514,7 +514,7 @@
         "pairAddress": "0xD3C14566bbA068Ec07F8cC768eC65614f71d49Dc",
         "anchorName": "WETHe"
       },
-      "pangolin-WAVAX-USDCe": {
+      "PGL-WAVAX-USDCe": {
         "addresses": [
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"

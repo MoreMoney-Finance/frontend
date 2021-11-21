@@ -51,7 +51,7 @@ for (const [chainId, lpTokensPerChain] of Object.entries(lptokens)) {
         addressToken.set(
           getAddress(record.pairAddress),
           new Token(
-            [ticker, 'LPT'].join('-'),
+            ticker,
             ticker,
             chainIds[chainId],
             getAddress(record.pairAddress),

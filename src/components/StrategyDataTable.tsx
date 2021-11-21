@@ -49,7 +49,7 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
         </Tr>
         <Tr>
           <Th>Minimum colateralization ratio</Th>
-          <Td>{(100 / row.borrowablePercent).toString()} %</Td>
+          <Td>{((1 / (row.borrowablePercent / 100)) * 100).toFixed(2)} %</Td>
         </Tr>
         <Tr>
           <Th>Loan to value ratio</Th>

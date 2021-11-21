@@ -75,11 +75,7 @@ export default function NavigationBar() {
               </MenuList>
             </Menu>
           </Flex>
-          <Flex
-            flexDirection="row"
-            alignItems="center"
-            justifyContent="center"
-          >
+          <Flex flexDirection="row" alignItems="center" justifyContent="center">
             <ColorModeSwitcher />
             <UserAddressComponent handleOpenModal={onOpen} />
             <AccountModal isOpen={isOpen} onClose={onClose} />

@@ -77,7 +77,13 @@ console.log(addressToken);
 for (const [chainId, addresses] of Object.entries(deployAddresses)) {
   addressToken.set(
     getAddress(addresses.Stablecoin),
-    new Token('MoreMoney US Dollar', 'MONEY', chainIds[chainId], getAddress(addresses.Stablecoin), 18)
+    new Token(
+      'MoreMoney US Dollar',
+      'MONEY',
+      chainIds[chainId],
+      getAddress(addresses.Stablecoin),
+      18
+    )
   );
 }
 
@@ -103,7 +109,9 @@ wrappedNativeCurrency.set(
   addressToken.get('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7')!
 );
 
-export function useOraclePrices(tokens: Token[]): Record<string, CurrencyValue> {
+export function useOraclePrices(
+  tokens: Token[]
+): Record<string, CurrencyValue> {
   const addresses = useAddresses();
 
   const address = addresses.OracleRegistry;

@@ -67,9 +67,7 @@ export function IsolatedTranche(
         </Td>
 
         <Td>{(100 / params.borrowablePercent).toPrecision(4)} %</Td>
-        <Td>
-          {collateralBalance.format()}
-        </Td>
+        <Td>{collateralBalance.format()}</Td>
         <Td> {debtBalance.format()} debt </Td>
       </Tr>
       <Td colspan="7">

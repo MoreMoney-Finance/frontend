@@ -44,8 +44,7 @@ export function ConvertReward({
   const maxConversion = usdPrice
     ? new CurrencyValue(
       stable,
-      usdPrice
-        .value
+      usdPrice.value
         .mul(strategyConvertibleBalance ?? 0)
         .div(parseUnits('1', rewardToken.decimals))
     )

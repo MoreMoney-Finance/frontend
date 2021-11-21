@@ -19,6 +19,8 @@ export function TokenPage(props: React.PropsWithChildren<unknown>) {
   const stratMeta: Record<string, ParsedStratMetaRow> = tokenAddress && tokenAddress in allStratMeta ? allStratMeta[tokenAddress] : {};
   const allPositionMeta: TokenStratPositionMetadata = useIsolatedPositionMetadata();
   const positionMeta: ParsedPositionMetaRow[] = tokenAddress ? allPositionMeta[tokenAddress] ?? [] : [];
+  const tokenKey = Object.keys(stratMeta)[0];
+
   return (
     <VStack>
       {token ? (
@@ -41,7 +43,7 @@ export function TokenPage(props: React.PropsWithChildren<unknown>) {
           ))}
         </VStack>
       </Box>
-      <TokenDataTable tokenData={(Object.keys(stratMeta).length > 0 ? stratMeta[0] : undefined)} />
+      <TokenDataTable tokenData={(Object.keys(stratMeta).length > 0 ? stratMeta[tokenKey] : undefined)} />
       {props.children}
     </VStack>
   );

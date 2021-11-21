@@ -7,6 +7,7 @@ export function TokenDataTable({
 }: {
   tokenData: ParsedStratMetaRow | null | undefined;
 }) {
+
   return tokenData ? (
     <Table variant="simple" width="auto">
       <Tbody>
@@ -23,12 +24,18 @@ export function TokenDataTable({
           <Td>{tokenData.mintingFeePercent.toString()} %</Td>
         </Tr>
         <Tr>
+          <Th>Liquidation Fee</Th>
+          <Td>Fee %</Td>
+        </Tr>
+        <Tr>
           <Th>Token</Th>
           <Td>{tokenData.token.name}</Td>
         </Tr>
         <Tr>
           <Th>Minimum colateralization ratio</Th>
-          <Td>{(100 / tokenData.borrowablePercent).toString()} %</Td>
+          <Td>
+            {((1 / (tokenData.borrowablePercent / 100)) * 100).toFixed(2)} %
+          </Td>
         </Tr>
         <Tr>
           <Th>USD Price</Th>

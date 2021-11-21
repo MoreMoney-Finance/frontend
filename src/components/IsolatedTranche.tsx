@@ -51,10 +51,9 @@ export function IsolatedTranche(
     'debt' in params
       ? params.debt
       : new CurrencyValue(stable, BigNumber.from(0));
-
   return (
     <>
-      <Tr>
+      <Tr key={token.address}>
         <Td>
           <TokenDescription token={token} />
         </Td>

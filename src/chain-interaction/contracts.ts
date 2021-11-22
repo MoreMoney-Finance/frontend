@@ -41,7 +41,11 @@ export function useAddresses() {
   return addresses[chainIdStr];
 }
 
-export function useIsolatedLendingView(method: string, args: any[]) {
+export function useIsolatedLendingView(
+  method: string,
+  args: any[],
+  defaultResult: any
+) {
   const address = useAddresses().IsolatedLending;
   const abi = new Interface(IsolatedLending.abi);
   return (useContractCall({
@@ -49,7 +53,7 @@ export function useIsolatedLendingView(method: string, args: any[]) {
     address,
     method,
     args,
-  }) ?? [[]])[0];
+  }) ?? [defaultResult])[0];
 }
 
 type RawStratMetaRow = {
@@ -150,7 +154,11 @@ export type StrategyMetadata = Record<
 
 export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const stable = useStable();
-  const allStratMeta = useIsolatedLendingView('viewAllStrategyMetadata', []);
+  const allStratMeta = useIsolatedLendingView(
+    'viewAllStrategyMetadata',
+    [],
+    []
+  );
   return allStratMeta.reduce(
     (result: StrategyMetadata, row: RawStratMetaRow) => {
       const parsedRow = parseStratMeta(row, stable);
@@ -203,9 +211,11 @@ export type TokenStratPositionMetadata = Record<
 >;
 export function useIsolatedPositionMetadata(): TokenStratPositionMetadata {
   const account = useContext(UserAddressContext);
-  const positionMeta = useIsolatedLendingView('viewPositionsByOwner', [
-    account,
-  ]);
+  const positionMeta = useIsolatedLendingView(
+    'viewPositionsByOwner',
+    [account],
+    []
+  );
   const stable = useStable();
 
   return positionMeta.reduce(
@@ -222,7 +232,11 @@ export function useIsolatedPositionMetadata(): TokenStratPositionMetadata {
   );
 }
 
-export function useIsolatedLendingLiquidationView(method: string, args: any[]) {
+export function useIsolatedLendingLiquidationView(
+  method: string,
+  args: any[],
+  defaultResult: any
+) {
   const address = useAddresses().IsolatedLendingLiquidation;
   const abi = new Interface(IsolatedLendingLiquidation.abi);
   return (useContractCall({
@@ -230,5 +244,5 @@ export function useIsolatedLendingLiquidationView(method: string, args: any[]) {
     address,
     method,
     args,
-  }) ?? [[]])[0];
+  }) ?? [defaultResult])[0];
 }

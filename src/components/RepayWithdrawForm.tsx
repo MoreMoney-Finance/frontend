@@ -8,10 +8,10 @@ import { CurrencyValue, Token } from '@usedapp/core';
 export default function RepayWithdrawForm(params: {
   token: Token;
   trancheId: number;
-  collateralBalance: CurrencyValue;
-  debtBalance: CurrencyValue;
+  collateral: CurrencyValue;
+  debt: CurrencyValue;
 }) {
-  const { token, trancheId, collateralBalance, debtBalance } = params;
+  const { token, trancheId, collateral, debt } = params;
 
   const {
     handleSubmit: handleSubmitRepayForm,
@@ -29,15 +29,14 @@ export default function RepayWithdrawForm(params: {
     sendRepayWithdraw(data['collateral-withdraw'], data['money-repay']);
   }
 
-  const repayWithdrawDisabled =
-    collateralBalance.isZero() && debtBalance.isZero();
+  const repayWithdrawDisabled = collateral.isZero() && debt.isZero();
 
   return (
     <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
-      <HStack spacing="0.5rem">
+      <HStack spacing="0.5rem" margin="0.5rem">
         <TokenAmountInputField
           name="collateral-withdraw"
-          max={collateralBalance}
+          max={collateral}
           isDisabled={repayWithdrawDisabled}
           placeholder={'Collateral withdraw'}
           registerForm={registerRepayForm}
@@ -47,7 +46,7 @@ export default function RepayWithdrawForm(params: {
 
         <TokenAmountInputField
           name="money-repay"
-          max={debtBalance}
+          max={debt}
           isDisabled={repayWithdrawDisabled}
           placeholder={'MONEY repay'}
           registerForm={registerRepayForm}

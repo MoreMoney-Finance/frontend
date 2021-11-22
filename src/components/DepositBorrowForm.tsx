@@ -46,7 +46,7 @@ export default function DepositBorrowForm(params: any) {
 
   return (
     <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
-      <HStack spacing="0.5rem">
+      <HStack spacing="0.5rem" margin="0.5rem">
         <TokenAmountInputField
           name="collateral-deposit"
           max={depositMax}

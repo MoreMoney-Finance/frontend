@@ -1,16 +1,24 @@
-import { Button, VStack } from '@chakra-ui/react';
+import * as React from 'react';
 import { CurrencyValue, useEthers, useTokenAllowance } from '@usedapp/core';
 import { BigNumber } from 'ethers';
-import React from 'react';
-import { ParsedStratMetaRow, TxStatus } from '../chain-interaction/contracts';
-import { useApproveTrans } from '../chain-interaction/transactions';
 import { useWalletBalance } from '../contexts/WalletBalancesContext';
+import {
+  ParsedPositionMetaRow,
+  ParsedStratMetaRow,
+  TxStatus,
+} from '../chain-interaction/contracts';
+import { useApproveTrans } from '../chain-interaction/transactions';
+import { Button } from '@chakra-ui/react';
 import DepositBorrowForm from './DepositBorrowForm';
-import { StrategyDataTable } from './StrategyDataTable';
+import RepayWithdrawForm from './RepayWithdrawForm';
 
-export function MintNewTranche(params: ParsedStratMetaRow) {
-  const { token, strategyAddress, strategyName } = params;
-
+export function EditTranche(
+  params: React.PropsWithChildren<
+    ParsedStratMetaRow &
+      ParsedPositionMetaRow & { collateral: CurrencyValue; debt: CurrencyValue }
+  >
+) {
+  const { token, strategyAddress } = params;
   const { account } = useEthers();
 
   const allowance = new CurrencyValue(
@@ -22,15 +30,11 @@ export function MintNewTranche(params: ParsedStratMetaRow) {
   const walletBalance =
     useWalletBalance(token.address) ??
     new CurrencyValue(token, BigNumber.from('0'));
-  console.log(
-    `wallet balance for ${token.name}: ${walletBalance.format({
-      significantDigits: Infinity,
-    })}`
-  );
+
   const { approveState, sendApprove } = useApproveTrans(token.address);
 
   return (
-    <VStack>
+    <>
       {allowance.gt(walletBalance) === false ? (
         <Button
           onClick={() => sendApprove(strategyAddress)}
@@ -39,12 +43,12 @@ export function MintNewTranche(params: ParsedStratMetaRow) {
             allowance.gt(walletBalance) === false
           }
         >
-          Approve {strategyName} to withdraw {token.name}{' '}
+          Approve {token.name}{' '}
         </Button>
       ) : (
-        <DepositBorrowForm trancheId={undefined} {...params} />
+        <DepositBorrowForm {...params} />
       )}
-      <StrategyDataTable {...params} />
-    </VStack>
+      <RepayWithdrawForm {...params} />
+    </>
   );
 }

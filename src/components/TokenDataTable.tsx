@@ -1,13 +1,14 @@
 import React from 'react';
 import { ParsedStratMetaRow } from '../chain-interaction/contracts';
 import { Table, Tbody, Tr, Th, Td } from '@chakra-ui/react';
+import { BigNumber } from 'ethers';
 
 export function TokenDataTable({
   tokenData,
   liquidationFee,
 }: {
   tokenData: ParsedStratMetaRow | null | undefined;
-  liquidationFee: number;
+  liquidationFee: BigNumber;
 }) {
   return tokenData ? (
     <Table variant="simple" width="auto">
@@ -26,7 +27,12 @@ export function TokenDataTable({
         </Tr>
         <Tr>
           <Th>Liquidation Fee</Th>
-          <Td>{(liquidationFee / 100).toFixed(2)}%</Td>
+          <Td>
+            {(liquidationFee.toNumber() / 100).toFixed(
+              2
+            )}
+            %
+          </Td>
         </Tr>
         <Tr>
           <Th>Token</Th>

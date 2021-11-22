@@ -10,7 +10,6 @@ import {
   TableCaption,
   Thead,
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
 import { TokenDescription } from './TokenDescription';
 
 export function IsolatedLending() {
@@ -30,12 +29,7 @@ export function IsolatedLending() {
       </Thead>
       <Tbody>
         {stratMeta.map((meta, i) => (
-          <Tr
-            as={Link}
-            key={i}
-            to={`/token/${meta.token.address}`}
-            display="table-row"
-          >
+          <Tr key={i}>
             <Td>
               <TokenDescription token={meta.token} />
             </Td>

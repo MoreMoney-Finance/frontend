@@ -14,6 +14,10 @@ ReactDOM.render(
     <ColorModeScript />
     <DAppProvider
       config={{
+        readOnlyChainId: ChainId.Avalanche,
+        readOnlyUrls: {
+          [ChainId.Avalanche]: 'https://api.avax.network/ext/bc/C/rpc',
+        },
         multicallAddresses: {
           [ChainId.Hardhat]: '0x0FB54156B496b5a040b51A71817aED9e2927912E',
         },

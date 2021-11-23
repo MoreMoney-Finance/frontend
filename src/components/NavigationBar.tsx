@@ -5,10 +5,6 @@ import {
   Flex,
   HStack,
   IconButton,
-  Menu,
-  MenuList,
-  MenuItem,
-  MenuDivider,
   useDisclosure,
   useColorModeValue,
   Stack,
@@ -65,21 +61,16 @@ export default function NavigationBar() {
               ))}
             </HStack>
           </HStack>
-          <Flex alignItems={'center'}>
-            <Menu>
-              <MenuList>
-                <MenuItem>Link 1</MenuItem>
-                <MenuItem>Link 2</MenuItem>
-                <MenuDivider />
-                <MenuItem>Link 3</MenuItem>
-              </MenuList>
-            </Menu>
-          </Flex>
-          <Flex flexDirection="row" alignItems="center" justifyContent="center">
+          <HStack
+            flexDirection="row"
+            alignItems="center"
+            justifyContent="center"
+          >
             <ColorModeSwitcher />
+
             <UserAddressComponent handleOpenModal={onOpen} />
             <AccountModal isOpen={isOpen} onClose={onClose} />
-          </Flex>
+          </HStack>
         </Flex>
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>

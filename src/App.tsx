@@ -1,12 +1,5 @@
 import * as React from 'react';
-import {
-  ChakraProvider,
-  Box,
-  VStack,
-  Grid,
-  extendTheme,
-  ThemeConfig,
-} from '@chakra-ui/react';
+import { ChakraProvider, Box, VStack, Grid } from '@chakra-ui/react';
 import { UserAddressCtxProvider } from './contexts/UserAddressContext';
 import { WalletBalancesCtxProvider } from './contexts/WalletBalancesContext';
 import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
@@ -15,12 +8,7 @@ import { NotificationsComponent } from './components/NotificationsComponent';
 import NavigationBar from './components/NavigationBar';
 import { useAddresses } from './chain-interaction/contracts';
 import NetworkNotSupported from './components/NetworkNotSupported';
-
-const config: ThemeConfig = {
-  initialColorMode: 'dark',
-};
-
-const theme = extendTheme({ config });
+import { theme } from './theme';
 
 export const App = (params: React.PropsWithChildren<unknown>) => {
   const addresses = useAddresses();

@@ -27,12 +27,7 @@ export function TokenDataTable({
         </Tr>
         <Tr>
           <Th>Liquidation Fee</Th>
-          <Td>
-            {(liquidationFee.toNumber() / 100).toFixed(
-              2
-            )}
-            %
-          </Td>
+          <Td>{(liquidationFee.toNumber() / 100).toFixed(2)}%</Td>
         </Tr>
         <Tr>
           <Th>Token</Th>

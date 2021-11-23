@@ -40,7 +40,7 @@ export function IsolatedLending() {
 
             <Td>{meta.debtCeiling.sub(meta.totalDebt).format()}</Td>
 
-            <Td>{(100 / meta.borrowablePercent).toPrecision(4)} %</Td>
+            <Td>{((1 / (meta.borrowablePercent / 100)) * 100).toFixed(2)} %</Td>
           </Tr>
         ))}
       </Tbody>

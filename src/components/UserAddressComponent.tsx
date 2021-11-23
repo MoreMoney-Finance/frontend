@@ -59,6 +59,8 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
       </Button>
     </Box>
   ) : (
-    <Button onClick={handleConnectWallet}>Connect to a wallet</Button>
+    <Button bg="blue.800" color="blue.300" onClick={handleConnectWallet}>
+      Connect to a wallet
+    </Button>
   );
 }

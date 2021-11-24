@@ -8,6 +8,7 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
+import { RiskFeedbackComponent } from './RiskFeedbackComponent';
 
 export function TokenAmountInputField(props: {
   name: string;
@@ -17,6 +18,7 @@ export function TokenAmountInputField(props: {
   setValueForm: (name: string, max: string) => any;
   errorsForm?: Record<string, any>;
   isDisabled?: boolean;
+  percentages?: Record<string, CurrencyValue>;
 }) {
   const {
     name,
@@ -26,6 +28,7 @@ export function TokenAmountInputField(props: {
     setValueForm,
     errorsForm,
     isDisabled,
+    percentages,
   } = props;
 
   const error = errorsForm?.[name];
@@ -45,8 +48,8 @@ export function TokenAmountInputField(props: {
           defaultValue={0}
           pattern="^[0-9]*[.,]?([0-9]?)*$"
         />
-        {max ? (
-          <InputRightElement width="4.5rem">
+        <InputRightElement width="4.5rem">
+          {max ? (
             <Button
               size="xs"
               isDisabled={isDisabled}
@@ -63,10 +66,21 @@ export function TokenAmountInputField(props: {
             >
               MAX
             </Button>
-          </InputRightElement>
-        ) : (
-          ''
-        )}
+          ) : percentages ? (
+            <RiskFeedbackComponent>
+              {Object.entries(percentages).map(([key, value]) => (
+                <Button
+                  key={'risk' + key}
+                  onClick={() => setValueForm(name, value.toString())}
+                >
+                  {key}
+                </Button>
+              ))}
+            </RiskFeedbackComponent>
+          ) : (
+            ''
+          )}
+        </InputRightElement>
       </InputGroup>
       <FormErrorMessage>{error && error.message}</FormErrorMessage>
     </FormControl>

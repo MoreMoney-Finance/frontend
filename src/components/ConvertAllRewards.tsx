@@ -1,10 +1,9 @@
 import { Box, VStack } from '@chakra-ui/react';
 import { Interface } from '@ethersproject/abi/lib/interface';
 import { ContractCall, Token, useContractCalls } from '@usedapp/core';
-import { getAddress } from 'ethers/lib/utils';
 import React from 'react';
 import { useAddresses } from '../chain-interaction/contracts';
-import { addressToken } from '../chain-interaction/tokens';
+import { getTokenFromAddress } from '../chain-interaction/tokens';
 import YieldConversionBidStrategy from '../contracts/artifacts/contracts/YieldConversionBidStrategy.sol/YieldConversionBidStrategy.json';
 import { ConvertReward } from './ConvertReward';
 
@@ -33,7 +32,7 @@ export function ConvertAllRewards() {
       i,
       strategyAddress: strategies[i],
       rewardToken: resultRow
-        ? addressToken.get(getAddress(resultRow[0]))!
+        ? getTokenFromAddress(resultRow[0])!
         : undefined,
     }))
     .filter((x) => x.rewardToken) as {

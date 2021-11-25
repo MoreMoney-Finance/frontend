@@ -1,10 +1,10 @@
 import {
-  Box,
   Button,
-  Flex,
+  Grid,
   Menu,
   MenuButton,
   MenuList,
+  Portal,
 } from '@chakra-ui/react';
 import * as React from 'react';
 
@@ -12,15 +12,17 @@ export const RiskFeedbackComponent = (
   params: React.PropsWithChildren<unknown>
 ) => {
   return (
-    <Box p={4}>
-      <Menu>
-        <MenuButton size="xs" as={Button}>
-          %
-        </MenuButton>
-        <MenuList>
-          <Flex justifyContent={'space-evenly'}>{params.children}</Flex>
+    <Menu>
+      <MenuButton size="xs" as={Button}>
+        %
+      </MenuButton>
+      <Portal>
+        <MenuList zIndex={'popover'}>
+          <Grid templateColumns="repeat(4, 1fr)" gap={1}>
+            {params.children}
+          </Grid>
         </MenuList>
-      </Menu>
-    </Box>
+      </Portal>
+    </Menu>
   );
 };

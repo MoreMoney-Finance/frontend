@@ -8,6 +8,7 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
+  Image,
   Link as LinkComponent,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
@@ -15,6 +16,7 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
 import { UserAddressComponent } from './UserAddressComponent';
 import AccountModal from './AccountModal';
+import logo from '../assets/logo/logo.png';
 
 const Links = [{ title: 'Dashboard', link: '/' }];
 
@@ -34,6 +36,11 @@ const NavLink = ({ children }: { children: ReactNode }) => (
 
 export default function NavigationBar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenAccount,
+    onOpen: onOpenAccount,
+    onClose: onCloseAccount,
+  } = useDisclosure();
 
   return (
     <>
@@ -48,7 +55,9 @@ export default function NavigationBar() {
           />
 
           <HStack spacing={8} alignItems={'center'}>
-            <Box>Logo</Box>
+            <Box>
+              <Image borderRadius="10px" boxSize="50px" src={logo} alt="Logo" />
+            </Box>
             <HStack
               as={'nav'}
               spacing={4}
@@ -68,8 +77,8 @@ export default function NavigationBar() {
           >
             <ColorModeSwitcher />
 
-            <UserAddressComponent handleOpenModal={onOpen} />
-            <AccountModal isOpen={isOpen} onClose={onClose} />
+            <UserAddressComponent handleOpenModal={onOpenAccount} />
+            <AccountModal isOpen={isOpenAccount} onClose={onCloseAccount} />
           </HStack>
         </Flex>
         {isOpen ? (

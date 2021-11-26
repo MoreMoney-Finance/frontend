@@ -1,13 +1,21 @@
 import * as React from 'react';
-import { ParsedStratMetaRow } from '../chain-interaction/contracts';
+import { ParsedStratMetaRow, YieldType } from '../chain-interaction/contracts';
 import { Table, Tbody, Tr, Th, Td, Button } from '@chakra-ui/react';
-import { useTallyHarvestBalance } from '../chain-interaction/transactions';
+import {
+  useAMMHarvest,
+  useHarvestPartially,
+  useTallyHarvestBalance,
+} from '../chain-interaction/transactions';
 import { getExplorerAddressLink } from '@usedapp/core';
 
 export function StrategyDataTable(row: ParsedStratMetaRow) {
   const { sendTallyHarvestBalance } = useTallyHarvestBalance(
     row.strategyAddress
   );
+  const { sendAMMHarvest } = useAMMHarvest(row.strategyAddress);
+
+  const { sendHarvestPartially } = useHarvestPartially(row.strategyAddress);
+
   const balance2Tally = row.harvestBalance2Tally;
 
   const explorerLink = getExplorerAddressLink(
@@ -15,6 +23,7 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
     row.token.chainId
   );
 
+  console.log('rowyrefdas', row.yieldType);
   return (
     <Table variant="simple" width="auto">
       <Tbody>
@@ -68,6 +77,22 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
                 Tally {balance2Tally.format}{' '}
               </Button>
             )}
+          </Td>
+        </Tr>
+        <Tr>
+          <Th>Harvest</Th>
+          <Td>
+            <Button
+              onClick={() => {
+                if (row.yieldType === YieldType.REPAYING) {
+                  sendAMMHarvest(row.token.address);
+                } else if (row.yieldType === YieldType.COMPOUNDING) {
+                  sendHarvestPartially(row.token.address);
+                }
+              }}
+            >
+              Harvest
+            </Button>
           </Td>
         </Tr>
         <Tr>

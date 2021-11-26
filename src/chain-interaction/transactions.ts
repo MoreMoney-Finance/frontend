@@ -7,6 +7,7 @@ import { useAddresses, useYieldConversionBidStrategyView } from './contracts';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
 import YieldConversionBidStrategy from '../contracts/artifacts/contracts/YieldConversionBidStrategy.sol/YieldConversionBidStrategy.json';
+import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
@@ -141,6 +142,15 @@ export function useConvertReward2Stable(contractAddress: string) {
     sendConvertReward2Stable: (rewardAmount: BigNumber, targetBid: BigNumber) =>
       send(rewardAmount, targetBid),
     convertReward2StableState: state,
+  };
+}
+
+export function useHarvestPartially(strategyAddress: string) {
+  const strategy = new Contract(strategyAddress, new Interface(YieldConversionStrategy.abi));
+  const { send, state } = useContractFunction(strategy, 'harvestPartially');
+  return {
+    sendHarvestPartially: (tokenAddress: string) => send(tokenAddress),
+    harvestPartiallyState: state,
   };
 }
 

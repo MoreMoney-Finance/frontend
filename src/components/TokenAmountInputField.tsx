@@ -8,17 +8,17 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
-import { RiskFeedbackComponent } from './RiskFeedbackComponent';
+import { PercentageChoice } from './PercentageChoice';
 
 export function TokenAmountInputField(props: {
   name: string;
   max?: CurrencyValue;
   placeholder: string;
-  registerForm: (name: string, params: { required: string }) => any;
+  registerForm: (name: string, params: { required: string; }) => any;
   setValueForm: (name: string, max: string) => any;
   errorsForm?: Record<string, any>;
   isDisabled?: boolean;
-  percentages?: Record<string, CurrencyValue>;
+  percentages?: { label: string; values: Record<string, number>; };
 }) {
   const {
     name,
@@ -48,9 +48,11 @@ export function TokenAmountInputField(props: {
           defaultValue={0}
           pattern="^[0-9]*[.,]?([0-9]?)*$"
         />
-        <InputRightElement width="4.5rem">
+        <InputRightElement width="auto" mr="2">
           {max ? (
             <Button
+              width="auto"
+              px="2"
               size="xs"
               isDisabled={isDisabled}
               onClick={() =>
@@ -67,16 +69,19 @@ export function TokenAmountInputField(props: {
               MAX
             </Button>
           ) : percentages ? (
-            <RiskFeedbackComponent>
-              {Object.entries(percentages).map(([key, value]) => (
+            <PercentageChoice
+              label={percentages.label}
+              numButtons={Object.values(percentages.values).length}
+            >
+              {Object.entries(percentages.values).map(([key, value]) => (
                 <Button
-                  key={'risk' + key}
-                  onClick={() => setValueForm(name, value.toString())}
+                  key={'percentage' + key}
+                  onClick={() => setValueForm(name, value.toFixed(10))}
                 >
                   {key}
                 </Button>
               ))}
-            </RiskFeedbackComponent>
+            </PercentageChoice>
           ) : (
             ''
           )}

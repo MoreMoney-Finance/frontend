@@ -36,7 +36,7 @@ export function IsolatedLending() {
 
             <Td>{meta.strategyName}</Td>
 
-            <Td>{meta.APY.toPrecision(4)} %</Td>
+            <Td>{meta.APY.toFixed(4)} %</Td>
 
             <Td>{meta.debtCeiling.sub(meta.totalDebt).format()}</Td>
 

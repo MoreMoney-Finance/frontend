@@ -32,7 +32,7 @@ export type DeploymentAddresses = {
   TrancheIDService: string;
   TraderJoeMasterChefStrategy: string;
   PangolinStakingRewardsStrategy: string;
-  AMMYieldconverter: string;
+  AMMYieldConverter: string;
 };
 
 export function useAddresses() {

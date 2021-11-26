@@ -160,18 +160,20 @@ const ammDefaults: Record<string, { router: string; path: string[] }> = {
 };
 
 export function useAMMHarvest(strategyAddress: string) {
-  const conversionAddress = useAddresses().AMMYieldconverter;
+  const conversionAddress = useAddresses().AMMYieldConverter;
   const conversionContract = new Contract(
     conversionAddress,
     new Interface(AMMYieldConverter.abi)
   );
-  const rewardToken = useYieldConversionBidStrategyView(
+  const rewardToken: string | undefined = useYieldConversionBidStrategyView(
     strategyAddress,
     'rewardToken',
     [],
     undefined
   );
-  const { router, path } = ammDefaults[getAddress(rewardToken)];
+
+  const undefinedArgs =  { router: undefined, path: undefined};
+  const { router, path } = rewardToken ? ammDefaults[getAddress(rewardToken)] ?? undefinedArgs : undefinedArgs;
   const { send, state } = useContractFunction(conversionContract, 'harvest');
 
   return {

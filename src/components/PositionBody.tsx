@@ -8,6 +8,7 @@ import {
 } from '../chain-interaction/contracts';
 import { BigNumber } from 'ethers';
 import { StrategyDataTable } from './StrategyDataTable';
+import { MigrateStrategy } from './MigrateStrategy';
 
 export function PositionBody({
   stratMeta,
@@ -30,7 +31,11 @@ export function PositionBody({
       {Object.values(stratMeta).map((meta, i) => (
         <VStack key={i}>
           {position ? (
-            <StrategyDataTable {...meta} />
+            position.strategy !== meta.strategyAddress ? (
+              <MigrateStrategy {...meta} {...position} />
+            ) : (
+              <StrategyDataTable {...meta} />
+            )
           ) : (
             <MintNewTranche {...meta} />
           )}

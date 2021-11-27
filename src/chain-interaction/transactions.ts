@@ -2,7 +2,10 @@ import { Interface } from '@ethersproject/abi';
 import { Contract } from '@ethersproject/contracts';
 import { useContractFunction } from '@usedapp/core';
 import { Token } from '@usedapp/core/dist/esm/src/model';
-import { useAddresses, useYieldConversionBidStrategyView } from './contracts';
+import {
+  useAddresses,
+  useYieldConversionBidStrategyView,
+} from './contracts';
 
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
@@ -146,11 +149,31 @@ export function useConvertReward2Stable(contractAddress: string) {
 }
 
 export function useHarvestPartially(strategyAddress: string) {
-  const strategy = new Contract(strategyAddress, new Interface(YieldConversionStrategy.abi));
+  const strategy = new Contract(
+    strategyAddress,
+    new Interface(YieldConversionStrategy.abi)
+  );
   const { send, state } = useContractFunction(strategy, 'harvestPartially');
   return {
     sendHarvestPartially: (tokenAddress: string) => send(tokenAddress),
     harvestPartiallyState: state,
+  };
+}
+
+export function useMigrateStrategy() {
+  const ilAddress = useAddresses().IsolatedLending;
+
+  const strategy = new Contract(ilAddress, new Interface(IsolatedLending.abi));
+  const { send, state } = useContractFunction(strategy, 'migrateStrategy');
+
+  return {
+    sendMigrateStrategy: (
+      trancheId: number,
+      targetStrategy: string,
+      stable: Token,
+      account: string 
+    ) => send(trancheId, targetStrategy, stable.address, account),
+    migrateStrategyState: state,
   };
 }
 
@@ -182,8 +205,10 @@ export function useAMMHarvest(strategyAddress: string) {
     undefined
   );
 
-  const undefinedArgs =  { router: undefined, path: undefined};
-  const { router, path } = rewardToken ? ammDefaults[getAddress(rewardToken)] ?? undefinedArgs : undefinedArgs;
+  const undefinedArgs = { router: undefined, path: undefined };
+  const { router, path } = rewardToken
+    ? ammDefaults[getAddress(rewardToken)] ?? undefinedArgs
+    : undefinedArgs;
   const { send, state } = useContractFunction(conversionContract, 'harvest');
 
   return {

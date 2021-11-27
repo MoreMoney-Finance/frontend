@@ -14,11 +14,11 @@ export function TokenAmountInputField(props: {
   name: string;
   max?: CurrencyValue;
   placeholder: string;
-  registerForm: (name: string, params: { required: string; }) => any;
+  registerForm: (name: string, params: { required: string }) => any;
   setValueForm: (name: string, max: string) => any;
   errorsForm?: Record<string, any>;
   isDisabled?: boolean;
-  percentages?: { label: string; values: Record<string, number>; };
+  percentages?: { label: string; values: Record<string, number> };
 }) {
   const {
     name,
@@ -70,12 +70,14 @@ export function TokenAmountInputField(props: {
             </Button>
           ) : percentages ? (
             <PercentageChoice
+              isDisabled={isDisabled}
               label={percentages.label}
               numButtons={Object.values(percentages.values).length}
             >
               {Object.entries(percentages.values).map(([key, value]) => (
                 <Button
                   key={'percentage' + key}
+                  isDisabled={isDisabled}
                   onClick={() => setValueForm(name, value.toFixed(10))}
                 >
                   {key}

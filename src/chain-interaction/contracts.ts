@@ -12,6 +12,7 @@ import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
+import YieldConversionBidStrategy from '../contracts/artifacts/contracts/YieldConversionBidStrategy.sol/YieldConversionBidStrategy.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 /* eslint-disable */
 export const addresses: Record<
@@ -31,6 +32,7 @@ export type DeploymentAddresses = {
   TrancheIDService: string;
   TraderJoeMasterChefStrategy: string;
   PangolinStakingRewardsStrategy: string;
+  AMMYieldConverter: string;
 };
 
 export function useAddresses() {
@@ -240,6 +242,21 @@ export function useIsolatedLendingLiquidationView(
   return (useContractCall({
     abi,
     address,
+    method,
+    args,
+  }) ?? [defaultResult])[0];
+}
+
+export function useYieldConversionBidStrategyView(
+  strategyAddress: string,
+  method: string,
+  args: any[],
+  defaultResult: any
+) {
+  const abi = new Interface(YieldConversionBidStrategy.abi);
+  return (useContractCall({
+    abi,
+    address: strategyAddress,
     method,
     args,
   }) ?? [defaultResult])[0];

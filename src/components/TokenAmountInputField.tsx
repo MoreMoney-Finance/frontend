@@ -8,15 +8,17 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
+import { PercentageChoice } from './PercentageChoice';
 
 export function TokenAmountInputField(props: {
   name: string;
   max?: CurrencyValue;
   placeholder: string;
-  registerForm: (name: string, params: { required: string }) => any;
+  registerForm: (name: string, params: { required: string; }) => any;
   setValueForm: (name: string, max: string) => any;
   errorsForm?: Record<string, any>;
   isDisabled?: boolean;
+  percentages?: { label: string; values: Record<string, number>; };
 }) {
   const {
     name,
@@ -26,6 +28,7 @@ export function TokenAmountInputField(props: {
     setValueForm,
     errorsForm,
     isDisabled,
+    percentages,
   } = props;
 
   const error = errorsForm?.[name];
@@ -45,9 +48,11 @@ export function TokenAmountInputField(props: {
           defaultValue={0}
           pattern="^[0-9]*[.,]?([0-9]?)*$"
         />
-        {max ? (
-          <InputRightElement width="4.5rem">
+        <InputRightElement width="auto" mr="2">
+          {max ? (
             <Button
+              width="auto"
+              px="2"
               size="xs"
               isDisabled={isDisabled}
               onClick={() =>
@@ -63,10 +68,24 @@ export function TokenAmountInputField(props: {
             >
               MAX
             </Button>
-          </InputRightElement>
-        ) : (
-          ''
-        )}
+          ) : percentages ? (
+            <PercentageChoice
+              label={percentages.label}
+              numButtons={Object.values(percentages.values).length}
+            >
+              {Object.entries(percentages.values).map(([key, value]) => (
+                <Button
+                  key={'percentage' + key}
+                  onClick={() => setValueForm(name, value.toFixed(10))}
+                >
+                  {key}
+                </Button>
+              ))}
+            </PercentageChoice>
+          ) : (
+            ''
+          )}
+        </InputRightElement>
       </InputGroup>
       <FormErrorMessage>{error && error.message}</FormErrorMessage>
     </FormControl>

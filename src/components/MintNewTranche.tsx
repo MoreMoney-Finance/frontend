@@ -42,7 +42,7 @@ export function MintNewTranche(params: ParsedStratMetaRow) {
           Approve {strategyName} to withdraw {token.name}{' '}
         </Button>
       ) : (
-        <DepositBorrowForm trancheId={undefined} {...params} />
+        <DepositBorrowForm {...params} />
       )}
       <StrategyDataTable {...params} />
     </VStack>

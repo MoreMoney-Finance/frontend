@@ -42,7 +42,7 @@ export function IsolatedTranche(
           <TokenDescription token={token} />
         </Td>
         <Td>{strategyName}</Td>
-        <Td>{APY.toPrecision(4)} % APY</Td>
+        <Td>{APY.toFixed(4)} % APY</Td>
         <Td>
           {params.debtCeiling
             .sub(params.totalDebt)

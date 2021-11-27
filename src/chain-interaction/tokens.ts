@@ -13,14 +13,33 @@ import lptokens from '../contracts/lptokens.json';
 import { useAddresses, useStable } from './contracts';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 
-export const addressToken: Map<string, Token> = new Map();
-export const addressIcons: Map<string, string[]> = new Map();
+const addressToken: Map<string, Token> = new Map();
+const addressIcons: Map<string, string[]> = new Map();
+
+export function getTokenFromAddress(address: string): Token {
+  return addressToken.get(getAddress(address))!;
+}
+
+export function getIconsFromTokenAddress(address: string): string[] {
+  return addressIcons.get(getAddress(address))!;
+}
 
 export function tokenAmount(tokenAddress: string, amount: BigNumber) {
-  const token = addressToken.get(tokenAddress);
+  const token = addressToken.get(getAddress(tokenAddress));
   if (token) {
     return new CurrencyValue(token, amount);
   }
+}
+
+export function getTokensInQuestion(_chainId: ChainId): [string, Token][] {
+  const tokensInQuestion = Array.from(addressToken.entries()).filter(
+    (aT) => aT[1].chainId === _chainId
+  );
+  console.log('tokens in question');
+  console.log(Array.from(addressToken.entries()));
+  console.log(tokensInQuestion);
+
+  return tokensInQuestion;
 }
 
 for (const {

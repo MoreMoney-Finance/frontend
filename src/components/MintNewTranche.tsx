@@ -6,6 +6,7 @@ import { ParsedStratMetaRow, TxStatus } from '../chain-interaction/contracts';
 import { useApproveTrans } from '../chain-interaction/transactions';
 import { useWalletBalance } from '../contexts/WalletBalancesContext';
 import DepositBorrowForm from './DepositBorrowForm';
+import { EnsureWalletConnected } from './EnsureWalletConnected';
 import { StrategyDataTable } from './StrategyDataTable';
 
 export function MintNewTranche(params: ParsedStratMetaRow) {
@@ -32,15 +33,17 @@ export function MintNewTranche(params: ParsedStratMetaRow) {
   return (
     <VStack>
       {allowance.gt(walletBalance) === false ? (
-        <Button
-          onClick={() => sendApprove(strategyAddress)}
-          isLoading={
-            approveState.status == TxStatus.SUCCESS &&
-            allowance.gt(walletBalance) === false
-          }
-        >
-          Approve {strategyName} to withdraw {token.name}{' '}
-        </Button>
+        <EnsureWalletConnected>
+          <Button
+            onClick={() => sendApprove(strategyAddress)}
+            isLoading={
+              approveState.status == TxStatus.SUCCESS &&
+              allowance.gt(walletBalance) === false
+            }
+          >
+            Approve {strategyName} to withdraw {token.name}{' '}
+          </Button>
+        </EnsureWalletConnected>
       ) : (
         <DepositBorrowForm {...params} />
       )}

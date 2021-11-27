@@ -11,6 +11,7 @@ import { useApproveTrans } from '../chain-interaction/transactions';
 import { Button } from '@chakra-ui/react';
 import DepositBorrowForm from './DepositBorrowForm';
 import RepayWithdrawForm from './RepayWithdrawForm';
+import { EnsureWalletConnected } from './EnsureWalletConnected';
 
 export function EditTranche(
   params: React.PropsWithChildren<
@@ -36,15 +37,17 @@ export function EditTranche(
   return (
     <>
       {allowance.gt(walletBalance) === false ? (
-        <Button
-          onClick={() => sendApprove(strategyAddress)}
-          isLoading={
-            approveState.status == TxStatus.SUCCESS &&
-            allowance.gt(walletBalance) === false
-          }
-        >
-          Approve {token.name}{' '}
-        </Button>
+        <EnsureWalletConnected>
+          <Button
+            onClick={() => sendApprove(strategyAddress)}
+            isLoading={
+              approveState.status == TxStatus.SUCCESS &&
+              allowance.gt(walletBalance) === false
+            }
+          >
+            Approve {token.name}{' '}
+          </Button>
+        </EnsureWalletConnected>
       ) : (
         <DepositBorrowForm {...params} />
       )}

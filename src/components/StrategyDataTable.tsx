@@ -7,6 +7,7 @@ import {
   useTallyHarvestBalance,
 } from '../chain-interaction/transactions';
 import { getExplorerAddressLink } from '@usedapp/core';
+import { EnsureWalletConnected } from './EnsureWalletConnected';
 
 export function StrategyDataTable(row: ParsedStratMetaRow) {
   const { sendTallyHarvestBalance } = useTallyHarvestBalance(
@@ -82,17 +83,19 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
         <Tr>
           <Th>Harvest</Th>
           <Td>
-            <Button
-              onClick={() => {
-                if (row.yieldType === YieldType.REPAYING) {
-                  sendAMMHarvest(row.token.address);
-                } else if (row.yieldType === YieldType.COMPOUNDING) {
-                  sendHarvestPartially(row.token.address);
-                }
-              }}
-            >
-              Harvest
-            </Button>
+            <EnsureWalletConnected>
+              <Button
+                onClick={() => {
+                  if (row.yieldType === YieldType.REPAYING) {
+                    sendAMMHarvest(row.token.address);
+                  } else if (row.yieldType === YieldType.COMPOUNDING) {
+                    sendHarvestPartially(row.token.address);
+                  }
+                }}
+              >
+                Harvest
+              </Button>
+            </EnsureWalletConnected>
           </Td>
         </Tr>
         <Tr>

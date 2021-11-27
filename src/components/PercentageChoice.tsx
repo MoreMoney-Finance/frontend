@@ -9,11 +9,11 @@ import {
 import * as React from 'react';
 
 export const PercentageChoice = (
-  params: React.PropsWithChildren<{ numButtons: number, label: string }>
+  params: React.PropsWithChildren<{ isDisabled: boolean | undefined, numButtons: number, label: string }>
 ) => {
   return (
     <Menu>
-      <MenuButton size="xs" as={Button} width="auto" px="2">
+      <MenuButton size="xs" as={Button} width="auto" px="2" isDisabled={params.isDisabled}>
         { params.label }
       </MenuButton>
       <Portal>

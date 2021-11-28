@@ -3,6 +3,7 @@ import {
   CurrencyValue,
   Token,
   useContractCall,
+  useContractCalls,
   useEthers,
 } from '@usedapp/core';
 import { formatEther } from '@usedapp/core/node_modules/@ethersproject/units';
@@ -182,6 +183,11 @@ export type ParsedPositionMetaRow = {
   collateral: CurrencyValue | undefined;
   debt: CurrencyValue;
   token: Token;
+  yield: CurrencyValue;
+  collateralValue: CurrencyValue;
+  borrowablePercent: number;
+  owner: string;
+  liquidationPrice: number;
 };
 
 type RawPositionMetaRow = {
@@ -190,18 +196,50 @@ type RawPositionMetaRow = {
   collateral: BigNumber;
   debt: BigNumber;
   token: string;
+  yield: BigNumber;
+  collateralValue: BigNumber;
+  borrowablePer10k: BigNumber;
+  owner: string;
 };
+
+function calcLiquidationPrice(
+  borrowablePercent: number,
+  debt: CurrencyValue,
+  collateral: CurrencyValue
+) {
+  const debtNum = parseFloat(
+    debt.format({ significantDigits: Infinity, suffix: '' })
+  );
+  const colNum = parseFloat(
+    collateral.format({ significantDigits: Infinity, suffix: '' })
+  );
+
+  return (100 * debtNum) / (colNum * borrowablePercent);
+}
 
 function parsePositionMeta(
   row: RawPositionMetaRow,
   stable: Token
 ): ParsedPositionMetaRow {
+  const debt = new CurrencyValue(stable, row.debt);
+  const collateral = tokenAmount(row.token, row.collateral);
+  const borrowablePercent = row.borrowablePer10k.toNumber() / 100;
+
   return {
     trancheId: row.trancheId.toNumber(),
     strategy: row.strategy,
-    debt: new CurrencyValue(stable, row.debt),
-    collateral: tokenAmount(row.token, row.collateral),
+    debt,
+    collateral,
     token: getTokenFromAddress(row.token)!,
+    yield: new CurrencyValue(stable, row.yield),
+    collateralValue: new CurrencyValue(stable, row.collateralValue),
+    borrowablePercent,
+    owner: row.owner,
+    liquidationPrice: calcLiquidationPrice(
+      borrowablePercent,
+      debt,
+      collateral!
+    ),
   };
 }
 
@@ -260,4 +298,27 @@ export function useYieldConversionBidStrategyView(
     method,
     args,
   }) ?? [defaultResult])[0];
+}
+
+const ONE_WEEK_SECONDS = 60 * 60 * 24 * 7;
+export function useUpdatedPositions(timeStart: number) {
+  const endPeriod = Math.floor(Date.now() / 1000 / ONE_WEEK_SECONDS);
+  const startPeriod = Math.floor(timeStart / 1000 / ONE_WEEK_SECONDS);
+  console.log('endPeriod', endPeriod);
+  console.log('startPeriod', startPeriod);
+  const stable = useStable();
+  const iL = useAddresses().IsolatedLending;
+
+  const args = Array(endPeriod - startPeriod)
+    .fill(startPeriod)
+    .map((x, i) => ({
+      abi: new Interface(IsolatedLending.abi),
+      address: iL,
+      method: 'viewPositionsByTrackingPeriod',
+      args: [x + i],
+    }));
+
+  const rows = (useContractCalls(args) as RawPositionMetaRow[][]) ?? [];
+
+  return rows.map(([row]) => parsePositionMeta(row, stable));
 }

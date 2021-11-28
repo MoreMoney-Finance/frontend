@@ -8,7 +8,7 @@ import {
   TxStatus,
 } from '../chain-interaction/contracts';
 import { useApproveTrans } from '../chain-interaction/transactions';
-import { Button } from '@chakra-ui/react';
+import { Button, HStack } from '@chakra-ui/react';
 import DepositBorrowForm from './DepositBorrowForm';
 import RepayWithdrawForm from './RepayWithdrawForm';
 
@@ -46,7 +46,7 @@ export function EditTranche(
           Approve {token.name}{' '}
         </Button>
       ) : (
-        <DepositBorrowForm {...params} />
+        <DepositBorrowForm Stacking={HStack} {...params} />
       )}
       <RepayWithdrawForm {...params} />
     </>

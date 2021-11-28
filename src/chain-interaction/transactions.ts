@@ -2,10 +2,7 @@ import { Interface } from '@ethersproject/abi';
 import { Contract } from '@ethersproject/contracts';
 import { useContractFunction } from '@usedapp/core';
 import { Token } from '@usedapp/core/dist/esm/src/model';
-import {
-  useAddresses,
-  useYieldConversionBidStrategyView,
-} from './contracts';
+import { useAddresses, useYieldConversionBidStrategyView } from './contracts';
 
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
@@ -171,7 +168,7 @@ export function useMigrateStrategy() {
       trancheId: number,
       targetStrategy: string,
       stable: Token,
-      account: string 
+      account: string
     ) => send(trancheId, targetStrategy, stable.address, account),
     migrateStrategyState: state,
   };

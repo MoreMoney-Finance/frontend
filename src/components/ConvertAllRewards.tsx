@@ -31,9 +31,7 @@ export function ConvertAllRewards() {
     .map((resultRow, i) => ({
       i,
       strategyAddress: strategies[i],
-      rewardToken: resultRow
-        ? getTokenFromAddress(resultRow[0])!
-        : undefined,
+      rewardToken: resultRow ? getTokenFromAddress(resultRow[0])! : undefined,
     }))
     .filter((x) => x.rewardToken) as {
     i: number;

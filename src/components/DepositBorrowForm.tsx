@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { Button, HStack, Text } from '@chakra-ui/react';
+import { Button, ComponentWithAs, Text, StackProps } from '@chakra-ui/react';
 import { TokenAmountInputField } from './TokenAmountInputField';
 import React from 'react';
 import { useDepositBorrowTrans } from '../chain-interaction/transactions';
@@ -13,10 +13,14 @@ import {
 
 export default function DepositBorrowForm(
   params: React.PropsWithChildren<
-    ParsedStratMetaRow | (ParsedStratMetaRow & ParsedPositionMetaRow)
+    { Stacking: ComponentWithAs<'div', StackProps> } & (
+      | ParsedStratMetaRow
+      | (ParsedStratMetaRow & ParsedPositionMetaRow)
+    )
   >
 ) {
-  const { token, strategyAddress, borrowablePercent, usdPrice } = params;
+  const { token, strategyAddress, borrowablePercent, usdPrice, Stacking } =
+    params;
 
   const {
     handleSubmit: handleSubmitDepForm,
@@ -33,7 +37,7 @@ export default function DepositBorrowForm(
   const allowance = new CurrencyValue(
     token,
     useTokenAllowance(token.address, account, strategyAddress) ??
-    BigNumber.from('0')
+      BigNumber.from('0')
   );
   const walletBalance =
     useWalletBalance(token.address) ??
@@ -41,7 +45,7 @@ export default function DepositBorrowForm(
 
   const depositMax = allowance.gt(walletBalance) ? walletBalance : allowance;
 
-  function onDepositBorrow(data: { [x: string]: any; }) {
+  function onDepositBorrow(data: { [x: string]: any }) {
     console.log('deposit borrow');
     console.log(data);
 
@@ -59,46 +63,47 @@ export default function DepositBorrowForm(
     'money-borrow',
   ]);
 
-  const extantCollateral = 'collateral' in params && params.collateral
-    ? parseFloat(
-      params.collateral.format({
-        significantDigits: Infinity,
-        prefix: '',
-        suffix: '',
-      })
-    )
-    : 0;
+  const extantCollateral =
+    'collateral' in params && params.collateral
+      ? parseFloat(
+        params.collateral.format({
+          significantDigits: Infinity,
+          prefix: '',
+          suffix: '',
+        })
+      )
+      : 0;
   const totalCollateral = parseFloat(collateralInput) + extantCollateral;
 
-  const extantDebt = 'debt' in params && params.debt
-    ? parseFloat(
-      params.debt.format({
-        significantDigits: Infinity,
-        prefix: '',
-        suffix: '',
-      })
-    )
-    : 0;
+  const extantDebt =
+    'debt' in params && params.debt
+      ? parseFloat(
+        params.debt.format({
+          significantDigits: Infinity,
+          prefix: '',
+          suffix: '',
+        })
+      )
+      : 0;
   const totalDebt = parseFloat(borrowInput) + extantDebt;
 
-  console.log('extant, totals:' , extantCollateral, totalCollateral, extantDebt, totalDebt);
-  const currentPercentage = totalCollateral > 0 ? 100 * extantDebt / totalCollateral : 0;
-  console.log('currentPercentage', currentPercentage);
+  const currentPercentage =
+    totalCollateral > 0 ? (100 * extantDebt) / (totalCollateral * usdPrice) : 0;
   const percentageRange = borrowablePercent - currentPercentage;
-  console.log('percentageRange', percentageRange);
   const percentageStep = Math.max(percentageRange / 5, 10);
-  const percentageSteps = 10 >= percentageRange
-    ? [(currentPercentage + borrowablePercent) / 2]
-    : Array(Math.floor((percentageRange - 0.5) / percentageStep))
-      .fill(currentPercentage)
-      .map((p, i) => p + (i + 1) * percentageStep);
 
+  const percentageSteps =
+    10 >= percentageRange
+      ? [(currentPercentage + borrowablePercent) / 2]
+      : Array(Math.floor((percentageRange - 0.5) / percentageStep))
+        .fill(currentPercentage)
+        .map((p, i) => p + (i + 1) * percentageStep);
 
-  const percentages: { label: string; values: Record<string, number>; } = {
-    label:
-      totalCollateral > 0
-        ? `${(100 * totalDebt / totalCollateral).toFixed(0)} %`
-        : 'LTV %',
+  const totalPercentage =
+    totalCollateral > 0 ? (100 * totalDebt) / (totalCollateral * usdPrice) : 0;
+
+  const percentages: { label: string; values: Record<string, number> } = {
+    label: totalCollateral > 0 ? `${totalPercentage.toFixed(0)} %` : 'LTV %',
     values: Object.fromEntries(
       percentageSteps.map((percentage) => [
         `${percentage.toFixed(0)} %`,
@@ -109,7 +114,7 @@ export default function DepositBorrowForm(
 
   return (
     <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
-      <HStack spacing="0.5rem" margin="0.5rem">
+      <Stacking spacing="0.5rem" margin="0.5rem">
         <TokenAmountInputField
           name="collateral-deposit"
           max={depositMax}
@@ -138,7 +143,7 @@ export default function DepositBorrowForm(
         >
           <Text>Deposit &amp; Borrow</Text>
         </Button>
-      </HStack>
+      </Stacking>
     </form>
   );
 }

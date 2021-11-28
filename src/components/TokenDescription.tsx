@@ -10,9 +10,11 @@ export function TokenDescription({ token }: { token: Token }) {
       <Link to={`/token/${token.address}`}>
         <Flex>
           <AvatarGroup size="xs" max={2}>
-            {(getIconsFromTokenAddress(token.address) ?? []).map((iconUrl, i) => (
-              <Avatar src={iconUrl} key={i + 1} />
-            ))}
+            {(getIconsFromTokenAddress(token.address) ?? []).map(
+              (iconUrl, i) => (
+                <Avatar src={iconUrl} key={i + 1} />
+              )
+            )}
           </AvatarGroup>
           <Text>{token.name}</Text>
         </Flex>

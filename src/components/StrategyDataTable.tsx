@@ -24,7 +24,6 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
     row.token.chainId
   );
 
-  console.log('rowyrefdas', row.yieldType);
   return (
     <Table variant="simple" width="auto">
       <Tbody>
@@ -72,6 +71,7 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
               balance2Tally.format()
             ) : (
               <Button
+                size="sm"
                 onClick={() => sendTallyHarvestBalance(row.token.address)}
               >
                 {' '}
@@ -85,6 +85,7 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
           <Td>
             <EnsureWalletConnected>
               <Button
+                size="sm"
                 onClick={() => {
                   if (row.yieldType === YieldType.REPAYING) {
                     sendAMMHarvest(row.token.address);

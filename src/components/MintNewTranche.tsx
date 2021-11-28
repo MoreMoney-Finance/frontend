@@ -41,11 +41,11 @@ export function MintNewTranche(params: ParsedStratMetaRow) {
               allowance.gt(walletBalance) === false
             }
           >
-            Approve {strategyName} to withdraw {token.name}{' '}
+            Approve {strategyName} strategy
           </Button>
         </EnsureWalletConnected>
       ) : (
-        <DepositBorrowForm {...params} />
+        <DepositBorrowForm Stacking={VStack} {...params} />
       )}
       <StrategyDataTable {...params} />
     </VStack>

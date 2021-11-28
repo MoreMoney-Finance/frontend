@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { TokenDataTable } from '../components/TokenDataTable';
 import { MintNewTranche } from '../components/MintNewTranche';
-import { VStack, Wrap } from '@chakra-ui/react';
+import { Button, VStack, Wrap } from '@chakra-ui/react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
@@ -20,6 +20,7 @@ export function PositionBody({
   position?: ParsedPositionMetaRow;
 }>) {
   const firstStrat = Object.keys(stratMeta)[0];
+  console.log('In position body pos:', position);
   return (
     <Wrap spacing="8rem">
       <TokenDataTable
@@ -34,7 +35,10 @@ export function PositionBody({
             position.strategy !== meta.strategyAddress ? (
               <MigrateStrategy {...meta} {...position} />
             ) : (
-              <StrategyDataTable {...meta} />
+              <VStack>
+                <Button visibility="hidden">.</Button>
+                <StrategyDataTable {...meta} />
+              </VStack>
             )
           ) : (
             <MintNewTranche {...meta} />

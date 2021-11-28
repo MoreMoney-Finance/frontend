@@ -16,6 +16,7 @@ import { PositionBody } from '../components/PositionBody';
 import { BigNumber } from 'ethers';
 import { EditTranche } from '../components/EditTranche';
 import { CurrencyValue } from '@usedapp/core';
+import { TrancheTable } from '../components/TrancheTable';
 
 export function TokenPage(props: React.PropsWithChildren<unknown>) {
   const params = useParams<'tokenAddress'>();
@@ -56,7 +57,8 @@ export function TokenPage(props: React.PropsWithChildren<unknown>) {
         />
       ) : (
         positionMeta.map((position, i) => (
-          <VStack key={i} spacing="0.5rem">
+          <VStack key={i} spacing="2">
+            <TrancheTable positions={[position]} />
             <Box>
               <EditTranche
                 {...{

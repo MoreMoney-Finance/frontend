@@ -182,11 +182,11 @@ const JOE = '0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd';
 const USDCe = '0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664';
 
 const ammDefaults: Record<string, { router: string; path: string[] }> = {
-  PNG: {
+  [PNG]: {
     router: '0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106',
     path: [PNG, USDCe],
   },
-  JOE: {
+  [JOE]: {
     router: '0x60aE616a2155Ee3d9A68541Ba4544862310933d4',
     path: [JOE, USDCe],
   },
@@ -205,6 +205,7 @@ export function useAMMHarvest(strategyAddress: string) {
     undefined
   );
 
+  console.log("Reward token", rewardToken, rewardToken ? ammDefaults[getAddress(rewardToken)] : 'not yet');
   const undefinedArgs = { router: undefined, path: undefined };
   const { router, path } = rewardToken
     ? ammDefaults[getAddress(rewardToken)] ?? undefinedArgs
@@ -212,8 +213,10 @@ export function useAMMHarvest(strategyAddress: string) {
   const { send, state } = useContractFunction(conversionContract, 'harvest');
 
   return {
-    sendAMMHarvest: (yieldBearingToken: string) =>
-      send(strategyAddress, yieldBearingToken, router, path),
+    sendAMMHarvest: (yieldBearingToken: string) => {
+      console.log('Sending AMM harvest', strategyAddress, yieldBearingToken, router, path);
+      send(strategyAddress, yieldBearingToken, router, path);
+    },
     AMMHarvestState: state,
   };
 }

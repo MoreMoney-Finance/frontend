@@ -11,6 +11,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { useWrapNative } from '../chain-interaction/transactions';
 import { TokenAmountInputField } from './TokenAmountInputField';
+import { EnsureWalletConnected } from './EnsureWalletConnected';
 
 export function WrapNativeCurrency() {
   const {
@@ -46,10 +47,11 @@ export function WrapNativeCurrency() {
           registerForm={register}
           setValueForm={setValue}
         />
-
-        <Button type="submit" isLoading={isSubmitting}>
-          Wrap native currency
-        </Button>
+        <EnsureWalletConnected>
+          <Button type="submit" isLoading={isSubmitting}>
+            Wrap native currency
+          </Button>
+        </EnsureWalletConnected>
       </FormControl>
     </form>
   );

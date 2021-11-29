@@ -13,7 +13,9 @@ import { UserAddressContext } from '../contexts/UserAddressContext';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
 import YieldConversionBidStrategy from '../contracts/artifacts/contracts/YieldConversionBidStrategy.sol/YieldConversionBidStrategy.json';
+import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
+
 /* eslint-disable */
 export const addresses: Record<
   string,
@@ -260,4 +262,19 @@ export function useYieldConversionBidStrategyView(
     method,
     args,
   }) ?? [defaultResult])[0];
+}
+
+export function useRegisteredOracle(tokenAddress?: string) {
+  const address = useAddresses().OracleRegistry;
+  const abi = new Interface(OracleRegistry.abi);
+  const stable = useStable();
+  return (
+    tokenAddress &&
+    (useContractCall({
+      abi,
+      address,
+      method: 'tokenOracle',
+      args: [tokenAddress, stable.address],
+    }) ?? [undefined])[0]
+  );
 }

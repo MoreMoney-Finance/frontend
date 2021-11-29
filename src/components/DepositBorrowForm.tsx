@@ -33,7 +33,7 @@ export default function DepositBorrowForm(
   const allowance = new CurrencyValue(
     token,
     useTokenAllowance(token.address, account, strategyAddress) ??
-    BigNumber.from('0')
+      BigNumber.from('0')
   );
   const walletBalance =
     useWalletBalance(token.address) ??
@@ -41,7 +41,7 @@ export default function DepositBorrowForm(
 
   const depositMax = allowance.gt(walletBalance) ? walletBalance : allowance;
 
-  function onDepositBorrow(data: { [x: string]: any; }) {
+  function onDepositBorrow(data: { [x: string]: any }) {
     console.log('deposit borrow');
     console.log(data);
 
@@ -59,45 +59,47 @@ export default function DepositBorrowForm(
     'money-borrow',
   ]);
 
-  const extantCollateral = 'collateral' in params && params.collateral
-    ? parseFloat(
-      params.collateral.format({
-        significantDigits: Infinity,
-        prefix: '',
-        suffix: '',
-      })
-    )
-    : 0;
+  const extantCollateral =
+    'collateral' in params && params.collateral
+      ? parseFloat(
+        params.collateral.format({
+          significantDigits: Infinity,
+          prefix: '',
+          suffix: '',
+        })
+      )
+      : 0;
   const totalCollateral = parseFloat(collateralInput) + extantCollateral;
 
-  const extantDebt = 'debt' in params && params.debt
-    ? parseFloat(
-      params.debt.format({
-        significantDigits: Infinity,
-        prefix: '',
-        suffix: '',
-      })
-    )
-    : 0;
+  const extantDebt =
+    'debt' in params && params.debt
+      ? parseFloat(
+        params.debt.format({
+          significantDigits: Infinity,
+          prefix: '',
+          suffix: '',
+        })
+      )
+      : 0;
   const totalDebt = parseFloat(borrowInput) + extantDebt;
 
-  console.log('extant, totals:' , extantCollateral, totalCollateral, extantDebt, totalDebt);
-  const currentPercentage = totalCollateral > 0 ? 100 * extantDebt / totalCollateral : 0;
+  const currentPercentage =
+    totalCollateral > 0 ? (100 * extantDebt) / totalCollateral : 0;
   console.log('currentPercentage', currentPercentage);
   const percentageRange = borrowablePercent - currentPercentage;
   console.log('percentageRange', percentageRange);
   const percentageStep = Math.max(percentageRange / 5, 10);
-  const percentageSteps = 10 >= percentageRange
-    ? [(currentPercentage + borrowablePercent) / 2]
-    : Array(Math.floor((percentageRange - 0.5) / percentageStep))
-      .fill(currentPercentage)
-      .map((p, i) => p + (i + 1) * percentageStep);
+  const percentageSteps =
+    10 >= percentageRange
+      ? [(currentPercentage + borrowablePercent) / 2]
+      : Array(Math.floor((percentageRange - 0.5) / percentageStep))
+        .fill(currentPercentage)
+        .map((p, i) => p + (i + 1) * percentageStep);
 
-
-  const percentages: { label: string; values: Record<string, number>; } = {
+  const percentages: { label: string; values: Record<string, number> } = {
     label:
       totalCollateral > 0
-        ? `${(100 * totalDebt / totalCollateral).toFixed(0)} %`
+        ? `${((100 * totalDebt) / totalCollateral).toFixed(0)} %`
         : 'LTV %',
     values: Object.fromEntries(
       percentageSteps.map((percentage) => [

@@ -4,6 +4,8 @@ import { useContractFunction } from '@usedapp/core';
 import { Token } from '@usedapp/core/dist/esm/src/model';
 import {
   useAddresses,
+  useRegisteredOracle,
+  useStable,
   useYieldConversionBidStrategyView,
 } from './contracts';
 
@@ -12,6 +14,7 @@ import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.jso
 import YieldConversionBidStrategy from '../contracts/artifacts/contracts/YieldConversionBidStrategy.sol/YieldConversionBidStrategy.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
+import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 
@@ -171,7 +174,7 @@ export function useMigrateStrategy() {
       trancheId: number,
       targetStrategy: string,
       stable: Token,
-      account: string 
+      account: string
     ) => send(trancheId, targetStrategy, stable.address, account),
     migrateStrategyState: state,
   };
@@ -205,7 +208,6 @@ export function useAMMHarvest(strategyAddress: string) {
     undefined
   );
 
-  console.log("Reward token", rewardToken, rewardToken ? ammDefaults[getAddress(rewardToken)] : 'not yet');
   const undefinedArgs = { router: undefined, path: undefined };
   const { router, path } = rewardToken
     ? ammDefaults[getAddress(rewardToken)] ?? undefinedArgs
@@ -214,9 +216,28 @@ export function useAMMHarvest(strategyAddress: string) {
 
   return {
     sendAMMHarvest: (yieldBearingToken: string) => {
-      console.log('Sending AMM harvest', strategyAddress, yieldBearingToken, router, path);
+      console.log(
+        'Sending AMM harvest',
+        strategyAddress,
+        yieldBearingToken,
+        router,
+        path
+      );
       send(strategyAddress, yieldBearingToken, router, path);
     },
     AMMHarvestState: state,
+  };
+}
+
+export function useUpdatePriceOracle(token?: Token) {
+  const oracleAddress = useRegisteredOracle(token?.address);
+  const oracleContract = oracleAddress && new Contract(oracleAddress, IOracle.abi);
+  const stable = useStable();
+
+  const { send, state } = useContractFunction(oracleContract, 'getAmountInPeg');
+  return {
+    sendUpdatePriceOracle: () =>
+      token && send(token.address, parseEther('1'), stable.address),
+    updatePriceOracleState: state,
   };
 }

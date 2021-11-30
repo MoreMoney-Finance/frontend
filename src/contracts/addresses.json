@@ -23,7 +23,7 @@
     "StrategyTokenActivation": "0x0F5cEe7792d2D87ae54127614fA94E4b8cFDE3D0"
   },
   "43114": {
-    "AMMYieldConverter": "0xad173991Ee17efB1789920d3816E7842265a1966",
+    "AMMYieldConverter": "0x782752f45619E6839Dc7b6B00D4bE63f0471374B",
     "ChainlinkOracle": "0xACaFca55bB0c73B11B048803F2b030Df0BC8303c",
     "DependencyController": "0x9512Eb87BCb172d82925E54557BC4003656c61a8",
     "EquivalentScaledOracle": "0x3C936F27e4caa8B5e2163941B30581C10649D534",

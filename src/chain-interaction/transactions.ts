@@ -231,7 +231,8 @@ export function useAMMHarvest(strategyAddress: string) {
 
 export function useUpdatePriceOracle(token?: Token) {
   const oracleAddress = useRegisteredOracle(token?.address);
-  const oracleContract = oracleAddress && new Contract(oracleAddress, IOracle.abi);
+  const oracleContract =
+    oracleAddress && new Contract(oracleAddress, IOracle.abi);
   const stable = useStable();
 
   const { send, state } = useContractFunction(oracleContract, 'getAmountInPeg');

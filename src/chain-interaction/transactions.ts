@@ -202,7 +202,11 @@ export function useAMMHarvest(strategyAddress: string) {
     undefined
   );
 
-  console.log("Reward token", rewardToken, rewardToken ? ammDefaults[getAddress(rewardToken)] : 'not yet');
+  console.log(
+    'Reward token',
+    rewardToken,
+    rewardToken ? ammDefaults[getAddress(rewardToken)] : 'not yet'
+  );
   const undefinedArgs = { router: undefined, path: undefined };
   const { router, path } = rewardToken
     ? ammDefaults[getAddress(rewardToken)] ?? undefinedArgs
@@ -211,7 +215,13 @@ export function useAMMHarvest(strategyAddress: string) {
 
   return {
     sendAMMHarvest: (yieldBearingToken: string) => {
-      console.log('Sending AMM harvest', strategyAddress, yieldBearingToken, router, path);
+      console.log(
+        'Sending AMM harvest',
+        strategyAddress,
+        yieldBearingToken,
+        router,
+        path
+      );
       send(strategyAddress, yieldBearingToken, router, path);
     },
     AMMHarvestState: state,

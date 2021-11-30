@@ -12,7 +12,7 @@ export function ConvertAllRewards() {
 
   const strategies = [
     addresses.TraderJoeMasterChefStrategy,
-    addresses.PangolinStakingRewardsStrategy,
+    addresses.PangolinMiniChefStrategy,
   ].filter((x) => x);
 
   function convert2ContractCall(strategyAddress: string) {

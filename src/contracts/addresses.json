@@ -10,7 +10,7 @@
     "IsolatedLendingLiquidation": "0xc7f5fBdDbFEFF5EaE6e810920e10bd3FC08272e8",
     "OracleRegistry": "0x495365d4Ca2Fd5a09159AAD6C9Cd23B0bbaD4Ba3",
     "StrategyRegistry": "0xf774BfB0be88A38BE9cee5b8df134852e383dEDd",
-    "PangolinStakingRewardsStrategy": "0xd1422029304725845FBCe8E2F1d06270724B57e7",
+    "PangolinMiniChefStrategy": "0xd1422029304725845FBCe8E2F1d06270724B57e7",
     "ProxyOracle": "0xe9c8B6688E42F396706f3aBeC03E54e3aece790d",
     "SimpleHoldingStrategy": "0xe23eEBAd0e7ad7e6da9523901AB6B4d47050BCbF",
     "Stablecoin": "0xaF95b462D1cd9ea1f84FA53f8AE7995e4CAA8EE8",

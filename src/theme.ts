@@ -52,7 +52,7 @@ const Tabs = {
 const Input = {
   variants: {
     rounded: {
-      borderRadius: '5px',
+      borderRadius: '5',
     },
   },
 };

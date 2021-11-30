@@ -22,19 +22,22 @@ export function AllSupportedCollateral() {
   const stratMeta: ParsedStratMetaRow[] = Object.values(
     React.useContext(StrategyMetadataContext)
   ).map((x) =>
-    Object.values(x).reduce((highestStrat, nextStrat) =>
-      highestStrat.APY > nextStrat.APY ? highestStrat : nextStrat
-    )
+    Object.values(x).reduce((aggStrat, nextStrat) => ({
+      ...aggStrat,
+      APY: aggStrat.APY > nextStrat.APY ? aggStrat.APY : nextStrat.APY,
+      debtCeiling: aggStrat.debtCeiling.add(nextStrat.debtCeiling),
+      totalDebt: aggStrat.totalDebt.add(nextStrat.totalDebt),
+    }))
   );
 
   return (
     <>
       <Box textAlign="center">
-        <Text fontSize="2rem" variant={'gradient'}>
-          <b>Select a collateral type to</b>
+        <Text fontSize="8" variant={'gradient'}>
+          <b>Select a collateral to</b>
         </Text>
-        <Text fontSize="3rem">Create a Maker Vault & Borrow Coin</Text>
-        <Text fontSize="3rem">or buy additional collateral.</Text>
+        <Text fontSize="12">Borrow MONEY</Text>
+        <Text fontSize="12">...and earn yield</Text>
       </Box>
 
       <Box>
@@ -49,9 +52,8 @@ export function AllSupportedCollateral() {
           <Table variant="simple">
             <Thead>
               <Th>Asset</Th>
-              <Th>Strategy</Th>
               <Th>APY</Th>
-              <Th>Borrowable</Th>
+              <Th>MONEY available</Th>
               <Th>Min. ColRatio</Th>
             </Thead>
             <Tbody>
@@ -65,8 +67,6 @@ export function AllSupportedCollateral() {
                   <Td>
                     <TokenDescription token={meta.token} />
                   </Td>
-
-                  <Td>{meta.strategyName}</Td>
 
                   <Td>{meta.APY.toFixed(4)} %</Td>
 

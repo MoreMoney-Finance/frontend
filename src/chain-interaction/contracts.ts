@@ -32,7 +32,7 @@ export type DeploymentAddresses = {
   StrategyRegistry: string;
   TrancheIDService: string;
   TraderJoeMasterChefStrategy: string;
-  PangolinStakingRewardsStrategy: string;
+  PangolinMiniChefStrategy: string;
   AMMYieldConverter: string;
 };
 

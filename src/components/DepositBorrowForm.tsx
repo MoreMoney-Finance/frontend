@@ -90,8 +90,8 @@ export default function DepositBorrowForm(
   const currentPercentage =
     totalCollateral > 0 ? (100 * extantDebt) / (totalCollateral * usdPrice) : 0;
   const percentageRange = borrowablePercent - currentPercentage;
-  const percentageStep = Math.max(percentageRange / 5, 10);
 
+  const percentageStep = Math.max(percentageRange / 5, 10);
   const percentageSteps =
     10 >= percentageRange
       ? [(currentPercentage + borrowablePercent) / 2]

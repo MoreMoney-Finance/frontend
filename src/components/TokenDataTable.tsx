@@ -1,7 +1,8 @@
 import React from 'react';
 import { ParsedStratMetaRow } from '../chain-interaction/contracts';
-import { Table, Tbody, Tr, Th, Td } from '@chakra-ui/react';
+import { Table, Tbody, Tr, Th, Td, Button } from '@chakra-ui/react';
 import { BigNumber } from 'ethers';
+import { useUpdatePriceOracle } from '../chain-interaction/transactions';
 
 export function TokenDataTable({
   tokenData,
@@ -10,6 +11,7 @@ export function TokenDataTable({
   tokenData: ParsedStratMetaRow | null | undefined;
   liquidationFee: BigNumber;
 }) {
+  const { sendUpdatePriceOracle } = useUpdatePriceOracle(tokenData?.token);
   return tokenData ? (
     <Table variant="simple" width="auto">
       <Tbody>
@@ -41,7 +43,12 @@ export function TokenDataTable({
         </Tr>
         <Tr>
           <Th>USD Price</Th>
-          <Td>{tokenData.usdPrice.toString()}</Td>
+          <Td>
+            {tokenData.usdPrice.toString()}{' '}
+            <Button onClick={sendUpdatePriceOracle} size="sm">
+              Update
+            </Button>
+          </Td>
         </Tr>
       </Tbody>
     </Table>

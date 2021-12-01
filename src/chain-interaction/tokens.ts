@@ -63,10 +63,13 @@ const chainIds: Record<string, ChainId> = {
   43114: ChainId.Avalanche,
 };
 
-for (const [chainId, lpTokensPerChain] of Object.entries(lptokens)) {
+for (const [chainId, lpTokensPerChain] of Object.entries(lptokens) as [
+  string,
+  Record<string, Record<string, { pairAddress?: string; addresses: string[] }>>
+][]) {
   for (const records of Object.values(lpTokensPerChain)) {
     for (const [ticker, record] of Object.entries(records)) {
-      if ('pairAddress' in record) {
+      if ('pairAddress' in record && record.pairAddress) {
         addressToken.set(
           getAddress(record.pairAddress),
           new Token(

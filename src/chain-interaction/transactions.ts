@@ -2,13 +2,19 @@ import { Interface } from '@ethersproject/abi';
 import { Contract } from '@ethersproject/contracts';
 import { useContractFunction } from '@usedapp/core';
 import { Token } from '@usedapp/core/dist/esm/src/model';
-import { useAddresses, useYieldConversionBidStrategyView } from './contracts';
+import {
+  useAddresses,
+  useRegisteredOracle,
+  useStable,
+  useYieldConversionBidStrategyView,
+} from './contracts';
 
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
 import YieldConversionBidStrategy from '../contracts/artifacts/contracts/YieldConversionBidStrategy.sol/YieldConversionBidStrategy.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
+import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 
@@ -202,11 +208,6 @@ export function useAMMHarvest(strategyAddress: string) {
     undefined
   );
 
-  console.log(
-    'Reward token',
-    rewardToken,
-    rewardToken ? ammDefaults[getAddress(rewardToken)] : 'not yet'
-  );
   const undefinedArgs = { router: undefined, path: undefined };
   const { router, path } = rewardToken
     ? ammDefaults[getAddress(rewardToken)] ?? undefinedArgs
@@ -225,5 +226,19 @@ export function useAMMHarvest(strategyAddress: string) {
       send(strategyAddress, yieldBearingToken, router, path);
     },
     AMMHarvestState: state,
+  };
+}
+
+export function useUpdatePriceOracle(token?: Token) {
+  const oracleAddress = useRegisteredOracle(token?.address);
+  const oracleContract =
+    oracleAddress && new Contract(oracleAddress, IOracle.abi);
+  const stable = useStable();
+
+  const { send, state } = useContractFunction(oracleContract, 'getAmountInPeg');
+  return {
+    sendUpdatePriceOracle: () =>
+      token && send(token.address, parseEther('1'), stable.address),
+    updatePriceOracleState: state,
   };
 }

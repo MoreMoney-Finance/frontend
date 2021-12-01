@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { ParsedStratMetaRow } from '../chain-interaction/contracts';
 import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
-import { Box, Text, Flex, Spacer } from '@chakra-ui/react';
+import { Box, Text, Flex, Spacer, Table, Thead, Tbody, Tr, Td } from '@chakra-ui/react';
 import { TableTabs } from './TableTabs';
 import { TableSearch } from './TableSearch';
 import { TokenDescription } from './TokenDescription';
 import { Column, useTable } from 'react-table';
+import { Link } from 'react-router-dom';
 
-type Entity = {
+type Entity = ParsedStratMetaRow & {
   asset: any;
   apy: string;
   MONEYavailable: string;
@@ -30,6 +31,7 @@ export function AllSupportedCollateral() {
     () =>
       stratMeta.map((meta) => {
         return {
+          ...meta,
           asset: <TokenDescription token={meta.token} />,
           apy: meta.APY.toFixed(4) + '%',
           MONEYavailable: meta.debtCeiling.sub(meta.totalDebt).format(),
@@ -84,51 +86,55 @@ export function AllSupportedCollateral() {
           </Flex>
         </Box>
         <Box>
-          <table {...getTableProps()}>
-            <thead>
+          <Table variant="unstyled" {...getTableProps()}
+            sx={{
+              borderCollapse: 'separate',
+              borderSpacing: '0 10px'
+            }}>
+            <Thead>
               {headerGroups.map((headerGroup) => (
                 // eslint-disable-next-line
-                <tr {...headerGroup.getHeaderGroupProps()}>
+                <Tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
                     // eslint-disable-next-line
-                    <th
+                    <Td
                       {...column.getHeaderProps()}
                       style={{
                         fontWeight: 'bold',
                       }}
                     >
                       {column.render('Header')}
-                    </th>
+                    </Td>
                   ))}
-                </tr>
+                </Tr>
               ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
+            </Thead>
+            <Tbody {...getTableBodyProps()}>
               {rows.map((row) => {
                 prepareRow(row);
                 return (
                   // eslint-disable-next-line
-                  <tr {...row.getRowProps()}>
+                  <Tr {...row.getRowProps()}
+                    as={Link}
+                    to={`/token/${row.original.token.address}`}
+                    display="table-row"
+                    bg="gray.900">
                     {row.cells.map((cell) => {
                       // eslint-disable-next-line
                       return (
                         // eslint-disable-next-line
-                        <td
+                        <Td
                           {...cell.getCellProps()}
-                          style={{
-                            padding: '10',
-                            border: 'solid 1px gray',
-                          }}
                         >
                           {cell.render('Cell')}
-                        </td>
+                        </Td>
                       );
                     })}
-                  </tr>
+                  </Tr>
                 );
               })}
-            </tbody>
-          </table>
+            </Tbody>
+          </Table>
         </Box>
       </Box>
     </>

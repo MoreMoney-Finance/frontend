@@ -8,6 +8,7 @@ import { ChainId, DAppProvider } from '@usedapp/core';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Dashboard } from './pages/Dashboard';
 import { TokenPage } from './pages/TokenPage';
+import { Analytics } from './pages/Analytics';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -28,6 +29,7 @@ ReactDOM.render(
           <Route path="/" element={<App />}>
             <Route index element={<Dashboard />} />
             <Route path="/token/:tokenAddress" element={<TokenPage />} />
+            <Route path="/analytics" element={<Analytics />} />
           </Route>
         </Routes>
       </BrowserRouter>

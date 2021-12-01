@@ -35,6 +35,8 @@ export function MintNewTranche(params: ParsedStratMetaRow) {
       {allowance.gt(walletBalance) === false ? (
         <EnsureWalletConnected>
           <Button
+            bg="blue.800"
+            color="blue.300"
             onClick={() => sendApprove(strategyAddress)}
             isLoading={
               approveState.status == TxStatus.SUCCESS &&

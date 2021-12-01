@@ -329,13 +329,10 @@ export function useRegisteredOracle(tokenAddress?: string) {
   const address = useAddresses().OracleRegistry;
   const abi = new Interface(OracleRegistry.abi);
   const stable = useStable();
-  return (
-    tokenAddress &&
-    (useContractCall({
-      abi,
-      address,
-      method: 'tokenOracle',
-      args: [tokenAddress, stable.address],
-    }) ?? [undefined])[0]
-  );
+  return (useContractCall({
+    abi,
+    address,
+    method: 'tokenOracle',
+    args: [tokenAddress, stable.address],
+  }) ?? [undefined])[0];
 }

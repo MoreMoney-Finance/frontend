@@ -4,19 +4,28 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { getIconsFromTokenAddress } from '../chain-interaction/tokens';
 
-export function TokenDescription({ token }: { token: Token }) {
+export function TokenDescription({
+  token,
+  iconSize,
+  textSize,
+}: {
+  token: Token;
+  iconSize?: string;
+  textSize?: string;
+}) {
+  const targetSize = iconSize ?? 'xs';
   return (
-    <HStack spacing="0.25rem">
+    <HStack spacing="1">
       <Link to={`/token/${token.address}`}>
         <Flex>
-          <AvatarGroup size="xs" max={2}>
+          <AvatarGroup size={targetSize} max={2}>
             {(getIconsFromTokenAddress(token.address) ?? []).map(
               (iconUrl, i) => (
                 <Avatar src={iconUrl} key={i + 1} />
               )
             )}
           </AvatarGroup>
-          <Text>{token.name}</Text>
+          <Text size={textSize}>{token.name}</Text>
         </Flex>
       </Link>
     </HStack>

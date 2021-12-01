@@ -116,8 +116,8 @@ export function AllSupportedCollateral() {
                         <td
                           {...cell.getCellProps()}
                           style={{
-                            padding: '10px',
-                            border: 'solid 1px gray',                            
+                            padding: '10',
+                            border: 'solid 1px gray',
                           }}
                         >
                           {cell.render('Cell')}

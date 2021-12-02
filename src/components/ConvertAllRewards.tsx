@@ -4,7 +4,7 @@ import { ContractCall, Token, useContractCalls } from '@usedapp/core';
 import React from 'react';
 import { useAddresses } from '../chain-interaction/contracts';
 import { getTokenFromAddress } from '../chain-interaction/tokens';
-import YieldConversionBidStrategy from '../contracts/artifacts/contracts/YieldConversionBidStrategy.sol/YieldConversionBidStrategy.json';
+import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import { ConvertReward } from './ConvertReward';
 
 export function ConvertAllRewards() {
@@ -12,12 +12,12 @@ export function ConvertAllRewards() {
 
   const strategies = [
     addresses.TraderJoeMasterChefStrategy,
-    addresses.PangolinStakingRewardsStrategy,
+    addresses.PangolinMiniChefStrategy,
   ].filter((x) => x);
 
   function convert2ContractCall(strategyAddress: string) {
     return {
-      abi: new Interface(YieldConversionBidStrategy.abi),
+      abi: new Interface(YieldConversionStrategy.abi),
       address: strategyAddress,
       method: 'rewardToken',
       args: [],

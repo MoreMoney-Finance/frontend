@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { TokenDataTable } from '../components/TokenDataTable';
 import { MintNewTranche } from '../components/MintNewTranche';
-import { VStack, Wrap } from '@chakra-ui/react';
+import { Button, VStack, Wrap, Box } from '@chakra-ui/react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
@@ -20,26 +20,46 @@ export function PositionBody({
   position?: ParsedPositionMetaRow;
 }>) {
   const firstStrat = Object.keys(stratMeta)[0];
+  console.log('In position body pos:', position);
+
+  const boxStyle = {
+    border: '1px solid transparent',
+    borderColor: 'gray.600',
+    borderRadius: '3xl',
+    borderStyle: 'solid',
+  };
+
   return (
-    <Wrap spacing="8rem">
-      <TokenDataTable
-        tokenData={
-          Object.keys(stratMeta).length > 0 ? stratMeta[firstStrat] : undefined
-        }
-        liquidationFee={liquidationRewardPer10k}
-      />
+    <Wrap spacing="8" align="center" justify="center" padding="8">
+      <Box {...boxStyle}>
+        <TokenDataTable
+          tokenData={
+            Object.keys(stratMeta).length > 0
+              ? stratMeta[firstStrat]
+              : undefined
+          }
+          liquidationFee={liquidationRewardPer10k}
+        />
+      </Box>
       {Object.values(stratMeta).map((meta, i) => (
-        <VStack key={i}>
-          {position ? (
-            position.strategy !== meta.strategyAddress ? (
-              <MigrateStrategy {...meta} {...position} />
+        <Box key={i} {...boxStyle}>
+          <VStack>
+            {position ? (
+              position.strategy !== meta.strategyAddress ? (
+                <MigrateStrategy {...meta} {...position} />
+              ) : (
+                <VStack>
+                  <Button visibility="hidden">.</Button>
+                  <StrategyDataTable {...meta} />
+                </VStack>
+              )
             ) : (
-              <StrategyDataTable {...meta} />
-            )
-          ) : (
-            <MintNewTranche {...meta} />
-          )}
-        </VStack>
+              <Box padding="4">
+                <MintNewTranche {...meta} />
+              </Box>
+            )}
+          </VStack>
+        </Box>
       ))}
     </Wrap>
   );

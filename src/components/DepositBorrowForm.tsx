@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { Button, HStack, Text } from '@chakra-ui/react';
+import { Button, ComponentWithAs, Text, StackProps } from '@chakra-ui/react';
 import { TokenAmountInputField } from './TokenAmountInputField';
 import React from 'react';
 import { useDepositBorrowTrans } from '../chain-interaction/transactions';
@@ -13,10 +13,14 @@ import {
 
 export default function DepositBorrowForm(
   params: React.PropsWithChildren<
-    ParsedStratMetaRow | (ParsedStratMetaRow & ParsedPositionMetaRow)
+    { Stacking: ComponentWithAs<'div', StackProps> } & (
+      | ParsedStratMetaRow
+      | (ParsedStratMetaRow & ParsedPositionMetaRow)
+    )
   >
 ) {
-  const { token, strategyAddress, borrowablePercent, usdPrice } = params;
+  const { token, strategyAddress, borrowablePercent, usdPrice, Stacking } =
+    params;
 
   const {
     handleSubmit: handleSubmitDepForm,
@@ -84,10 +88,9 @@ export default function DepositBorrowForm(
   const totalDebt = parseFloat(borrowInput) + extantDebt;
 
   const currentPercentage =
-    totalCollateral > 0 ? (100 * extantDebt) / totalCollateral : 0;
-  console.log('currentPercentage', currentPercentage);
+    totalCollateral > 0 ? (100 * extantDebt) / (totalCollateral * usdPrice) : 0;
   const percentageRange = borrowablePercent - currentPercentage;
-  console.log('percentageRange', percentageRange);
+
   const percentageStep = Math.max(percentageRange / 5, 10);
   const percentageSteps =
     10 >= percentageRange
@@ -96,11 +99,11 @@ export default function DepositBorrowForm(
         .fill(currentPercentage)
         .map((p, i) => p + (i + 1) * percentageStep);
 
+  const totalPercentage =
+    totalCollateral > 0 ? (100 * totalDebt) / (totalCollateral * usdPrice) : 0;
+
   const percentages: { label: string; values: Record<string, number> } = {
-    label:
-      totalCollateral > 0
-        ? `${((100 * totalDebt) / totalCollateral).toFixed(0)} %`
-        : 'LTV %',
+    label: totalCollateral > 0 ? `${totalPercentage.toFixed(0)} %` : 'LTV %',
     values: Object.fromEntries(
       percentageSteps.map((percentage) => [
         `${percentage.toFixed(0)} %`,
@@ -111,7 +114,7 @@ export default function DepositBorrowForm(
 
   return (
     <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
-      <HStack spacing="0.5rem" margin="0.5rem">
+      <Stacking spacing="0.5rem" margin="0.5rem">
         <TokenAmountInputField
           name="collateral-deposit"
           max={depositMax}
@@ -140,7 +143,7 @@ export default function DepositBorrowForm(
         >
           <Text>Deposit &amp; Borrow</Text>
         </Button>
-      </HStack>
+      </Stacking>
     </form>
   );
 }

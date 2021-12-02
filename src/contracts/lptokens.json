@@ -138,8 +138,8 @@
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
         ],
         "pairAddress": "0x7c05d54fc5CB6e4Ad87c6f5db3b807C94bB89c52",
-        "anchorName": "WETHe",
-        "stakingContract": "0x830A966B9B447c9B15aB24c0369c4018E75F31C9"
+        "pid": 8,
+        "anchorName": "WETHe"
       },
       "PGL-USDCe-WAVAX": {
         "addresses": [
@@ -147,8 +147,8 @@
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
         ],
         "pairAddress": "0xbd918Ed441767fe7924e99F6a0E0B568ac1970D9",
-        "anchorName": "USDCe",
-        "stakingContract": "0x84B536dA1A2D9b0609f9Da73139674cc2D75AF2D"
+        "pid": 9,
+        "anchorName": "USDCe"
       },
       "PGL-WAVAX-WETHe": {
         "addresses": [
@@ -156,8 +156,8 @@
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
         ],
         "pairAddress": "0x7c05d54fc5CB6e4Ad87c6f5db3b807C94bB89c52",
-        "anchorName": "WAVAX",
-        "stakingContract": "0x830A966B9B447c9B15aB24c0369c4018E75F31C9"
+        "pid": 8,
+        "anchorName": "WAVAX"
       },
       "PGL-USDCe-WETHe": {
         "addresses": [
@@ -173,8 +173,7 @@
           "0x60781c2586d68229fde47564546784ab3faca982"
         ],
         "pairAddress": "0xcf35400A595EFCF0Af591D3Aeb5a35cBCD120d54",
-        "anchorName": "WETHe",
-        "stakingContract": "0x03a9091620CACeE4968c915232B175C16a584733"
+        "anchorName": "WETHe"
       },
       "PGL-WAVAX-PNG": {
         "addresses": [
@@ -182,8 +181,8 @@
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
         ],
         "pairAddress": "0xd7538cABBf8605BdE1f4901B47B8D42c61DE0367",
-        "anchorName": "WAVAX",
-        "stakingContract": "0x574d3245e36Cf8C9dc86430EaDb0fDB2F385F829"
+        "pid": 0,
+        "anchorName": "WAVAX"
       },
       "PGL-USDCe-PNG": {
         "addresses": [
@@ -191,8 +190,8 @@
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
         ],
         "pairAddress": "0xC33Ac18900b2f63DFb60B554B1F53Cd5b474d4cd",
-        "anchorName": "USDCe",
-        "stakingContract": "0x73d1cC4B8dA555005E949B3ECEE490A7206C14DF"
+        "pid": 1,
+        "anchorName": "USDCe"
       },
       "PGL-WETHe-USDTe": {
         "addresses": [
@@ -208,8 +207,8 @@
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
         ],
         "pairAddress": "0xe28984e1EE8D431346D32BeC9Ec800Efb643eef4",
-        "anchorName": "WAVAX",
-        "stakingContract": "0x006cC053bdb84C2d6380B3C4a573d84636378A47"
+        "pid": 7,
+        "anchorName": "WAVAX"
       },
       "PGL-USDCe-USDTe": {
         "addresses": [
@@ -217,6 +216,7 @@
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
         ],
         "pairAddress": "0xc13E562d92F7527c4389Cd29C67DaBb0667863eA",
+        "pid": 2,
         "anchorName": "USDCe"
       },
       "PGL-WETHe-JOE": {
@@ -232,8 +232,8 @@
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
         ],
         "pairAddress": "0x134Ad631337E8Bf7E01bA641fB650070a2e0efa8",
-        "anchorName": "WAVAX",
-        "stakingContract": "0xC0B2D45b8617997bcDad0F33AEE03e4DF4C4f81E"
+        "pid": 14,
+        "anchorName": "WAVAX"
       },
       "PGL-USDCe-JOE": {
         "addresses": [
@@ -257,8 +257,8 @@
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
         ],
         "pairAddress": "0xbd918Ed441767fe7924e99F6a0E0B568ac1970D9",
-        "anchorName": "WAVAX",
-        "stakingContract": "0x84B536dA1A2D9b0609f9Da73139674cc2D75AF2D"
+        "pid": 9,
+        "anchorName": "WAVAX"
       }
     }
   },
@@ -401,8 +401,8 @@
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
         ],
         "pairAddress": "0x7c05d54fc5CB6e4Ad87c6f5db3b807C94bB89c52",
-        "anchorName": "WETHe",
-        "stakingContract": "0x830A966B9B447c9B15aB24c0369c4018E75F31C9"
+        "pid": 8,
+        "anchorName": "WETHe"
       },
       "PGL-USDCe-WAVAX": {
         "addresses": [
@@ -410,8 +410,8 @@
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
         ],
         "pairAddress": "0xbd918Ed441767fe7924e99F6a0E0B568ac1970D9",
-        "anchorName": "USDCe",
-        "stakingContract": "0x84B536dA1A2D9b0609f9Da73139674cc2D75AF2D"
+        "pid": 9,
+        "anchorName": "USDCe"
       },
       "PGL-WAVAX-WETHe": {
         "addresses": [
@@ -419,8 +419,8 @@
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
         ],
         "pairAddress": "0x7c05d54fc5CB6e4Ad87c6f5db3b807C94bB89c52",
-        "anchorName": "WAVAX",
-        "stakingContract": "0x830A966B9B447c9B15aB24c0369c4018E75F31C9"
+        "pid": 8,
+        "anchorName": "WAVAX"
       },
       "PGL-USDCe-WETHe": {
         "addresses": [
@@ -436,8 +436,7 @@
           "0x60781c2586d68229fde47564546784ab3faca982"
         ],
         "pairAddress": "0xcf35400A595EFCF0Af591D3Aeb5a35cBCD120d54",
-        "anchorName": "WETHe",
-        "stakingContract": "0x03a9091620CACeE4968c915232B175C16a584733"
+        "anchorName": "WETHe"
       },
       "PGL-WAVAX-PNG": {
         "addresses": [
@@ -445,8 +444,8 @@
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
         ],
         "pairAddress": "0xd7538cABBf8605BdE1f4901B47B8D42c61DE0367",
-        "anchorName": "WAVAX",
-        "stakingContract": "0x574d3245e36Cf8C9dc86430EaDb0fDB2F385F829"
+        "pid": 0,
+        "anchorName": "WAVAX"
       },
       "PGL-USDCe-PNG": {
         "addresses": [
@@ -454,8 +453,8 @@
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
         ],
         "pairAddress": "0xC33Ac18900b2f63DFb60B554B1F53Cd5b474d4cd",
-        "anchorName": "USDCe",
-        "stakingContract": "0x73d1cC4B8dA555005E949B3ECEE490A7206C14DF"
+        "pid": 1,
+        "anchorName": "USDCe"
       },
       "PGL-WETHe-USDTe": {
         "addresses": [
@@ -471,8 +470,8 @@
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
         ],
         "pairAddress": "0xe28984e1EE8D431346D32BeC9Ec800Efb643eef4",
-        "anchorName": "WAVAX",
-        "stakingContract": "0x006cC053bdb84C2d6380B3C4a573d84636378A47"
+        "pid": 7,
+        "anchorName": "WAVAX"
       },
       "PGL-USDCe-USDTe": {
         "addresses": [
@@ -480,6 +479,7 @@
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
         ],
         "pairAddress": "0xc13E562d92F7527c4389Cd29C67DaBb0667863eA",
+        "pid": 2,
         "anchorName": "USDCe"
       },
       "PGL-WETHe-JOE": {
@@ -495,8 +495,8 @@
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
         ],
         "pairAddress": "0x134Ad631337E8Bf7E01bA641fB650070a2e0efa8",
-        "anchorName": "WAVAX",
-        "stakingContract": "0xC0B2D45b8617997bcDad0F33AEE03e4DF4C4f81E"
+        "pid": 14,
+        "anchorName": "WAVAX"
       },
       "PGL-USDCe-JOE": {
         "addresses": [
@@ -520,8 +520,8 @@
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
         ],
         "pairAddress": "0xbd918Ed441767fe7924e99F6a0E0B568ac1970D9",
-        "anchorName": "WAVAX",
-        "stakingContract": "0x84B536dA1A2D9b0609f9Da73139674cc2D75AF2D"
+        "pid": 9,
+        "anchorName": "WAVAX"
       }
     }
   }

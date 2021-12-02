@@ -9,13 +9,14 @@ import {
   useStable,
 } from '../chain-interaction/contracts';
 import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
-import { Box, VStack } from '@chakra-ui/react';
+import { Box, Center, VStack } from '@chakra-ui/react';
 import { TokenDescription } from '../components/TokenDescription';
 import { getTokenFromAddress } from '../chain-interaction/tokens';
 import { PositionBody } from '../components/PositionBody';
 import { BigNumber } from 'ethers';
 import { EditTranche } from '../components/EditTranche';
 import { CurrencyValue } from '@usedapp/core';
+import { TrancheTable } from '../components/TrancheTable';
 
 export function TokenPage(props: React.PropsWithChildren<unknown>) {
   const params = useParams<'tokenAddress'>();
@@ -41,45 +42,61 @@ export function TokenPage(props: React.PropsWithChildren<unknown>) {
 
   const stable = useStable();
 
+  const boxStyle = {
+    border: '1px solid transparent',
+    borderColor: 'gray.600',
+    borderRadius: '3xl',
+    borderStyle: "solid"
+  };
+
   return (
-    <VStack spacing="1rem">
+    <VStack spacing="8" margin="8">
       {token ? (
         <h1>
-          <TokenDescription token={token} />
+          <TokenDescription token={token} iconSize="xs" textSize="6xl" />
         </h1>
       ) : undefined}
 
-      {positionMeta.length === 0 ? (
-        <PositionBody
-          stratMeta={stratMeta}
-          liquidationRewardPer10k={liquidationRewardPer10k}
-        />
-      ) : (
-        positionMeta.map((position, i) => (
-          <VStack key={i} spacing="0.5rem">
-            <Box>
-              <EditTranche
-                {...{
-                  ...position,
-                  ...stratMeta[position.strategy],
-                  collateral:
-                    position.collateral ??
-                    new CurrencyValue(position.token, BigNumber.from(0)),
-                  debt:
-                    position.debt ??
-                    new CurrencyValue(stable, BigNumber.from(0)),
-                }}
-              />
-            </Box>
+      <Center>
+        {positionMeta.length === 0 ? (
+          <Box {...boxStyle}>
             <PositionBody
-              position={position}
               stratMeta={stratMeta}
               liquidationRewardPer10k={liquidationRewardPer10k}
             />
-          </VStack>
-        ))
-      )}
-      {props.children}
+          </Box>
+        ) : (
+          positionMeta.map((position, i) => (
+            <Box key={i} {...boxStyle}>
+              <VStack>
+                <Box padding="8">
+                  <TrancheTable positions={[position]} />
+                </Box>
+                <Box>
+                  <EditTranche
+                    {...{
+                      ...position,
+                      ...stratMeta[position.strategy],
+                      collateral:
+                        position.collateral ??
+                        new CurrencyValue(position.token, BigNumber.from(0)),
+                      debt:
+                        position.debt ??
+                        new CurrencyValue(stable, BigNumber.from(0)),
+                    }}
+                  />
+                </Box>
+                <PositionBody
+                  position={position}
+                  stratMeta={stratMeta}
+                  liquidationRewardPer10k={liquidationRewardPer10k}
+                />
+              </VStack>
+            </Box>
+          ))
+        )}
+        {props.children}
+      </Center>
     </VStack>
   );
 }

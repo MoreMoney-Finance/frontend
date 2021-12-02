@@ -1,6 +1,5 @@
 import { Button, VStack } from '@chakra-ui/react';
-import { CurrencyValue, useEthers, useTokenAllowance } from '@usedapp/core';
-import { BigNumber } from 'ethers';
+import { useEthers } from '@usedapp/core';
 import React from 'react';
 import {
   ParsedPositionMetaRow,
@@ -8,65 +7,34 @@ import {
   TxStatus,
   useStable,
 } from '../chain-interaction/contracts';
-import {
-  useApproveTrans,
-  useMigrateStrategy,
-} from '../chain-interaction/transactions';
-import { useWalletBalance } from '../contexts/WalletBalancesContext';
-import DepositBorrowForm from './DepositBorrowForm';
+import { useMigrateStrategy } from '../chain-interaction/transactions';
 import { StrategyDataTable } from './StrategyDataTable';
 
 export function MigrateStrategy(
-  params: ParsedStratMetaRow,
-  position: ParsedPositionMetaRow
+  params: ParsedStratMetaRow & ParsedPositionMetaRow
 ) {
-  const { token, strategyAddress, strategyName } = params;
+  const { strategyAddress, strategyName, trancheId } = params;
   const { account } = useEthers();
-  const allowance = new CurrencyValue(
-    token,
-    useTokenAllowance(token.address, account, strategyAddress) ??
-      BigNumber.from('0')
-  );
-
-  const walletBalance =
-    useWalletBalance(token.address) ??
-    new CurrencyValue(token, BigNumber.from('0'));
 
   const stable = useStable();
   const { sendMigrateStrategy, migrateStrategyState } = useMigrateStrategy();
-  const { approveState, sendApprove } = useApproveTrans(token.address);
 
-  console.log('MigrateStrategy');
   return (
     <VStack>
-      {allowance.gt(walletBalance) === false ? (
-        <Button
-          onClick={() => sendApprove(strategyAddress)}
-          isLoading={
-            approveState.status == TxStatus.SUCCESS &&
-            allowance.gt(walletBalance) === false
-          }
-        >
-          Approve {strategyName} to withdraw {token.name}{' '}
-        </Button>
-      ) : (
-        <DepositBorrowForm {...params} />
-      )}
       <Button
-        onClick={() =>
-          sendMigrateStrategy(
-            position.trancheId,
+        onClick={() => {
+          console.log(
+            'sending migrate strategy',
+            trancheId,
             strategyAddress,
             stable,
-            account!
-          )
-        }
-        isLoading={
-          migrateStrategyState.status == TxStatus.SUCCESS &&
-          allowance.gt(walletBalance) === false
-        }
+            account
+          );
+          sendMigrateStrategy(trancheId, strategyAddress, stable, account!);
+        }}
+        isLoading={migrateStrategyState.status == TxStatus.SUCCESS}
       >
-        Migrate to this strategy
+        Migrate to {strategyName} strategy
       </Button>
       <StrategyDataTable {...params} />
     </VStack>

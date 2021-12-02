@@ -4,27 +4,26 @@ import { Table, Tbody, Tr, Th, Td, Button } from '@chakra-ui/react';
 import {
   useAMMHarvest,
   useHarvestPartially,
-  useTallyHarvestBalance,
+  // useTallyHarvestBalance,
 } from '../chain-interaction/transactions';
 import { getExplorerAddressLink } from '@usedapp/core';
 import { EnsureWalletConnected } from './EnsureWalletConnected';
 
 export function StrategyDataTable(row: ParsedStratMetaRow) {
-  const { sendTallyHarvestBalance } = useTallyHarvestBalance(
-    row.strategyAddress
-  );
+  // const { sendTallyHarvestBalance } = useTallyHarvestBalance(
+  //   row.strategyAddress
+  // );
   const { sendAMMHarvest } = useAMMHarvest(row.strategyAddress);
 
   const { sendHarvestPartially } = useHarvestPartially(row.strategyAddress);
 
-  const balance2Tally = row.harvestBalance2Tally;
+  // const balance2Tally = row.harvestBalance2Tally;
 
   const explorerLink = getExplorerAddressLink(
     row.strategyAddress,
     row.token.chainId
   );
 
-  console.log('rowyrefdas', row.yieldType);
   return (
     <Table variant="simple" width="auto">
       <Tbody>
@@ -41,37 +40,37 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
             </a>
           </Td>
         </Tr>
-        <Tr>
-          <Th>Stability Fee</Th>
-          <Td>{row.stabilityFeePercent.toString()} %</Td>
-        </Tr>
-        {/* <Tr>
-          <Th>Strategy Address</Th>
-          <Td>{row.strategyAddress.toString()}</Td>
-        </Tr> */}
+        {/* {row.stabilityFeePercent > 0
+          ? (<Tr>
+            <Th>Stability Fee</Th>
+            <Td>{row.stabilityFeePercent.toString()} %</Td>
+          </Tr>
+          )
+          : undefined} */}
         <Tr>
           <Th>APY</Th>
           <Td>{row.APY.toString()} %</Td>
         </Tr>
-        <Tr>
+        {/* <Tr>
           <Th>Total Collateral</Th>
           <Td>{row.totalCollateral.format()}</Td>
-        </Tr>
-        <Tr>
+        </Tr> */}
+        {/* <Tr>
           <Th>Minimum colateralization ratio</Th>
           <Td>{((1 / (row.borrowablePercent / 100)) * 100).toFixed(2)} %</Td>
         </Tr>
         <Tr>
           <Th>Loan to value ratio</Th>
           <Td>{row.borrowablePercent.toString()} %</Td>
-        </Tr>
-        <Tr>
+        </Tr> */}
+        {/* <Tr>
           <Th>Harvest Balance To tally</Th>
           <Td>
             {balance2Tally.isZero() ? (
               balance2Tally.format()
             ) : (
               <Button
+                size="sm"
                 onClick={() => sendTallyHarvestBalance(row.token.address)}
               >
                 {' '}
@@ -79,12 +78,13 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
               </Button>
             )}
           </Td>
-        </Tr>
+        </Tr> */}
         <Tr>
           <Th>Harvest</Th>
           <Td>
             <EnsureWalletConnected>
               <Button
+                size="sm"
                 onClick={() => {
                   if (row.yieldType === YieldType.REPAYING) {
                     sendAMMHarvest(row.token.address);
@@ -98,12 +98,12 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
             </EnsureWalletConnected>
           </Td>
         </Tr>
-        <Tr>
+        {/* <Tr>
           <Th>TVL in Token</Th>
           <Td>{row.tvlInToken.format()}</Td>
-        </Tr>
+        </Tr> */}
         <Tr>
-          <Th>TVL in Peg</Th>
+          <Th>TVL</Th>
           <Td>{row.tvlInPeg.format()}</Td>
         </Tr>
         <Tr>

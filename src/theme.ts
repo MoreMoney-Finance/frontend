@@ -23,9 +23,46 @@ const Button = {
   },
 };
 
+const Text = {
+  variants: {
+    gradient: {
+      background: 'linear-gradient(to right, #7bb07b, #3c7998)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+    },
+  },
+};
+
+const Tabs = {
+  variants: {
+    'soft-rounded': {
+      tab: {
+        borderRadius: 'full',
+        fontWeight: 'semibold',
+        color: 'gray.600',
+        _selected: {
+          color: 'gray.100',
+          bg: 'gray.600',
+        },
+      },
+    },
+  },
+};
+
+const Input = {
+  variants: {
+    rounded: {
+      borderRadius: '5',
+    },
+  },
+};
+
 export const theme = extendTheme({
   config: { initialColorMode: 'dark' },
   components: {
     Button,
+    Text,
+    Tabs,
+    Input,
   },
 });

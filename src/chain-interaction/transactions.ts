@@ -6,12 +6,11 @@ import {
   useAddresses,
   useRegisteredOracle,
   useStable,
-  useYieldConversionBidStrategyView,
+  useYieldConversionStrategyView,
 } from './contracts';
 
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
-import YieldConversionBidStrategy from '../contracts/artifacts/contracts/YieldConversionBidStrategy.sol/YieldConversionBidStrategy.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
@@ -140,7 +139,7 @@ export function useTallyHarvestBalance(strategyAddress: string) {
 export function useConvertReward2Stable(contractAddress: string) {
   const strategy = new Contract(
     contractAddress,
-    new Interface(YieldConversionBidStrategy.abi)
+    new Interface(YieldConversionStrategy.abi)
   );
   const { send, state } = useContractFunction(strategy, 'convertReward2Stable');
 
@@ -201,7 +200,7 @@ export function useAMMHarvest(strategyAddress: string) {
     conversionAddress,
     new Interface(AMMYieldConverter.abi)
   );
-  const rewardToken: string | undefined = useYieldConversionBidStrategyView(
+  const rewardToken: string | undefined = useYieldConversionStrategyView(
     strategyAddress,
     'rewardToken',
     [],

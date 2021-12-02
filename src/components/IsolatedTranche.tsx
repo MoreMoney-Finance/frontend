@@ -7,14 +7,19 @@ import {
 import { useWalletBalance } from '../contexts/WalletBalancesContext';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
-import { Tr, Td, Center, Wrap } from '@chakra-ui/react';
+import { Tr, Td, Button } from '@chakra-ui/react';
 import { TokenDescription } from './TokenDescription';
-import { EditTranche } from './EditTranche';
+import { TrancheAction } from './TrancheTable';
 
 export function IsolatedTranche(
-  params: React.PropsWithChildren<ParsedStratMetaRow & ParsedPositionMetaRow>
+  params: React.PropsWithChildren<
+    ParsedStratMetaRow & ParsedPositionMetaRow & { action?: TrancheAction }
+  >
 ) {
-  const { token, APY, strategyName } = params;
+  const { token, APY, strategyName, action } = params;
+
+  const actionArgs =
+    action && action.args ? action.args : () => ({} as Record<string, any>);
 
   const stable = useStable();
 
@@ -37,31 +42,48 @@ export function IsolatedTranche(
       : new CurrencyValue(stable, BigNumber.from(0));
   return (
     <>
-      <Tr key={token.address}>
+      <Tr key={`${params.trancheId}`}>
         <Td>
           <TokenDescription token={token} />
         </Td>
+
         <Td>{strategyName}</Td>
-        <Td>{APY.toFixed(4)} % APY</Td>
-        <Td>
-          {params.debtCeiling
-            .sub(params.totalDebt)
-            .format({ significantDigits: 6 })}
-        </Td>
+
+        <Td>{APY.toFixed(3)} % APY</Td>
 
         <Td>{(100 / params.borrowablePercent).toPrecision(4)} %</Td>
-        <Td>{collateral.format()}</Td>
-        <Td> {debt.format()} debt </Td>
+
+        <Td>
+          {params.debt.isZero()
+            ? '∞'
+            : params.collateralValue.value
+              .mul(10000)
+              .div(params.debt.value)
+              .toNumber() / 100}{' '}
+          %
+        </Td>
+
+        <Td>$ {params.liquidationPrice.toFixed(2)}</Td>
+
+        <Td>{collateral.format({ significantDigits: Infinity })}</Td>
+
+        <Td> {debt.format({ significantDigits: Infinity })} </Td>
+
+        {action ? (
+          <Td>
+            <Button
+              {...(action.callback
+                ? {
+                  ...actionArgs(params),
+                  onClick: () => action.callback!(params),
+                }
+                : actionArgs(params))}
+            >
+              {action.label}
+            </Button>
+          </Td>
+        ) : undefined}
       </Tr>
-      <Td colspan="7">
-        <Center>
-          <Wrap justify="center">
-            <EditTranche
-              {...{ ...params, collateral: collateral, debt: debt }}
-            />
-          </Wrap>
-        </Center>
-      </Td>
     </>
   );
 }

@@ -12,6 +12,7 @@ export function TokenDataTable({
   liquidationFee: BigNumber;
 }) {
   const { sendUpdatePriceOracle } = useUpdatePriceOracle(tokenData?.token);
+
   return tokenData ? (
     <Table variant="simple" width="auto">
       <Tbody>
@@ -30,10 +31,6 @@ export function TokenDataTable({
         <Tr>
           <Th>Liquidation Fee</Th>
           <Td>{(liquidationFee.toNumber() / 100).toFixed(2)}%</Td>
-        </Tr>
-        <Tr>
-          <Th>Token</Th>
-          <Td>{tokenData.token.name}</Td>
         </Tr>
         <Tr>
           <Th>Minimum colateralization ratio</Th>

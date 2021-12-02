@@ -1,7 +1,17 @@
 import * as React from 'react';
 import { ParsedStratMetaRow } from '../chain-interaction/contracts';
 import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
-import { Box, Text, Flex, Spacer, Table, Thead, Tbody, Tr, Td } from '@chakra-ui/react';
+import {
+  Box,
+  Text,
+  Flex,
+  Spacer,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Td,
+} from '@chakra-ui/react';
 import { TableTabs } from './TableTabs';
 import { TableSearch } from './TableSearch';
 import { TokenDescription } from './TokenDescription';
@@ -86,11 +96,14 @@ export function AllSupportedCollateral() {
           </Flex>
         </Box>
         <Box>
-          <Table variant="unstyled" {...getTableProps()}
+          <Table
+            variant="unstyled"
+            {...getTableProps()}
             sx={{
               borderCollapse: 'separate',
-              borderSpacing: '0 10px'
-            }}>
+              borderSpacing: '0 10px',
+            }}
+          >
             <Thead>
               {headerGroups.map((headerGroup) => (
                 // eslint-disable-next-line
@@ -114,20 +127,18 @@ export function AllSupportedCollateral() {
                 prepareRow(row);
                 return (
                   // eslint-disable-next-line
-                  <Tr {...row.getRowProps()}
+                  <Tr
+                    {...row.getRowProps()}
                     as={Link}
                     to={`/token/${row.original.token.address}`}
                     display="table-row"
-                    bg="gray.900">
+                    bg="gray.900"
+                  >
                     {row.cells.map((cell) => {
                       // eslint-disable-next-line
                       return (
                         // eslint-disable-next-line
-                        <Td
-                          {...cell.getCellProps()}
-                        >
-                          {cell.render('Cell')}
-                        </Td>
+                        <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
                       );
                     })}
                   </Tr>

@@ -13,7 +13,7 @@ import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
-import YieldConversionBidStrategy from '../contracts/artifacts/contracts/YieldConversionBidStrategy.sol/YieldConversionBidStrategy.json';
+import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 
@@ -287,13 +287,13 @@ export function useIsolatedLendingLiquidationView(
   }) ?? [defaultResult])[0];
 }
 
-export function useYieldConversionBidStrategyView(
+export function useYieldConversionStrategyView(
   strategyAddress: string,
   method: string,
   args: any[],
   defaultResult: any
 ) {
-  const abi = new Interface(YieldConversionBidStrategy.abi);
+  const abi = new Interface(YieldConversionStrategy.abi);
   return (useContractCall({
     abi,
     address: strategyAddress,

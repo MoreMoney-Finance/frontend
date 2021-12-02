@@ -3,6 +3,7 @@ import { ParsedStratMetaRow } from '../chain-interaction/contracts';
 import { Table, Tbody, Tr, Th, Td, Button } from '@chakra-ui/react';
 import { BigNumber } from 'ethers';
 import { useUpdatePriceOracle } from '../chain-interaction/transactions';
+import { useLocation } from 'react-router-dom';
 
 export function TokenDataTable({
   tokenData,
@@ -11,7 +12,12 @@ export function TokenDataTable({
   tokenData: ParsedStratMetaRow | null | undefined;
   liquidationFee: BigNumber;
 }) {
+  const location = useLocation();
+  const details = location.search.includes('details=true');
+
   const { sendUpdatePriceOracle } = useUpdatePriceOracle(tokenData?.token);
+
+  console.log(details);
 
   return tokenData ? (
     <Table variant="simple" width="auto">

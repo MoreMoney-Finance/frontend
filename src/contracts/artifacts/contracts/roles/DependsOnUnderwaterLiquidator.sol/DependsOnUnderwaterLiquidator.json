@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "DependsonTwapOracle",
-  "sourceName": "contracts/roles/DependsOnTwapOracle.sol",
+  "contractName": "DependsOnUnderwaterLiquidator",
+  "sourceName": "contracts/roles/DependsOnUnderwaterLiquidator.sol",
   "abi": [
     {
       "inputs": [

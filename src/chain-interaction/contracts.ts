@@ -14,6 +14,7 @@ import { UserAddressContext } from '../contexts/UserAddressContext';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
+import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 
@@ -270,6 +271,21 @@ export function useIsolatedPositionMetadata(): TokenStratPositionMetadata {
     },
     {}
   );
+}
+
+export function useTotalSupply(
+  method: string,
+  args: any[],
+  defaultResult: any
+) {
+  const address = useAddresses().Stablecoin;
+  const abi = new Interface(ERC20.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method,
+    args,
+  }) ?? [defaultResult])[0];
 }
 
 export function useIsolatedLendingLiquidationView(

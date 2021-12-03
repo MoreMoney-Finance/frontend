@@ -8,6 +8,7 @@ import {
   useStable,
 } from '../chain-interaction/contracts';
 import { useMigrateStrategy } from '../chain-interaction/transactions';
+import { StatusTrackModal } from './StatusTrackModal';
 import { StrategyDataTable } from './StrategyDataTable';
 
 export function MigrateStrategy(
@@ -21,6 +22,10 @@ export function MigrateStrategy(
 
   return (
     <VStack>
+      <StatusTrackModal
+        state={migrateStrategyState}
+        title={'Migrate Strategy'}
+      />
       <Button
         onClick={() => {
           console.log(

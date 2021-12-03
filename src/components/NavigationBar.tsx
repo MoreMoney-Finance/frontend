@@ -18,7 +18,10 @@ import { UserAddressComponent } from './UserAddressComponent';
 import AccountModal from './AccountModal';
 import logo from '../assets/logo/logo.png';
 
-const Links = [{ title: 'Dashboard', link: '/' }];
+const Links = [
+  { title: 'Dashboard', link: '/' },
+  { title: 'Analytics', link: '/analytics' },
+];
 
 const NavLink = ({ children }: { children: ReactNode }) => (
   <LinkComponent

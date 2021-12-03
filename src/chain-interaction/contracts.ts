@@ -320,9 +320,13 @@ export function useUpdatedPositions(timeStart: number) {
       args: [x + i],
     }));
 
-  const rows = (useContractCalls(args) as RawPositionMetaRow[][]) ?? [];
+  const rows = (useContractCalls(args) as RawPositionMetaRow[][][]) ?? [];
 
-  return rows.map(([row]) => parsePositionMeta(row, stable));
+  return rows
+    .flatMap((x) => x)
+    .flatMap((x) => x)
+    .filter((x) => x)
+    .map((row) => parsePositionMeta(row, stable));
 }
 
 export function useRegisteredOracle(tokenAddress?: string) {

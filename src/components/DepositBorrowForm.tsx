@@ -10,6 +10,7 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
 } from '../chain-interaction/contracts';
+import { StatusTrackModal } from './StatusTrackModal';
 
 export default function DepositBorrowForm(
   params: React.PropsWithChildren<
@@ -30,7 +31,7 @@ export default function DepositBorrowForm(
     watch,
   } = useForm();
 
-  const { sendDepositBorrow /*depositBorrowState*/ } = useDepositBorrowTrans(
+  const { sendDepositBorrow, depositBorrowState } = useDepositBorrowTrans(
     'trancheId' in params ? params.trancheId : undefined
   );
   const { account } = useEthers();
@@ -113,37 +114,40 @@ export default function DepositBorrowForm(
   };
 
   return (
-    <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
-      <Stacking spacing="0.5rem" margin="0.5rem">
-        <TokenAmountInputField
-          name="collateral-deposit"
-          max={depositMax}
-          isDisabled={depositBorrowDisabled}
-          placeholder={'Collateral Deposit'}
-          registerForm={registerDepForm}
-          setValueForm={setValueDepForm}
-          errorsForm={errorsDepForm}
-        />
+    <>
+      <StatusTrackModal state={depositBorrowState} title={'Deposit Borrow'} />
+      <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
+        <Stacking spacing="0.5rem" margin="0.5rem">
+          <TokenAmountInputField
+            name="collateral-deposit"
+            max={depositMax}
+            isDisabled={depositBorrowDisabled}
+            placeholder={'Collateral Deposit'}
+            registerForm={registerDepForm}
+            setValueForm={setValueDepForm}
+            errorsForm={errorsDepForm}
+          />
 
-        <TokenAmountInputField
-          name="money-borrow"
-          isDisabled={depositBorrowDisabled}
-          placeholder={'MONEY borrow'}
-          registerForm={registerDepForm}
-          setValueForm={setValueDepForm}
-          errorsForm={errorsDepForm}
-          percentages={percentages}
-        />
+          <TokenAmountInputField
+            name="money-borrow"
+            isDisabled={depositBorrowDisabled}
+            placeholder={'MONEY borrow'}
+            registerForm={registerDepForm}
+            setValueForm={setValueDepForm}
+            errorsForm={errorsDepForm}
+            percentages={percentages}
+          />
 
-        <Button
-          type="submit"
-          isLoading={isSubmittingDepForm}
-          isDisabled={depositBorrowDisabled}
-          width="22rem"
-        >
-          <Text>Deposit &amp; Borrow</Text>
-        </Button>
-      </Stacking>
-    </form>
+          <Button
+            type="submit"
+            isLoading={isSubmittingDepForm}
+            isDisabled={depositBorrowDisabled}
+            width="22rem"
+          >
+            <Text>Deposit &amp; Borrow</Text>
+          </Button>
+        </Stacking>
+      </form>
+    </>
   );
 }

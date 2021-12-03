@@ -37,20 +37,16 @@ export function AllSupportedCollateral() {
     }))
   );
 
-  const data = React.useMemo<Entity[]>(
-    () =>
-      stratMeta.map((meta) => {
-        return {
-          ...meta,
-          asset: <TokenDescription token={meta.token} />,
-          apy: meta.APY.toFixed(4) + '%',
-          MONEYavailable: meta.debtCeiling.sub(meta.totalDebt).format(),
-          MinColRatio:
-            ((1 / (meta.borrowablePercent / 100)) * 100).toFixed(2) + '%',
-        };
-      }),
-    []
-  );
+  const data = stratMeta.map((meta) => {
+    return {
+      ...meta,
+      asset: <TokenDescription token={meta.token} />,
+      apy: meta.APY.toFixed(4) + '%',
+      MONEYavailable: meta.debtCeiling.sub(meta.totalDebt).format(),
+      MinColRatio:
+        ((1 / (meta.borrowablePercent / 100)) * 100).toFixed(2) + '%',
+    };
+  });
 
   const columns = React.useMemo<Column<Entity>[]>(
     () => [

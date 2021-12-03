@@ -12,6 +12,7 @@ import { useForm } from 'react-hook-form';
 import { useWrapNative } from '../chain-interaction/transactions';
 import { TokenAmountInputField } from './TokenAmountInputField';
 import { EnsureWalletConnected } from './EnsureWalletConnected';
+import { StatusTrackModal } from './StatusTrackModal';
 
 export function WrapNativeCurrency() {
   const {
@@ -32,27 +33,32 @@ export function WrapNativeCurrency() {
     bignumBalance
   );
 
-  const { sendWrapNative /*wrapNativeState*/ } = useWrapNative();
+  const { sendWrapNative, wrapNativeState } = useWrapNative();
+
   function onWrap(data: { [x: string]: any }) {
     console.log(data);
     sendWrapNative(data['wrap-amount']);
   }
+
   return (
-    <form onSubmit={handleSubmit(onWrap)}>
-      <FormControl isInvalid={errors.name}>
-        <TokenAmountInputField
-          name="wrap-amount"
-          max={ethBalance}
-          placeholder={'Native currency to wrap'}
-          registerForm={register}
-          setValueForm={setValue}
-        />
-        <EnsureWalletConnected>
-          <Button type="submit" isLoading={isSubmitting}>
-            Wrap native currency
-          </Button>
-        </EnsureWalletConnected>
-      </FormControl>
-    </form>
+    <>
+      <StatusTrackModal state={wrapNativeState} title={'Wrap Native'} />
+      <form onSubmit={handleSubmit(onWrap)}>
+        <FormControl isInvalid={errors.name}>
+          <TokenAmountInputField
+            name="wrap-amount"
+            max={ethBalance}
+            placeholder={'Native currency to wrap'}
+            registerForm={register}
+            setValueForm={setValue}
+          />
+          <EnsureWalletConnected>
+            <Button type="submit" isLoading={isSubmitting}>
+              Wrap native currency
+            </Button>
+          </EnsureWalletConnected>
+        </FormControl>
+      </form>
+    </>
   );
 }

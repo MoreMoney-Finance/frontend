@@ -37,6 +37,9 @@ export function TrancheTable({
         {positions.map((posMeta, i) => {
           const stratMeta = allStratMeta[posMeta.token.address];
           const data = { ...posMeta, ...stratMeta[posMeta.strategy] };
+          if (posMeta.collateralValue.isZero()) {
+            return <></>;
+          }
           return (
             <IsolatedTranche
               key={`isolatedTranche${i}`}

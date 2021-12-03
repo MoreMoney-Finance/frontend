@@ -10,6 +10,7 @@ import { BigNumber } from 'ethers';
 import { Tr, Td, Button } from '@chakra-ui/react';
 import { TokenDescription } from './TokenDescription';
 import { TrancheAction } from './TrancheTable';
+import { useLocation } from 'react-router-dom';
 
 export function IsolatedTranche(
   params: React.PropsWithChildren<
@@ -17,6 +18,11 @@ export function IsolatedTranche(
   >
 ) {
   const { token, APY, strategyName, action } = params;
+
+  const location = useLocation();
+  const details = location.search?.includes('details=true');
+
+  console.log('details', details);
 
   const actionArgs =
     action && action.args ? action.args : () => ({} as Record<string, any>);

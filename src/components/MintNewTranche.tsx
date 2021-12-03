@@ -7,6 +7,7 @@ import { useApproveTrans } from '../chain-interaction/transactions';
 import { useWalletBalance } from '../contexts/WalletBalancesContext';
 import DepositBorrowForm from './DepositBorrowForm';
 import { EnsureWalletConnected } from './EnsureWalletConnected';
+import { StatusTrackModal } from './StatusTrackModal';
 import { StrategyDataTable } from './StrategyDataTable';
 
 export function MintNewTranche(params: ParsedStratMetaRow) {
@@ -32,6 +33,7 @@ export function MintNewTranche(params: ParsedStratMetaRow) {
 
   return (
     <VStack>
+      <StatusTrackModal state={approveState} title={'Approve'} />
       {allowance.gt(walletBalance) === false ? (
         <EnsureWalletConnected>
           <Button

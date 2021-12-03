@@ -9,6 +9,7 @@ import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import { BigNumber } from '@usedapp/core/node_modules/ethers';
 import { useStable } from '../chain-interaction/contracts';
 import { useOraclePrices } from '../chain-interaction/tokens';
+import { StatusTrackModal } from './StatusTrackModal';
 
 export function ConvertReward({
   strategyAddress,
@@ -50,7 +51,8 @@ export function ConvertReward({
     )
     : new CurrencyValue(stable, BigNumber.from(0));
 
-  const { sendConvertReward2Stable } = useConvertReward2Stable(strategyAddress);
+  const { sendConvertReward2Stable, convertReward2StableState } =
+    useConvertReward2Stable(strategyAddress);
 
   const conversionAmountState = watch('conversion-amount', 0);
   const rewardTokenConverted = usdPrice
@@ -73,25 +75,33 @@ export function ConvertReward({
   }
   const rewardTokenValue = new CurrencyValue(rewardToken, rewardTokenConverted);
   return (
-    <form onSubmit={handleSubmit(onConvert)}>
-      <FormControl isInvalid={errors.name}>
-        {/* <FormLabel>Convert stable to {rewardToken.name}</FormLabel> */}
-        <TokenAmountInputField
-          name="conversion-amount"
-          max={maxConversion.gt(stableBalance) ? stableBalance : maxConversion}
-          placeholder={`${rewardToken.name} amount`}
-          registerForm={register}
-          setValueForm={setValue}
-        />
+    <>
+      <StatusTrackModal
+        state={convertReward2StableState}
+        title={'Reward to Stable'}
+      />
+      <form onSubmit={handleSubmit(onConvert)}>
+        <FormControl isInvalid={errors.name}>
+          {/* <FormLabel>Convert stable to {rewardToken.name}</FormLabel> */}
+          <TokenAmountInputField
+            name="conversion-amount"
+            max={
+              maxConversion.gt(stableBalance) ? stableBalance : maxConversion
+            }
+            placeholder={`${rewardToken.name} amount`}
+            registerForm={register}
+            setValueForm={setValue}
+          />
 
-        <Button type="submit" isLoading={isSubmitting}>
-          {`Convert to ${
-            rewardTokenValue.isZero()
-              ? rewardToken.name
-              : rewardTokenValue.format()
-          }`}
-        </Button>
-      </FormControl>
-    </form>
+          <Button type="submit" isLoading={isSubmitting}>
+            {`Convert to ${
+              rewardTokenValue.isZero()
+                ? rewardToken.name
+                : rewardTokenValue.format()
+            }`}
+          </Button>
+        </FormControl>
+      </form>
+    </>
   );
 }

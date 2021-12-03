@@ -12,6 +12,7 @@ import { Button, HStack } from '@chakra-ui/react';
 import DepositBorrowForm from './DepositBorrowForm';
 import RepayWithdrawForm from './RepayWithdrawForm';
 import { EnsureWalletConnected } from './EnsureWalletConnected';
+import { StatusTrackModal } from './StatusTrackModal';
 
 export function EditTranche(
   params: React.PropsWithChildren<
@@ -36,6 +37,7 @@ export function EditTranche(
 
   return (
     <>
+      <StatusTrackModal state={approveState} title={"Approve"}/>
       {allowance.gt(walletBalance) === false ? (
         <EnsureWalletConnected>
           <Button

@@ -37,7 +37,7 @@ export function EditTranche(
 
   return (
     <>
-      <StatusTrackModal state={approveState} title={"Approve"}/>
+      <StatusTrackModal state={approveState} title={'Approve'} />
       {allowance.gt(walletBalance) === false ? (
         <EnsureWalletConnected>
           <Button

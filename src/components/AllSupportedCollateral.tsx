@@ -22,7 +22,9 @@ type Entity = ParsedStratMetaRow & {
   asset: any;
   apy: string;
   MONEYavailable: string;
-  MinColRatio: string;
+  minColRatio: string;
+  totalBorrowed: string;
+  liquidationFee: string;
 };
 
 export function AllSupportedCollateral() {
@@ -43,8 +45,10 @@ export function AllSupportedCollateral() {
       asset: <TokenDescription token={meta.token} />,
       apy: meta.APY.toFixed(4) + '%',
       MONEYavailable: meta.debtCeiling.sub(meta.totalDebt).format(),
-      MinColRatio:
+      minColRatio:
         ((1 / (meta.borrowablePercent / 100)) * 100).toFixed(2) + '%',
+      totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
+      liquidationFee: '10 %',
     };
   });
 
@@ -64,7 +68,15 @@ export function AllSupportedCollateral() {
       },
       {
         Header: 'Min. ColRatio',
-        accessor: 'MinColRatio',
+        accessor: 'minColRatio',
+      },
+      {
+        Header: 'Total borrowed',
+        accessor: 'totalBorrowed',
+      },
+      {
+        Header: 'Liquidation Fee',
+        accessor: 'liquidationFee',
       },
     ],
     []

@@ -39,18 +39,27 @@ export function AllSupportedCollateral() {
     }))
   );
 
-  const data = stratMeta.map((meta) => {
-    return {
-      ...meta,
-      asset: <TokenDescription token={meta.token} />,
-      apy: meta.APY.toFixed(4) + '%',
-      MONEYavailable: meta.debtCeiling.sub(meta.totalDebt).format(),
-      minColRatio:
-        ((1 / (meta.borrowablePercent / 100)) * 100).toFixed(2) + '%',
-      totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
-      liquidationFee: '10 %',
-    };
-  });
+  const [searchString, setSearchString] = React.useState('');
+
+  const data = stratMeta
+    .filter((meta) =>
+      searchString.length > 0
+        ? meta.token.name.toLowerCase().includes(searchString) ||
+          meta.token.ticker.toLowerCase().includes(searchString)
+        : true
+    )
+    .map((meta) => {
+      return {
+        ...meta,
+        asset: <TokenDescription token={meta.token} />,
+        apy: meta.APY.toFixed(4) + '%',
+        MONEYavailable: meta.debtCeiling.sub(meta.totalDebt).format(),
+        minColRatio:
+          ((1 / (meta.borrowablePercent / 100)) * 100).toFixed(2) + '%',
+        totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
+        liquidationFee: '10 %',
+      };
+    });
 
   const columns = React.useMemo<Column<Entity>[]>(
     () => [
@@ -100,7 +109,7 @@ export function AllSupportedCollateral() {
           <Flex alignItems={'center'}>
             <TableTabs />
             <Spacer />
-            <TableSearch />
+            <TableSearch setSearchString={setSearchString} />
           </Flex>
         </Box>
         <Box>

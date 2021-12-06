@@ -4,13 +4,36 @@ import { AnalyticsBox } from './Analytics/AnalyticsBox';
 import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
-import { useStable, useTotalSupply } from '../chain-interaction/contracts';
+import {
+  DeploymentAddresses,
+  useAddresses,
+  useStable,
+  useTotalSupply,
+  viewAllFeesEver,
+} from '../chain-interaction/contracts';
 
 export function Analytics(props: React.PropsWithChildren<unknown>) {
   const allStratMeta = React.useContext(StrategyMetadataContext);
 
   console.log('allStratMeta', allStratMeta);
 
+  const addresses = useAddresses();
+  const feeContractNames = ['IsolatedLending', 'IsolatedLendingLiquidation'];
+  const blacklist = ['StrategyRegistry', 'StrategyTokenActivation'];
+  const keys: (keyof DeploymentAddresses)[] = Object.keys(
+    addresses
+  ) as (keyof DeploymentAddresses)[];
+  const filteredNames = keys.filter((key) => {
+    return (
+      feeContractNames.includes(key) ||
+      (key.includes('Strategy') && !blacklist.includes(key))
+    );
+  });
+
+  const contracts = filteredNames.map((name) => {
+    return addresses[name];
+  });
+  console.log('contracts', contracts);
   const stable = useStable();
   const tvl = Object.values(allStratMeta)
     .flatMap((rows) => Object.values(rows))
@@ -19,13 +42,20 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
       new CurrencyValue(stable, BigNumber.from(0))
     );
 
-  console.log('tvl', tvl);
-
   const supply = useTotalSupply('totalSupply', [], ['']);
-
   const colRatio = supply != 0 ? supply.div(tvl) : 0;
 
-  console.log('supply', supply, colRatio);
+  const fees = viewAllFeesEver(contracts);
+  console.log('fees', fees);
+
+  const totalFees = fees
+    .filter((fee) => fee)
+    .filter((fee) => fee![0])
+    .reduce(
+      (total, fee) => total.add(new CurrencyValue(stable, fee![0])),
+      new CurrencyValue(stable, BigNumber.from(0))
+    );
+
   return (
     <Box padding={'12'} width={'full'}>
       <Text align={'start'} fontSize={'4xl'}>
@@ -56,7 +86,7 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
           <AnalyticsBox
             title={'Fees earned'}
             subtitle={'Fees paid to MoreMoney'}
-            value={'$1,000'}
+            value={totalFees.format()}
           />
         </Box>
         <Box w="100%" h="150">

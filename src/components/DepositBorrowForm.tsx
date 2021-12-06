@@ -54,14 +54,14 @@ export default function DepositBorrowForm(
       token,
       strategyAddress,
       data['collateral-deposit'],
-      data['money-borrow']
+      data['mny-borrow']
     );
   }
   const depositBorrowDisabled = depositMax.isZero();
 
   const [collateralInput, borrowInput] = watch([
     'collateral-deposit',
-    'money-borrow',
+    'mny-borrow',
   ]);
 
   const extantCollateral =
@@ -129,9 +129,9 @@ export default function DepositBorrowForm(
           />
 
           <TokenAmountInputField
-            name="money-borrow"
+            name="mny-borrow"
             isDisabled={depositBorrowDisabled}
-            placeholder={'MONEY borrow'}
+            placeholder={'MNY borrow'}
             registerForm={registerDepForm}
             setValueForm={setValueDepForm}
             errorsForm={errorsDepForm}

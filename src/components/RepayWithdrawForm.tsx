@@ -30,7 +30,7 @@ export default function RepayWithdrawForm(params: {
     console.log('repay withdraw');
     console.log(data);
 
-    sendRepayWithdraw(data['collateral-withdraw'], data['money-repay']);
+    sendRepayWithdraw(data['collateral-withdraw'], data['mny-repay']);
   }
 
   const repayWithdrawDisabled = collateral.isZero() && debt.isZero();
@@ -51,10 +51,10 @@ export default function RepayWithdrawForm(params: {
           />
 
           <TokenAmountInputField
-            name="money-repay"
+            name="mny-repay"
             max={debt}
             isDisabled={repayWithdrawDisabled}
-            placeholder={'MONEY repay'}
+            placeholder={'MNY repay'}
             registerForm={registerRepayForm}
             setValueForm={setValueRepayForm}
             errorsForm={errorsRepayForm}

@@ -1,22 +1,26 @@
 import { parseUnits } from '@ethersproject/units';
 import {
+  ContractCall,
   CurrencyValue,
   Token,
   useContractCall,
   useContractCalls,
-  useEthers,
+  useEthers
 } from '@usedapp/core';
 import { formatEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber } from 'ethers';
 import { Interface, parseBytes32String } from 'ethers/lib/utils';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
+import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
-import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
-import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
-import { getTokenFromAddress, tokenAmount } from './tokens';
+import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
+import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
+import {
+  getTokenFromAddress, tokenAmount
+} from './tokens';
 
 /* eslint-disable */
 export const addresses: Record<
@@ -355,4 +359,22 @@ export function useRegisteredOracle(tokenAddress?: string) {
     method: 'tokenOracle',
     args: [tokenAddress, stable.address],
   }) ?? [undefined])[0];
+}
+
+export function viewAllFeesEver(contracts: string[]) {
+
+  function convert2ContractCall(contract: string) {
+    return {
+      abi: new Interface(IFeeReporter.abi),
+      address: contract,
+      method: 'viewAllFeesEver',
+      args: [],
+    };
+  }
+
+  const calls: ContractCall[] = contracts.map(convert2ContractCall);
+  console.log('calls', calls);
+  const results = useContractCalls(calls) ?? [];
+
+  return results;
 }

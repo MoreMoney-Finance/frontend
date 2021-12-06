@@ -7,12 +7,12 @@ export function TableSearch({
 }: {
   setSearchString: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  
   const handleSearch: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     const stripped = event.target.value.trim();
-    if (stripped.length > 1) {
-      setSearchString(stripped.toLowerCase());
-    }
+    setSearchString(stripped.toLowerCase());
   };
+
   return (
     <Box p={'4'}>
       <InputGroup>

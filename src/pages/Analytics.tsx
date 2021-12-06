@@ -68,8 +68,8 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
         </Box>
         <Box w="100%" h="150">
           <AnalyticsBox
-            title={'MONEY circulating supply'}
-            subtitle={'Circulating volume of MONEY'}
+            title={'MNY circulating supply'}
+            subtitle={'Circulating volume of MNY'}
             value={'$' + supply}
           />
         </Box>

@@ -1,11 +1,12 @@
 import { parseUnits } from '@ethersproject/units';
 import {
+  ChainId,
   ContractCall,
   CurrencyValue,
   Token,
   useContractCall,
   useContractCalls,
-  useEthers
+  useEthers,
 } from '@usedapp/core';
 import { formatEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber } from 'ethers';
@@ -18,9 +19,7 @@ import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/Isolate
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
-import {
-  getTokenFromAddress, tokenAmount
-} from './tokens';
+import { getTokenFromAddress, tokenAmount } from './tokens';
 
 /* eslint-disable */
 export const addresses: Record<
@@ -114,11 +113,12 @@ export type ParsedStratMetaRow = {
 };
 
 function parseStratMeta(
+  chainId: ChainId,
   row: RawStratMetaRow,
   stable: Token
 ): ParsedStratMetaRow {
-  const token = getTokenFromAddress(row.token)!;
-  const tvlInToken = tokenAmount(row.token, row.tvl)!;
+  const token = getTokenFromAddress(chainId, row.token)!;
+  const tvlInToken = tokenAmount(chainId, row.token, row.tvl)!;
   return {
     debtCeiling: new CurrencyValue(stable, row.debtCeiling)!,
     totalDebt: new CurrencyValue(stable, row.totalDebt),
@@ -127,7 +127,7 @@ function parseStratMeta(
     strategyAddress: row.strategy,
     token,
     APY: convertAPF2APY(row.APF),
-    totalCollateral: tokenAmount(row.token, row.totalCollateral)!,
+    totalCollateral: tokenAmount(chainId, row.token, row.totalCollateral)!,
     borrowablePercent: row.borrowablePer10k.toNumber() / 100,
     usdPrice:
       parseFloat(formatEther(row.valuePer1e18)) / 10 ** (18 - token.decimals),
@@ -152,8 +152,9 @@ function convertAPF2APY(APF: BigNumber): number {
 }
 
 export function useStable() {
+  const { chainId } = useEthers();
   const addresses = useAddresses();
-  return getTokenFromAddress(addresses.Stablecoin)!;
+  return getTokenFromAddress(chainId!, addresses.Stablecoin)!;
 }
 
 export type StrategyMetadata = Record<
@@ -163,6 +164,7 @@ export type StrategyMetadata = Record<
 
 export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const stable = useStable();
+  const { chainId } = useEthers();
   const allStratMeta = useIsolatedLendingView(
     'viewAllStrategyMetadata',
     [],
@@ -170,7 +172,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   );
   return allStratMeta.reduce(
     (result: StrategyMetadata, row: RawStratMetaRow) => {
-      const parsedRow = parseStratMeta(row, stable);
+      const parsedRow = parseStratMeta(chainId!, row, stable);
       const tokenAddress = parsedRow.token.address;
       return {
         ...result,
@@ -228,8 +230,10 @@ function parsePositionMeta(
   row: RawPositionMetaRow,
   stable: Token
 ): ParsedPositionMetaRow {
+  const { chainId } = useEthers();
+
   const debt = new CurrencyValue(stable, row.debt);
-  const collateral = tokenAmount(row.token, row.collateral);
+  const collateral = tokenAmount(chainId!, row.token, row.collateral);
   const borrowablePercent = row.borrowablePer10k.toNumber() / 100;
 
   return {
@@ -237,7 +241,7 @@ function parsePositionMeta(
     strategy: row.strategy,
     debt,
     collateral,
-    token: getTokenFromAddress(row.token)!,
+    token: getTokenFromAddress(chainId!, row.token)!,
     yield: new CurrencyValue(stable, row.yield),
     collateralValue: new CurrencyValue(stable, row.collateralValue),
     borrowablePercent,
@@ -362,7 +366,6 @@ export function useRegisteredOracle(tokenAddress?: string) {
 }
 
 export function viewAllFeesEver(contracts: string[]) {
-
   function convert2ContractCall(contract: string) {
     return {
       abi: new Interface(IFeeReporter.abi),

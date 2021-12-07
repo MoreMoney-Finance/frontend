@@ -1,6 +1,6 @@
 import { Box, VStack } from '@chakra-ui/react';
 import { Interface } from '@ethersproject/abi/lib/interface';
-import { ContractCall, Token, useContractCalls } from '@usedapp/core';
+import { ContractCall, Token, useContractCalls, useEthers } from '@usedapp/core';
 import React from 'react';
 import { useAddresses } from '../chain-interaction/contracts';
 import { getTokenFromAddress } from '../chain-interaction/tokens';
@@ -9,6 +9,7 @@ import { ConvertReward } from './ConvertReward';
 
 export function ConvertAllRewards() {
   const addresses = useAddresses();
+  const { chainId } = useEthers();
 
   const strategies = [
     addresses.TraderJoeMasterChefStrategy,
@@ -31,7 +32,7 @@ export function ConvertAllRewards() {
     .map((resultRow, i) => ({
       i,
       strategyAddress: strategies[i],
-      rewardToken: resultRow ? getTokenFromAddress(resultRow[0])! : undefined,
+      rewardToken: resultRow ? getTokenFromAddress(chainId!, resultRow[0])! : undefined,
     }))
     .filter((x) => x.rewardToken) as {
     i: number;

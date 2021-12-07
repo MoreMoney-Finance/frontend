@@ -15,14 +15,17 @@ import { getTokenFromAddress } from '../chain-interaction/tokens';
 import { PositionBody } from '../components/PositionBody';
 import { BigNumber } from 'ethers';
 import { EditTranche } from '../components/EditTranche';
-import { CurrencyValue } from '@usedapp/core';
+import { CurrencyValue, useEthers } from '@usedapp/core';
 import { TrancheTable } from '../components/TrancheTable';
 
 export function TokenPage(props: React.PropsWithChildren<unknown>) {
+  const { chainId } = useEthers();
   const params = useParams<'tokenAddress'>();
   const tokenAddress = params.tokenAddress;
   const allStratMeta = React.useContext(StrategyMetadataContext);
-  const token = tokenAddress ? getTokenFromAddress(tokenAddress) : undefined;
+  const token = tokenAddress
+    ? getTokenFromAddress(chainId!, tokenAddress)
+    : undefined;
 
   const stratMeta: Record<string, ParsedStratMetaRow> =
     tokenAddress && tokenAddress in allStratMeta
@@ -46,7 +49,7 @@ export function TokenPage(props: React.PropsWithChildren<unknown>) {
     border: '1px solid transparent',
     borderColor: 'gray.600',
     borderRadius: '3xl',
-    borderStyle: "solid"
+    borderStyle: 'solid',
   };
 
   return (

@@ -57,12 +57,65 @@ const Input = {
   },
 };
 
+const Table = {
+  baseStyle: {
+    table: {
+      borderCollapse: 'separate',
+      borderSpacing: '0 16px',
+    },
+    tr: {
+      position: 'relative',
+      _before: {
+        content: '""',
+        position: 'absolute',
+        borderRadius: '10px',
+        backgroundImage:
+          'linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
+        top: '-1px',
+        left: '-1px',
+        bottom: '-1px',
+        right: '-1px',
+        zIndex: -2,
+      },
+      _after: {
+        content: '""',
+        position: 'absolute',
+        borderRadius: '10px',
+        top: '0',
+        left: '0',
+        bottom: '0',
+        right: '-0',
+        background: '#22242B',
+        zIndex: -1,
+      },
+      td: {
+        background: 'whiteAlpha.50',
+        _first: {
+          borderLeftRadius: '10px',
+        },
+        _last: {
+          borderRightRadius: '10px',
+        },
+      },
+    },
+  },
+};
+
 export const theme = extendTheme({
   config: { initialColorMode: 'dark' },
+  styles: {
+    global: {
+      body: {
+        bg: 'hsla(227, 12%, 15%, 1)',
+        color: 'white',
+      },
+    },
+  },
   components: {
     Button,
     Text,
     Tabs,
     Input,
+    Table,
   },
 });

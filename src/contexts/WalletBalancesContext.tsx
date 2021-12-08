@@ -1,5 +1,4 @@
 import {
-  ChainId,
   ContractCall,
   CurrencyValue,
   ERC20Interface,
@@ -20,7 +19,6 @@ export function WalletBalancesCtxProvider({
   children,
 }: React.PropsWithChildren<any>) {
   const { chainId } = useEthers();
-  const _chainId = chainId === ChainId.Hardhat ? ChainId.Avalanche : chainId;
   const account = useContext(UserAddressContext);
 
   const tokenBalances = new Map<string, CurrencyValue>();
@@ -33,7 +31,7 @@ export function WalletBalancesCtxProvider({
       args: [account],
     };
   }
-  const tokensInQuestion = getTokensInQuestion(_chainId!);
+  const tokensInQuestion = getTokensInQuestion(chainId!);
   const calls: ContractCall[] = tokensInQuestion.map(convert2ContractCall);
   const results = useContractCalls(calls) ?? [];
   results?.forEach((result: any[] | undefined, index: number) => {

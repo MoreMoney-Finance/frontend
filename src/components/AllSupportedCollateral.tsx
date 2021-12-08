@@ -116,10 +116,6 @@ export function AllSupportedCollateral() {
           <Table
             variant="unstyled"
             {...getTableProps()}
-            sx={{
-              borderCollapse: 'separate',
-              borderSpacing: '0 10px',
-            }}
           >
             <Thead>
               {headerGroups.map((headerGroup) => (
@@ -149,7 +145,6 @@ export function AllSupportedCollateral() {
                     as={Link}
                     to={`/token/${row.original.token.address}`}
                     display="table-row"
-                    bg="gray.900"
                   >
                     {row.cells.map((cell) => {
                       // eslint-disable-next-line

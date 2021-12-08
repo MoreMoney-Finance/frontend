@@ -19,9 +19,6 @@ const addressToken: Record<ChainId, Map<string, Token>> = Object.fromEntries(
 const addressIcons: Map<string, string[]> = new Map();
 
 export function getTokenFromAddress(chainId: ChainId, address: string): Token {
-  if (chainId === undefined) {
-    chainId = ChainId.Avalanche;
-  }
   return addressToken[chainId].get(getAddress(address))!;
 }
 
@@ -136,13 +133,13 @@ export const wrappedNativeCurrency: Map<ChainId, Token> = new Map();
 
 wrappedNativeCurrency.set(
   ChainId.Hardhat,
-  addressToken[ChainId['Avalanche']].get(
+  addressToken[ChainId.Hardhat].get(
     '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
   )!
 );
 wrappedNativeCurrency.set(
   ChainId.Avalanche,
-  addressToken[ChainId['Avalanche']].get(
+  addressToken[ChainId.Avalanche].get(
     '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
   )!
 );

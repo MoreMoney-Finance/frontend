@@ -117,7 +117,7 @@ function parseStratMeta(
   row: RawStratMetaRow,
   stable: Token
 ): ParsedStratMetaRow {
-  const token = getTokenFromAddress(chainId, row.token)!;
+  const token = getTokenFromAddress(chainId, row.token);
   const tvlInToken = tokenAmount(chainId, row.token, row.tvl)!;
   return {
     debtCeiling: new CurrencyValue(stable, row.debtCeiling)!,
@@ -154,7 +154,10 @@ function convertAPF2APY(APF: BigNumber): number {
 export function useStable() {
   const { chainId } = useEthers();
   const addresses = useAddresses();
-  return getTokenFromAddress(chainId!, addresses.Stablecoin)!;
+  return getTokenFromAddress(
+    chainId ? (chainId as unknown as ChainId) : ChainId.Avalanche,
+    addresses.Stablecoin
+  )!;
 }
 
 export type StrategyMetadata = Record<

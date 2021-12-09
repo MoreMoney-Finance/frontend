@@ -14,7 +14,7 @@ export function TableSearch({
   };
 
   return (
-    <Box p={'4'}>
+    <Box py={'4'}>
       <InputGroup>
         <InputLeftElement pointerEvents="none">
           <SearchIcon color="gray.300" />

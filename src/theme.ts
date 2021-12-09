@@ -1,4 +1,16 @@
 import { extendTheme } from '@chakra-ui/react';
+import '@fontsource/poppins';
+import '@fontsource/rubik';
+
+const Link = {
+  variants: {
+    footer: {
+      fontSize: '14px',
+      lineHeight: '21px',
+      color: 'brand.whiteAlpha50',
+    },
+  },
+};
 
 const Button = {
   baseStyle: {
@@ -38,11 +50,14 @@ const Tabs = {
     'soft-rounded': {
       tab: {
         borderRadius: 'full',
-        fontWeight: 'semibold',
-        color: 'gray.600',
+        fontSize: '14px',
+        lineHeight: '21px',
+        fontWeight: 'normal',
+        color: 'brand.whiteAlpha50',
+        padding: '8px 22px',
         _selected: {
-          color: 'gray.100',
-          bg: 'gray.600',
+          color: 'white',
+          bg: 'brand.active',
         },
       },
     },
@@ -58,43 +73,63 @@ const Input = {
 };
 
 const Table = {
-  baseStyle: {
-    table: {
-      borderCollapse: 'separate',
-      borderSpacing: '0 16px',
-    },
-    tr: {
-      position: 'relative',
-      _before: {
-        content: '""',
-        position: 'absolute',
-        borderRadius: '10px',
-        backgroundImage:
-          'linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
-        top: '-1px',
-        left: '-1px',
-        bottom: '-1px',
-        right: '-1px',
-        zIndex: -2,
+  variants: {
+    dashboard: {
+      table: {
+        width: '100%',
+        borderCollapse: 'separate',
+        borderSpacing: '0 16px',
       },
-      _after: {
-        content: '""',
-        position: 'absolute',
-        borderRadius: '10px',
-        top: '0',
-        left: '0',
-        bottom: '0',
-        right: '-0',
-        background: '#22242B',
-        zIndex: -1,
-      },
-      td: {
-        background: 'whiteAlpha.50',
-        _first: {
-          borderLeftRadius: '10px',
+      thead: {
+        tr: {
+          td: {
+            fontFamily: 'Rubik',
+            fontSize: '12px',
+            lineHeight: '14px',
+            color: 'brand.whiteAlpha40',
+            textTransform: 'uppercase',
+            paddingTop: '20px',
+            paddingBottom: '8px',
+            borderTop: '1px solid',
+            bg: 'brand.whiteAlpha.20',
+          },
         },
-        _last: {
-          borderRightRadius: '10px',
+        _first: {
+          transform: 'translateY(16px)',
+        },
+      },
+      tbody: {
+        /** Because the table uses tr as a link */
+        a: {
+          position: 'relative',
+          _after: {
+            content: '""',
+            position: 'absolute',
+            borderRadius: '10px',
+            boxSizing: 'border-box',
+            border: '1px solid transparent',
+            backgroundClip: 'padding-box, border-box',
+            backgroundOrigin: 'padding-box, border-box',
+            backgroundImage:
+              'linear-gradient(#22242B, #22242B), linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
+            top: '0',
+            left: '0',
+            bottom: '0',
+            right: '0',
+            zIndex: '-2',
+          },
+          td: {
+            fontSize: '18px',
+            lineHeight: '27px',
+            padding: '16px 30px',
+            background: 'whiteAlpha.50',
+            _first: {
+              borderLeftRadius: '10px',
+            },
+            _last: {
+              borderRightRadius: '10px',
+            },
+          },
         },
       },
     },
@@ -102,11 +137,25 @@ const Table = {
 };
 
 export const theme = extendTheme({
+  fonts: {
+    heading: 'Rubik',
+    body: 'Poppins',
+  },
   config: { initialColorMode: 'dark' },
+  colors: {
+    brand: {
+      bg: 'hsla(227, 12%, 15%, 1)',
+      active: 'hsla(227, 22%, 26%, 0.59)',
+      whiteAlpha20: 'hsla(0, 0%, 100%, 0.2)',
+      whiteAlpha40: 'hsla(0, 0%, 100%, 0.4)',
+      whiteAlpha50: 'hsla(0, 0%, 100%, 0.5)',
+      whiteAlpha60: 'hsla(0, 0%, 100%, 0.6)',
+    },
+  },
   styles: {
     global: {
       body: {
-        bg: 'hsla(227, 12%, 15%, 1)',
+        bg: 'brand.bg',
         color: 'white',
       },
     },
@@ -117,5 +166,6 @@ export const theme = extendTheme({
     Tabs,
     Input,
     Table,
+    Link,
   },
 });

@@ -9,6 +9,7 @@ import NavigationBar from './components/NavigationBar';
 import { useAddresses } from './chain-interaction/contracts';
 import NetworkNotSupported from './components/NetworkNotSupported';
 import { theme } from './theme';
+import FooterBar from './components/FooterBar';
 
 export const App = (params: React.PropsWithChildren<unknown>) => {
   const addresses = useAddresses();
@@ -19,15 +20,16 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
         <WalletBalancesCtxProvider>
           {addresses ? (
             <StrategyMetadataCtxProvider>
-              <Box textAlign="center" fontSize="xl">
+              <Box maxWidth="1200px" margin="0 auto" px={4}>
                 <NotificationsComponent />
                 <NavigationBar />
-                <Grid minH="100vh" p={3}>
+                <Grid minH="100vh">
                   <VStack spacing={8}>
                     {params.children}
                     <Outlet />
                   </VStack>
                 </Grid>
+                <FooterBar />
               </Box>
             </StrategyMetadataCtxProvider>
           ) : (

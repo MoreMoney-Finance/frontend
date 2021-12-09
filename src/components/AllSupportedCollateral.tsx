@@ -64,12 +64,16 @@ export function AllSupportedCollateral() {
   const columns = React.useMemo<Column<Entity>[]>(
     () => [
       {
-        Header: 'Asset',
+        Header: 'Collateral Asset',
         accessor: 'asset',
       },
       {
-        Header: 'APY',
+        Header: 'Collateral APY',
         accessor: 'apy',
+      },
+      {
+        Header: 'Total borrowed',
+        accessor: 'totalBorrowed',
       },
       {
         Header: 'MNY available',
@@ -78,10 +82,6 @@ export function AllSupportedCollateral() {
       {
         Header: 'Min. ColRatio',
         accessor: 'minColRatio',
-      },
-      {
-        Header: 'Total borrowed',
-        accessor: 'totalBorrowed',
       },
       {
         Header: 'Liquidation Fee',
@@ -104,7 +104,7 @@ export function AllSupportedCollateral() {
         <Text fontSize="12">...and earn yield</Text>
       </Box>
 
-      <Box>
+      <Box width="100%">
         <Box>
           <Flex alignItems={'center'}>
             <TableTabs />
@@ -113,22 +113,14 @@ export function AllSupportedCollateral() {
           </Flex>
         </Box>
         <Box>
-          <Table
-            variant="unstyled"
-            {...getTableProps()}
-          >
+          <Table variant="dashboard" {...getTableProps()}>
             <Thead>
               {headerGroups.map((headerGroup) => (
                 // eslint-disable-next-line
                 <Tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
                     // eslint-disable-next-line
-                    <Td
-                      {...column.getHeaderProps()}
-                      style={{
-                        fontWeight: 'bold',
-                      }}
-                    >
+                    <Td {...column.getHeaderProps()}>
                       {column.render('Header')}
                     </Td>
                   ))}

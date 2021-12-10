@@ -3,7 +3,7 @@ import * as React from 'react';
 
 export function TableTabs() {
   return (
-    <Box py={'2'}>
+    <Box>
       <Tabs variant="soft-rounded">
         <TabList>
           <Tab>All Assets</Tab>

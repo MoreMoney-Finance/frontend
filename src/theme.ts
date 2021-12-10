@@ -3,11 +3,31 @@ import '@fontsource/poppins';
 import '@fontsource/rubik';
 
 const Link = {
+  baseStyle: {
+    fontSize: '14px',
+    lineHeight: '24px',
+    color: 'brand.whiteAlpha60',
+  },
   variants: {
     footer: {
-      fontSize: '14px',
       lineHeight: '21px',
       color: 'brand.whiteAlpha50',
+    },
+    header: {
+      fontWeight: '600',
+      _hover: {
+        background:
+          'linear-gradient(to bottom, hsla(166, 100%, 46%, 1), hsla(165, 86%, 34%, 1))',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+      },
+    },
+    headerActive: {
+      fontWeight: '600',
+      background:
+        'linear-gradient(to bottom, hsla(166, 100%, 46%, 1), hsla(165, 86%, 34%, 1))',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
     },
   },
 };
@@ -67,7 +87,8 @@ const Tabs = {
 const Input = {
   variants: {
     rounded: {
-      borderRadius: '5',
+      borderRadius: '20px',
+      bg: 'transparent',
     },
   },
 };
@@ -111,18 +132,18 @@ const Table = {
             backgroundClip: 'padding-box, border-box',
             backgroundOrigin: 'padding-box, border-box',
             backgroundImage:
-              'linear-gradient(#22242B, #22242B), linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
+              'linear-gradient(hsla(227, 12%, 15%, 1), hsla(227, 12%, 15%, 1)), linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
             top: '0',
             left: '0',
             bottom: '0',
             right: '0',
-            zIndex: '-2',
+            zIndex: 'var(--chakra-zIndices-hide)',
           },
           td: {
             fontSize: '18px',
             lineHeight: '27px',
             padding: '16px 30px',
-            background: 'whiteAlpha.50',
+            bg: 'brand.whiteAlpha030',
             _first: {
               borderLeftRadius: '10px',
             },
@@ -137,26 +158,34 @@ const Table = {
 };
 
 export const theme = extendTheme({
+  config: { initialColorMode: 'dark' },
   fonts: {
     heading: 'Rubik',
     body: 'Poppins',
   },
-  config: { initialColorMode: 'dark' },
   colors: {
     brand: {
       bg: 'hsla(227, 12%, 15%, 1)',
       active: 'hsla(227, 22%, 26%, 0.59)',
+      whiteAlpha030: 'hsla(0, 0%, 100%, 0.03)',
       whiteAlpha20: 'hsla(0, 0%, 100%, 0.2)',
+      whiteAlpha30: 'hsla(0, 0%, 100%, 0.3)',
       whiteAlpha40: 'hsla(0, 0%, 100%, 0.4)',
       whiteAlpha50: 'hsla(0, 0%, 100%, 0.5)',
       whiteAlpha60: 'hsla(0, 0%, 100%, 0.6)',
     },
+  },
+  zIndices: {
+    header: 100,
   },
   styles: {
     global: {
       body: {
         bg: 'brand.bg',
         color: 'white',
+      },
+      a: {
+        textDecoration: 'none !important',
       },
     },
   },

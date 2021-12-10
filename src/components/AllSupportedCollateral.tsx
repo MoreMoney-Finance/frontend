@@ -1,17 +1,7 @@
 import * as React from 'react';
 import { ParsedStratMetaRow } from '../chain-interaction/contracts';
 import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
-import {
-  Box,
-  Text,
-  Flex,
-  Spacer,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Td,
-} from '@chakra-ui/react';
+import { Box, Text, Flex, Table, Thead, Tbody, Tr, Td } from '@chakra-ui/react';
 import { TableTabs } from './TableTabs';
 import { TableSearch } from './TableSearch';
 import { TokenDescription } from './TokenDescription';
@@ -96,23 +86,26 @@ export function AllSupportedCollateral() {
 
   return (
     <>
-      <Box textAlign="center">
-        <Text fontSize="8" variant={'gradient'}>
-          <b>Select a collateral to</b>
+      <Box textAlign="center" margin="100px 0">
+        <Text fontSize="24" lineHeight="56px" color="brand.whiteAlpha60">
+          <b>Select a collateral asset to </b>
         </Text>
-        <Text fontSize="12">Borrow MNY</Text>
-        <Text fontSize="12">...and earn yield</Text>
+        <Text fontSize="48" lineHeight="56px">
+          Take an interest free loan that repays
+        </Text>
+        <Text fontSize="48" lineHeight="56px">
+          itself with yield from collateral
+        </Text>
       </Box>
 
       <Box width="100%">
-        <Box>
-          <Flex alignItems={'center'}>
+        <Box zIndex="var(--chakra-zIndices-header)" position="relative">
+          <Flex alignItems={'center'} justifyContent="space-between">
             <TableTabs />
-            <Spacer />
             <TableSearch setSearchString={setSearchString} />
           </Flex>
         </Box>
-        <Box>
+        <>
           <Table variant="dashboard" {...getTableProps()}>
             <Thead>
               {headerGroups.map((headerGroup) => (
@@ -150,7 +143,7 @@ export function AllSupportedCollateral() {
               })}
             </Tbody>
           </Table>
-        </Box>
+        </>
       </Box>
     </>
   );

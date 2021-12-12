@@ -13,15 +13,22 @@ export function TableSearch({
   };
 
   return (
-    <Box p={'4'}>
+    <Box>
       <InputGroup>
         <InputLeftElement pointerEvents="none">
-          <SearchIcon color="gray.300" />
+          <SearchIcon />
         </InputLeftElement>
         <Input
           type="text"
           placeholder="Search Tokens"
-          borderRadius={'25'}
+          bg="transparent"
+          color="brand.whiteAlpha50"
+          borderRadius="full"
+          border="1px solid"
+          borderColor="brand.whiteAlpha20"
+          fontSize="14px"
+          lineHeight="21px"
+          height="37px"
           onChange={handleSearch}
         />
       </InputGroup>

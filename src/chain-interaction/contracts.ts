@@ -231,7 +231,6 @@ function parsePositionMeta(
   row: RawPositionMetaRow,
   stable: Token
 ): ParsedPositionMetaRow {
-
   const debt = new CurrencyValue(stable, row.debt);
   const collateral = tokenAmount(stable.chainId, row.token, row.collateral);
   const borrowablePercent = row.borrowablePer10k.toNumber() / 100;

@@ -7,7 +7,6 @@ export function TableSearch({
 }: {
   setSearchString: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  
   const handleSearch: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     const stripped = event.target.value.trim();
     setSearchString(stripped.toLowerCase());

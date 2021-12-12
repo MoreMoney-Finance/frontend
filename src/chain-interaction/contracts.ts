@@ -11,8 +11,6 @@ import {
 import { formatEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber } from 'ethers';
 import { Interface, parseBytes32String } from 'ethers/lib/utils';
-import { useContext } from 'react';
-import { UserAddressContext } from '../contexts/UserAddressContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
@@ -233,10 +231,9 @@ function parsePositionMeta(
   row: RawPositionMetaRow,
   stable: Token
 ): ParsedPositionMetaRow {
-  const { chainId } = useEthers();
 
   const debt = new CurrencyValue(stable, row.debt);
-  const collateral = tokenAmount(chainId!, row.token, row.collateral);
+  const collateral = tokenAmount(stable.chainId, row.token, row.collateral);
   const borrowablePercent = row.borrowablePer10k.toNumber() / 100;
 
   return {
@@ -244,7 +241,7 @@ function parsePositionMeta(
     strategy: row.strategy,
     debt,
     collateral,
-    token: getTokenFromAddress(chainId!, row.token)!,
+    token: getTokenFromAddress(stable.chainId, row.token)!,
     yield: new CurrencyValue(stable, row.yield),
     collateralValue: new CurrencyValue(stable, row.collateralValue),
     borrowablePercent,
@@ -261,8 +258,9 @@ export type TokenStratPositionMetadata = Record<
   string,
   ParsedPositionMetaRow[]
 >;
-export function useIsolatedPositionMetadata(): TokenStratPositionMetadata {
-  const account = useContext(UserAddressContext);
+export function useIsolatedPositionMetadata(
+  account: string
+): TokenStratPositionMetadata {
   const positionMeta = useIsolatedLendingView(
     'viewPositionsByOwner',
     [account],

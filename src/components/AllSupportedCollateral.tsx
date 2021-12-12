@@ -113,10 +113,7 @@ export function AllSupportedCollateral() {
           </Flex>
         </Box>
         <Box>
-          <Table
-            variant="unstyled"
-            {...getTableProps()}
-          >
+          <Table variant="unstyled" {...getTableProps()}>
             <Thead>
               {headerGroups.map((headerGroup) => (
                 // eslint-disable-next-line

@@ -10,6 +10,11 @@ export default function TokenInformation() {
     height: 'full',
   };
 
+  // const liquidationRewardPer10k: BigNumber = useIsolatedLendingLiquidationView(
+  //   'liquidationRewardPer10k',
+  //   [tokenAddress],
+  //   BigNumber.from(0)
+  // );
   return (
     <GridItem colSpan={4}>
       <Flex

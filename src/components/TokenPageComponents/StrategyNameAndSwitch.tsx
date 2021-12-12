@@ -1,16 +1,13 @@
 import { Button, Flex, GridItem, Text } from '@chakra-ui/react';
 import * as React from 'react';
-import {
-  ParsedPositionMetaRow,
-  ParsedStratMetaRow,
-} from '../../chain-interaction/contracts';
+import { ParsedStratMetaRow } from '../../chain-interaction/contracts';
 
-export default function StrategyTokenData({
-  position,
-  stratMetaData,
+export default function StrategyNameAndSwitch({
+  stratMeta,
+  chosenStrategy,
 }: {
-  position: ParsedPositionMetaRow;
-  stratMetaData: ParsedStratMetaRow;
+  stratMeta: Record<string, ParsedStratMetaRow>;
+  chosenStrategy: string;
 }) {
   const boxStyle = {
     border: '1px solid transparent',
@@ -19,7 +16,7 @@ export default function StrategyTokenData({
     borderStyle: 'solid',
     height: 'full',
   };
-  console.log(position, stratMetaData);
+
   return (
     <GridItem colSpan={2}>
       <Flex
@@ -31,7 +28,7 @@ export default function StrategyTokenData({
       >
         <Text>Strategy</Text>
         <Text fontSize={'2xl'}>
-          <b>Selfrepaying loan</b>
+          <b>{stratMeta[chosenStrategy].strategyName}</b>
         </Text>
         <br />
         <Button borderRadius={'15px'} width={'auto'}>

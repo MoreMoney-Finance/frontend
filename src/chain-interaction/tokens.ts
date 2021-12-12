@@ -18,8 +18,11 @@ const addressToken: Record<ChainId, Map<string, Token>> = Object.fromEntries(
 ) as any;
 const addressIcons: Map<string, string[]> = new Map();
 
-export function getTokenFromAddress(chainId: ChainId, address: string): Token {
-  return addressToken[chainId].get(getAddress(address))!;
+export function getTokenFromAddress(
+  chainId: ChainId | undefined,
+  address: string
+): Token {
+  return addressToken[chainId ?? ChainId.Avalanche].get(getAddress(address))!;
 }
 
 export function getIconsFromTokenAddress(address: string): string[] {

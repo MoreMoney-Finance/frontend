@@ -9,12 +9,12 @@ export function TokenDescription({
   iconSize,
   textSize,
 }: {
-  token: Token;
+  token?: Token;
   iconSize?: string;
   textSize?: string;
 }) {
   const targetSize = iconSize ?? 'xs';
-  return (
+  return token ? (
     <HStack spacing="1">
       <Link to={`/token/${token.address}`}>
         <Flex>
@@ -29,5 +29,7 @@ export function TokenDescription({
         </Flex>
       </Link>
     </HStack>
+  ) : (
+    <Text>Loading token information</Text>
   );
 }

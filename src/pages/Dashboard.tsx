@@ -2,11 +2,8 @@ import { Box } from '@chakra-ui/react';
 import * as React from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { TokenStratPositionMetadata, useIsolatedPositionMetadata } from '../chain-interaction/contracts';
-import { ConvertAllRewards } from '../components/ConvertAllRewards';
 import { AllSupportedCollateral } from '../components/AllSupportedCollateral';
-import { LiquidatablePositions } from '../components/LiquidatablePositions';
 import { TrancheTable } from '../components/TrancheTable';
-import { WrapNativeCurrency } from '../components/WrapNativeCurrency';
 
 export function Dashboard(params: React.PropsWithChildren<unknown>) {
   const allPositionMeta: TokenStratPositionMetadata = useIsolatedPositionMetadata();
@@ -22,9 +19,6 @@ export function Dashboard(params: React.PropsWithChildren<unknown>) {
         </Box>
       ) : undefined}
       <AllSupportedCollateral />
-      <WrapNativeCurrency />
-      <ConvertAllRewards />
-      <LiquidatablePositions />
     </>
   );
 }

@@ -51,8 +51,6 @@ export default function DepositBorrow({
     position ? position.trancheId : undefined
   );
 
-  const depositMax = allowance.gt(walletBalance) ? walletBalance : allowance;
-
   function onDepositBorrow(data: { [x: string]: any }) {
     console.log('deposit borrow');
     console.log(data);
@@ -64,7 +62,7 @@ export default function DepositBorrow({
       data['mny-borrow']
     );
   }
-  const depositBorrowDisabled = depositMax.isZero();
+  const depositBorrowDisabled = walletBalance.isZero();
 
   const [collateralInput, borrowInput] = watch([
     'collateral-deposit',
@@ -128,7 +126,7 @@ export default function DepositBorrow({
 
         <TokenAmountInputField
           name="collateral-deposit"
-          max={depositMax}
+          max={walletBalance}
           isDisabled={depositBorrowDisabled}
           placeholder={'Collateral Deposit'}
           registerForm={registerDepForm}
@@ -215,6 +213,7 @@ export default function DepositBorrow({
         <Button
           w={'full'}
           type="submit"
+          disabled={depositBorrowDisabled}
           isLoading={isSubmittingDepForm}
           isDisabled={depositBorrowDisabled}
         >

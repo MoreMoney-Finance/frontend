@@ -9,21 +9,21 @@ import {
   Image,
   Link as LinkComponent,
 } from '@chakra-ui/react';
-import {Link, useLocation} from 'react-router-dom';
-import {HamburgerIcon, CloseIcon} from '@chakra-ui/icons';
-import {UserAddressComponent} from './UserAddressComponent';
+import { Link, useLocation } from 'react-router-dom';
+import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
+import { UserAddressComponent } from './UserAddressComponent';
 import AccountModal from './AccountModal';
 import logo from '../assets/logo/logo.svg';
 
 const Links = [
-  {title: 'Borrow', link: '/'},
-  {title: 'Farm', link: '/farm'},
-  {title: 'Liquidation Protected Loans', link: '/loans'},
-  {title: 'Analytics', link: '/analytics'},
+  { title: 'Borrow', link: '/' },
+  { title: 'Farm', link: '/farm' },
+  { title: 'Liquidation Protected Loans', link: '/loans' },
+  { title: 'Analytics', link: '/analytics' },
 ];
 
 export default function NavigationBar() {
-  const {isOpen, onOpen, onClose} = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenAccount,
     onOpen: onOpenAccount,
@@ -41,23 +41,28 @@ export default function NavigationBar() {
         >
           <IconButton
             size={'md'}
-            icon={isOpen ? <CloseIcon/> : <HamburgerIcon/>}
+            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
             aria-label={'Open Menu'}
-            display={{md: 'none'}}
+            display={{ md: 'none' }}
             onClick={isOpen ? onClose : onOpen}
           />
 
           <HStack spacing="65px" alignItems={'center'}>
             <Box>
-              <Image src={logo} alt="Logo"/>
+              <Image src={logo} alt="Logo" />
             </Box>
             <HStack
               as={'nav'}
               spacing="48px"
-              display={{base: 'none', md: 'flex'}}
+              display={{ base: 'none', md: 'flex' }}
             >
               {Links.map((link) => (
-                <LinkComponent variant={location.pathname === link.link ? "headerActive" : "header"} key={link.title}>
+                <LinkComponent
+                  variant={
+                    location.pathname === link.link ? 'headerActive' : 'header'
+                  }
+                  key={link.title}
+                >
                   <Link to={link.link}>{link.title}</Link>
                 </LinkComponent>
               ))}
@@ -68,15 +73,20 @@ export default function NavigationBar() {
             alignItems="center"
             justifyContent="center"
           >
-            <UserAddressComponent handleOpenModal={onOpenAccount}/>
-            <AccountModal isOpen={isOpenAccount} onClose={onCloseAccount}/>
+            <UserAddressComponent handleOpenModal={onOpenAccount} />
+            <AccountModal isOpen={isOpenAccount} onClose={onCloseAccount} />
           </HStack>
         </Flex>
         {isOpen ? (
-          <Box pb={4} display={{md: 'none'}}>
+          <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
               {Links.map((link) => (
-                <LinkComponent variant={location.pathname === link.link ? "headerActive" : "header"} key={link.title}>
+                <LinkComponent
+                  variant={
+                    location.pathname === link.link ? 'headerActive' : 'header'
+                  }
+                  key={link.title}
+                >
                   <Link to={link.link}>{link.title}</Link>
                 </LinkComponent>
               ))}

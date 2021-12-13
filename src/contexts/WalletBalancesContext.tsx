@@ -32,7 +32,7 @@ export function WalletBalancesCtxProvider({
     };
   }
   const tokensInQuestion = getTokensInQuestion(chainId!);
-  const calls: ContractCall[] = tokensInQuestion.map(convert2ContractCall);
+  const calls: ContractCall[] = account ? tokensInQuestion.map(convert2ContractCall) : [];
   const results = useContractCalls(calls) ?? [];
   results?.forEach((result: any[] | undefined, index: number) => {
     if (result) {

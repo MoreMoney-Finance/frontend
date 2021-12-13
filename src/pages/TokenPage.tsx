@@ -1,105 +1,59 @@
+import { ArrowBackIcon } from '@chakra-ui/icons';
+import { Box, Flex, Text, VStack } from '@chakra-ui/react';
+import { useEthers } from '@usedapp/core';
 import * as React from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
-  ParsedPositionMetaRow,
   ParsedStratMetaRow,
-  TokenStratPositionMetadata,
-  useIsolatedLendingLiquidationView,
-  useIsolatedPositionMetadata,
-  useStable,
 } from '../chain-interaction/contracts';
-import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
-import { Box, Center, VStack } from '@chakra-ui/react';
-import { TokenDescription } from '../components/TokenDescription';
 import { getTokenFromAddress } from '../chain-interaction/tokens';
-import { PositionBody } from '../components/PositionBody';
-import { BigNumber } from 'ethers';
-import { EditTranche } from '../components/EditTranche';
-import { CurrencyValue, useEthers } from '@usedapp/core';
-import { TrancheTable } from '../components/TrancheTable';
+import { TokenPageBody } from '../components/TokenPageComponents/TokenPageBody';
+import { TokenDescription } from '../components/TokenDescription';
+import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
+import { PositionBody } from '../components/TokenPageComponents/PositionBody';
 
 export function TokenPage(props: React.PropsWithChildren<unknown>) {
-  const { chainId } = useEthers();
+  const { chainId, account } = useEthers();
   const params = useParams<'tokenAddress'>();
   const tokenAddress = params.tokenAddress;
   const allStratMeta = React.useContext(StrategyMetadataContext);
   const token = tokenAddress
-    ? getTokenFromAddress(chainId!, tokenAddress)
+    ? getTokenFromAddress(chainId, tokenAddress)
     : undefined;
 
   const stratMeta: Record<string, ParsedStratMetaRow> =
     tokenAddress && tokenAddress in allStratMeta
       ? allStratMeta[tokenAddress]
       : {};
-  const allPositionMeta: TokenStratPositionMetadata =
-    useIsolatedPositionMetadata();
-  const positionMeta: ParsedPositionMetaRow[] = tokenAddress
-    ? allPositionMeta[tokenAddress] ?? []
-    : [];
 
-  const liquidationRewardPer10k: BigNumber = useIsolatedLendingLiquidationView(
-    'liquidationRewardPer10k',
-    [tokenAddress],
-    BigNumber.from(0)
-  );
+  const navigate = useNavigate();
 
-  const stable = useStable();
-
-  const boxStyle = {
-    border: '1px solid transparent',
-    borderColor: 'gray.600',
-    borderRadius: '3xl',
-    borderStyle: 'solid',
-  };
-
-  return (
-    <VStack spacing="8" margin="8">
-      {token ? (
-        <h1>
+  return Object.values(stratMeta).length > 0 ? (<VStack spacing="8" margin="8">
+    <Flex flexDirection={'row'} w={'full'} alignContent={'center'}>
+      <Box
+        marginRight={'10px'}
+        cursor={'pointer'}
+        onClick={() => navigate(-1)}
+      >
+        <Flex flexDirection={'row'}>
+          <Text>
+            <ArrowBackIcon />
+          </Text>
+          <Text>Back</Text>
+        </Flex>
+      </Box>
+      <Box>
+        {token ? (
           <TokenDescription token={token} iconSize="xs" textSize="6xl" />
-        </h1>
-      ) : undefined}
-
-      <Center>
-        {positionMeta.length === 0 ? (
-          <Box {...boxStyle}>
-            <PositionBody
-              stratMeta={stratMeta}
-              liquidationRewardPer10k={liquidationRewardPer10k}
-            />
-          </Box>
-        ) : (
-          positionMeta.map((position, i) => (
-            <Box key={i} {...boxStyle}>
-              <VStack>
-                <Box padding="8">
-                  <TrancheTable positions={[position]} />
-                </Box>
-                <Box>
-                  <EditTranche
-                    {...{
-                      ...position,
-                      ...stratMeta[position.strategy],
-                      collateral:
-                        position.collateral ??
-                        new CurrencyValue(position.token, BigNumber.from(0)),
-                      debt:
-                        position.debt ??
-                        new CurrencyValue(stable, BigNumber.from(0)),
-                    }}
-                  />
-                </Box>
-                <PositionBody
-                  position={position}
-                  stratMeta={stratMeta}
-                  liquidationRewardPer10k={liquidationRewardPer10k}
-                />
-              </VStack>
-            </Box>
-          ))
-        )}
-        {props.children}
-      </Center>
-    </VStack>
-  );
+        ) : undefined}
+      </Box>
+    </Flex>
+    {
+      account ?
+        (<TokenPageBody tokenAddress={tokenAddress} stratMeta={stratMeta} account={account} />)
+        : (<PositionBody stratMeta={stratMeta} />)
+    }
+    {props.children}
+  </VStack>
+  ) : (<> </>);
 }

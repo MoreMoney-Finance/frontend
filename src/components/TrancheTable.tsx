@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ParsedPositionMetaRow } from '../chain-interaction/contracts';
-import { Table, Thead, Tbody, Th } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Td, Tr } from '@chakra-ui/react';
 import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
 import { IsolatedTranche } from './IsolatedTranche';
 
@@ -22,15 +22,17 @@ export function TrancheTable({
   return (
     <Table variant="simple" width="auto">
       <Thead>
-        <Th>Asset</Th>
-        <Th>Strategy</Th>
-        <Th>APY</Th>
-        <Th>Min. ColRatio</Th>
-        <Th> Current ColRatio</Th>
-        <Th>Liquidation price</Th>
-        <Th>Collateral</Th>
-        <Th>Debt</Th>
-        {action ? <Th>Action</Th> : undefined}
+        <Tr>
+          <Td>Asset</Td>
+          <Td>Strategy</Td>
+          <Td>APY</Td>
+          <Td>Min. ColRatio</Td>
+          <Td> Current ColRatio</Td>
+          <Td>Liquidation price</Td>
+          <Td>Collateral</Td>
+          <Td>Debt</Td>
+          {action ? <Td>Action</Td> : undefined}
+        </Tr>
       </Thead>
 
       <Tbody>

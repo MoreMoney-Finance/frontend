@@ -8,7 +8,6 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
-import { PercentageChoice } from './PercentageChoice';
 
 export function TokenAmountInputField(props: {
   name: string;
@@ -18,7 +17,7 @@ export function TokenAmountInputField(props: {
   setValueForm: (name: string, max: string) => any;
   errorsForm?: Record<string, any>;
   isDisabled?: boolean;
-  percentages?: { label: string; values: Record<string, number> };
+  percentage?: string;
 }) {
   const {
     name,
@@ -28,7 +27,7 @@ export function TokenAmountInputField(props: {
     setValueForm,
     errorsForm,
     isDisabled,
-    percentages,
+    percentage,
   } = props;
 
   const error = errorsForm?.[name];
@@ -68,24 +67,12 @@ export function TokenAmountInputField(props: {
             >
               MAX
             </Button>
-          ) : percentages ? (
-            <PercentageChoice
-              isDisabled={isDisabled}
-              label={percentages.label}
-              numButtons={Object.values(percentages.values).length}
-            >
-              {Object.entries(percentages.values).map(([key, value]) => (
-                <Button
-                  key={'percentage' + key}
-                  isDisabled={isDisabled}
-                  onClick={() => setValueForm(name, value.toFixed(10))}
-                >
-                  {key}
-                </Button>
-              ))}
-            </PercentageChoice>
+          ) : percentage ? (
+            <Button isDisabled={true} width="auto" px="2" size="xs">
+              {percentage}
+            </Button>
           ) : (
-            ''
+            <></>
           )}
         </InputRightElement>
       </InputGroup>

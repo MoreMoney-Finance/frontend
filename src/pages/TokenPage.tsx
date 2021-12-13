@@ -10,6 +10,7 @@ import { getTokenFromAddress } from '../chain-interaction/tokens';
 import { TokenPageBody } from '../components/TokenPageComponents/TokenPageBody';
 import { TokenDescription } from '../components/TokenDescription';
 import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
+import { PositionBody } from '../components/TokenPageComponents/PositionBody';
 
 export function TokenPage(props: React.PropsWithChildren<unknown>) {
   const { chainId, account } = useEthers();
@@ -48,8 +49,9 @@ export function TokenPage(props: React.PropsWithChildren<unknown>) {
       </Box>
     </Flex>
     {
-      account &&
-      (<TokenPageBody tokenAddress={tokenAddress} stratMeta={stratMeta} account={account} />)
+      account ?
+        (<TokenPageBody tokenAddress={tokenAddress} stratMeta={stratMeta} account={account} />)
+        : (<PositionBody stratMeta={stratMeta} />)
     }
     {props.children}
   </VStack>

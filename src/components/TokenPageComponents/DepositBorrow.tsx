@@ -60,14 +60,14 @@ export default function DepositBorrow({
       token,
       strategyAddress,
       data['collateral-deposit'],
-      data['mny-borrow']
+      data['money-borrow']
     );
   }
   const depositBorrowDisabled = walletBalance.isZero();
 
   const [collateralInput, borrowInput] = watch([
     'collateral-deposit',
-    'mny-borrow',
+    'money-borrow',
   ]);
 
   const extantCollateral =
@@ -141,9 +141,9 @@ export default function DepositBorrow({
         </Box>
 
         <TokenAmountInputField
-          name="mny-borrow"
+          name="money-borrow"
           isDisabled={depositBorrowDisabled}
-          placeholder={'MNY borrow'}
+          placeholder={'MONEY borrow'}
           registerForm={registerDepForm}
           setValueForm={setValueDepForm}
           errorsForm={errorsDepForm}
@@ -163,7 +163,7 @@ export default function DepositBorrow({
             <Button
               borderRadius={'xl'}
               key={'percentage' + key}
-              onClick={() => setValueDepForm('mny-borrow', value.toFixed(10))}
+              onClick={() => setValueDepForm('money-borrow', value.toFixed(10))}
             >
               {key}
             </Button>

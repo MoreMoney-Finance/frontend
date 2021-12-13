@@ -36,7 +36,7 @@ export default function RepayWithdraw({
     console.log('repay withdraw');
     console.log(data);
 
-    sendRepayWithdraw(data['collateral-withdraw'], data['mny-repay']);
+    sendRepayWithdraw(data['collateral-withdraw'], data['money-repay']);
   }
 
   const repayWithdrawDisabled =
@@ -47,7 +47,7 @@ export default function RepayWithdraw({
 
   const [collateralInput, repayInput] = watch([
     'collateral-withdraw',
-    'mny-repay',
+    'money-repay',
   ]);
 
   const extantCollateral =
@@ -118,10 +118,10 @@ export default function RepayWithdraw({
           <Text fontSize={'sm'}>Repay MONEY</Text>
         </Box>
         <TokenAmountInputField
-          name="mny-repay"
+          name="money-repay"
           max={position?.debt}
           isDisabled={repayWithdrawDisabled}
-          placeholder={'MNY repay'}
+          placeholder={'MONEY repay'}
           registerForm={registerRepayForm}
           setValueForm={setValueRepayForm}
           errorsForm={errorsRepayForm}
@@ -138,7 +138,7 @@ export default function RepayWithdraw({
           <Button
             borderRadius={'xl'}
             key={'percentage' + key}
-            onClick={() => setValueRepayForm('mny-repay', value.toFixed(10))}
+            onClick={() => setValueRepayForm('money-repay', value.toFixed(10))}
           >
             {key}
           </Button>

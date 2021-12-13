@@ -113,7 +113,7 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
     getAddress(addresses.Stablecoin),
     new Token(
       'MoreMoney US Dollar',
-      'MNY',
+      'MONEY',
       chainIds[chainId],
       getAddress(addresses.Stablecoin),
       18

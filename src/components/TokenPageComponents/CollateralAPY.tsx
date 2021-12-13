@@ -17,7 +17,12 @@ export default function CollateralAPY({
 
   return (
     <GridItem colSpan={2}>
-      <Flex {...boxStyle} flexDirection={'column'} justifyContent={'center'}>
+      <Flex
+        {...boxStyle}
+        flexDirection={'column'}
+        justifyContent={'center'}
+        alignItems={'center'}
+      >
         <Text>Collateral APY</Text>
         <Text fontSize={'5xl'}>
           {' '}

@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 type Entity = ParsedStratMetaRow & {
   asset: any;
   apy: string;
-  MNYavailable: string;
+  MONEYavailable: string;
   minColRatio: string;
   totalBorrowed: string;
   liquidationFee: string;
@@ -43,7 +43,7 @@ export function AllSupportedCollateral() {
         ...meta,
         asset: <TokenDescription token={meta.token} />,
         apy: meta.APY.toFixed(4) + '%',
-        MNYavailable: meta.debtCeiling.sub(meta.totalDebt).format(),
+        MONEYavailable: meta.debtCeiling.sub(meta.totalDebt).format(),
         minColRatio:
           ((1 / (meta.borrowablePercent / 100)) * 100).toFixed(2) + '%',
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
@@ -66,8 +66,8 @@ export function AllSupportedCollateral() {
         accessor: 'totalBorrowed',
       },
       {
-        Header: 'MNY available',
-        accessor: 'MNYavailable',
+        Header: 'MONEY available',
+        accessor: 'MONEYavailable',
       },
       {
         Header: 'Min. ColRatio',

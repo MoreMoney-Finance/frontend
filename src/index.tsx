@@ -9,6 +9,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Dashboard } from './pages/Dashboard';
 import { TokenPage } from './pages/TokenPage';
 import { Analytics } from './pages/Analytics';
+import { FarmPage } from './pages/Farm/FarmPage';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -29,6 +30,7 @@ ReactDOM.render(
           <Route path="/" element={<App />}>
             <Route index element={<Dashboard />} />
             <Route path="/token/:tokenAddress" element={<TokenPage />} />
+            <Route path="/farm" element={<FarmPage />} />
             <Route path="/analytics" element={<Analytics />} />
           </Route>
         </Routes>

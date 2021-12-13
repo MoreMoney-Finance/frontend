@@ -8,7 +8,7 @@ import { PositionData } from './PositionData';
 import EditPosition from './EditPosition';
 import CollateralAPY from './CollateralAPY';
 import StrategyNameAndSwitch from './StrategyNameAndSwitch';
-import TokenInformation from './TokenInformation';
+import StrategyTokenInformation from './StrategyTokenInformation';
 
 export function PositionBody({
   position,
@@ -45,7 +45,7 @@ export function PositionBody({
           stratMeta={stratMeta}
           chosenStrategy={chosenStrategy}
         />
-        <TokenInformation />
+        <StrategyTokenInformation stratMeta={stratMeta[chosenStrategy]} />
       </Grid>
     </>
   );

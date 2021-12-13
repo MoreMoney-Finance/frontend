@@ -1,7 +1,16 @@
 import { Box, Flex, GridItem, Spacer, Text } from '@chakra-ui/react';
 import * as React from 'react';
+import {
+  ParsedPositionMetaRow,
+  ParsedStratMetaRow,
+} from '../../chain-interaction/contracts';
 
-export default function TokenInformation() {
+export default function StrategyTokenInformation({
+  stratMeta,
+}: React.PropsWithChildren<{
+  position?: ParsedPositionMetaRow;
+  stratMeta: ParsedStratMetaRow;
+}>) {
   const boxStyle = {
     border: '1px solid transparent',
     borderColor: 'gray.600',
@@ -12,7 +21,7 @@ export default function TokenInformation() {
 
   // const liquidationRewardPer10k: BigNumber = useIsolatedLendingLiquidationView(
   //   'liquidationRewardPer10k',
-  //   [tokenAddress],
+  //   [stratMeta.token.address],
   //   BigNumber.from(0)
   // );
   return (
@@ -31,15 +40,17 @@ export default function TokenInformation() {
             <Text>Borrow Fee</Text>
             <Spacer />
             <Text>
-              <b>0.5%</b>
+              <b>{stratMeta.mintingFeePercent.toFixed(2)} %</b>
             </Text>
           </Flex>
           <br />
           <Flex w={'full'}>
-            <Text>Borrow Fee</Text>
+            <Text>Minimum cRatio</Text>
             <Spacer />
             <Text>
-              <b>150%</b>
+              <b>
+                {((1 / (stratMeta.borrowablePercent / 100)) * 100).toFixed(2)} %
+              </b>
             </Text>
           </Flex>
           <br />
@@ -47,15 +58,15 @@ export default function TokenInformation() {
             <Text>Liquidation Fee</Text>
             <Spacer />
             <Text>
-              <b>12%</b>
+              <b>10 %</b>
             </Text>
           </Flex>
           <br />
           <Flex w={'full'}>
-            <Text>Interest</Text>
+            <Text>Stability fee</Text>
             <Spacer />
             <Text>
-              <b>8%</b>
+              <b>{stratMeta.stabilityFeePercent.toFixed(2)} %</b>
             </Text>
           </Flex>
         </Box>

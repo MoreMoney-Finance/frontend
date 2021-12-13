@@ -7,6 +7,7 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   TxStatus,
+  calcLiqPriceFromNum,
 } from '../../chain-interaction/contracts';
 import {
   useApproveTrans,
@@ -174,25 +175,36 @@ export default function DepositBorrow({
           <Text fontSize="sm" color={'gray'}>
             Amount
           </Text>
-          <Text fontSize="md"> -$0.00</Text>
+          <Text fontSize="md"></Text>
         </Box>
         <Box textAlign={'center'}>
           <Text fontSize="sm" color={'gray'}>
             Expected Liquidation Price
           </Text>
-          <Text fontSize="md"> -$0.00</Text>
+          <Text fontSize="md">
+            ${' '}
+            {calcLiqPriceFromNum(
+              borrowablePercent,
+              totalDebt,
+              totalCollateral
+            ).toFixed(2)}
+          </Text>
         </Box>
         <Box textAlign={'center'}>
           <Text fontSize="sm" color={'gray'}>
             cRatio
           </Text>
-          <Text fontSize="md"> -100.00%</Text>
+          <Text fontSize="md">
+            {totalDebt > 0.1 ? (totalCollateral / totalDebt).toFixed(2) : '∞'}
+          </Text>
         </Box>
       </Grid>
       <br />
       <Flex>
         <Text fontSize={'sm'}>Price:</Text>
-        <Text fontSize={'sm'}>1 WAVAX-WETHe= $2000</Text>
+        <Text fontSize={'sm'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(
+          2
+        )}`}</Text>
       </Flex>
       <StatusTrackModal state={approveState} title={'Approve'} />
       <StatusTrackModal state={depositBorrowState} title={'Deposit Borrow'} />

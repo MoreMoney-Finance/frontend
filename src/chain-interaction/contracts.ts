@@ -212,7 +212,7 @@ type RawPositionMetaRow = {
   owner: string;
 };
 
-function calcLiquidationPrice(
+export function calcLiquidationPrice(
   borrowablePercent: number,
   debt: CurrencyValue,
   collateral: CurrencyValue
@@ -224,7 +224,19 @@ function calcLiquidationPrice(
     collateral.format({ significantDigits: Infinity, suffix: '' })
   );
 
-  return (100 * debtNum) / (colNum * borrowablePercent);
+  return calcLiqPriceFromNum(borrowablePercent, debtNum, colNum);
+}
+
+export function calcLiqPriceFromNum(
+  borrowablePercent: number,
+  debtNum: number,
+  colNum: number
+): number {
+  if (colNum > 0) {
+    return (100 * debtNum) / (colNum * borrowablePercent);
+  } else {
+    return 0;
+  }
 }
 
 function parsePositionMeta(

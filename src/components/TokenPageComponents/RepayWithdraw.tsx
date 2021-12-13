@@ -2,6 +2,7 @@ import { Box, Button, Flex, Grid, Text } from '@chakra-ui/react';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import {
+  calcLiqPriceFromNum,
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
 } from '../../chain-interaction/contracts';
@@ -16,7 +17,7 @@ export default function RepayWithdraw({
   position?: ParsedPositionMetaRow;
   stratMeta: ParsedStratMetaRow;
 }>) {
-  const { token, usdPrice } = stratMeta;
+  const { token, usdPrice, borrowablePercent } = stratMeta;
 
   const {
     handleSubmit: handleSubmitRepayForm,
@@ -155,19 +156,30 @@ export default function RepayWithdraw({
           <Text fontSize="sm" color={'gray'}>
             Expected Liquidation Price
           </Text>
-          <Text fontSize="md"> -$0.00</Text>
+          <Text fontSize="md">
+            ${' '}
+            {calcLiqPriceFromNum(
+              borrowablePercent,
+              totalDebt,
+              totalCollateral
+            ).toFixed(2)}
+          </Text>
         </Box>
         <Box textAlign={'center'}>
           <Text fontSize="sm" color={'gray'}>
             cRatio
           </Text>
-          <Text fontSize="md"> -100.00%</Text>
+          <Text fontSize="md">
+            {totalDebt > 0.1 ? (totalCollateral / totalDebt).toFixed(2) : '∞'}
+          </Text>
         </Box>
       </Grid>
       <br />
       <Flex>
         <Text fontSize={'sm'}>Price:</Text>
-        <Text fontSize={'sm'}>1 WAVAX-WETHe= $2000</Text>
+        <Text fontSize={'sm'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(
+          2
+        )}`}</Text>
       </Flex>
 
       <StatusTrackModal state={repayWithdrawState} title={'Repay | Withdraw'} />

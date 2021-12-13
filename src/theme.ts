@@ -2,6 +2,42 @@ import { extendTheme } from '@chakra-ui/react';
 import '@fontsource/poppins';
 import '@fontsource/rubik';
 
+const Container = {
+  variants: {
+    token: {
+      position: 'relative',
+      maxWidth: '100%',
+      height: '100%',
+      bg: 'brand.bg',
+      padding: '0',
+      borderRadius: '10px',
+      _before: {
+        content: '""',
+        position: 'absolute',
+        top: '-2px',
+        bottom: '-2px',
+        left: '-2px',
+        right: '-2px',
+        background:
+          'linear-gradient(to right, hsla(0, 100%, 64%, 0.06), hsla(193, 100%, 50%, 0.06))',
+        borderRadius: '10px',
+        zIndex: 'var(--chakra-zIndices-hide)',
+      },
+      _after: {
+        content: '""',
+        position: 'absolute',
+        top: '0',
+        bottom: '0',
+        left: '0',
+        right: '0',
+        background:
+          'linear-gradient(to bottom, hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.03))',
+        borderRadius: '10px',
+      },
+    },
+  },
+};
+
 const Link = {
   baseStyle: {
     fontSize: '14px',
@@ -61,6 +97,27 @@ const Text = {
       background: 'linear-gradient(to right, #7bb07b, #3c7998)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
+    },
+    h400: {
+      fontFamily: 'Rubik',
+      fontSize: '14px',
+      lineHeight: '17px',
+      fontWeight: 400,
+      color: 'brand.whiteAlpha70',
+    },
+    bodySmall: {
+      fontFamily: 'Poppins',
+      fontSize: '14px',
+      lineHeight: '21px',
+      fontWeight: 400,
+      color: 'white',
+    },
+    bodyMedium: {
+      fontFamily: 'Poppins',
+      fontSize: '18px',
+      lineHeight: '27px',
+      fontWeight: 500,
+      color: 'white',
     },
   },
 };
@@ -173,6 +230,7 @@ export const theme = extendTheme({
       whiteAlpha40: 'hsla(0, 0%, 100%, 0.4)',
       whiteAlpha50: 'hsla(0, 0%, 100%, 0.5)',
       whiteAlpha60: 'hsla(0, 0%, 100%, 0.6)',
+      whiteAlpha70: 'hsla(0, 0%, 100%, 0.7)',
     },
   },
   zIndices: {
@@ -196,5 +254,6 @@ export const theme = extendTheme({
     Input,
     Table,
     Link,
+    Container,
   },
 });

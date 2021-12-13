@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ChakraProvider, Box, VStack, Grid, Image } from '@chakra-ui/react';
+import { ChakraProvider, Box, Grid, Image } from '@chakra-ui/react';
 import { UserAddressCtxProvider } from './contexts/UserAddressContext';
 import { WalletBalancesCtxProvider } from './contexts/WalletBalancesContext';
 import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
@@ -41,10 +41,10 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                 <NotificationsComponent />
                 <NavigationBar />
                 <Grid minH="100vh">
-                  <VStack spacing={8}>
+                  <Box>
                     {params.children}
                     <Outlet />
-                  </VStack>
+                  </Box>
                 </Grid>
                 <FooterBar />
               </Box>

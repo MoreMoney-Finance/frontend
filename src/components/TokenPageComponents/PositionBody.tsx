@@ -9,6 +9,7 @@ import EditPosition from './EditPosition';
 import CollateralAPY from './CollateralAPY';
 import StrategyNameAndSwitch from './StrategyNameAndSwitch';
 import StrategyTokenInformation from './StrategyTokenInformation';
+import { TokenDataStatistics } from './TokenDataStatistics';
 
 export function PositionBody({
   position,
@@ -29,12 +30,12 @@ export function PositionBody({
       )}
       <Grid
         w={'full'}
-        h="500"
-        width={'1200'}
-        templateRows="repeat(2, 1fr)"
+        templateRows="repeat(4, 1fr)"
         templateColumns="repeat(7, 1fr)"
         gap={4}
+        marginTop={'30'}
       >
+        <TokenDataStatistics tokenData={stratMeta[chosenStrategy]} />
         <EditPosition
           position={position}
           stratMeta={stratMeta[chosenStrategy]}

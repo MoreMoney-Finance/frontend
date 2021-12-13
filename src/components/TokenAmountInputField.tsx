@@ -17,6 +17,7 @@ export function TokenAmountInputField(props: {
   setValueForm: (name: string, max: string) => any;
   errorsForm?: Record<string, any>;
   isDisabled?: boolean;
+  percentage?: string;
 }) {
   const {
     name,
@@ -26,6 +27,7 @@ export function TokenAmountInputField(props: {
     setValueForm,
     errorsForm,
     isDisabled,
+    percentage,
   } = props;
 
   const error = errorsForm?.[name];
@@ -45,9 +47,11 @@ export function TokenAmountInputField(props: {
           defaultValue={0}
           pattern="^[0-9]*[.,]?([0-9]?)*$"
         />
-        {max ? (
-          <InputRightElement width="4.5rem">
+        <InputRightElement width="auto" mr="2">
+          {max ? (
             <Button
+              width="auto"
+              px="2"
               size="xs"
               isDisabled={isDisabled}
               onClick={() =>
@@ -63,10 +67,14 @@ export function TokenAmountInputField(props: {
             >
               MAX
             </Button>
-          </InputRightElement>
-        ) : (
-          ''
-        )}
+          ) : percentage ? (
+            <Button isDisabled={true} width="auto" px="2" size="xs">
+              {percentage}
+            </Button>
+          ) : (
+            <></>
+          )}
+        </InputRightElement>
       </InputGroup>
       <FormErrorMessage>{error && error.message}</FormErrorMessage>
     </FormControl>

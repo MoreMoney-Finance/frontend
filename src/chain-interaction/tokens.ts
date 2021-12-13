@@ -13,14 +13,45 @@ import lptokens from '../contracts/lptokens.json';
 import { useAddresses, useStable } from './contracts';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 
-export const addressToken: Map<string, Token> = new Map();
-export const addressIcons: Map<string, string[]> = new Map();
+const addressToken: Record<ChainId, Map<string, Token>> = Object.fromEntries(
+  Object.values(ChainId).map((key) => [key, new Map()])
+) as any;
+const addressIcons: Map<string, string[]> = new Map();
 
-export function tokenAmount(tokenAddress: string, amount: BigNumber) {
-  const token = addressToken.get(tokenAddress);
+export function getTokenFromAddress(
+  chainId: ChainId | undefined,
+  address: string
+): Token {
+  return addressToken[chainId ?? ChainId.Avalanche].get(getAddress(address))!;
+}
+
+export function getIconsFromTokenAddress(address: string): string[] {
+  return addressIcons.get(getAddress(address))!;
+}
+
+export function tokenAmount(
+  chainId: ChainId,
+  tokenAddress: string,
+  amount: BigNumber
+) {
+  const token = addressToken[chainId].get(getAddress(tokenAddress));
   if (token) {
     return new CurrencyValue(token, amount);
   }
+}
+
+export function getTokensInQuestion(_chainId: ChainId): [string, Token][] {
+  if (_chainId === undefined) {
+    return [];
+  }
+  const tokensInQuestion = Array.from(addressToken[_chainId].entries()).filter(
+    (aT) => aT[1].chainId === _chainId
+  );
+  console.log('tokens in question');
+  console.log(Array.from(addressToken[_chainId].entries()));
+  console.log(tokensInQuestion);
+
+  return tokensInQuestion;
 }
 
 for (const {
@@ -31,7 +62,7 @@ for (const {
   symbol,
   logoURI,
 } of tokenlist.tokens) {
-  addressToken.set(
+  addressToken[chainId as ChainId].set(
     getAddress(address),
     new Token(name, symbol, chainId, getAddress(address), decimals)
   );
@@ -40,15 +71,18 @@ for (const {
 
 // TODO make this more complete
 const chainIds: Record<string, ChainId> = {
-  31337: ChainId.Avalanche,
+  31337: ChainId.Hardhat,
   43114: ChainId.Avalanche,
 };
 
-for (const [chainId, lpTokensPerChain] of Object.entries(lptokens)) {
+for (const [chainId, lpTokensPerChain] of Object.entries(lptokens) as [
+  string,
+  Record<string, Record<string, { pairAddress?: string; addresses: string[] }>>
+][]) {
   for (const records of Object.values(lpTokensPerChain)) {
     for (const [ticker, record] of Object.entries(records)) {
-      if ('pairAddress' in record) {
-        addressToken.set(
+      if ('pairAddress' in record && record.pairAddress) {
+        addressToken[chainIds[chainId]].set(
           getAddress(record.pairAddress),
           new Token(
             ticker,
@@ -75,11 +109,11 @@ for (const [chainId, lpTokensPerChain] of Object.entries(lptokens)) {
 console.log(addressToken);
 
 for (const [chainId, addresses] of Object.entries(deployAddresses)) {
-  addressToken.set(
+  addressToken[chainIds[chainId]].set(
     getAddress(addresses.Stablecoin),
     new Token(
       'MoreMoney US Dollar',
-      'MONEY',
+      'MNY',
       chainIds[chainId],
       getAddress(addresses.Stablecoin),
       18
@@ -102,11 +136,15 @@ export const wrappedNativeCurrency: Map<ChainId, Token> = new Map();
 
 wrappedNativeCurrency.set(
   ChainId.Hardhat,
-  addressToken.get('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7')!
+  addressToken[ChainId.Hardhat].get(
+    '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
+  )!
 );
 wrappedNativeCurrency.set(
   ChainId.Avalanche,
-  addressToken.get('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7')!
+  addressToken[ChainId.Avalanche].get(
+    '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
+  )!
 );
 
 export function useOraclePrices(

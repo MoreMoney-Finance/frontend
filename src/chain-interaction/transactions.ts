@@ -2,11 +2,18 @@ import { Interface } from '@ethersproject/abi';
 import { Contract } from '@ethersproject/contracts';
 import { useContractFunction } from '@usedapp/core';
 import { Token } from '@usedapp/core/dist/esm/src/model';
-import { useAddresses } from './contracts';
+import {
+  useAddresses,
+  useRegisteredOracle,
+  useStable,
+  useYieldConversionStrategyView,
+} from './contracts';
 
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
-import YieldConversionBidStrategy from '../contracts/artifacts/contracts/YieldConversionBidStrategy.sol/YieldConversionBidStrategy.json';
+import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
+import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
+import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 
@@ -17,6 +24,7 @@ import {
   parseUnits,
 } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber, ethers } from 'ethers';
+import { getAddress } from 'ethers/lib/utils';
 
 export function useDepositBorrowTrans(trancheId: number | null | undefined) {
   const ilAddress = useAddresses().IsolatedLending;
@@ -131,7 +139,7 @@ export function useTallyHarvestBalance(strategyAddress: string) {
 export function useConvertReward2Stable(contractAddress: string) {
   const strategy = new Contract(
     contractAddress,
-    new Interface(YieldConversionBidStrategy.abi)
+    new Interface(YieldConversionStrategy.abi)
   );
   const { send, state } = useContractFunction(strategy, 'convertReward2Stable');
 
@@ -139,5 +147,97 @@ export function useConvertReward2Stable(contractAddress: string) {
     sendConvertReward2Stable: (rewardAmount: BigNumber, targetBid: BigNumber) =>
       send(rewardAmount, targetBid),
     convertReward2StableState: state,
+  };
+}
+
+export function useHarvestPartially(strategyAddress: string) {
+  const strategy = new Contract(
+    strategyAddress,
+    new Interface(YieldConversionStrategy.abi)
+  );
+  const { send, state } = useContractFunction(strategy, 'harvestPartially');
+  return {
+    sendHarvestPartially: (tokenAddress: string) => send(tokenAddress),
+    harvestPartiallyState: state,
+  };
+}
+
+export function useMigrateStrategy() {
+  const ilAddress = useAddresses().IsolatedLending;
+
+  const strategy = new Contract(ilAddress, new Interface(IsolatedLending.abi));
+  const { send, state } = useContractFunction(strategy, 'migrateStrategy');
+
+  return {
+    sendMigrateStrategy: (
+      trancheId: number,
+      targetStrategy: string,
+      stable: Token,
+      account: string
+    ) => send(trancheId, targetStrategy, stable.address, account),
+    migrateStrategyState: state,
+  };
+}
+
+const PNG = '0x60781C2586D68229fde47564546784ab3fACA982';
+const JOE = '0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd';
+const USDCe = '0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664';
+
+const ammDefaults: Record<string, { router: string; path: string[] }> = {
+  [PNG]: {
+    router: '0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106',
+    path: [PNG, USDCe],
+  },
+  [JOE]: {
+    router: '0x60aE616a2155Ee3d9A68541Ba4544862310933d4',
+    path: [JOE, USDCe],
+  },
+};
+
+export function useAMMHarvest(strategyAddress: string) {
+  const conversionAddress = useAddresses().AMMYieldConverter;
+  const conversionContract = new Contract(
+    conversionAddress,
+    new Interface(AMMYieldConverter.abi)
+  );
+  const rewardToken: string | undefined = useYieldConversionStrategyView(
+    strategyAddress,
+    'rewardToken',
+    [],
+    undefined
+  );
+
+  const undefinedArgs = { router: undefined, path: undefined };
+  const { router, path } = rewardToken
+    ? ammDefaults[getAddress(rewardToken)] ?? undefinedArgs
+    : undefinedArgs;
+  const { send, state } = useContractFunction(conversionContract, 'harvest');
+
+  return {
+    sendAMMHarvest: (yieldBearingToken: string) => {
+      console.log(
+        'Sending AMM harvest',
+        strategyAddress,
+        yieldBearingToken,
+        router,
+        path
+      );
+      send(strategyAddress, yieldBearingToken, router, path);
+    },
+    AMMHarvestState: state,
+  };
+}
+
+export function useUpdatePriceOracle(token?: Token) {
+  const oracleAddress = useRegisteredOracle(token?.address);
+  const oracleContract =
+    oracleAddress && new Contract(oracleAddress, IOracle.abi);
+  const stable = useStable();
+
+  const { send, state } = useContractFunction(oracleContract, 'getAmountInPeg');
+  return {
+    sendUpdatePriceOracle: () =>
+      token && send(token.address, parseEther('1'), stable.address),
+    updatePriceOracleState: state,
   };
 }

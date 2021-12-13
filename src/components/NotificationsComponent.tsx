@@ -43,7 +43,7 @@ export const NotificationsComponent: React.FC = () => {
         showToast('Transaction Started', 'info', notification);
         break;
       case 'transactionSucceed':
-        showToast('Transaction Succeed', 'success', notification);
+        showToast('Transaction Succeeded', 'success', notification);
         break;
       case 'transactionFailed':
         showToast('Transaction Failed', 'error', notification);

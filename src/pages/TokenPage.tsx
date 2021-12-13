@@ -1,73 +1,59 @@
+import { ArrowBackIcon } from '@chakra-ui/icons';
+import { Box, Flex, Text, VStack } from '@chakra-ui/react';
+import { useEthers } from '@usedapp/core';
 import * as React from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
-  ParsedPositionMetaRow,
   ParsedStratMetaRow,
-  TokenStratPositionMetadata,
-  useIsolatedLendingLiquidationView,
-  useIsolatedPositionMetadata,
-  useStable,
 } from '../chain-interaction/contracts';
-import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
-import { Box, VStack } from '@chakra-ui/react';
+import { getTokenFromAddress } from '../chain-interaction/tokens';
+import { TokenPageBody } from '../components/TokenPageComponents/TokenPageBody';
 import { TokenDescription } from '../components/TokenDescription';
-import { addressToken } from '../chain-interaction/tokens';
-import { getAddress } from 'ethers/lib/utils';
-import { PositionBody } from '../components/PositionBody';
-import { BigNumber } from 'ethers';
-import { EditTranche } from '../components/EditTranche';
-import { CurrencyValue } from '@usedapp/core';
+import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
+import { PositionBody } from '../components/TokenPageComponents/PositionBody';
 
 export function TokenPage(props: React.PropsWithChildren<unknown>) {
+  const { chainId, account } = useEthers();
   const params = useParams<'tokenAddress'>();
   const tokenAddress = params.tokenAddress;
   const allStratMeta = React.useContext(StrategyMetadataContext);
   const token = tokenAddress
-    ? addressToken.get(getAddress(tokenAddress))
+    ? getTokenFromAddress(chainId, tokenAddress)
     : undefined;
 
   const stratMeta: Record<string, ParsedStratMetaRow> =
     tokenAddress && tokenAddress in allStratMeta
       ? allStratMeta[tokenAddress]
       : {};
-  const allPositionMeta: TokenStratPositionMetadata =
-    useIsolatedPositionMetadata();
-  const positionMeta: ParsedPositionMetaRow[] = tokenAddress
-    ? allPositionMeta[tokenAddress] ?? []
-    : [];
 
-  const liquidationRewardPer10k:BigNumber = useIsolatedLendingLiquidationView(
-    'liquidationRewardPer10k',
-    [tokenAddress],
-    BigNumber.from(0)
-  );
+  const navigate = useNavigate();
 
-  const stable = useStable();
-
-  return (
-    <VStack spacing="1rem">
-      {token ? (
-        <h1>
-          <TokenDescription token={token} />
-        </h1>
-      ) : undefined}
-
-      {positionMeta.length === 0
-        ? 
-        (<PositionBody stratMeta={stratMeta} liquidationRewardPer10k={liquidationRewardPer10k} />)
-        : positionMeta.map((position, i) => (
-          <VStack key={i} spacing="0.5rem">
-            <Box>
-              <EditTranche {...{
-                ...position,
-                ...stratMeta[position.strategy],
-                collateral: position.collateral ?? new CurrencyValue(position.token, BigNumber.from(0)),
-                debt: position.debt ?? new CurrencyValue(stable, BigNumber.from(0)) }} />
-            </Box>
-            <PositionBody position={position} stratMeta={stratMeta} liquidationRewardPer10k={liquidationRewardPer10k} />
-          </VStack>
-        ))}
-      {props.children}
-    </VStack>
-  );
+  return Object.values(stratMeta).length > 0 ? (<VStack spacing="8" margin="8">
+    <Flex flexDirection={'row'} w={'full'} alignContent={'center'}>
+      <Box
+        marginRight={'10px'}
+        cursor={'pointer'}
+        onClick={() => navigate(-1)}
+      >
+        <Flex flexDirection={'row'}>
+          <Text>
+            <ArrowBackIcon />
+          </Text>
+          <Text>Back</Text>
+        </Flex>
+      </Box>
+      <Box>
+        {token ? (
+          <TokenDescription token={token} iconSize="xs" textSize="6xl" />
+        ) : undefined}
+      </Box>
+    </Flex>
+    {
+      account ?
+        (<TokenPageBody tokenAddress={tokenAddress} stratMeta={stratMeta} account={account} />)
+        : (<PositionBody stratMeta={stratMeta} />)
+    }
+    {props.children}
+  </VStack>
+  ) : (<> </>);
 }

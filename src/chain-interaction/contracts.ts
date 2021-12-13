@@ -1,18 +1,24 @@
 import { parseUnits } from '@ethersproject/units';
 import {
+  ChainId,
+  ContractCall,
   CurrencyValue,
   Token,
   useContractCall,
+  useContractCalls,
   useEthers,
 } from '@usedapp/core';
 import { formatEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber } from 'ethers';
-import { getAddress, Interface, parseBytes32String } from 'ethers/lib/utils';
-import { useContext } from 'react';
-import { UserAddressContext } from '../contexts/UserAddressContext';
+import { Interface, parseBytes32String } from 'ethers/lib/utils';
+import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
-import { addressToken, tokenAmount } from './tokens';
+import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
+import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
+import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
+import { getTokenFromAddress, tokenAmount } from './tokens';
+
 /* eslint-disable */
 export const addresses: Record<
   string,
@@ -30,7 +36,8 @@ export type DeploymentAddresses = {
   StrategyRegistry: string;
   TrancheIDService: string;
   TraderJoeMasterChefStrategy: string;
-  PangolinStakingRewardsStrategy: string;
+  PangolinMiniChefStrategy: string;
+  AMMYieldConverter: string;
 };
 
 export function useAddresses() {
@@ -104,12 +111,12 @@ export type ParsedStratMetaRow = {
 };
 
 function parseStratMeta(
+  chainId: ChainId,
   row: RawStratMetaRow,
   stable: Token
 ): ParsedStratMetaRow {
-  const tokenAddress = getAddress(row.token);
-  const token = addressToken.get(tokenAddress)!;
-  const tvlInToken = tokenAmount(row.token, row.tvl)!;
+  const token = getTokenFromAddress(chainId, row.token);
+  const tvlInToken = tokenAmount(chainId, row.token, row.tvl)!;
   return {
     debtCeiling: new CurrencyValue(stable, row.debtCeiling)!,
     totalDebt: new CurrencyValue(stable, row.totalDebt),
@@ -118,7 +125,7 @@ function parseStratMeta(
     strategyAddress: row.strategy,
     token,
     APY: convertAPF2APY(row.APF),
-    totalCollateral: tokenAmount(tokenAddress, row.totalCollateral)!,
+    totalCollateral: tokenAmount(chainId, row.token, row.totalCollateral)!,
     borrowablePercent: row.borrowablePer10k.toNumber() / 100,
     usdPrice:
       parseFloat(formatEther(row.valuePer1e18)) / 10 ** (18 - token.decimals),
@@ -143,8 +150,12 @@ function convertAPF2APY(APF: BigNumber): number {
 }
 
 export function useStable() {
+  const { chainId } = useEthers();
   const addresses = useAddresses();
-  return addressToken.get(getAddress(addresses.Stablecoin))!;
+  return getTokenFromAddress(
+    chainId ? (chainId as unknown as ChainId) : ChainId.Avalanche,
+    addresses.Stablecoin
+  )!;
 }
 
 export type StrategyMetadata = Record<
@@ -154,6 +165,7 @@ export type StrategyMetadata = Record<
 
 export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const stable = useStable();
+  const { chainId } = useEthers();
   const allStratMeta = useIsolatedLendingView(
     'viewAllStrategyMetadata',
     [],
@@ -161,7 +173,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   );
   return allStratMeta.reduce(
     (result: StrategyMetadata, row: RawStratMetaRow) => {
-      const parsedRow = parseStratMeta(row, stable);
+      const parsedRow = parseStratMeta(chainId!, row, stable);
       const tokenAddress = parsedRow.token.address;
       return {
         ...result,
@@ -181,6 +193,11 @@ export type ParsedPositionMetaRow = {
   collateral: CurrencyValue | undefined;
   debt: CurrencyValue;
   token: Token;
+  yield: CurrencyValue;
+  collateralValue: CurrencyValue;
+  borrowablePercent: number;
+  owner: string;
+  liquidationPrice: number;
 };
 
 type RawPositionMetaRow = {
@@ -189,19 +206,62 @@ type RawPositionMetaRow = {
   collateral: BigNumber;
   debt: BigNumber;
   token: string;
+  yield: BigNumber;
+  collateralValue: BigNumber;
+  borrowablePer10k: BigNumber;
+  owner: string;
 };
+
+export function calcLiquidationPrice(
+  borrowablePercent: number,
+  debt: CurrencyValue,
+  collateral: CurrencyValue
+) {
+  const debtNum = parseFloat(
+    debt.format({ significantDigits: Infinity, suffix: '' })
+  );
+  const colNum = parseFloat(
+    collateral.format({ significantDigits: Infinity, suffix: '' })
+  );
+
+  return calcLiqPriceFromNum(borrowablePercent, debtNum, colNum);
+}
+
+export function calcLiqPriceFromNum(
+  borrowablePercent: number,
+  debtNum: number,
+  colNum: number
+): number {
+  if (colNum > 0) {
+    return (100 * debtNum) / (colNum * borrowablePercent);
+  } else {
+    return 0;
+  }
+}
 
 function parsePositionMeta(
   row: RawPositionMetaRow,
   stable: Token
 ): ParsedPositionMetaRow {
-  const tokenAddress = getAddress(row.token);
+  const debt = new CurrencyValue(stable, row.debt);
+  const collateral = tokenAmount(stable.chainId, row.token, row.collateral);
+  const borrowablePercent = row.borrowablePer10k.toNumber() / 100;
+
   return {
     trancheId: row.trancheId.toNumber(),
     strategy: row.strategy,
-    debt: new CurrencyValue(stable, row.debt),
-    collateral: tokenAmount(tokenAddress, row.collateral),
-    token: addressToken.get(tokenAddress)!,
+    debt,
+    collateral,
+    token: getTokenFromAddress(stable.chainId, row.token)!,
+    yield: new CurrencyValue(stable, row.yield),
+    collateralValue: new CurrencyValue(stable, row.collateralValue),
+    borrowablePercent,
+    owner: row.owner,
+    liquidationPrice: calcLiquidationPrice(
+      borrowablePercent,
+      debt,
+      collateral!
+    ),
   };
 }
 
@@ -209,8 +269,9 @@ export type TokenStratPositionMetadata = Record<
   string,
   ParsedPositionMetaRow[]
 >;
-export function useIsolatedPositionMetadata(): TokenStratPositionMetadata {
-  const account = useContext(UserAddressContext);
+export function useIsolatedPositionMetadata(
+  account: string
+): TokenStratPositionMetadata {
   const positionMeta = useIsolatedLendingView(
     'viewPositionsByOwner',
     [account],
@@ -232,6 +293,21 @@ export function useIsolatedPositionMetadata(): TokenStratPositionMetadata {
   );
 }
 
+export function useTotalSupply(
+  method: string,
+  args: any[],
+  defaultResult: any
+) {
+  const address = useAddresses().Stablecoin;
+  const abi = new Interface(ERC20.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method,
+    args,
+  }) ?? [defaultResult])[0];
+}
+
 export function useIsolatedLendingLiquidationView(
   method: string,
   args: any[],
@@ -245,4 +321,75 @@ export function useIsolatedLendingLiquidationView(
     method,
     args,
   }) ?? [defaultResult])[0];
+}
+
+export function useYieldConversionStrategyView(
+  strategyAddress: string,
+  method: string,
+  args: any[],
+  defaultResult: any
+) {
+  const abi = new Interface(YieldConversionStrategy.abi);
+  return (useContractCall({
+    abi,
+    address: strategyAddress,
+    method,
+    args,
+  }) ?? [defaultResult])[0];
+}
+
+const ONE_WEEK_SECONDS = 60 * 60 * 24 * 7;
+export function useUpdatedPositions(timeStart: number) {
+  const endPeriod = Math.floor(Date.now() / 1000 / ONE_WEEK_SECONDS);
+  const startPeriod = Math.floor(timeStart / 1000 / ONE_WEEK_SECONDS);
+  console.log('endPeriod', endPeriod);
+  console.log('startPeriod', startPeriod);
+  const stable = useStable();
+  const iL = useAddresses().IsolatedLending;
+
+  const args = Array(endPeriod - startPeriod)
+    .fill(startPeriod)
+    .map((x, i) => ({
+      abi: new Interface(IsolatedLending.abi),
+      address: iL,
+      method: 'viewPositionsByTrackingPeriod',
+      args: [x + i],
+    }));
+
+  const rows = (useContractCalls(args) as RawPositionMetaRow[][][]) ?? [];
+
+  return rows
+    .flatMap((x) => x)
+    .flatMap((x) => x)
+    .filter((x) => x)
+    .map((row) => parsePositionMeta(row, stable));
+}
+
+export function useRegisteredOracle(tokenAddress?: string) {
+  const address = useAddresses().OracleRegistry;
+  const abi = new Interface(OracleRegistry.abi);
+  const stable = useStable();
+  return (useContractCall({
+    abi,
+    address,
+    method: 'tokenOracle',
+    args: [tokenAddress, stable.address],
+  }) ?? [undefined])[0];
+}
+
+export function viewAllFeesEver(contracts: string[]) {
+  function convert2ContractCall(contract: string) {
+    return {
+      abi: new Interface(IFeeReporter.abi),
+      address: contract,
+      method: 'viewAllFeesEver',
+      args: [],
+    };
+  }
+
+  const calls: ContractCall[] = contracts.map(convert2ContractCall);
+  console.log('calls', calls);
+  const results = useContractCalls(calls) ?? [];
+
+  return results;
 }

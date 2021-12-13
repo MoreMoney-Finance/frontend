@@ -1,44 +1,44 @@
 import * as React from 'react';
-import { ReactNode } from 'react';
 import {
   Box,
   Flex,
   HStack,
   IconButton,
   useDisclosure,
-  useColorModeValue,
   Stack,
+  Image,
   Link as LinkComponent,
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
 import { UserAddressComponent } from './UserAddressComponent';
 import AccountModal from './AccountModal';
+import logo from '../assets/logo/logo.svg';
 
-const Links = [{ title: 'Dashboard', link: '/' }];
-
-const NavLink = ({ children }: { children: ReactNode }) => (
-  <LinkComponent
-    px={2}
-    py={1}
-    rounded={'md'}
-    _hover={{
-      textDecoration: 'none',
-      bg: useColorModeValue('gray.200', 'gray.700'),
-    }}
-  >
-    {children}
-  </LinkComponent>
-);
+const Links = [
+  { title: 'Borrow', link: '/' },
+  { title: 'Farm', link: '/farm' },
+  { title: 'Liquidation Protected Loans', link: '/loans' },
+  { title: 'Analytics', link: '/analytics' },
+];
 
 export default function NavigationBar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenAccount,
+    onOpen: onOpenAccount,
+    onClose: onCloseAccount,
+  } = useDisclosure();
+  const location = useLocation();
 
   return (
     <>
-      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
-        <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
+      <Box position="relative" zIndex="var(--chakra-zIndices-header)">
+        <Flex
+          alignItems={'center'}
+          padding="40px 0 0"
+          justifyContent={'space-between'}
+        >
           <IconButton
             size={'md'}
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
@@ -47,17 +47,24 @@ export default function NavigationBar() {
             onClick={isOpen ? onClose : onOpen}
           />
 
-          <HStack spacing={8} alignItems={'center'}>
-            <Box>Logo</Box>
+          <HStack spacing="65px" alignItems={'center'}>
+            <Box>
+              <Image src={logo} alt="Logo" />
+            </Box>
             <HStack
               as={'nav'}
-              spacing={4}
+              spacing="48px"
               display={{ base: 'none', md: 'flex' }}
             >
               {Links.map((link) => (
-                <NavLink key={link.title}>
+                <LinkComponent
+                  variant={
+                    location.pathname === link.link ? 'headerActive' : 'header'
+                  }
+                  key={link.title}
+                >
                   <Link to={link.link}>{link.title}</Link>
-                </NavLink>
+                </LinkComponent>
               ))}
             </HStack>
           </HStack>
@@ -66,19 +73,22 @@ export default function NavigationBar() {
             alignItems="center"
             justifyContent="center"
           >
-            <ColorModeSwitcher />
-
-            <UserAddressComponent handleOpenModal={onOpen} />
-            <AccountModal isOpen={isOpen} onClose={onClose} />
+            <UserAddressComponent handleOpenModal={onOpenAccount} />
+            <AccountModal isOpen={isOpenAccount} onClose={onCloseAccount} />
           </HStack>
         </Flex>
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
               {Links.map((link) => (
-                <NavLink key={link.title}>
+                <LinkComponent
+                  variant={
+                    location.pathname === link.link ? 'headerActive' : 'header'
+                  }
+                  key={link.title}
+                >
                   <Link to={link.link}>{link.title}</Link>
-                </NavLink>
+                </LinkComponent>
               ))}
             </Stack>
           </Box>

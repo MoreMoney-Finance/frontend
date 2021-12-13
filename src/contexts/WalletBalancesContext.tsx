@@ -1,5 +1,4 @@
 import {
-  ChainId,
   ContractCall,
   CurrencyValue,
   ERC20Interface,
@@ -9,7 +8,7 @@ import {
 } from '@usedapp/core';
 import { getAddress } from 'ethers/lib/utils';
 import React, { useContext } from 'react';
-import { addressToken } from '../chain-interaction/tokens';
+import { getTokensInQuestion } from '../chain-interaction/tokens';
 import { UserAddressContext } from './UserAddressContext';
 
 export const WalletBalancesContext = React.createContext<
@@ -20,7 +19,6 @@ export function WalletBalancesCtxProvider({
   children,
 }: React.PropsWithChildren<any>) {
   const { chainId } = useEthers();
-  const _chainId = chainId === ChainId.Hardhat ? ChainId.Avalanche : chainId;
   const account = useContext(UserAddressContext);
 
   const tokenBalances = new Map<string, CurrencyValue>();
@@ -33,19 +31,19 @@ export function WalletBalancesCtxProvider({
       args: [account],
     };
   }
-  const tokensInQuestion = Array.from(addressToken.entries()).filter(
-    (aT) => aT[1].chainId === _chainId
-  );
-  console.log('tokens in question');
-  console.log(Array.from(addressToken.entries()));
-  console.log(tokensInQuestion);
-  const calls: ContractCall[] = tokensInQuestion.map(convert2ContractCall);
+  const tokensInQuestion = getTokensInQuestion(chainId!);
+  const calls: ContractCall[] = account ? tokensInQuestion.map(convert2ContractCall) : [];
   const results = useContractCalls(calls) ?? [];
   results?.forEach((result: any[] | undefined, index: number) => {
     if (result) {
       const [tokenAddress, token] = tokensInQuestion[index];
-      tokenBalances.set(getAddress(tokenAddress), new CurrencyValue(token, result[0]));
-      console.log(`Set balance for ${token.name}: ${result[0]} (${tokenAddress})`);
+      tokenBalances.set(
+        getAddress(tokenAddress),
+        new CurrencyValue(token, result[0])
+      );
+      console.log(
+        `Set balance for ${token.name}: ${result[0]} (${tokenAddress})`
+      );
     } else {
       const [tokenAddress, token] = tokensInQuestion[index];
       console.log(`No result for ${token.name} at ${tokenAddress}`);

@@ -25,7 +25,7 @@ export function TokenPage(props: React.PropsWithChildren<unknown>) {
       : {};
 
   return Object.values(stratMeta).length > 0 ? (
-    <Box margin={'50px 50px 100px'}>
+    <Box margin={'60px 100px 100px'}>
       <HStack spacing={'20px'}>
         <BackButton />
         {token ? (

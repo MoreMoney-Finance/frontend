@@ -7,20 +7,21 @@ export default function CollateralAPY({
 }: {
   stratMetaData: ParsedStratMetaRow;
 }) {
-
   return (
-    <GridItem colSpan={2} rowSpan={2}>
+    <GridItem colSpan={1} rowSpan={1}>
       <Container variant={'token'}>
         <Flex
           flexDirection={'column'}
-          justifyContent={'center'}
           alignItems={'center'}
           h={'100%'}
+          paddingTop='77px'
         >
-          <Text>Collateral APY</Text>
-          <Text fontSize={'5xl'}>
+          <Text variant="h400" color="brand.whiteAlpha40">
+            Collateral APY
+          </Text>
+          <Text variant="bodyExtraLarge">
             {' '}
-            <b>{stratMetaData.APY.toFixed(2)} %</b>
+            <b>{stratMetaData.APY.toFixed(2)}%</b>
           </Text>
         </Flex>
       </Container>

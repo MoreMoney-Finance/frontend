@@ -10,22 +10,23 @@ export default function StrategyNameAndSwitch({
   chosenStrategy: string;
 }) {
   return (
-    <GridItem colSpan={2} rowSpan={2}>
+    <GridItem colSpan={1} rowSpan={1}>
       <Container variant={'token'}>
         <Flex
           flexDirection={'column'}
-          justifyContent={'center'}
-          alignContent={'center'}
           alignItems={'center'}
+          paddingTop='77px'
           h={'100%'}
         >
-          <Text>Strategy</Text>
-          <Text fontSize={'2xl'}>
+          <Text variant="h400" color="brand.whiteAlpha40">
+            Strategy
+          </Text>
+          <Text variant="bodySmall" marginTop="8px">
             <b>{stratMeta[chosenStrategy].strategyName}</b>
           </Text>
           <br />
-          <Button borderRadius={'15px'} width={'auto'}>
-            Change
+          <Button borderRadius={'full'} width={'auto'} marginTop='20px'>
+            <Text variant="bodySmall">Change</Text>
           </Button>
         </Flex>
       </Container>

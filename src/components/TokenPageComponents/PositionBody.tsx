@@ -30,12 +30,13 @@ export function PositionBody({
       )}
       <Grid
         w={'full'}
-        templateRows="repeat(4, 1fr)"
-        templateColumns="repeat(7, 1fr)"
-        gap={4}
-        marginTop={'30'}
+        templateRows="120px 240px 310px"
+        templateColumns="520px 240px 240px"
+        h={'760px'}
+        gap={'20px'}
+        marginTop={'30px'}
       >
-        <TokenDataStatistics tokenData={stratMeta[chosenStrategy]} />
+        <TokenDataStatistics stratMeta={stratMeta[chosenStrategy]} />
         <EditPosition
           position={position}
           stratMeta={stratMeta[chosenStrategy]}

@@ -22,7 +22,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
         <WalletBalancesCtxProvider>
           {addresses ? (
             <StrategyMetadataCtxProvider>
-              <Box maxWidth="1200px" margin="0 auto" px={4}>
+              <Box maxWidth="1280px" margin="0 auto" px={4}>
                 <Image
                   src={ellipseRed}
                   position="absolute"

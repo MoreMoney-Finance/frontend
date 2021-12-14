@@ -22,11 +22,10 @@ export default function EditPosition({
   position?: ParsedPositionMetaRow;
   stratMeta: ParsedStratMetaRow;
 }>) {
-
   return (
-    <GridItem rowSpan={3} colSpan={3}>
-      <Container variant={'token'} padding={'16px'}>
-        <Tabs>
+    <GridItem rowSpan={2} colSpan={1}>
+      <Container variant={'token'} padding={'35px 20px 20px 20px'}>
+        <Tabs variant={'primary'}>
           <TabList>
             <Tab>Borrow</Tab>
             <Tab>Repay</Tab>

@@ -1,5 +1,10 @@
 import { Box, Flex, Text, Grid, Button } from '@chakra-ui/react';
-import { CurrencyValue, useEthers, useTokenAllowance } from '@usedapp/core';
+import {
+  CurrencyValue,
+  useEthers,
+  useTokenAllowance,
+  useTokenBalance,
+} from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
@@ -12,7 +17,9 @@ import {
 import {
   useApproveTrans,
   useDepositBorrowTrans,
+  useNativeDepositBorrowTrans,
 } from '../../chain-interaction/transactions';
+import { WNATIVE_ADDRESS } from '../../constants/addresses';
 import { useWalletBalance } from '../../contexts/WalletBalancesContext';
 import { EnsureWalletConnected } from '../EnsureWalletConnected';
 import { StatusTrackModal } from '../StatusTrackModal';
@@ -26,12 +33,19 @@ export default function DepositBorrow({
   stratMeta: ParsedStratMetaRow;
 }>) {
   const { token, strategyAddress, borrowablePercent, usdPrice } = stratMeta;
-  const { account } = useEthers();
+  const { chainId, account } = useEthers();
+
+  const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
 
   const allowance = new CurrencyValue(
     token,
     useTokenAllowance(token.address, account, strategyAddress) ??
       BigNumber.from('0')
+  );
+
+  const nativeTokenBalance = new CurrencyValue(
+    token,
+    BigNumber.from(useTokenBalance(token.address, account)) ?? BigNumber.from('0')
   );
 
   const walletBalance =
@@ -51,17 +65,29 @@ export default function DepositBorrow({
   const { sendDepositBorrow, depositBorrowState } = useDepositBorrowTrans(
     position ? position.trancheId : undefined
   );
+  const {
+    sendDepositBorrow: sendNativeDepositBorrow,
+    depositBorrowState: nativeDepositBorrowState,
+  } = useNativeDepositBorrowTrans(position ? position.trancheId : undefined);
 
   function onDepositBorrow(data: { [x: string]: any }) {
     console.log('deposit borrow');
     console.log(data);
-
-    sendDepositBorrow(
-      token,
-      strategyAddress,
-      data['collateral-deposit'],
-      data['money-borrow']
-    );
+    if (isNativeToken) {
+      sendNativeDepositBorrow(
+        token,
+        strategyAddress,
+        data['collateral-deposit'],
+        data['money-borrow']
+      );
+    } else {
+      sendDepositBorrow(
+        token,
+        strategyAddress,
+        data['collateral-deposit'],
+        data['money-borrow']
+      );
+    }
   }
   const depositBorrowDisabled = walletBalance.isZero();
 
@@ -117,7 +143,6 @@ export default function DepositBorrow({
       (percentage * totalCollateral * usdPrice) / 100 - extantDebt,
     ])
   );
-
   return (
     <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
       <Flex flexDirection={'column'} justify={'start'}>
@@ -127,7 +152,7 @@ export default function DepositBorrow({
 
         <TokenAmountInputField
           name="collateral-deposit"
-          max={walletBalance}
+          max={isNativeToken ? nativeTokenBalance : walletBalance}
           isDisabled={depositBorrowDisabled}
           placeholder={'Collateral Deposit'}
           registerForm={registerDepForm}
@@ -208,8 +233,12 @@ export default function DepositBorrow({
       </Flex>
       <StatusTrackModal state={approveState} title={'Approve'} />
       <StatusTrackModal state={depositBorrowState} title={'Deposit Borrow'} />
+      <StatusTrackModal
+        state={nativeDepositBorrowState}
+        title={'Deposit Borrow'}
+      />
 
-      {allowance.gt(walletBalance) === false ? (
+      {allowance.gt(walletBalance) === false && isNativeToken === false ? (
         <EnsureWalletConnected>
           <Button
             onClick={() => sendApprove(strategyAddress)}

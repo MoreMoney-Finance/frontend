@@ -1,0 +1,19 @@
+import { ChainId } from '@usedapp/core';
+
+type AddressMap = { [chainId: number]: string };
+
+export const WNATIVE_ADDRESS: AddressMap = {
+  [ChainId.Mainnet]: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+  [ChainId.Ropsten]: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+  [ChainId.Rinkeby]: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+  [ChainId.Goerli]: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+  [ChainId.Kovan]: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
+  [ChainId.Fantom]: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83',
+  [ChainId.xDai]: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',
+  [ChainId.BSC]: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+  [ChainId.Avalanche]: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
+  [ChainId.Hardhat]: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
+  [ChainId.Harmony]: '0xcF664087a5bB0237a0BAd6742852ec6c8d69A27a',
+  [ChainId.Palm]: '0xF98cABF0a963452C5536330408B2590567611a71',
+  [ChainId.Moonriver]: '0xf50225a84382c74CbdeA10b0c176f71fc3DE0C4d',
+};

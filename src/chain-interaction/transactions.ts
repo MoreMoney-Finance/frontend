@@ -12,6 +12,7 @@ import {
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
+import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import { useContext } from 'react';
@@ -25,6 +26,72 @@ import {
 } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber, ethers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
+
+export function useNativeDepositBorrowTrans(
+  trancheId: number | null | undefined
+) {
+  const ilAddress = useAddresses().WrapNativeIsolatedLending;
+  const ilContract = new Contract(
+    ilAddress,
+    new Interface(WrapNativeIsolatedLending.abi)
+  );
+  const { send, state } = useContractFunction(
+    ilContract,
+    trancheId ? 'depositAndBorrow' : 'mintDepositAndBorrow'
+  );
+  const account = useContext(UserAddressContext);
+
+  return {
+    sendDepositBorrow: (
+      collateralToken: Token,
+      strategyAddress: string,
+      collateralAmount: string | number,
+      borrowAmount: string | number
+    ) => {
+      const cAmount = parseUnits(
+        collateralAmount.toString(),
+        collateralToken.decimals
+      );
+      const bAmount = parseEther(borrowAmount.toString());
+
+      return send(strategyAddress, bAmount, account, { value: cAmount });
+    },
+    depositBorrowState: state,
+  };
+}
+
+
+export function useNativeRepayWithdrawTrans(
+  trancheId: number | null | undefined,
+  collateralToken: Token | null | undefined
+) {
+  const ilAddress = useAddresses().IsolatedLending;
+  const ilContract = new Contract(
+    ilAddress,
+    new Interface(IsolatedLending.abi)
+  );
+
+  const { send, state } = useContractFunction(ilContract, 'repayAndWithdraw');
+
+  const account = useContext(UserAddressContext);
+
+  return {
+    sendRepayWithdraw: (
+      collateralAmount: string | number,
+      repayAmount: string | number
+    ) =>
+      account && trancheId && collateralToken
+        ? send(
+          trancheId,
+          parseUnits(collateralAmount.toString(), collateralToken.decimals),
+          parseEther(repayAmount.toString()),
+          account
+        )
+        : console.error('Trying to withdraw but parameters not set'),
+    repayWithdrawState: state,
+  };
+}
+
 
 export function useDepositBorrowTrans(trancheId: number | null | undefined) {
   const ilAddress = useAddresses().IsolatedLending;

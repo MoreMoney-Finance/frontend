@@ -38,6 +38,7 @@ export type DeploymentAddresses = {
   TraderJoeMasterChefStrategy: string;
   PangolinMiniChefStrategy: string;
   AMMYieldConverter: string;
+  WrapNativeIsolatedLending: string;
 };
 
 export function useAddresses() {

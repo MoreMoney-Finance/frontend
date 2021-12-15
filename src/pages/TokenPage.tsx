@@ -1,4 +1,4 @@
-import { HStack, Box } from '@chakra-ui/react';
+import { HStack, Box, Image } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { TokenDescription } from '../components/TokenDescription';
 import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
 import { PositionBody } from '../components/TokenPageComponents/PositionBody';
 import { BackButton } from '../components/BackButton';
+import ellipseGreen from '../assets/img/ellipse_green_2.svg';
 
 export function TokenPage(props: React.PropsWithChildren<unknown>) {
   const { chainId, account } = useEthers();
@@ -26,6 +27,13 @@ export function TokenPage(props: React.PropsWithChildren<unknown>) {
 
   return Object.values(stratMeta).length > 0 ? (
     <Box margin={'60px 100px 100px'}>
+      <Image
+        src={ellipseGreen}
+        position="absolute"
+        right="0"
+        pointerEvents="none"
+        zIndex="var(--chakra-zIndices-docked)"
+      />
       <HStack spacing={'20px'}>
         <BackButton />
         {token ? (

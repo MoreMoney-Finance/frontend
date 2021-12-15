@@ -9,7 +9,7 @@ type Props = {
 export function TitleValue({ title, value }: Props) {
   return (
     <VStack spacing="20px" align="center">
-      <Text variant="h400">{title}</Text>
+      <Text variant="h400" color={'brand.whiteAlpha70'}>{title}</Text>
       <Text variant="bodySmall">{value}</Text>
     </VStack>
   );

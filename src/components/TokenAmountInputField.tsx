@@ -6,6 +6,7 @@ import {
   InputGroup,
   FormControl,
   FormErrorMessage,
+  Text,
 } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
 
@@ -33,8 +34,14 @@ export function TokenAmountInputField(props: {
   const error = errorsForm?.[name];
 
   return (
-    <FormControl isInvalid={error} isDisabled={isDisabled}>
-      <InputGroup size="md">
+    <FormControl
+      isInvalid={error}
+      isDisabled={isDisabled}
+      borderRadius={'10px'}
+      w={'200px'}
+      bg={'brand.bgOpacity'}
+    >
+      <InputGroup>
         <Input
           {...registerForm(name, {
             required: 'This is required',
@@ -46,13 +53,18 @@ export function TokenAmountInputField(props: {
           autoCorrect="off"
           defaultValue={0}
           pattern="^[0-9]*[.,]?([0-9]?)*$"
+          border={'none'}
+          h={'44px'}
         />
-        <InputRightElement width="auto" mr="2">
+        <InputRightElement width="auto" padding={'10px'}>
           {max ? (
             <Button
+              variant={'primary'}
               width="auto"
-              px="2"
+              padding={'4px 12px'}
+              margin={'auto 0'}
               size="xs"
+              borderRadius={'3px'}
               isDisabled={isDisabled}
               onClick={() =>
                 setValueForm(
@@ -65,11 +77,31 @@ export function TokenAmountInputField(props: {
                 )
               }
             >
-              MAX
+              <Text
+                variant={'bodyExtraSmall'}
+                color={'brand.bg'}
+                fontWeight={'500'}
+              >
+                MAX
+              </Text>
             </Button>
           ) : percentage ? (
-            <Button isDisabled={true} width="auto" px="2" size="xs">
-              {percentage}
+            <Button
+              variant={'primary'}
+              isDisabled={true}
+              width="auto"
+              padding={'4px 12px'}
+              margin={'auto 0'}
+              borderRadius={'3px'}
+              size="xs"
+            >
+              <Text
+                variant={'bodyExtraSmall'}
+                color={'brand.bg'}
+                fontWeight={'500'}
+              >
+                {percentage}
+              </Text>
             </Button>
           ) : (
             <></>

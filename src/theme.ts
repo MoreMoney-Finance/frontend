@@ -88,6 +88,28 @@ const Button = {
     },
     primary: {
       bg: 'brand.accent',
+      border: 'none',
+      _hover: {
+        _disabled: {
+          bg: 'brand.accent',
+        },
+      },
+    },
+    secondary: {
+      bg: 'brand.whiteAlpha10',
+      border: 'none',
+      _hover: {
+        _disabled: {
+          bg: 'brand.whiteAlpha10',
+        },
+      },
+    },
+    submit: {
+      padding: '16px',
+      h: '56px',
+      borderRadius: '10px',
+      bg: 'brand.whiteAlpha20',
+      width: '100%',
     },
   },
 };
@@ -99,54 +121,53 @@ const Text = {
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
     },
-    h300: {
+    h200: {
       fontFamily: 'Rubik',
       fontSize: '18px',
       lineHeight: '27px',
       fontWeight: 400,
-      color: 'brand.whiteAlpha40',
+    },
+    h300: {
+      fontFamily: 'Rubik',
+      fontSize: '16px',
+      lineHeight: '24px',
+      fontWeight: 400,
     },
     h400: {
       fontFamily: 'Rubik',
       fontSize: '14px',
       lineHeight: '17px',
       fontWeight: 400,
-      color: 'brand.whiteAlpha70',
     },
     bodyExtraSmall: {
       fontFamily: 'Poppins',
       fontSize: '12px',
       lineHeight: '18px',
       fontWeight: 400,
-      color: 'white',
     },
     bodySmall: {
       fontFamily: 'Poppins',
       fontSize: '14px',
       lineHeight: '21px',
       fontWeight: 400,
-      color: 'white',
     },
     bodyMedium: {
       fontFamily: 'Poppins',
       fontSize: '16px',
       lineHeight: '24px',
       fontWeight: 400,
-      color: 'white',
     },
     bodyLarge: {
       fontFamily: 'Poppins',
       fontSize: '18px',
       lineHeight: '27px',
       fontWeight: 500,
-      color: 'white',
     },
     bodyExtraLarge: {
       fontFamily: 'Poppins',
       fontSize: '48px',
       lineHeight: '72px',
       fontWeight: 600,
-      color: 'white',
     },
   },
 };
@@ -157,6 +178,9 @@ const Tabs = {
       tablist: {
         borderBottom: '1px solid',
         borderColor: 'brand.whiteAlpha20',
+      },
+      tabpanel: {
+        padding: '30px 0 0',
       },
       tab: {
         fontFamily: 'Poppins',
@@ -277,12 +301,15 @@ export const theme = extendTheme({
   colors: {
     brand: {
       bg: 'hsla(227, 12%, 15%, 1)',
+      bgOpacity: 'hsla(0, 0%, 0%, 0.2)',
       active: 'hsla(227, 22%, 26%, 0.59)',
       accent:
         'linear-gradient(to bottom, hsla(166, 100%, 46%, 1), hsla(165, 86%, 34%, 1))',
       gradientBg:
         'linear-gradient(to bottom, hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.03))',
       whiteAlpha030: 'hsla(0, 0%, 100%, 0.03)',
+      whiteAlpha050: 'hsla(0, 0%, 100%, 0.05)',
+      whiteAlpha10: 'hsla(0, 0%, 100%, 0.1)',
       whiteAlpha20: 'hsla(0, 0%, 100%, 0.2)',
       whiteAlpha30: 'hsla(0, 0%, 100%, 0.3)',
       whiteAlpha40: 'hsla(0, 0%, 100%, 0.4)',

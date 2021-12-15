@@ -1,4 +1,12 @@
-import { Box, Button, Flex, Grid, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  Text,
+  HStack,
+  VStack,
+} from '@chakra-ui/react';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import {
@@ -53,24 +61,24 @@ export default function RepayWithdraw({
   const extantCollateral =
     position && position.collateral
       ? parseFloat(
-        position.collateral.format({
-          significantDigits: Infinity,
-          prefix: '',
-          suffix: '',
-        })
-      )
+          position.collateral.format({
+            significantDigits: Infinity,
+            prefix: '',
+            suffix: '',
+          })
+        )
       : 0;
   const totalCollateral = extantCollateral - parseFloat(collateralInput);
 
   const extantDebt =
     position && position.debt
       ? parseFloat(
-        position.debt.format({
-          significantDigits: Infinity,
-          prefix: '',
-          suffix: '',
-        })
-      )
+          position.debt.format({
+            significantDigits: Infinity,
+            prefix: '',
+            suffix: '',
+          })
+        )
       : 0;
   const totalDebt = extantDebt - parseFloat(repayInput);
 
@@ -82,8 +90,8 @@ export default function RepayWithdraw({
     10 >= currentPercentage
       ? [currentPercentage / 2]
       : Array(Math.floor((currentPercentage - 0.5) / percentageStep))
-        .fill(0)
-        .map((p, i) => p + (i + 1) * percentageStep);
+          .fill(0)
+          .map((p, i) => p + (i + 1) * percentageStep);
 
   const totalPercentage =
     totalCollateral > 0 ? (100 * totalDebt) / (totalCollateral * usdPrice) : 0;
@@ -97,36 +105,61 @@ export default function RepayWithdraw({
     ])
   );
 
+  const inputStyle = {
+    padding: '8px 8px 8px 20px',
+    bg: 'brand.whiteAlpha050',
+    borderRadius: '10px',
+    justifyContent: 'space-between',
+  };
+
   return (
     <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
       <Flex flexDirection={'column'} justify={'start'}>
-        <Box w={'full'} textAlign={'start'}>
-          <Text fontSize={'sm'}>Withdraw Collateral</Text>
+        <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
+          <Text
+            variant={'bodyExtraSmall'}
+            color={'brand.whiteAlpha60'}
+            lineHeight={'14px'}
+          >
+            Withdraw Collateral
+          </Text>
         </Box>
-        <TokenAmountInputField
-          name="collateral-withdraw"
-          max={position?.collateral}
-          isDisabled={repayWithdrawDisabled}
-          placeholder={'Collateral withdraw'}
-          registerForm={registerRepayForm}
-          setValueForm={setValueRepayForm}
-          errorsForm={errorsRepayForm}
-        />
+        <HStack {...inputStyle}>
+          <Text>Text</Text>
+          <TokenAmountInputField
+            name="collateral-withdraw"
+            max={position?.collateral}
+            isDisabled={repayWithdrawDisabled}
+            placeholder={'Collateral withdraw'}
+            registerForm={registerRepayForm}
+            setValueForm={setValueRepayForm}
+            errorsForm={errorsRepayForm}
+          />
+        </HStack>
       </Flex>
-      <Flex flexDirection={'column'} justify={'start'}>
-        <Box w={'full'} textAlign={'start'}>
-          <Text fontSize={'sm'}>Repay MONEY</Text>
+      <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
+        <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
+          <Text
+            variant={'bodyExtraSmall'}
+            color={'brand.whiteAlpha60'}
+            lineHeight={'14px'}
+          >
+            Repay MONEY
+          </Text>
         </Box>
-        <TokenAmountInputField
-          name="money-repay"
-          max={position?.debt}
-          isDisabled={repayWithdrawDisabled}
-          placeholder={'MONEY repay'}
-          registerForm={registerRepayForm}
-          setValueForm={setValueRepayForm}
-          errorsForm={errorsRepayForm}
-          percentage={percentageLabel}
-        />
+        <HStack {...inputStyle}>
+          <Text>Text</Text>
+          <TokenAmountInputField
+            name="money-repay"
+            max={position?.debt}
+            isDisabled={repayWithdrawDisabled}
+            placeholder={'MONEY repay'}
+            registerForm={registerRepayForm}
+            setValueForm={setValueRepayForm}
+            errorsForm={errorsRepayForm}
+            percentage={percentageLabel}
+          />
+        </HStack>
       </Flex>
       <br />
       <Grid
@@ -144,19 +177,20 @@ export default function RepayWithdraw({
           </Button>
         ))}
       </Grid>
-      <br />
-      <Grid templateColumns="repeat(3, 1fr)" gap={2} w={'full'}>
-        <Box textAlign={'center'}>
-          <Text fontSize="sm" color={'gray'}>
+      <HStack justifyContent={'space-between'} marginTop={'40px'}>
+        <VStack spacing={'2px'}>
+          <Text variant={'bodyExtraSmall'} color={'brand.whiteAlpha60'}>
             Amount
           </Text>
-          <Text fontSize="md"> -$0.00</Text>
-        </Box>
-        <Box textAlign={'center'}>
-          <Text fontSize="sm" color={'gray'}>
+          <Text variant={'bodyMedium'} fontWeight={'500'}>
+            -$0.00
+          </Text>
+        </VStack>
+        <VStack spacing={'2px'}>
+          <Text variant={'bodyExtraSmall'} color={'brand.whiteAlpha60'}>
             Expected Liquidation Price
           </Text>
-          <Text fontSize="md">
+          <Text variant={'bodyMedium'} fontWeight={'500'}>
             ${' '}
             {calcLiqPriceFromNum(
               borrowablePercent,
@@ -164,33 +198,37 @@ export default function RepayWithdraw({
               totalCollateral
             ).toFixed(2)}
           </Text>
-        </Box>
-        <Box textAlign={'center'}>
-          <Text fontSize="sm" color={'gray'}>
+        </VStack>
+        <VStack spacing={'2px'}>
+          <Text variant={'bodyExtraSmall'} color={'brand.whiteAlpha60'}>
             cRatio
           </Text>
-          <Text fontSize="md">
+          <Text variant={'bodyMedium'} fontWeight={'500'}>
             {totalDebt > 0.1 ? (totalCollateral / totalDebt).toFixed(2) : '∞'}
           </Text>
-        </Box>
-      </Grid>
-      <br />
-      <Flex>
-        <Text fontSize={'sm'}>Price:</Text>
-        <Text fontSize={'sm'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(
+        </VStack>
+      </HStack>
+      <HStack marginTop={'30px'} spacing={'8px'}>
+        <Text varinat={'h300'} color={'brand.whiteAlpha60'}>
+          Price:
+        </Text>
+        <Text varinat={'bodySmall'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(
           2
         )}`}</Text>
-      </Flex>
+      </HStack>
 
       <StatusTrackModal state={repayWithdrawState} title={'Repay | Withdraw'} />
 
       <Button
-        w={'full'}
+        variant={'submit'}
+        marginTop={'10px'}
         type="submit"
         isLoading={isSubmittingRepayForm}
         isDisabled={repayWithdrawDisabled}
       >
-        Repay & Withdraw
+        <Text variant={'bodyMedium'} fontWeight={'600'}>
+          Repay & Withdraw
+        </Text>
       </Button>
     </form>
   );

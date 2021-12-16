@@ -1,31 +1,24 @@
 import {
-  Box,
-  Flex,
-  Text,
-  Grid,
-  Button,
-  HStack,
-  VStack,
+  Box, Button, Flex, HStack, Text, VStack
 } from '@chakra-ui/react';
 import {
   CurrencyValue,
   useEtherBalance,
   useEthers,
-  useTokenAllowance,
+  useTokenAllowance
 } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import {
-  ParsedPositionMetaRow,
+  calcLiqPriceFromNum, ParsedPositionMetaRow,
   ParsedStratMetaRow,
-  TxStatus,
-  calcLiqPriceFromNum,
+  TxStatus
 } from '../../chain-interaction/contracts';
 import {
   useApproveTrans,
   useDepositBorrowTrans,
-  useNativeDepositBorrowTrans,
+  useNativeDepositBorrowTrans
 } from '../../chain-interaction/transactions';
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
 import { useWalletBalance } from '../../contexts/WalletBalancesContext';

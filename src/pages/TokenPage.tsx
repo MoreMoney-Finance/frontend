@@ -1,16 +1,15 @@
-import { HStack, Box, Image } from '@chakra-ui/react';
+import { Box, HStack, Image } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import ellipseGreen from '../assets/img/ellipse_green_2.svg';
 import { ParsedStratMetaRow } from '../chain-interaction/contracts';
 import { getTokenFromAddress } from '../chain-interaction/tokens';
-import { TokenPageBody } from '../components/TokenPageComponents/TokenPageBody';
-import { TokenDescription } from '../components/TokenDescription';
-import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
-import { PositionBody } from '../components/TokenPageComponents/PositionBody';
-import { WNATIVE_ADDRESS } from '../constants/addresses';
 import { BackButton } from '../components/BackButton';
-import ellipseGreen from '../assets/img/ellipse_green_2.svg';
+import { TokenDescription } from '../components/TokenDescription';
+import { PositionBody } from '../components/TokenPageComponents/PositionBody';
+import { TokenPageBody } from '../components/TokenPageComponents/TokenPageBody';
+import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
 
 export function TokenPage(props: React.PropsWithChildren<unknown>) {
   const { chainId, account } = useEthers();

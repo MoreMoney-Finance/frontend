@@ -42,7 +42,7 @@ export default function StrategyTokenInformation({
         >
           <Box w={'full'}>
             <Flex w={'full'}>
-              <Text variant="h200" color={'brand.whiteAlpha40'}>
+              <Text variant="h200" color={'whiteAlpha.400'}>
                 Borrow Fee
               </Text>
               <Spacer />
@@ -51,21 +51,21 @@ export default function StrategyTokenInformation({
               </Text>
             </Flex>
             <Flex w={'full'} marginTop={'30px'}>
-              <Text variant="h200" color={'brand.whiteAlpha40'}>
+              <Text variant="h200" color={'whiteAlpha.400'}>
                 Minimum cRatio
               </Text>
               <Spacer />
               <Text variant={'bodyLarge'}>{countCRation()}</Text>
             </Flex>
             <Flex w={'full'} marginTop={'30px'}>
-              <Text variant="h200" color={'brand.whiteAlpha40'}>
+              <Text variant="h200" color={'whiteAlpha.400'}>
                 Liquidation Fee
               </Text>
               <Spacer />
               <Text variant={'bodyLarge'}>10%</Text>
             </Flex>
             <Flex w={'full'} marginTop={'30px'}>
-              <Text variant="h200" color={'brand.whiteAlpha40'}>
+              <Text variant="h200" color={'whiteAlpha.400'}>
                 Stability fee
               </Text>
               <Spacer />

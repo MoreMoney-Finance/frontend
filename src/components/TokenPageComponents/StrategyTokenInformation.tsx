@@ -1,9 +1,18 @@
-import { Box, Flex, GridItem, Spacer, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Container,
+  Flex,
+  GridItem,
+  Spacer,
+  Text,
+  Image,
+} from '@chakra-ui/react';
 import * as React from 'react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
 } from '../../chain-interaction/contracts';
+import lines from '../../assets/img/lines.svg';
 
 export default function StrategyTokenInformation({
   stratMeta,
@@ -11,66 +20,58 @@ export default function StrategyTokenInformation({
   position?: ParsedPositionMetaRow;
   stratMeta: ParsedStratMetaRow;
 }>) {
-  const boxStyle = {
-    border: '1px solid transparent',
-    borderColor: 'gray.600',
-    borderRadius: '3xl',
-    borderStyle: 'solid',
-    height: 'full',
-  };
-
   // const liquidationRewardPer10k: BigNumber = useIsolatedLendingLiquidationView(
   //   'liquidationRewardPer10k',
   //   [stratMeta.token.address],
   //   BigNumber.from(0)
   // );
   return (
-    <GridItem colSpan={4}>
-      <Flex
-        {...boxStyle}
-        flexDirection={'column'}
-        justifyContent={'center'}
-        alignContent={'center'}
-        alignItems={'center'}
-        paddingLeft={'100px'}
-        paddingRight={'100px'}
-      >
-        <Box w={'full'}>
-          <Flex w={'full'}>
-            <Text>Borrow Fee</Text>
-            <Spacer />
-            <Text>
-              <b>{stratMeta.mintingFeePercent.toFixed(2)} %</b>
-            </Text>
-          </Flex>
-          <br />
-          <Flex w={'full'}>
-            <Text>Minimum cRatio</Text>
-            <Spacer />
-            <Text>
-              <b>
-                {((1 / (stratMeta.borrowablePercent / 100)) * 100).toFixed(2)} %
-              </b>
-            </Text>
-          </Flex>
-          <br />
-          <Flex w={'full'}>
-            <Text>Liquidation Fee</Text>
-            <Spacer />
-            <Text>
-              <b>10 %</b>
-            </Text>
-          </Flex>
-          <br />
-          <Flex w={'full'}>
-            <Text>Stability fee</Text>
-            <Spacer />
-            <Text>
-              <b>{stratMeta.stabilityFeePercent.toFixed(2)} %</b>
-            </Text>
-          </Flex>
-        </Box>
-      </Flex>
+    <GridItem colSpan={2} rowSpan={1}>
+      <Container variant={'token'} position="relative">
+        <Flex
+          flexDirection={'column'}
+          justifyContent={'center'}
+          alignContent={'center'}
+          alignItems={'center'}
+          padding={'30px 130px 40px 40px'}
+        >
+          <Box w={'full'}>
+            <Flex w={'full'}>
+              <Text variant="h300">Borrow Fee</Text>
+              <Spacer />
+              <Text variant={'bodyLarge'}>
+                {stratMeta.mintingFeePercent.toFixed(2)}%
+              </Text>
+            </Flex>
+            <Flex w={'full'} marginTop={'30px'}>
+              <Text variant="h300">Minimum cRatio</Text>
+              <Spacer />
+              <Text variant={'bodyLarge'}>
+                {((1 / (stratMeta.borrowablePercent / 100)) * 100).toFixed(2)}%
+              </Text>
+            </Flex>
+            <Flex w={'full'} marginTop={'30px'}>
+              <Text variant="h300">Liquidation Fee</Text>
+              <Spacer />
+              <Text variant={'bodyLarge'}>10%</Text>
+            </Flex>
+            <Flex w={'full'} marginTop={'30px'}>
+              <Text variant="h300">Stability fee</Text>
+              <Spacer />
+              <Text variant={'bodyLarge'}>
+                {stratMeta.stabilityFeePercent.toFixed(2)}%
+              </Text>
+            </Flex>
+          </Box>
+        </Flex>
+        <Image
+          src={lines}
+          position="absolute"
+          right="0"
+          bottom="0"
+          pointerEvents="none"
+        />
+      </Container>
     </GridItem>
   );
 }

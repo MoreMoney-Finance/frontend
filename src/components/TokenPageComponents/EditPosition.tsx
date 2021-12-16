@@ -1,5 +1,5 @@
 import {
-  Box,
+  Container,
   GridItem,
   Tab,
   TabList,
@@ -22,18 +22,10 @@ export default function EditPosition({
   position?: ParsedPositionMetaRow;
   stratMeta: ParsedStratMetaRow;
 }>) {
-  const boxStyle = {
-    border: '1px solid transparent',
-    borderColor: 'gray.600',
-    borderRadius: '3xl',
-    borderStyle: 'solid',
-    height: 'full',
-  };
-
   return (
-    <GridItem rowSpan={2} colSpan={3}>
-      <Box {...boxStyle} padding={'16px'}>
-        <Tabs>
+    <GridItem rowSpan={2} colSpan={1}>
+      <Container variant={'token'} padding={'35px 20px 20px 20px'}>
+        <Tabs variant={'primary'}>
           <TabList>
             <Tab>Borrow</Tab>
             <Tab>Repay</Tab>
@@ -47,7 +39,7 @@ export default function EditPosition({
             </TabPanel>
           </TabPanels>
         </Tabs>
-      </Box>
+      </Container>
     </GridItem>
   );
 }

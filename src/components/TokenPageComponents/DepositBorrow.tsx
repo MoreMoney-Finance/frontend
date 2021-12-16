@@ -74,24 +74,24 @@ export default function DepositBorrow({
   const extantCollateral =
     position && position.collateral
       ? parseFloat(
-          position.collateral.format({
-            significantDigits: Infinity,
-            prefix: '',
-            suffix: '',
-          })
-        )
+        position.collateral.format({
+          significantDigits: Infinity,
+          prefix: '',
+          suffix: '',
+        })
+      )
       : 0;
   const totalCollateral = parseFloat(collateralInput) + extantCollateral;
 
   const extantDebt =
     position && position.debt
       ? parseFloat(
-          position.debt.format({
-            significantDigits: Infinity,
-            prefix: '',
-            suffix: '',
-          })
-        )
+        position.debt.format({
+          significantDigits: Infinity,
+          prefix: '',
+          suffix: '',
+        })
+      )
       : 0;
   const totalDebt = parseFloat(borrowInput) + extantDebt;
 
@@ -104,8 +104,8 @@ export default function DepositBorrow({
     10 >= percentageRange
       ? [(currentPercentage + borrowablePercent) / 2]
       : Array(Math.floor((percentageRange - 0.5) / percentageStep))
-          .fill(currentPercentage)
-          .map((p, i) => p + (i + 1) * percentageStep);
+        .fill(currentPercentage)
+        .map((p, i) => p + (i + 1) * percentageStep);
 
   const totalPercentage =
     totalCollateral > 0 ? (100 * totalDebt) / (totalCollateral * usdPrice) : 0;

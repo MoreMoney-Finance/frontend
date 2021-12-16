@@ -61,24 +61,24 @@ export default function RepayWithdraw({
   const extantCollateral =
     position && position.collateral
       ? parseFloat(
-          position.collateral.format({
-            significantDigits: Infinity,
-            prefix: '',
-            suffix: '',
-          })
-        )
+        position.collateral.format({
+          significantDigits: Infinity,
+          prefix: '',
+          suffix: '',
+        })
+      )
       : 0;
   const totalCollateral = extantCollateral - parseFloat(collateralInput);
 
   const extantDebt =
     position && position.debt
       ? parseFloat(
-          position.debt.format({
-            significantDigits: Infinity,
-            prefix: '',
-            suffix: '',
-          })
-        )
+        position.debt.format({
+          significantDigits: Infinity,
+          prefix: '',
+          suffix: '',
+        })
+      )
       : 0;
   const totalDebt = extantDebt - parseFloat(repayInput);
 
@@ -90,8 +90,8 @@ export default function RepayWithdraw({
     10 >= currentPercentage
       ? [currentPercentage / 2]
       : Array(Math.floor((currentPercentage - 0.5) / percentageStep))
-          .fill(0)
-          .map((p, i) => p + (i + 1) * percentageStep);
+        .fill(0)
+        .map((p, i) => p + (i + 1) * percentageStep);
 
   const totalPercentage =
     totalCollateral > 0 ? (100 * totalDebt) / (totalCollateral * usdPrice) : 0;

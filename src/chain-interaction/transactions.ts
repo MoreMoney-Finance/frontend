@@ -65,10 +65,10 @@ export function useNativeRepayWithdrawTrans(
   trancheId: number | null | undefined,
   collateralToken: Token | null | undefined
 ) {
-  const ilAddress = useAddresses().IsolatedLending;
+  const ilAddress = useAddresses().WrapNativeIsolatedLending;
   const ilContract = new Contract(
     ilAddress,
-    new Interface(IsolatedLending.abi)
+    new Interface(WrapNativeIsolatedLending.abi)
   );
 
   const { send, state } = useContractFunction(ilContract, 'repayAndWithdraw');

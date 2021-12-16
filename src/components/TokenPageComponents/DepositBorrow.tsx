@@ -1,9 +1,9 @@
 import { Box, Flex, Text, Grid, Button } from '@chakra-ui/react';
 import {
   CurrencyValue,
+  useEtherBalance,
   useEthers,
   useTokenAllowance,
-  useTokenBalance,
 } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
@@ -42,11 +42,11 @@ export default function DepositBorrow({
     useTokenAllowance(token.address, account, strategyAddress) ??
       BigNumber.from('0')
   );
+  const etherBalance = useEtherBalance(account);
 
-  const nativeTokenBalance = new CurrencyValue(
-    token,
-    BigNumber.from(useTokenBalance(token.address, account)) ?? BigNumber.from('0')
-  );
+  const nativeTokenBalance = etherBalance
+    ? new CurrencyValue(token, etherBalance)
+    : new CurrencyValue(token, BigNumber.from('0'));
 
   const walletBalance =
     useWalletBalance(token.address) ??
@@ -89,7 +89,10 @@ export default function DepositBorrow({
       );
     }
   }
-  const depositBorrowDisabled = walletBalance.isZero();
+
+  const depositBorrowDisabled = isNativeToken
+    ? nativeTokenBalance.isZero()
+    : walletBalance.isZero();
 
   const [collateralInput, borrowInput] = watch([
     'collateral-deposit',

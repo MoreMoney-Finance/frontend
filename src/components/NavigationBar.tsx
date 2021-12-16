@@ -46,27 +46,24 @@ export default function NavigationBar() {
             display={{ md: 'none' }}
             onClick={isOpen ? onClose : onOpen}
           />
-
-          <HStack spacing="65px" alignItems={'center'}>
-            <Box>
-              <Image src={logo} alt="Logo" />
-            </Box>
-            <HStack
-              as={'nav'}
-              spacing="48px"
-              display={{ base: 'none', md: 'flex' }}
-            >
-              {Links.map((link) => (
-                <LinkComponent
-                  variant={
-                    location.pathname === link.link ? 'headerActive' : 'header'
-                  }
-                  key={link.title}
-                >
-                  <Link to={link.link}>{link.title}</Link>
-                </LinkComponent>
-              ))}
-            </HStack>
+          <Box>
+            <Image src={logo} alt="Logo" />
+          </Box>
+          <HStack
+            as={'nav'}
+            spacing="48px"
+            display={{ base: 'none', md: 'flex' }}
+          >
+            {Links.map((link) => (
+              <LinkComponent
+                variant={
+                  location.pathname === link.link ? 'headerActive' : 'header'
+                }
+                key={link.title}
+              >
+                <Link to={link.link}>{link.title}</Link>
+              </LinkComponent>
+            ))}
           </HStack>
           <HStack
             flexDirection="row"

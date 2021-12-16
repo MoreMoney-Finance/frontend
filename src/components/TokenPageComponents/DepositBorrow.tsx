@@ -1,4 +1,12 @@
-import { Box, Flex, Text, Grid, Button } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Text,
+  Grid,
+  Button,
+  HStack,
+  VStack,
+} from '@chakra-ui/react';
 import {
   CurrencyValue,
   useEtherBalance,
@@ -146,70 +154,102 @@ export default function DepositBorrow({
       (percentage * totalCollateral * usdPrice) / 100 - extantDebt,
     ])
   );
+
+  const inputStyle = {
+    padding: '8px 8px 8px 20px',
+    bg: 'brand.whiteAlpha050',
+    borderRadius: '10px',
+    justifyContent: 'space-between',
+  };
+
   return (
     <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
       <Flex flexDirection={'column'} justify={'start'}>
-        <Box w={'full'} textAlign={'start'}>
-          <Text fontSize={'sm'}>Deposit Collateral</Text>
+        <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
+          <Text
+            variant={'bodyExtraSmall'}
+            color={'brand.whiteAlpha60'}
+            lineHeight={'14px'}
+          >
+            Deposit Collateral
+          </Text>
         </Box>
-
-        <TokenAmountInputField
-          name="collateral-deposit"
-          max={isNativeToken ? nativeTokenBalance : walletBalance}
-          isDisabled={depositBorrowDisabled}
-          placeholder={'Collateral Deposit'}
-          registerForm={registerDepForm}
-          setValueForm={setValueDepForm}
-          errorsForm={errorsDepForm}
-        />
+        <HStack {...inputStyle}>
+          <Text>PGL-WAVAX-WETHe</Text>
+          <TokenAmountInputField
+            name="collateral-deposit"
+            max={isNativeToken ? nativeTokenBalance : walletBalance}
+            isDisabled={depositBorrowDisabled}
+            placeholder={'Collateral Deposit'}
+            registerForm={registerDepForm}
+            setValueForm={setValueDepForm}
+            errorsForm={errorsDepForm}
+          />
+        </HStack>
       </Flex>
-      <Flex flexDirection={'column'} justify={'start'}>
-        <Box w={'full'} textAlign={'start'}>
-          <Text fontSize={'sm'}>Borrow MONEY</Text>
+      <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
+        <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
+          <Text
+            variant={'bodyExtraSmall'}
+            color={'brand.whiteAlpha60'}
+            lineHeight={'14px'}
+          >
+            Borrow MONEY
+          </Text>
         </Box>
-
-        <TokenAmountInputField
-          name="money-borrow"
-          isDisabled={depositBorrowDisabled}
-          placeholder={'MONEY borrow'}
-          registerForm={registerDepForm}
-          setValueForm={setValueDepForm}
-          errorsForm={errorsDepForm}
-          percentage={percentageLabel}
-        />
+        <HStack {...inputStyle}>
+          <Text>Money</Text>
+          <TokenAmountInputField
+            name="money-borrow"
+            isDisabled={depositBorrowDisabled}
+            placeholder={'MONEY borrow'}
+            registerForm={registerDepForm}
+            setValueForm={setValueDepForm}
+            errorsForm={errorsDepForm}
+            percentage={percentageLabel}
+          />
+        </HStack>
       </Flex>
       <br />
-      <Grid
-        templateColumns={`repeat(${
-          percentages ? Object.values(percentages).length : 0
-        }, 1fr)`}
-        gap={2}
-        w={'full'}
-      >
+      <HStack justifyContent={'space-between'}>
         {percentages &&
           Object.entries(percentages).map(([key, value]) => (
             <Button
-              borderRadius={'xl'}
+              variant={'secondary'}
+              borderRadius={'full'}
+              padding={'6px 16px'}
               key={'percentage' + key}
               onClick={() => setValueDepForm('money-borrow', value.toFixed(10))}
             >
-              {key}
+              <Text variant={'bodySmall'} fontWeight={'500'}>
+                {key}
+              </Text>
             </Button>
           ))}
-      </Grid>
-      <br />
-      <Grid templateColumns="repeat(3, 1fr)" gap={2} w={'full'}>
-        <Box textAlign={'center'}>
-          <Text fontSize="sm" color={'gray'}>
+        <Button
+          variant={'secondary'}
+          borderRadius={'full'}
+          padding={'6px 16px'}
+        >
+          <Text variant={'bodySmall'} fontWeight={'500'}>
+            Custom
+          </Text>
+        </Button>
+      </HStack>
+      <HStack justifyContent={'space-between'} marginTop={'40px'}>
+        <VStack spacing={'2px'}>
+          <Text variant={'bodyExtraSmall'} color={'brand.whiteAlpha60'}>
             Amount
           </Text>
-          <Text fontSize="md"></Text>
-        </Box>
-        <Box textAlign={'center'}>
-          <Text fontSize="sm" color={'gray'}>
+          <Text variant={'bodyMedium'} fontWeight={'500'}>
+            -$0.00
+          </Text>
+        </VStack>
+        <VStack spacing={'2px'}>
+          <Text variant={'bodyExtraSmall'} color={'brand.whiteAlpha60'}>
             Expected Liquidation Price
           </Text>
-          <Text fontSize="md">
+          <Text variant={'bodyMedium'} fontWeight={'500'}>
             ${' '}
             {calcLiqPriceFromNum(
               borrowablePercent,
@@ -217,23 +257,24 @@ export default function DepositBorrow({
               totalCollateral
             ).toFixed(2)}
           </Text>
-        </Box>
-        <Box textAlign={'center'}>
-          <Text fontSize="sm" color={'gray'}>
+        </VStack>
+        <VStack spacing={'2px'}>
+          <Text variant={'bodyExtraSmall'} color={'brand.whiteAlpha60'}>
             cRatio
           </Text>
-          <Text fontSize="md">
+          <Text variant={'bodyMedium'} fontWeight={'500'}>
             {totalDebt > 0.1 ? (totalCollateral / totalDebt).toFixed(2) : '∞'}
           </Text>
-        </Box>
-      </Grid>
-      <br />
-      <Flex>
-        <Text fontSize={'sm'}>Price:</Text>
-        <Text fontSize={'sm'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(
+        </VStack>
+      </HStack>
+      <HStack marginTop={'30px'} spacing={'8px'}>
+        <Text varinat={'h300'} color={'brand.whiteAlpha60'}>
+          Price:
+        </Text>
+        <Text varinat={'bodySmall'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(
           2
         )}`}</Text>
-      </Flex>
+      </HStack>
       <StatusTrackModal state={approveState} title={'Approve'} />
       <StatusTrackModal state={depositBorrowState} title={'Deposit Borrow'} />
       <StatusTrackModal
@@ -241,29 +282,32 @@ export default function DepositBorrow({
         title={'Deposit Borrow'}
       />
 
-      {allowance.gt(walletBalance) === false && isNativeToken === false ? (
-        <EnsureWalletConnected>
+      <Box marginTop={'10px'}>
+        {allowance.gt(walletBalance) === false && isNativeToken === false ? (
+          <EnsureWalletConnected>
+            <Button
+              variant={'submit'}
+              onClick={() => sendApprove(strategyAddress)}
+              isLoading={
+                approveState.status == TxStatus.SUCCESS &&
+                allowance.gt(walletBalance) === false
+              }
+            >
+              Approve {token.name}{' '}
+            </Button>
+          </EnsureWalletConnected>
+        ) : (
           <Button
-            onClick={() => sendApprove(strategyAddress)}
-            isLoading={
-              approveState.status == TxStatus.SUCCESS &&
-              allowance.gt(walletBalance) === false
-            }
+            variant={'submit'}
+            type="submit"
+            disabled={depositBorrowDisabled}
+            isLoading={isSubmittingDepForm}
+            isDisabled={depositBorrowDisabled}
           >
-            Approve {token.name}{' '}
+            Deposit & Borrow
           </Button>
-        </EnsureWalletConnected>
-      ) : (
-        <Button
-          w={'full'}
-          type="submit"
-          disabled={depositBorrowDisabled}
-          isLoading={isSubmittingDepForm}
-          isDisabled={depositBorrowDisabled}
-        >
-          Deposit & Borrow
-        </Button>
-      )}
+        )}
+      </Box>
     </form>
   );
 }

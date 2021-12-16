@@ -2,6 +2,42 @@ import { extendTheme } from '@chakra-ui/react';
 import '@fontsource/poppins';
 import '@fontsource/rubik';
 
+const Container = {
+  variants: {
+    token: {
+      position: 'relative',
+      maxWidth: '100%',
+      height: '100%',
+      background: 'brand.gradientBg',
+      padding: '0',
+      borderRadius: '10px',
+      _before: {
+        content: '""',
+        position: 'absolute',
+        top: '-2px',
+        bottom: '-2px',
+        left: '-2px',
+        right: '-2px',
+        background:
+          'linear-gradient(to right, hsla(0, 100%, 64%, 0.06), hsla(193, 100%, 50%, 0.06))',
+        borderRadius: '10px',
+        zIndex: '-2',
+      },
+      _after: {
+        content: '""',
+        position: 'absolute',
+        top: '0',
+        bottom: '0',
+        left: '0',
+        right: '0',
+        bg: 'brand.bg',
+        borderRadius: '10px',
+        zIndex: 'var(--chakra-zIndices-hide)',
+      },
+    },
+  },
+};
+
 const Link = {
   baseStyle: {
     fontSize: '14px',
@@ -16,16 +52,14 @@ const Link = {
     header: {
       fontWeight: '600',
       _hover: {
-        background:
-          'linear-gradient(to bottom, hsla(166, 100%, 46%, 1), hsla(165, 86%, 34%, 1))',
+        background: 'brand.accent',
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
       },
     },
     headerActive: {
       fontWeight: '600',
-      background:
-        'linear-gradient(to bottom, hsla(166, 100%, 46%, 1), hsla(165, 86%, 34%, 1))',
+      background: 'brand.accent',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
     },
@@ -52,6 +86,31 @@ const Button = {
       fontWeight: 'medium',
       borderRadius: 'lg',
     },
+    primary: {
+      bg: 'brand.accent',
+      border: 'none',
+      _hover: {
+        _disabled: {
+          bg: 'brand.accent',
+        },
+      },
+    },
+    secondary: {
+      bg: 'brand.whiteAlpha10',
+      border: 'none',
+      _hover: {
+        _disabled: {
+          bg: 'brand.whiteAlpha10',
+        },
+      },
+    },
+    submit: {
+      padding: '16px',
+      h: '56px',
+      borderRadius: '10px',
+      bg: 'brand.whiteAlpha20',
+      width: '100%',
+    },
   },
 };
 
@@ -62,11 +121,87 @@ const Text = {
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
     },
+    h200: {
+      fontFamily: 'Rubik',
+      fontSize: '18px',
+      lineHeight: '27px',
+      fontWeight: 400,
+    },
+    h300: {
+      fontFamily: 'Rubik',
+      fontSize: '16px',
+      lineHeight: '24px',
+      fontWeight: 400,
+    },
+    h400: {
+      fontFamily: 'Rubik',
+      fontSize: '14px',
+      lineHeight: '17px',
+      fontWeight: 400,
+    },
+    bodyExtraSmall: {
+      fontFamily: 'Poppins',
+      fontSize: '12px',
+      lineHeight: '18px',
+      fontWeight: 400,
+    },
+    bodySmall: {
+      fontFamily: 'Poppins',
+      fontSize: '14px',
+      lineHeight: '21px',
+      fontWeight: 400,
+    },
+    bodyMedium: {
+      fontFamily: 'Poppins',
+      fontSize: '16px',
+      lineHeight: '24px',
+      fontWeight: 400,
+    },
+    bodyLarge: {
+      fontFamily: 'Poppins',
+      fontSize: '18px',
+      lineHeight: '27px',
+      fontWeight: 500,
+    },
+    bodyExtraLarge: {
+      fontFamily: 'Poppins',
+      fontSize: '48px',
+      lineHeight: '72px',
+      fontWeight: 600,
+    },
   },
 };
 
 const Tabs = {
   variants: {
+    primary: {
+      tablist: {
+        borderBottom: '1px solid',
+        borderColor: 'brand.whiteAlpha20',
+      },
+      tabpanel: {
+        padding: '30px 0 0',
+      },
+      tab: {
+        fontFamily: 'Poppins',
+        fontSize: '16px',
+        lineHeight: '24px',
+        fontWeight: 400,
+        color: 'white',
+        _selected: {
+          position: 'relative',
+          fontWeight: 600,
+          _after: {
+            content: '""',
+            position: 'absolute',
+            bottom: '-1px',
+            width: '100%',
+            height: '2px',
+            bg: 'brand.accent',
+          },
+        },
+      },
+    },
     'soft-rounded': {
       tab: {
         borderRadius: 'full',
@@ -166,13 +301,21 @@ export const theme = extendTheme({
   colors: {
     brand: {
       bg: 'hsla(227, 12%, 15%, 1)',
+      bgOpacity: 'hsla(0, 0%, 0%, 0.2)',
       active: 'hsla(227, 22%, 26%, 0.59)',
+      accent:
+        'linear-gradient(to bottom, hsla(166, 100%, 46%, 1), hsla(165, 86%, 34%, 1))',
+      gradientBg:
+        'linear-gradient(to bottom, hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.03))',
       whiteAlpha030: 'hsla(0, 0%, 100%, 0.03)',
+      whiteAlpha050: 'hsla(0, 0%, 100%, 0.05)',
+      whiteAlpha10: 'hsla(0, 0%, 100%, 0.1)',
       whiteAlpha20: 'hsla(0, 0%, 100%, 0.2)',
       whiteAlpha30: 'hsla(0, 0%, 100%, 0.3)',
       whiteAlpha40: 'hsla(0, 0%, 100%, 0.4)',
       whiteAlpha50: 'hsla(0, 0%, 100%, 0.5)',
       whiteAlpha60: 'hsla(0, 0%, 100%, 0.6)',
+      whiteAlpha70: 'hsla(0, 0%, 100%, 0.7)',
     },
   },
   zIndices: {
@@ -196,5 +339,6 @@ export const theme = extendTheme({
     Input,
     Table,
     Link,
+    Container,
   },
 });

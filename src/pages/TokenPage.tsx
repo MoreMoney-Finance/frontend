@@ -1,5 +1,4 @@
-import { ArrowBackIcon } from '@chakra-ui/icons';
-import { Box, Flex, Text, VStack } from '@chakra-ui/react';
+import { HStack, Box, Image } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,12 +9,13 @@ import { TokenDescription } from '../components/TokenDescription';
 import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
 import { PositionBody } from '../components/TokenPageComponents/PositionBody';
 import { WNATIVE_ADDRESS } from '../constants/addresses';
+import { BackButton } from '../components/BackButton';
+import ellipseGreen from '../assets/img/ellipse_green_2.svg';
 
 export function TokenPage(props: React.PropsWithChildren<unknown>) {
   const { chainId, account } = useEthers();
   const params = useParams<'tokenAddress'>();
   const tokenAddress = params.tokenAddress;
-  const isNativeToken = WNATIVE_ADDRESS[chainId!] === tokenAddress;
   const allStratMeta = React.useContext(StrategyMetadataContext);
   const token = tokenAddress
     ? getTokenFromAddress(chainId, tokenAddress)
@@ -26,31 +26,21 @@ export function TokenPage(props: React.PropsWithChildren<unknown>) {
       ? allStratMeta[tokenAddress]
       : {};
 
-  const navigate = useNavigate();
-
-  console.log('isNativeToken', isNativeToken);
-
   return Object.values(stratMeta).length > 0 ? (
-    <VStack spacing="8" margin="8">
-      <Flex flexDirection={'row'} w={'full'} alignContent={'center'}>
-        <Box
-          marginRight={'10px'}
-          cursor={'pointer'}
-          onClick={() => navigate(-1)}
-        >
-          <Flex flexDirection={'row'}>
-            <Text>
-              <ArrowBackIcon />
-            </Text>
-            <Text>Back</Text>
-          </Flex>
-        </Box>
-        <Box>
-          {token ? (
-            <TokenDescription token={token} iconSize="xs" textSize="6xl" />
-          ) : undefined}
-        </Box>
-      </Flex>
+    <Box margin={'60px 100px 100px'}>
+      <Image
+        src={ellipseGreen}
+        position="absolute"
+        right="0"
+        pointerEvents="none"
+        zIndex="var(--chakra-zIndices-docked)"
+      />
+      <HStack spacing={'20px'}>
+        <BackButton />
+        {token ? (
+          <TokenDescription token={token} iconSize="xs" textSize="6xl" />
+        ) : undefined}
+      </HStack>
       {account ? (
         <TokenPageBody
           tokenAddress={tokenAddress}
@@ -61,7 +51,7 @@ export function TokenPage(props: React.PropsWithChildren<unknown>) {
         <PositionBody stratMeta={stratMeta} />
       )}
       {props.children}
-    </VStack>
+    </Box>
   ) : (
     <> </>
   );

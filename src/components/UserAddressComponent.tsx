@@ -26,7 +26,7 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
     <Box
       display="flex"
       alignItems="center"
-      background={"gray.700"}
+      background={'gray.700'}
       borderRadius="2xl"
       py="0"
     >

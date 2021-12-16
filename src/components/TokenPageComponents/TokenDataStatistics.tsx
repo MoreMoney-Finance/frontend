@@ -26,10 +26,7 @@ export function TokenDataStatistics({
             )}%`}
           />
           <TitleValue title="LIQUIDATION PRICE" value="$200" />
-          <TitleValue
-            title="STRATEGY"
-            value='strat'
-          />
+          <TitleValue title="STRATEGY" value="strat" />
         </HStack>
       </Container>
     </GridItem>

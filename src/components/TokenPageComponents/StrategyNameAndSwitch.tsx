@@ -15,7 +15,7 @@ export default function StrategyNameAndSwitch({
         <Flex
           flexDirection={'column'}
           alignItems={'center'}
-          paddingTop='77px'
+          paddingTop="77px"
           h={'100%'}
         >
           <Text variant="h400" color="brand.whiteAlpha40">
@@ -25,7 +25,7 @@ export default function StrategyNameAndSwitch({
             <b>{stratMeta[chosenStrategy].strategyName}</b>
           </Text>
           <br />
-          <Button borderRadius={'full'} width={'auto'} marginTop='20px'>
+          <Button borderRadius={'full'} width={'auto'} marginTop="20px">
             <Text variant="bodySmall">Change</Text>
           </Button>
         </Flex>

@@ -13,8 +13,7 @@ export function EnsureWalletConnected(
         params.children
       ) : (
         <Button
-          bg="blue.800"
-          color="blue.300"
+          variant={'submit'}
           onClick={() => {
             activateBrowserWallet();
           }}

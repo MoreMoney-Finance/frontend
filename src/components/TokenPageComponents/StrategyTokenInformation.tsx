@@ -25,6 +25,11 @@ export default function StrategyTokenInformation({
   //   [stratMeta.token.address],
   //   BigNumber.from(0)
   // );
+
+  const countCRation = () => {
+    return `${((1 / (stratMeta.borrowablePercent / 100)) * 100).toFixed(2)}%`;
+  };
+
   return (
     <GridItem colSpan={2} rowSpan={1}>
       <Container variant={'token'} position="relative">
@@ -37,26 +42,32 @@ export default function StrategyTokenInformation({
         >
           <Box w={'full'}>
             <Flex w={'full'}>
-              <Text variant="h300">Borrow Fee</Text>
+              <Text variant="h200" color={'brand.whiteAlpha40'}>
+                Borrow Fee
+              </Text>
               <Spacer />
               <Text variant={'bodyLarge'}>
                 {stratMeta.mintingFeePercent.toFixed(2)}%
               </Text>
             </Flex>
             <Flex w={'full'} marginTop={'30px'}>
-              <Text variant="h300">Minimum cRatio</Text>
-              <Spacer />
-              <Text variant={'bodyLarge'}>
-                {((1 / (stratMeta.borrowablePercent / 100)) * 100).toFixed(2)}%
+              <Text variant="h200" color={'brand.whiteAlpha40'}>
+                Minimum cRatio
               </Text>
+              <Spacer />
+              <Text variant={'bodyLarge'}>{countCRation()}</Text>
             </Flex>
             <Flex w={'full'} marginTop={'30px'}>
-              <Text variant="h300">Liquidation Fee</Text>
+              <Text variant="h200" color={'brand.whiteAlpha40'}>
+                Liquidation Fee
+              </Text>
               <Spacer />
               <Text variant={'bodyLarge'}>10%</Text>
             </Flex>
             <Flex w={'full'} marginTop={'30px'}>
-              <Text variant="h300">Stability fee</Text>
+              <Text variant="h200" color={'brand.whiteAlpha40'}>
+                Stability fee
+              </Text>
               <Spacer />
               <Text variant={'bodyLarge'}>
                 {stratMeta.stabilityFeePercent.toFixed(2)}%

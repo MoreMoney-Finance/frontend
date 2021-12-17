@@ -87,7 +87,7 @@ export function AllSupportedCollateral() {
   return (
     <>
       <Box textAlign="center" margin="100px 0">
-        <Text fontSize="24" lineHeight="56px" color="brand.whiteAlpha60">
+        <Text fontSize="24" lineHeight="56px" color="whiteAlpha.600">
           <b>Select a collateral asset to </b>
         </Text>
         <Text fontSize="48" lineHeight="56px">

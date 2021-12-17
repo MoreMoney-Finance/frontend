@@ -1,8 +1,7 @@
-import { Box, HStack, Image } from '@chakra-ui/react';
+import { HStack, Box } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
-import ellipseGreen from '../assets/img/ellipse_green_2.svg';
 import { ParsedStratMetaRow } from '../chain-interaction/contracts';
 import { getTokenFromAddress } from '../chain-interaction/tokens';
 import { BackButton } from '../components/BackButton';
@@ -27,12 +26,17 @@ export function TokenPage(props: React.PropsWithChildren<unknown>) {
 
   return Object.values(stratMeta).length > 0 ? (
     <Box margin={'60px 100px 100px'}>
-      <Image
-        src={ellipseGreen}
+      <Box
         position="absolute"
-        right="0"
+        width="300px"
+        height="200px"
+        filter="blur(200px)"
+        opacity="0.3"
+        right="300px"
+        top="450px"
         pointerEvents="none"
-        zIndex="var(--chakra-zIndices-docked)"
+        bgGradient="radial(farthest-side, hsla(169, 100%, 46%, 1), hsla(169, 100%, 46%, 0))"
+        zIndex="var(--chakra-zIndices-base)"
       />
       <HStack spacing={'20px'}>
         <BackButton />

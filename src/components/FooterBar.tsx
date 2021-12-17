@@ -16,7 +16,7 @@ export default function FooterBar() {
         alignItems={'center'}
         justifyContent={'space-between'}
       >
-        <Text fontSize="12px" lineHeight="21px" color="brand.whiteAlpha50">
+        <Text fontSize="12px" lineHeight="21px" color="whiteAlpha.500">
           Copyright © 2021 iMentus. All Rights Reserved
         </Text>
         <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>

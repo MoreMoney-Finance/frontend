@@ -42,12 +42,12 @@ const Link = {
   baseStyle: {
     fontSize: '14px',
     lineHeight: '24px',
-    color: 'brand.whiteAlpha60',
+    color: 'whiteAlpha.600',
   },
   variants: {
     footer: {
       lineHeight: '21px',
-      color: 'brand.whiteAlpha50',
+      color: 'whiteAlpha.500',
     },
     header: {
       fontWeight: '600',
@@ -96,11 +96,11 @@ const Button = {
       },
     },
     secondary: {
-      bg: 'brand.whiteAlpha10',
+      bg: 'whiteAlpha.100',
       border: 'none',
       _hover: {
         _disabled: {
-          bg: 'brand.whiteAlpha10',
+          bg: 'whiteAlpha.100',
         },
       },
     },
@@ -108,7 +108,7 @@ const Button = {
       padding: '16px',
       h: '56px',
       borderRadius: '10px',
-      bg: 'brand.whiteAlpha20',
+      bg: 'whiteAlpha.200',
       width: '100%',
     },
   },
@@ -177,7 +177,7 @@ const Tabs = {
     primary: {
       tablist: {
         borderBottom: '1px solid',
-        borderColor: 'brand.whiteAlpha20',
+        borderColor: 'whiteAlpha.200',
       },
       tabpanel: {
         padding: '30px 0 0',
@@ -208,7 +208,7 @@ const Tabs = {
         fontSize: '14px',
         lineHeight: '21px',
         fontWeight: 'normal',
-        color: 'brand.whiteAlpha50',
+        color: 'whiteAlpha.500',
         padding: '8px 22px',
         _selected: {
           color: 'white',
@@ -242,12 +242,11 @@ const Table = {
             fontFamily: 'Rubik',
             fontSize: '12px',
             lineHeight: '14px',
-            color: 'brand.whiteAlpha40',
+            color: 'whiteAlpha.400',
             textTransform: 'uppercase',
             paddingTop: '20px',
             paddingBottom: '8px',
             borderTop: '1px solid',
-            bg: 'brand.whiteAlpha.20',
           },
         },
         _first: {
@@ -278,7 +277,7 @@ const Table = {
             fontSize: '18px',
             lineHeight: '27px',
             padding: '16px 30px',
-            bg: 'brand.whiteAlpha030',
+            bg: 'whiteAlpha.30',
             _first: {
               borderLeftRadius: '10px',
             },
@@ -299,6 +298,8 @@ export const theme = extendTheme({
     body: 'Poppins',
   },
   colors: {
+    white: 'hsl(0, 0%, 100%)',
+    black: 'hsl(0,0%,0%)',
     brand: {
       bg: 'hsla(227, 12%, 15%, 1)',
       bgOpacity: 'hsla(0, 0%, 0%, 0.2)',
@@ -307,15 +308,43 @@ export const theme = extendTheme({
         'linear-gradient(to bottom, hsla(166, 100%, 46%, 1), hsla(165, 86%, 34%, 1))',
       gradientBg:
         'linear-gradient(to bottom, hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.03))',
-      whiteAlpha030: 'hsla(0, 0%, 100%, 0.03)',
-      whiteAlpha050: 'hsla(0, 0%, 100%, 0.05)',
-      whiteAlpha10: 'hsla(0, 0%, 100%, 0.1)',
-      whiteAlpha20: 'hsla(0, 0%, 100%, 0.2)',
-      whiteAlpha30: 'hsla(0, 0%, 100%, 0.3)',
-      whiteAlpha40: 'hsla(0, 0%, 100%, 0.4)',
-      whiteAlpha50: 'hsla(0, 0%, 100%, 0.5)',
-      whiteAlpha60: 'hsla(0, 0%, 100%, 0.6)',
-      whiteAlpha70: 'hsla(0, 0%, 100%, 0.7)',
+    },
+    whiteAlpha: {
+      30: 'hsla(0, 0%, 100%, 0.03)',
+      50: 'hsla(0, 0%, 100%, 0.05)',
+      100: 'hsla(0, 0%, 100%, 0.1)',
+      200: 'hsla(0, 0%, 100%, 0.2)',
+      300: 'hsla(0, 0%, 100%, 0.3)',
+      400: 'hsla(0, 0%, 100%, 0.4)',
+      500: 'hsla(0, 0%, 100%, 0.5)',
+      600: 'hsla(0, 0%, 100%, 0.6)',
+      700: 'hsla(0, 0%, 100%, 0.7)',
+      800: 'hsla(0, 0%, 100%, 0.8)',
+      900: 'hsla(0, 0%, 100%, 0.9)',
+    },
+    gray: {
+      50: 'hsla(204, 45%, 98%, 1)',
+      100: 'hsla(210, 38%, 95%, 1)',
+      200: 'hsla(214, 32%, 91%, 1)',
+      300: 'hsla(211, 25%, 84%, 1)',
+      400: 'hsla(214, 20%, 69%, 1)',
+      500: 'hsla(216, 15%, 52%, 1)',
+      600: 'hsla(218, 17%, 35%, 1)',
+      700: 'hsla(218, 23%, 23%, 1)',
+      800: 'hsla(220, 26%, 14%, 1)',
+      900: 'hsla(230, 21%, 11%, 1)',
+    },
+    blue: {
+      50: 'hsla(201, 100%, 96%, 1)',
+      100: 'hsla(202, 81%, 86%, 1)',
+      200: 'hsla(203, 82%, 76%, 1)',
+      300: 'hsla(205, 79%, 66%, 1)',
+      400: 'hsla(207, 73%, 57%, 1)',
+      500: 'hsla(209, 62%, 50%, 1)',
+      600: 'hsla(211, 61%, 43%, 1)',
+      700: 'hsla(213, 49%, 34%, 1)',
+      800: 'hsla(215, 41%, 28%, 1)',
+      900: 'hsla(215, 56%, 23%, 1)',
     },
   },
   zIndices: {

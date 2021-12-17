@@ -345,7 +345,7 @@ export const theme = extendTheme({
       700: 'hsla(213, 49%, 34%, 1)',
       800: 'hsla(215, 41%, 28%, 1)',
       900: 'hsla(215, 56%, 23%, 1)',
-    }
+    },
   },
   zIndices: {
     header: 100,

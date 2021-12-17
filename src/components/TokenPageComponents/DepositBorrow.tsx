@@ -121,7 +121,7 @@ export default function DepositBorrow({
 
   const inputStyle = {
     padding: '8px 8px 8px 20px',
-    bg: 'brand.whiteAlpha050',
+    bg: 'whiteAlpha.50',
     borderRadius: '10px',
     justifyContent: 'space-between',
   };
@@ -132,7 +132,7 @@ export default function DepositBorrow({
         <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
           <Text
             variant={'bodyExtraSmall'}
-            color={'brand.whiteAlpha60'}
+            color={'whiteAlpha.600'}
             lineHeight={'14px'}
           >
             Deposit Collateral
@@ -155,7 +155,7 @@ export default function DepositBorrow({
         <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
           <Text
             variant={'bodyExtraSmall'}
-            color={'brand.whiteAlpha60'}
+            color={'whiteAlpha.600'}
             lineHeight={'14px'}
           >
             Borrow MONEY
@@ -202,7 +202,7 @@ export default function DepositBorrow({
       </HStack>
       <HStack justifyContent={'space-between'} marginTop={'40px'}>
         <VStack spacing={'2px'}>
-          <Text variant={'bodyExtraSmall'} color={'brand.whiteAlpha60'}>
+          <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
             Amount
           </Text>
           <Text variant={'bodyMedium'} fontWeight={'500'}>
@@ -210,7 +210,7 @@ export default function DepositBorrow({
           </Text>
         </VStack>
         <VStack spacing={'2px'}>
-          <Text variant={'bodyExtraSmall'} color={'brand.whiteAlpha60'}>
+          <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
             Expected Liquidation Price
           </Text>
           <Text variant={'bodyMedium'} fontWeight={'500'}>
@@ -223,7 +223,7 @@ export default function DepositBorrow({
           </Text>
         </VStack>
         <VStack spacing={'2px'}>
-          <Text variant={'bodyExtraSmall'} color={'brand.whiteAlpha60'}>
+          <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
             cRatio
           </Text>
           <Text variant={'bodyMedium'} fontWeight={'500'}>
@@ -232,7 +232,7 @@ export default function DepositBorrow({
         </VStack>
       </HStack>
       <HStack marginTop={'30px'} spacing={'8px'}>
-        <Text varinat={'h300'} color={'brand.whiteAlpha60'}>
+        <Text varinat={'h300'} color={'whiteAlpha.600'}>
           Price:
         </Text>
         <Text varinat={'bodySmall'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(

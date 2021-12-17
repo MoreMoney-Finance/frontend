@@ -8,7 +8,7 @@ export function BackButton() {
 
   return (
     <HStack spacing="8px" onClick={() => navigate(-1)} cursor={'pointer'}>
-      <ArrowBackIcon w="20px" h="20px" color="brand.whiteAlpha50" />
+      <ArrowBackIcon w="20px" h="20px" color="whiteAlpha.500" />
       <Text variant="bodySmall">BACK</Text>
     </HStack>
   );

@@ -18,7 +18,7 @@ export default function StrategyNameAndSwitch({
           paddingTop="77px"
           h={'100%'}
         >
-          <Text variant="h400" color="brand.whiteAlpha40">
+          <Text variant="h400" color="whiteAlpha.400">
             Strategy
           </Text>
           <Text variant="bodySmall" marginTop="8px">

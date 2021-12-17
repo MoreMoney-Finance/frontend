@@ -16,7 +16,7 @@ export default function CollateralAPY({
           h={'100%'}
           paddingTop="77px"
         >
-          <Text variant="h400" color="brand.whiteAlpha40">
+          <Text variant="h400" color="whiteAlpha.400">
             Collateral APY
           </Text>
           <Text variant="bodyExtraLarge">

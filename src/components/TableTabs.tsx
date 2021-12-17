@@ -23,7 +23,7 @@ export function TableTabs({
     'DAI.e',
   ];
 
-  const chainIdStr: keyof(typeof lptokens) = chainId ? chainId.toString() as keyof(typeof lptokens) : '43114';
+  const chainIdStr: keyof(typeof lptokens) = chainId ? chainId.toString() as keyof(typeof lptokens) : '43114' as keyof(typeof lptokens);
 
   const lpTickers: string[] = Object.entries(lptokens[chainIdStr])
     .map(([, token]) => {

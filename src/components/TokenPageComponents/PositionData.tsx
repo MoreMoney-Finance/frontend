@@ -1,9 +1,12 @@
-import { Box, Grid, Text } from '@chakra-ui/react';
+import { Container, GridItem, HStack } from '@chakra-ui/react';
+import { TitleValue } from '../TitleValue';
 import React from 'react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
 } from '../../chain-interaction/contracts';
+import { CurrencyValue } from '@usedapp/core';
+import { BigNumber } from 'ethers';
 
 export function PositionData({
   position,
@@ -12,90 +15,36 @@ export function PositionData({
   position: ParsedPositionMetaRow;
   stratMeta: ParsedStratMetaRow;
 }) {
-  return (
-    <>
-      <Box
-        borderWidth="1px"
-        width={'full'}
-        height={'150px'}
-        borderRadius={'lg'}
-      >
-        <Grid
-          templateColumns="repeat(6, 1fr)"
-          gap={2}
-          height={'full'}
-          justifyContent={'center'}
-          alignContent={'center'}
-          alignItems={'center'}
-          justifyItems={'center'}
-        >
-          <Box textAlign={'start'}>
-            <Text fontSize="lg" color={'gray'}>
-              COLLATERAL
-            </Text>
-            <Text fontSize="md">
-              {' '}
-              {position.collateral?.format({
-                significantDigits: Infinity,
-              })}{' '}
-            </Text>
-          </Box>
 
-          <Box textAlign={'start'}>
-            <Text fontSize="lg" color={'gray'}>
-              COLLATERAL (USD)
-            </Text>
-            <Text fontSize="md">
-              {' '}
-              ${' '}
-              {position.collateralValue.format({
-                prefix: '',
-                suffix: '',
-              })}{' '}
-            </Text>
-          </Box>
-          <Box textAlign={'start'}>
-            <Text fontSize="lg" color={'gray'}>
-              DEBT
-            </Text>
-            <Text fontSize="md"> {position.debt.format()}</Text>
-          </Box>
-          <Box textAlign={'start'}>
-            <Text fontSize="lg" color={'gray'}>
-              CRATIO
-            </Text>
-            <Text fontSize="md">
-              {position.debt.isZero()
-                ? '∞'
-                : (
-                  position.collateralValue.value
-                    .mul(10000)
-                    .div(position.debt.value)
-                    .toNumber() / 100
-                ).toFixed(2)}{' '}
-              %
-            </Text>
-          </Box>
-          <Box textAlign={'start'}>
-            <Text fontSize="lg" color={'gray'}>
-              LIQUIDATION PRICE
-            </Text>
-            <Text fontSize="md">
-              {' '}
-              $ {position.liquidationPrice.toFixed(2)}{' '}
-            </Text>
-          </Box>
-          <Box textAlign={'start'}>
-            <Text fontSize="lg" color={'gray'}>
-              Strategy
-            </Text>
-            <Text fontSize="lg" textDecoration={'underline'}>
-              {' '}
-              <a href="#">{stratMeta.strategyName}</a>
-            </Text>
-          </Box>
-        </Grid>
-      </Box>
-    </>
+  return (
+    <GridItem colSpan={3} rowSpan={1}>
+      <Container variant={'token'}>
+        <HStack padding="25px 50px 37px 50px" justifyContent="space-between">
+          <TitleValue title="COLLATERAL" value={position.collateral?.format({
+            significantDigits: Infinity,
+          }) ?? new CurrencyValue(stratMeta.token, BigNumber.from('0')).format()} />
+          <TitleValue
+            title="VALUE (USD)"
+            value={`$ ${position.collateralValue.format({
+              prefix: '',
+              suffix: '',
+            })}`}
+          />
+          <TitleValue title="DEBT" value={position.debt.format()} />
+          <TitleValue
+            title="CRATIO"
+            value={position.debt.isZero()
+              ? '∞'
+              : (
+                position.collateralValue.value
+                  .mul(10000)
+                  .div(position.debt.value)
+                  .toNumber() / 100
+              ).toFixed(2)}
+          />
+          <TitleValue title="LIQUIDATION PRICE" value={`$ ${position.liquidationPrice.toFixed(2)}`} />
+        </HStack>
+      </Container>
+    </GridItem>
   );
 }

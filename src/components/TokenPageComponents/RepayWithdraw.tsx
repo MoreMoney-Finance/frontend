@@ -14,6 +14,7 @@ import {
   calcLiqPriceFromNum,
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
+  useStable,
 } from '../../chain-interaction/contracts';
 import {
   useNativeRepayWithdrawTrans,
@@ -22,6 +23,7 @@ import {
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
+import { TokenDescription } from '../TokenDescription';
 
 export default function RepayWithdraw({
   position,
@@ -32,6 +34,7 @@ export default function RepayWithdraw({
 }>) {
   const { token, usdPrice, borrowablePercent } = stratMeta;
   const { chainId } = useEthers();
+  const stable = useStable();
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
 
   const {
@@ -140,7 +143,7 @@ export default function RepayWithdraw({
           </Text>
         </Box>
         <HStack {...inputStyle}>
-          <Text>Text</Text>
+          <TokenDescription token={stratMeta.token} />
           <TokenAmountInputField
             name="collateral-withdraw"
             max={position?.collateral}
@@ -163,7 +166,7 @@ export default function RepayWithdraw({
           </Text>
         </Box>
         <HStack {...inputStyle}>
-          <Text>Text</Text>
+          <TokenDescription token={stable} />
           <TokenAmountInputField
             name="money-repay"
             max={position?.debt}

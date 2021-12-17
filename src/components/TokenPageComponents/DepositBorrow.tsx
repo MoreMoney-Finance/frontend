@@ -13,7 +13,8 @@ import { useForm } from 'react-hook-form';
 import {
   calcLiqPriceFromNum, ParsedPositionMetaRow,
   ParsedStratMetaRow,
-  TxStatus
+  TxStatus,
+  useStable
 } from '../../chain-interaction/contracts';
 import {
   useApproveTrans,
@@ -25,6 +26,7 @@ import { useWalletBalance } from '../../contexts/WalletBalancesContext';
 import { EnsureWalletConnected } from '../EnsureWalletConnected';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
+import { TokenDescription } from '../TokenDescription';
 
 export default function DepositBorrow({
   position,
@@ -35,6 +37,7 @@ export default function DepositBorrow({
 }>) {
   const { token, strategyAddress, borrowablePercent, usdPrice } = stratMeta;
   const { chainId, account } = useEthers();
+  const stable = useStable();
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
 
@@ -168,7 +171,7 @@ export default function DepositBorrow({
           </Text>
         </Box>
         <HStack {...inputStyle}>
-          <Text>PGL-WAVAX-WETHe</Text>
+          <TokenDescription token={stratMeta.token} />
           <TokenAmountInputField
             name="collateral-deposit"
             max={isNativeToken ? nativeTokenBalance : walletBalance}
@@ -191,7 +194,7 @@ export default function DepositBorrow({
           </Text>
         </Box>
         <HStack {...inputStyle}>
-          <Text>Money</Text>
+          <TokenDescription token={stable} />
           <TokenAmountInputField
             name="money-borrow"
             isDisabled={depositBorrowDisabled}
@@ -219,15 +222,6 @@ export default function DepositBorrow({
               </Text>
             </Button>
           ))}
-        <Button
-          variant={'secondary'}
-          borderRadius={'full'}
-          padding={'6px 16px'}
-        >
-          <Text variant={'bodySmall'} fontWeight={'500'}>
-            Custom
-          </Text>
-        </Button>
       </HStack>
       <HStack justifyContent={'space-between'} marginTop={'40px'}>
         <VStack spacing={'2px'}>

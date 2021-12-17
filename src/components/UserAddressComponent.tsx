@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Box, Text, HStack, Image } from '@chakra-ui/react';
+import { Button, Text, HStack, Image } from '@chakra-ui/react';
 import { useEthers, CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
@@ -22,44 +22,7 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
     activateBrowserWallet();
   }
 
-  return account ? (
-    <Box
-      display="flex"
-      alignItems="center"
-      background={'gray.700'}
-      borderRadius="2xl"
-      py="0"
-    >
-      <Box px="3">
-        <Text color="white" fontSize="md">
-          {walletBalance?.format({ significantDigits: 12 })}
-        </Text>
-      </Box>
-      <Button
-        onClick={handleOpenModal}
-        bg="gray.800"
-        border="1px solid transparent"
-        _hover={{
-          border: '1px',
-          borderStyle: 'solid',
-          borderColor: 'blue.400',
-          backgroundColor: 'gray.700',
-        }}
-        borderRadius="2xl"
-        m="1px"
-        px={3}
-        height="38px"
-      >
-        <Text color="white" fontSize="md" fontWeight="medium">
-          {account &&
-            `${account.slice(0, 6)}...${account.slice(
-              account.length - 4,
-              account.length
-            )}`}
-        </Text>
-      </Button>
-    </Box>
-  ) : (
+  return (
     <HStack
       spacing={'18px'}
       bg={'brand.gradientBg'}
@@ -67,25 +30,34 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
       borderRadius={'10px'}
     >
       <HStack>
-        <Image src={colorDot} />
-        <Text variant={'bodySmall'} lineHeight={'24px'}>
-          MM
-        </Text>
+        {walletBalance && !walletBalance.isZero() ?
+          (<Text variant={'bodySmall'} lineHeight={'24px'}>
+            {walletBalance?.format({ significantDigits: 2 })}
+          </Text>) : (<Image src={colorDot} />)}
       </HStack>
       <Button
         variant={'primary'}
         padding={'4px 20px'}
         h={'32px'}
-        onClick={handleConnectWallet}
+        onClick={account ? handleOpenModal : handleConnectWallet}
       >
-        <Text
-          variant={'bodySmall'}
-          lineHeight={'24px'}
-          color={'brand.bg'}
-          fontWeight={'600'}
-        >
-          0xBAD7...E116
-        </Text>
+        {account ? (
+          <Text
+            variant={'bodySmall'}
+            lineHeight={'24px'}
+            color={'brand.bg'}
+            fontWeight={'600'}
+          >
+            {account &&
+              `${account.slice(0, 6)}...${account.slice(
+                account.length - 4,
+                account.length
+              )}`}
+          </Text>
+        ) : (
+          <Text>Connect wallet</Text>
+        )}
+
       </Button>
     </HStack>
   );

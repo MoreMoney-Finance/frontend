@@ -47,9 +47,9 @@ export default function NavigationBar() {
             display={{ md: 'none' }}
             onClick={isOpen ? onClose : onOpen}
           />
-          <Box>
+          <Link to="/">
             <Image src={logo} alt="Logo" />
-          </Box>
+          </Link>
           <HStack
             as={'nav'}
             spacing="48px"

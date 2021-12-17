@@ -11,9 +11,6 @@ export function PositionsPage(params: React.PropsWithChildren<unknown>) {
         <Text align={'start'} fontSize={'4xl'}>
           My Positions
         </Text>
-        <br />
-        <br />
-        <br />
         {account && <CurrentlyOpenPositions account={account} />}
         {params.children}
       </Box>

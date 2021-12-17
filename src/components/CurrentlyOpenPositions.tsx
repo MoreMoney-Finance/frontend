@@ -15,8 +15,7 @@ export default function CurrentlyOpenPositions({
 
   const positions = Object.values(allPositionMeta).flatMap((x) => x);
   return positions.length > 0 ? (
-    <Box>
-      <h2> Currently open positions </h2>
+    <Box mx="-95px">
       <TrancheTable
         positions={positions}
         action={{

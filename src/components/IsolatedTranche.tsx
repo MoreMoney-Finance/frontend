@@ -10,7 +10,7 @@ import { BigNumber } from 'ethers';
 import { Tr, Td, Button } from '@chakra-ui/react';
 import { TokenDescription } from './TokenDescription';
 import { TrancheAction } from './TrancheTable';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export function IsolatedTranche(
   params: React.PropsWithChildren<
@@ -48,25 +48,24 @@ export function IsolatedTranche(
       : new CurrencyValue(stable, BigNumber.from(0));
   return (
     <>
-      <Tr key={`${params.trancheId}`}>
+      <Tr key={`${params.trancheId}`} as={Link} to={`/token/${params.token.address}`} display="table-row">
         <Td>
           <TokenDescription token={token} />
         </Td>
 
         <Td>{strategyName}</Td>
 
-        <Td>{APY.toFixed(3)} % APY</Td>
+        <Td>{APY.toFixed(2)}%</Td>
 
-        <Td>{(100 / params.borrowablePercent).toPrecision(4)} %</Td>
+        <Td>{(100 * 100 / params.borrowablePercent).toFixed(0)}%</Td>
 
         <Td>
           {params.debt.isZero()
             ? '∞'
-            : params.collateralValue.value
+            : (params.collateralValue.value
               .mul(10000)
               .div(params.debt.value)
-              .toNumber() / 100}{' '}
-          %
+              .toNumber() / 100).toFixed(1)}%
         </Td>
 
         <Td>$ {params.liquidationPrice.toFixed(2)}</Td>

@@ -29,9 +29,19 @@ export function AllSupportedCollateral() {
     }))
   );
 
+  const [tableTabFilter, setTableTabFilter] = React.useState<string[]>([]);
   const [searchString, setSearchString] = React.useState('');
 
   const data = stratMeta
+    .filter((meta) => {
+      if (tableTabFilter.length === 0) {
+        return true;
+      } else if (tableTabFilter.includes(meta.token.ticker)) {
+        return true;
+      } else {
+        return false;
+      }
+    })
     .filter((meta) =>
       searchString.length > 0
         ? meta.token.name.toLowerCase().includes(searchString) ||
@@ -101,7 +111,10 @@ export function AllSupportedCollateral() {
       <Box width="100%">
         <Box zIndex="var(--chakra-zIndices-header)" position="relative">
           <Flex alignItems={'center'} justifyContent="space-between">
-            <TableTabs />
+            <TableTabs
+              setTableTabFilter={setTableTabFilter}
+              stratMeta={stratMeta}
+            />
             <TableSearch setSearchString={setSearchString} />
           </Flex>
         </Box>

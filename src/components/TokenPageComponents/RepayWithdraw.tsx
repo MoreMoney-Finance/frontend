@@ -7,6 +7,7 @@ import {
   HStack,
   VStack,
 } from '@chakra-ui/react';
+import { useEthers } from '@usedapp/core';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import {
@@ -14,7 +15,11 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
 } from '../../chain-interaction/contracts';
-import { useRepayWithdrawTrans } from '../../chain-interaction/transactions';
+import {
+  useNativeRepayWithdrawTrans,
+  useRepayWithdrawTrans,
+} from '../../chain-interaction/transactions';
+import { WNATIVE_ADDRESS } from '../../constants/addresses';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
 
@@ -26,6 +31,8 @@ export default function RepayWithdraw({
   stratMeta: ParsedStratMetaRow;
 }>) {
   const { token, usdPrice, borrowablePercent } = stratMeta;
+  const { chainId } = useEthers();
+  const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
 
   const {
     handleSubmit: handleSubmitRepayForm,
@@ -40,11 +47,19 @@ export default function RepayWithdraw({
     token
   );
 
+  const {
+    sendRepayWithdraw: sendNativeRepayWithdraw,
+    repayWithdrawState: sendNativeWithdrawState,
+  } = useNativeRepayWithdrawTrans(position && position.trancheId, token);
+
   function onRepayWithdraw(data: { [x: string]: any }) {
     console.log('repay withdraw');
     console.log(data);
-
-    sendRepayWithdraw(data['collateral-withdraw'], data['money-repay']);
+    if (isNativeToken) {
+      sendNativeRepayWithdraw(data['collateral-withdraw'], data['money-repay']);
+    } else {
+      sendRepayWithdraw(data['collateral-withdraw'], data['money-repay']);
+    }
   }
 
   const repayWithdrawDisabled =
@@ -218,6 +233,10 @@ export default function RepayWithdraw({
       </HStack>
 
       <StatusTrackModal state={repayWithdrawState} title={'Repay | Withdraw'} />
+      <StatusTrackModal
+        state={sendNativeWithdrawState}
+        title={'Repay | Withdraw'}
+      />
 
       <Button
         variant={'submit'}

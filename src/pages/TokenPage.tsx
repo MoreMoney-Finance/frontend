@@ -4,11 +4,11 @@ import * as React from 'react';
 import { useParams } from 'react-router-dom';
 import { ParsedStratMetaRow } from '../chain-interaction/contracts';
 import { getTokenFromAddress } from '../chain-interaction/tokens';
-import { TokenPageBody } from '../components/TokenPageComponents/TokenPageBody';
-import { TokenDescription } from '../components/TokenDescription';
-import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
-import { PositionBody } from '../components/TokenPageComponents/PositionBody';
 import { BackButton } from '../components/BackButton';
+import { TokenDescription } from '../components/TokenDescription';
+import { PositionBody } from '../components/TokenPageComponents/PositionBody';
+import { TokenPageBody } from '../components/TokenPageComponents/TokenPageBody';
+import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
 
 export function TokenPage(props: React.PropsWithChildren<unknown>) {
   const { chainId, account } = useEthers();

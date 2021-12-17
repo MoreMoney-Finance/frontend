@@ -12,7 +12,6 @@ export type TrancheAction = {
 
 export function TrancheTable({
   positions,
-  action,
 }: {
   positions: ParsedPositionMetaRow[];
   action?: TrancheAction;
@@ -20,18 +19,17 @@ export function TrancheTable({
   const allStratMeta = React.useContext(StrategyMetadataContext);
 
   return (
-    <Table variant="simple" width="auto">
+    <Table variant="dashboard" width="auto">
       <Thead>
         <Tr>
           <Td>Asset</Td>
           <Td>Strategy</Td>
           <Td>APY</Td>
           <Td>Min. ColRatio</Td>
-          <Td> Current ColRatio</Td>
-          <Td>Liquidation price</Td>
+          <Td>Cur. ColRatio</Td>
+          <Td>Liq. price</Td>
           <Td>Collateral</Td>
           <Td>Debt</Td>
-          {action ? <Td>Action</Td> : undefined}
         </Tr>
       </Thead>
 
@@ -46,7 +44,6 @@ export function TrancheTable({
             <IsolatedTranche
               key={`isolatedTranche${i}`}
               {...data}
-              action={action}
             />
           );
         })}

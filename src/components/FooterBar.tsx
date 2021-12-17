@@ -17,7 +17,7 @@ export default function FooterBar() {
         justifyContent={'space-between'}
       >
         <Text fontSize="12px" lineHeight="21px" color="whiteAlpha.500">
-          Copyright © 2021 iMentus. All Rights Reserved
+          Copyright © 2021 Lattice Labs. All Rights Reserved
         </Text>
         <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
           {Links.map((link) => (

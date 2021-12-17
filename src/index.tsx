@@ -10,6 +10,7 @@ import { Dashboard } from './pages/Dashboard';
 import { TokenPage } from './pages/TokenPage';
 import { Analytics } from './pages/Analytics';
 import { FarmPage } from './pages/Farm/FarmPage';
+import { PositionsPage } from './pages/Positions/PositionsPage';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -31,6 +32,7 @@ ReactDOM.render(
             <Route index element={<Dashboard />} />
             <Route path="/token/:tokenAddress" element={<TokenPage />} />
             <Route path="/farm" element={<FarmPage />} />
+            <Route path="/positions" element={<PositionsPage />} />
             <Route path="/analytics" element={<Analytics />} />
           </Route>
         </Routes>

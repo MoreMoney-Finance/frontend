@@ -18,6 +18,7 @@ import logo from '../assets/logo/logo.svg';
 const Links = [
   { title: 'Borrow', link: '/' },
   { title: 'Farm', link: '/farm' },
+  { title: 'My Positions', link: '/positions' },
   { title: 'Liquidation Protected Loans', link: '/loans' },
   { title: 'Analytics', link: '/analytics' },
 ];

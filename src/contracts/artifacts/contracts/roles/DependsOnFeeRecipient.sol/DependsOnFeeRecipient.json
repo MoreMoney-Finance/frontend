@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "DependsOnTrancheTransferer",
-  "sourceName": "contracts/roles/DependsOnTrancheTransferer.sol",
+  "contractName": "DependsOnFeeRecipient",
+  "sourceName": "contracts/roles/DependsOnFeeRecipient.sol",
   "abi": [
     {
       "inputs": [

@@ -46,6 +46,7 @@
     "TrancheIDService": "0xCfBdFEfD8a142bDA54eaCDD64a334DfBC1eA05FD",
     "TwapOracle": "0x986abb39E5A91A3D6DB84f4fB812DD274b8F313D",
     "UniswapV2LPTOracle": "0xef9E0eC3BaefEE1Eabd18f36B5Ae4443850E5977",
+    "WrapNativeIsolatedLending": "0x9D851844658209e5d30b5F895B9850DB6f1c5cd3",
     "YieldYakStrategy": "0xEdC8001D1E7516777B3D4eF2b53Da007cd7317eE"
   }
 }

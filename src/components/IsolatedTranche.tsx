@@ -3,6 +3,7 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   useStable,
+  YieldType,
 } from '../chain-interaction/contracts';
 import { useWalletBalance } from '../contexts/WalletBalancesContext';
 import { CurrencyValue } from '@usedapp/core';
@@ -17,7 +18,7 @@ export function IsolatedTranche(
     ParsedStratMetaRow & ParsedPositionMetaRow & { action?: TrancheAction }
   >
 ) {
-  const { token, APY, strategyName, action } = params;
+  const { token, APY, action } = params;
 
   const location = useLocation();
   const details = location.search?.includes('details=true');
@@ -46,26 +47,40 @@ export function IsolatedTranche(
     'debt' in params
       ? params.debt
       : new CurrencyValue(stable, BigNumber.from(0));
+
+  const stratLabel =
+    params.yieldType === YieldType.REPAYING
+      ? 'Self-repaying loan'
+      : 'Compound collateral';
+
   return (
     <>
-      <Tr key={`${params.trancheId}`} as={Link} to={`/token/${params.token.address}`} display="table-row">
+      <Tr
+        key={`${params.trancheId}`}
+        as={Link}
+        to={`/token/${params.token.address}`}
+        display="table-row"
+      >
         <Td>
           <TokenDescription token={token} />
         </Td>
 
-        <Td>{strategyName}</Td>
+        <Td>{stratLabel}</Td>
 
         <Td>{APY.toFixed(2)}%</Td>
 
-        <Td>{(100 * 100 / params.borrowablePercent).toFixed(0)}%</Td>
+        <Td>{((100 * 100) / params.borrowablePercent).toFixed(0)}%</Td>
 
         <Td>
           {params.debt.isZero()
             ? '∞'
-            : (params.collateralValue.value
-              .mul(10000)
-              .div(params.debt.value)
-              .toNumber() / 100).toFixed(1)}%
+            : (
+              params.collateralValue.value
+                .mul(10000)
+                .div(params.debt.value)
+                .toNumber() / 100
+            ).toFixed(1)}
+          %
         </Td>
 
         <Td>$ {params.liquidationPrice.toFixed(2)}</Td>

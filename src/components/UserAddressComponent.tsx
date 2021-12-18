@@ -30,10 +30,13 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
       borderRadius={'10px'}
     >
       <HStack>
-        {walletBalance && !walletBalance.isZero() ?
-          (<Text variant={'bodySmall'} lineHeight={'24px'}>
+        {walletBalance && !walletBalance.isZero() ? (
+          <Text variant={'bodySmall'} lineHeight={'24px'}>
             {walletBalance?.format({ significantDigits: 2 })}
-          </Text>) : (<Image src={colorDot} />)}
+          </Text>
+        ) : (
+          <Image src={colorDot} />
+        )}
       </HStack>
       <Button
         variant={'primary'}
@@ -57,7 +60,6 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
         ) : (
           <Text>Connect wallet</Text>
         )}
-
       </Button>
     </HStack>
   );

@@ -40,12 +40,7 @@ export function TrancheTable({
           if (posMeta.collateralValue.isZero()) {
             return <></>;
           }
-          return (
-            <IsolatedTranche
-              key={`isolatedTranche${i}`}
-              {...data}
-            />
-          );
+          return <IsolatedTranche key={`isolatedTranche${i}`} {...data} />;
         })}
       </Tbody>
     </Table>

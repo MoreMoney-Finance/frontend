@@ -17,6 +17,7 @@ import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/Isolate
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
+import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 
 /* eslint-disable */
@@ -378,7 +379,7 @@ export function useRegisteredOracle(tokenAddress?: string) {
   }) ?? [undefined])[0];
 }
 
-export function viewAllFeesEver(contracts: string[]) {
+export function useAllFeesEver(contracts: string[]) {
   function convert2ContractCall(contract: string) {
     return {
       abi: new Interface(IFeeReporter.abi),
@@ -393,4 +394,17 @@ export function viewAllFeesEver(contracts: string[]) {
   const results = useContractCalls(calls) ?? [];
 
   return results;
+}
+
+export function useEstimatedHarvestable(
+  strategyAddress: string,
+  tokenAddress: string
+) {
+  const abi = new Interface(IStrategy.abi);
+  return (useContractCall({
+    abi,
+    address: strategyAddress,
+    method: 'viewEstimatedHarvestable',
+    args: [tokenAddress],
+  }) ?? [undefined])[0];
 }

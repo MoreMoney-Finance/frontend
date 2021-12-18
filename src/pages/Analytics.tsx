@@ -9,7 +9,7 @@ import {
   useAddresses,
   useStable,
   useTotalSupply,
-  viewAllFeesEver,
+  useAllFeesEver,
 } from '../chain-interaction/contracts';
 
 export function Analytics(props: React.PropsWithChildren<unknown>) {
@@ -45,7 +45,7 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
   const supply = useTotalSupply('totalSupply', [], ['']);
   const colRatio = supply != 0 ? supply.div(tvl) : 0;
 
-  const fees = viewAllFeesEver(contracts);
+  const fees = useAllFeesEver(contracts);
   console.log('fees', fees);
 
   const totalFees = fees

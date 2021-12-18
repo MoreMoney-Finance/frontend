@@ -1,6 +1,9 @@
-import { Button, Container, Flex, GridItem, Text } from '@chakra-ui/react';
+import { Button, Container, VStack, GridItem, Text } from '@chakra-ui/react';
 import * as React from 'react';
-import { ParsedStratMetaRow } from '../../chain-interaction/contracts';
+import {
+  ParsedStratMetaRow,
+  YieldType,
+} from '../../chain-interaction/contracts';
 
 export default function StrategyNameAndSwitch({
   stratMeta,
@@ -9,10 +12,17 @@ export default function StrategyNameAndSwitch({
   stratMeta: Record<string, ParsedStratMetaRow>;
   chosenStrategy: string;
 }) {
+  const stratLabel =
+    stratMeta[chosenStrategy].yieldType === YieldType.REPAYING
+      ? 'Self-repaying loan'
+      : 'Compound collateral';
+
+  const multipleOptions = Object.values(stratMeta).length > 1;
+  const textVariant = multipleOptions ? 'bodySmall' : 'bodyLarge';
   return (
     <GridItem colSpan={1} rowSpan={1}>
       <Container variant={'token'}>
-        <Flex
+        <VStack
           flexDirection={'column'}
           alignItems={'center'}
           paddingTop="77px"
@@ -21,14 +31,16 @@ export default function StrategyNameAndSwitch({
           <Text variant="h400" color="whiteAlpha.400">
             Strategy
           </Text>
-          <Text variant="bodySmall" marginTop="8px">
-            <b>{stratMeta[chosenStrategy].strategyName}</b>
+          <Text variant={textVariant} marginTop="8px" mx="20px" align="center">
+            <b>{stratLabel}</b>
           </Text>
           <br />
-          <Button borderRadius={'full'} width={'auto'} marginTop="20px">
-            <Text variant="bodySmall">Change</Text>
-          </Button>
-        </Flex>
+          {multipleOptions && (
+            <Button borderRadius={'full'} width={'auto'} marginTop="20px">
+              <Text variant="bodySmall">Change</Text>
+            </Button>
+          )}
+        </VStack>
       </Container>
     </GridItem>
   );

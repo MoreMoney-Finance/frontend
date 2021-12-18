@@ -60,7 +60,6 @@ export function useNativeDepositBorrowTrans(
   };
 }
 
-
 export function useNativeRepayWithdrawTrans(
   trancheId: number | null | undefined,
   collateralToken: Token | null | undefined
@@ -91,7 +90,6 @@ export function useNativeRepayWithdrawTrans(
     repayWithdrawState: state,
   };
 }
-
 
 export function useDepositBorrowTrans(trancheId: number | null | undefined) {
   const ilAddress = useAddresses().IsolatedLending;

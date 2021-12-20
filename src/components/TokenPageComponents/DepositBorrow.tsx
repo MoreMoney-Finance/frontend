@@ -1,4 +1,14 @@
-import { Box, Button, Flex, HStack, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  InputRightElement,
+  NumberInput,
+  NumberInputField,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import {
   CurrencyValue,
   useEtherBalance,
@@ -97,9 +107,10 @@ export default function DepositBorrow({
     ? nativeTokenBalance.isZero()
     : walletBalance.isZero();
 
-  const [collateralInput, borrowInput] = watch([
+  const [collateralInput, borrowInput, customPercentageInput] = watch([
     'collateral-deposit',
     'money-borrow',
+    'custom-percentage',
   ]);
 
   const extantCollateral =
@@ -136,7 +147,7 @@ export default function DepositBorrow({
       ? [(currentPercentage + borrowablePercent) / 2]
       : Array(Math.floor((percentageRange - 0.5) / percentageStep))
         .fill(currentPercentage)
-        .map((p, i) => p + (i + 1) * percentageStep);
+        .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
 
   const totalPercentage =
     totalCollateral > 0 ? (100 * totalDebt) / (totalCollateral * usdPrice) : 0;
@@ -149,6 +160,16 @@ export default function DepositBorrow({
       (percentage * totalCollateral * usdPrice) / 100 - extantDebt,
     ])
   );
+
+  React.useEffect(() => {
+    console.log('In effect', customPercentageInput);
+    if (customPercentageInput) {
+      setValueDepForm(
+        'money-borrow',
+        (customPercentageInput * totalCollateral * usdPrice) / 100 - extantDebt
+      );
+    }
+  }, [customPercentageInput, totalCollateral, extantDebt, usdPrice]);
 
   const inputStyle = {
     padding: '8px 8px 8px 20px',
@@ -221,6 +242,30 @@ export default function DepositBorrow({
               </Text>
             </Button>
           ))}
+        <NumberInput
+          borderRadius={'full'}
+          padding={'0px 16px'}
+          bg="whiteAlpha.100"
+          border="none"
+          key={'custom'}
+          fontWeight="500"
+        >
+          <NumberInputField
+            {...registerDepForm('custom-percentage')}
+            placeholder="Custom"
+            name="custom-percentage"
+            border="none"
+            marginLeft="0px"
+            marginRight="18px"
+            bg="transparent"
+            width="65px"
+            padding="0px"
+            textAlign="right"
+          />
+          <InputRightElement width="auto" marginRight="16px">
+            %
+          </InputRightElement>
+        </NumberInput>
       </HStack>
       <HStack justifyContent={'space-between'} marginTop={'40px'}>
         <VStack spacing={'2px'}>

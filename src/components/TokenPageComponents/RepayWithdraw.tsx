@@ -2,10 +2,12 @@ import {
   Box,
   Button,
   Flex,
-  Grid,
   Text,
   HStack,
   VStack,
+  NumberInput,
+  NumberInputField,
+  InputRightElement,
 } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
@@ -71,9 +73,10 @@ export default function RepayWithdraw({
     position.collateral.isZero() &&
     position.debt.isZero();
 
-  const [collateralInput, repayInput] = watch([
+  const [collateralInput, repayInput, customPercentageInput] = watch([
     'collateral-withdraw',
     'money-repay',
+    'custom-percentage',
   ]);
 
   const extantCollateral =
@@ -109,7 +112,7 @@ export default function RepayWithdraw({
       ? [currentPercentage / 2]
       : Array(Math.floor((currentPercentage - 0.5) / percentageStep))
         .fill(0)
-        .map((p, i) => p + (i + 1) * percentageStep);
+        .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
 
   const totalPercentage =
     totalCollateral > 0 ? (100 * totalDebt) / (totalCollateral * usdPrice) : 0;
@@ -122,6 +125,15 @@ export default function RepayWithdraw({
       extantDebt - (percentage * totalCollateral * usdPrice) / 100,
     ])
   );
+
+  React.useEffect(() => {
+    if (customPercentageInput) {
+      setValueRepayForm(
+        'money-repay',
+        (customPercentageInput * totalCollateral * usdPrice) / 100 - extantDebt
+      );
+    }
+  }, [customPercentageInput, totalCollateral, extantDebt, usdPrice]);
 
   const inputStyle = {
     padding: '8px 8px 8px 20px',
@@ -180,21 +192,47 @@ export default function RepayWithdraw({
         </HStack>
       </Flex>
       <br />
-      <Grid
-        templateColumns={`repeat(${Object.values(percentages).length}, 1fr)`}
-        gap={2}
-        w={'full'}
-      >
-        {Object.entries(percentages).map(([key, value]) => (
-          <Button
-            borderRadius={'xl'}
-            key={'percentage' + key}
-            onClick={() => setValueRepayForm('money-repay', value.toFixed(10))}
-          >
-            {key}
-          </Button>
-        ))}
-      </Grid>
+      <HStack justifyContent={'space-between'}>
+        {percentages &&
+          Object.entries(percentages).map(([key, value]) => (
+            <Button
+              variant={'secondary'}
+              borderRadius={'full'}
+              padding={'6px 16px'}
+              key={'percentage' + key}
+              onClick={() =>
+                setValueRepayForm('money-repay', value.toFixed(10))
+              }
+            >
+              {key}
+            </Button>
+          ))}
+
+        <NumberInput
+          borderRadius={'full'}
+          padding={'0px 16px'}
+          bg="whiteAlpha.100"
+          border="none"
+          key={'custom'}
+          fontWeight="500"
+        >
+          <NumberInputField
+            {...registerRepayForm('custom-percentage')}
+            placeholder="Custom"
+            name="custom-percentage"
+            border="none"
+            marginLeft="0px"
+            marginRight="18px"
+            bg="transparent"
+            width="65px"
+            padding="0px"
+            textAlign="right"
+          />
+          <InputRightElement width="auto" marginRight="16px">
+            %
+          </InputRightElement>
+        </NumberInput>
+      </HStack>
       <HStack justifyContent={'space-between'} marginTop={'40px'}>
         <VStack spacing={'2px'}>
           <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>

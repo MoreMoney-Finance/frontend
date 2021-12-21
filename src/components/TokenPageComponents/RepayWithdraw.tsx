@@ -133,7 +133,24 @@ export default function RepayWithdraw({
         (customPercentageInput * totalCollateral * usdPrice) / 100 - extantDebt
       );
     }
-  }, [customPercentageInput, totalCollateral, extantDebt, usdPrice]);
+
+    if (collateralInput && collateralInput > 0) {
+      setValueRepayForm(
+        'money-repay',
+        position?.debt.format({
+          significantDigits: Infinity,
+          prefix: '',
+          suffix: '',
+        })
+      );
+    }
+  }, [
+    customPercentageInput,
+    collateralInput,
+    totalCollateral,
+    extantDebt,
+    usdPrice,
+  ]);
 
   const inputStyle = {
     padding: '8px 8px 8px 20px',

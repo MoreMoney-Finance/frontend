@@ -24,6 +24,7 @@ import {
   useHarvestPartially,
 } from '../../chain-interaction/transactions';
 import { StatusTrackModal } from '../StatusTrackModal';
+import { TokenFeesContext } from '../../contexts/LiquidationFeesContext';
 
 export default function StrategyTokenInformation({
   stratMeta,
@@ -44,6 +45,8 @@ export default function StrategyTokenInformation({
   const { sendAMMHarvest, AMMHarvestState } = useAMMHarvest(
     stratMeta.strategyAddress
   );
+
+  const tokenFees = React.useContext(TokenFeesContext);
 
   const { sendHarvestPartially, harvestPartiallyState } = useHarvestPartially(
     stratMeta.strategyAddress
@@ -107,7 +110,9 @@ export default function StrategyTokenInformation({
                 Liquidation Fee
               </Text>
               <Spacer />
-              <Text variant={'bodyLarge'}>10%</Text>
+              <Text variant={'bodyLarge'}>
+                {tokenFees.get(stratMeta.token.address) + '%'}
+              </Text>
             </Flex>
             {/* <Flex w={'full'} marginTop={'30px'}>
               <Text variant="h200" color={'whiteAlpha.400'}>

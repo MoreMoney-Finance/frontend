@@ -10,7 +10,7 @@ import { useAddresses } from './chain-interaction/contracts';
 import NetworkNotSupported from './components/NetworkNotSupported';
 import { theme } from './theme';
 import FooterBar from './components/FooterBar';
-import { TokenFeesCtxProvider } from './contexts/TokenFeesContext';
+import { TokenFeesCtxProvider } from './contexts/LiquidationFeesContext';
 
 export const App = (params: React.PropsWithChildren<unknown>) => {
   const addresses = useAddresses();

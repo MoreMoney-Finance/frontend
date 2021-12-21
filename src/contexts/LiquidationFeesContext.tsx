@@ -1,6 +1,5 @@
 import {
   ContractCall,
-  CurrencyValue,
   Token,
   useContractCalls,
   useEthers,
@@ -12,8 +11,8 @@ import { UserAddressContext } from './UserAddressContext';
 import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
 import { useAddresses } from '../chain-interaction/contracts';
 
-export const TokenFeesContext = React.createContext<Map<string, CurrencyValue>>(
-  new Map<string, CurrencyValue>()
+export const TokenFeesContext = React.createContext<Map<string, number>>(
+  new Map<string, number>()
 );
 
 export function TokenFeesCtxProvider({
@@ -22,7 +21,7 @@ export function TokenFeesCtxProvider({
   const { chainId } = useEthers();
   const account = useContext(UserAddressContext);
   const address = useAddresses().IsolatedLendingLiquidation;
-  const tokenFees = new Map<string, CurrencyValue>();
+  const tokenFees = new Map<string, number>();
 
   function convert2ContractCall(aT: [string, Token]) {
     return {
@@ -40,10 +39,7 @@ export function TokenFeesCtxProvider({
   results?.forEach((result: any[] | undefined, index: number) => {
     if (result) {
       const [tokenAddress, token] = tokensInQuestion[index];
-      tokenFees.set(
-        getAddress(tokenAddress),
-        new CurrencyValue(token, result[0])
-      );
+      tokenFees.set(getAddress(tokenAddress), result[0].toNumber() / 100);
       console.log(`Set Fee for ${token.name}: ${result[0]} (${tokenAddress})`);
     } else {
       const [tokenAddress, token] = tokensInQuestion[index];

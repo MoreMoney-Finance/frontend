@@ -1,16 +1,15 @@
 import {
   ContractCall,
   CurrencyValue,
-  ERC20Interface,
   Token,
   useContractCalls,
   useEthers,
 } from '@usedapp/core';
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress, Interface } from 'ethers/lib/utils';
 import React, { useContext } from 'react';
 import { getTokensInQuestion } from '../chain-interaction/tokens';
 import { UserAddressContext } from './UserAddressContext';
-// import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
+import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
 
 export const TokenFeesContext = React.createContext<Map<string, CurrencyValue>>(
   new Map<string, CurrencyValue>()
@@ -26,10 +25,10 @@ export function TokenFeesCtxProvider({
 
   function convert2ContractCall(aT: [string, Token]) {
     return {
-      abi: ERC20Interface,
+      abi: new Interface(IsolatedLendingLiquidation.abi),
       address: aT[0],
       method: 'viewLiquidationFeePer10k',
-      args: [account],
+      args: [aT[1].address],
     };
   }
   const tokensInQuestion = getTokensInQuestion(chainId!);

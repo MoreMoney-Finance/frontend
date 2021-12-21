@@ -1,9 +1,10 @@
-import { Button, Container, VStack, GridItem, Text } from '@chakra-ui/react';
+import { Container, GridItem, Text, VStack } from '@chakra-ui/react';
 import * as React from 'react';
 import {
   ParsedStratMetaRow,
   YieldType,
 } from '../../chain-interaction/contracts';
+import ChangeStrategyModal from './ChangeStrategyModal';
 
 export default function StrategyNameAndSwitch({
   stratMeta,
@@ -35,11 +36,7 @@ export default function StrategyNameAndSwitch({
             <b>{stratLabel}</b>
           </Text>
           <br />
-          {multipleOptions && (
-            <Button borderRadius={'full'} width={'auto'} marginTop="20px">
-              <Text variant="bodySmall">Change</Text>
-            </Button>
-          )}
+          {multipleOptions && <ChangeStrategyModal stratMeta={stratMeta} />}
         </VStack>
       </Container>
     </GridItem>

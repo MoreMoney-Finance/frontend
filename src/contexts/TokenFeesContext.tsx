@@ -10,6 +10,7 @@ import React, { useContext } from 'react';
 import { getTokensInQuestion } from '../chain-interaction/tokens';
 import { UserAddressContext } from './UserAddressContext';
 import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
+import { useAddresses } from '../chain-interaction/contracts';
 
 export const TokenFeesContext = React.createContext<Map<string, CurrencyValue>>(
   new Map<string, CurrencyValue>()
@@ -20,15 +21,15 @@ export function TokenFeesCtxProvider({
 }: React.PropsWithChildren<any>) {
   const { chainId } = useEthers();
   const account = useContext(UserAddressContext);
-
+  const address = useAddresses().IsolatedLendingLiquidation;
   const tokenFees = new Map<string, CurrencyValue>();
 
   function convert2ContractCall(aT: [string, Token]) {
     return {
       abi: new Interface(IsolatedLendingLiquidation.abi),
-      address: aT[0],
+      address: address,
       method: 'viewLiquidationFeePer10k',
-      args: [aT[1].address],
+      args: [aT[0]],
     };
   }
   const tokensInQuestion = getTokensInQuestion(chainId!);

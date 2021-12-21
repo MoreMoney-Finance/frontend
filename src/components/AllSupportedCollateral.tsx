@@ -7,6 +7,7 @@ import { TableSearch } from './TableSearch';
 import { TokenDescription } from './TokenDescription';
 import { Column, useTable } from 'react-table';
 import { Link } from 'react-router-dom';
+import { LiquidationFeesContext } from '../contexts/LiquidationFeesContext';
 
 type Entity = ParsedStratMetaRow & {
   asset: any;
@@ -29,6 +30,7 @@ export function AllSupportedCollateral() {
     }))
   );
 
+  const tokenFees = React.useContext(LiquidationFeesContext);
   const [tableTabFilter, setTableTabFilter] = React.useState<string[]>([]);
   const [searchString, setSearchString] = React.useState('');
 
@@ -57,7 +59,7 @@ export function AllSupportedCollateral() {
         minColRatio:
           ((1 / (meta.borrowablePercent / 100)) * 100).toFixed(2) + '%',
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
-        liquidationFee: '10 %',
+        liquidationFee: tokenFees.get(meta.token.address) + '%' ?? '',
       };
     });
 

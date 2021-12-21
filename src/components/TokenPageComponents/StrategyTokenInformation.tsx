@@ -24,7 +24,7 @@ import {
   useHarvestPartially,
 } from '../../chain-interaction/transactions';
 import { StatusTrackModal } from '../StatusTrackModal';
-import { TokenFeesContext } from '../../contexts/LiquidationFeesContext';
+import { LiquidationFeesContext } from '../../contexts/LiquidationFeesContext';
 
 export default function StrategyTokenInformation({
   stratMeta,
@@ -46,7 +46,7 @@ export default function StrategyTokenInformation({
     stratMeta.strategyAddress
   );
 
-  const tokenFees = React.useContext(TokenFeesContext);
+  const tokenFees = React.useContext(LiquidationFeesContext);
 
   const { sendHarvestPartially, harvestPartiallyState } = useHarvestPartially(
     stratMeta.strategyAddress

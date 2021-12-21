@@ -10,7 +10,7 @@ import { useAddresses } from './chain-interaction/contracts';
 import NetworkNotSupported from './components/NetworkNotSupported';
 import { theme } from './theme';
 import FooterBar from './components/FooterBar';
-import { TokenFeesCtxProvider } from './contexts/LiquidationFeesContext';
+import { LiquidationFeesCtxProvider } from './contexts/LiquidationFeesContext';
 
 export const App = (params: React.PropsWithChildren<unknown>) => {
   const addresses = useAddresses();
@@ -19,7 +19,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
     <ChakraProvider theme={theme}>
       <UserAddressCtxProvider>
         <WalletBalancesCtxProvider>
-          <TokenFeesCtxProvider>
+          <LiquidationFeesCtxProvider>
             {addresses ? (
               <StrategyMetadataCtxProvider>
                 <Box maxWidth="1280px" margin="0 auto" px={4}>
@@ -61,7 +61,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
             ) : (
               <NetworkNotSupported />
             )}
-          </TokenFeesCtxProvider>
+          </LiquidationFeesCtxProvider>
         </WalletBalancesCtxProvider>
       </UserAddressCtxProvider>
     </ChakraProvider>

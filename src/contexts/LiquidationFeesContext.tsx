@@ -11,11 +11,11 @@ import { UserAddressContext } from './UserAddressContext';
 import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
 import { useAddresses } from '../chain-interaction/contracts';
 
-export const TokenFeesContext = React.createContext<Map<string, number>>(
+export const LiquidationFeesContext = React.createContext<Map<string, number>>(
   new Map<string, number>()
 );
 
-export function TokenFeesCtxProvider({
+export function LiquidationFeesCtxProvider({
   children,
 }: React.PropsWithChildren<any>) {
   const { chainId } = useEthers();
@@ -48,8 +48,8 @@ export function TokenFeesCtxProvider({
   });
 
   return (
-    <TokenFeesContext.Provider value={tokenFees}>
+    <LiquidationFeesContext.Provider value={tokenFees}>
       {children}
-    </TokenFeesContext.Provider>
+    </LiquidationFeesContext.Provider>
   );
 }

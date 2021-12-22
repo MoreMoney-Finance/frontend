@@ -16,7 +16,7 @@ export default function ChangeStrategyButton({
           onClose();
         }}
       >
-        Change
+        Choose
       </Button>
     </>
   );

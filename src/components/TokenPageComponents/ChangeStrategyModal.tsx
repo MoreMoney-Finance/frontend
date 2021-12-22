@@ -1,18 +1,18 @@
-import * as React from 'react';
 import {
+  Button,
   Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure,
-  Button,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
+import * as React from 'react';
 import { ParsedStratMetaRow } from '../../chain-interaction/contracts';
 import { EnsureWalletConnected } from '../EnsureWalletConnected';
+import { ChangeStrategyTable } from './ChangeStrategyTable';
 
 export default function ChangeStrategyModal({
   stratMeta,
@@ -33,21 +33,14 @@ export default function ChangeStrategyModal({
         </Button>
       </EnsureWalletConnected>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} size={'xl'} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Select Strategy</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text>{Object.keys(stratMeta).join(',')}</Text>
+            <ChangeStrategyTable stratMeta={stratMeta} />
           </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

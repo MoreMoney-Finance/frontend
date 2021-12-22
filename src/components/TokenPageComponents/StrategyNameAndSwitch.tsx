@@ -7,9 +7,11 @@ import {
 import ChangeStrategyModal from './ChangeStrategyModal';
 
 export default function StrategyNameAndSwitch({
+  chooseStrategy,
   stratMeta,
   chosenStrategy,
 }: {
+  chooseStrategy: (strategyToChoose: string) => void;
   stratMeta: Record<string, ParsedStratMetaRow>;
   chosenStrategy: string;
 }) {
@@ -20,6 +22,7 @@ export default function StrategyNameAndSwitch({
 
   const multipleOptions = Object.values(stratMeta).length > 1;
   const textVariant = multipleOptions ? 'bodySmall' : 'bodyLarge';
+
   return (
     <GridItem colSpan={1} rowSpan={1}>
       <Container variant={'token'}>
@@ -36,7 +39,13 @@ export default function StrategyNameAndSwitch({
             <b>{stratLabel}</b>
           </Text>
           <br />
-          {multipleOptions && <ChangeStrategyModal stratMeta={stratMeta} />}
+          {multipleOptions && (
+            <ChangeStrategyModal
+              stratMeta={stratMeta}
+              chooseStrategy={chooseStrategy}
+              currentStrategy={chosenStrategy}
+            />
+          )}
         </VStack>
       </Container>
     </GridItem>

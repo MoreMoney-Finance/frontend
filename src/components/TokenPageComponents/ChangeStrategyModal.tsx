@@ -15,9 +15,13 @@ import { EnsureWalletConnected } from '../EnsureWalletConnected';
 import { ChangeStrategyTable } from './ChangeStrategyTable';
 
 export default function ChangeStrategyModal({
+  chooseStrategy,
   stratMeta,
+  currentStrategy,
 }: {
+  chooseStrategy: (strategyToChoose: string) => void;
   stratMeta: Record<string, ParsedStratMetaRow>;
+  currentStrategy: string;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
@@ -39,7 +43,12 @@ export default function ChangeStrategyModal({
           <ModalHeader>Select Strategy</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <ChangeStrategyTable stratMeta={stratMeta} />
+            <ChangeStrategyTable
+              onClose={onClose}
+              stratMeta={stratMeta}
+              chooseStrategy={chooseStrategy}
+              currentStrategy={currentStrategy}
+            />
           </ModalBody>
         </ModalContent>
       </Modal>

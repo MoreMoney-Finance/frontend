@@ -1,7 +1,8 @@
+import { Box, Table, Tbody, Td, Thead, Tr } from '@chakra-ui/react';
 import * as React from 'react';
-import { ParsedStratMetaRow } from '../../chain-interaction/contracts';
-import { Box, Table, Thead, Tbody, Tr, Td, Button } from '@chakra-ui/react';
 import { Column, useTable } from 'react-table';
+import { ParsedStratMetaRow } from '../../chain-interaction/contracts';
+import ChangeStrategyButton from './ChangeStrategyButton';
 
 type Entity = {
   strategyName: string;
@@ -12,18 +13,34 @@ type Entity = {
 
 export function ChangeStrategyTable({
   stratMeta,
+  chooseStrategy,
+  currentStrategy,
+  onClose,
 }: {
   stratMeta: Record<string, ParsedStratMetaRow>;
+  chooseStrategy: (strategyToChoose: string) => void;
+  currentStrategy: string;
+  onClose: () => void;
 }) {
-  const data = Object.keys(stratMeta).map((key) => {
-    const meta = stratMeta[key];
-    return {
-      strategyName: meta.strategyName,
-      apy: meta.APY.toFixed(2) + '%',
-      totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
-      action: <Button>Choose</Button>,
-    };
-  });
+  const data = Object.keys(stratMeta)
+    .map((key) => {
+      const meta = stratMeta[key];
+      return {
+        strategyAddress: meta.strategyAddress,
+        strategyName: meta.strategyName,
+        apy: meta.APY.toFixed(2) + '%',
+        totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
+        action: (
+          <ChangeStrategyButton
+            onClose={onClose}
+            chooseStrategy={() => {
+              chooseStrategy(meta.strategyAddress);
+            }}
+          />
+        ),
+      };
+    })
+    .filter((e) => e.strategyAddress !== currentStrategy);
 
   const columns = React.useMemo<Column<Entity>[]>(
     () => [

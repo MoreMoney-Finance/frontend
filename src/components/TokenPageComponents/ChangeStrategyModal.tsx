@@ -11,7 +11,6 @@ import {
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { ParsedStratMetaRow } from '../../chain-interaction/contracts';
-import { EnsureWalletConnected } from '../EnsureWalletConnected';
 import { ChangeStrategyTable } from './ChangeStrategyTable';
 
 export default function ChangeStrategyModal({
@@ -26,16 +25,14 @@ export default function ChangeStrategyModal({
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
-      <EnsureWalletConnected>
-        <Button
-          borderRadius={'full'}
-          width={'auto'}
-          marginTop="20px"
-          onClick={onOpen}
-        >
-          <Text variant="bodySmall">Change</Text>
-        </Button>
-      </EnsureWalletConnected>
+      <Button
+        borderRadius={'full'}
+        width={'auto'}
+        marginTop="20px"
+        onClick={onOpen}
+      >
+        <Text variant="bodySmall">Change</Text>
+      </Button>
 
       <Modal isOpen={isOpen} size={'xl'} onClose={onClose}>
         <ModalOverlay />

@@ -22,15 +22,17 @@ export function ChangeStrategyTable({
   currentStrategy: string;
   onClose: () => void;
 }) {
-  const data = Object.keys(stratMeta)
-    .map((key) => {
-      const meta = stratMeta[key];
-      return {
-        strategyAddress: meta.strategyAddress,
-        strategyName: meta.strategyName,
-        apy: meta.APY.toFixed(2) + '%',
-        totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
-        action: (
+  const data = Object.keys(stratMeta).map((key) => {
+    const meta = stratMeta[key];
+    return {
+      strategyAddress: meta.strategyAddress,
+      strategyName: meta.strategyName,
+      apy: meta.APY.toFixed(2) + '%',
+      totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
+      action:
+        meta.strategyAddress === currentStrategy ? (
+          <>Current strategy</>
+        ) : (
           <ChangeStrategyButton
             onClose={onClose}
             chooseStrategy={() => {
@@ -38,9 +40,8 @@ export function ChangeStrategyTable({
             }}
           />
         ),
-      };
-    })
-    .filter((e) => e.strategyAddress !== currentStrategy);
+    };
+  });
 
   const columns = React.useMemo<Column<Entity>[]>(
     () => [

@@ -1,14 +1,17 @@
-import { Button, Container, VStack, GridItem, Text } from '@chakra-ui/react';
+import { Container, GridItem, Text, VStack } from '@chakra-ui/react';
 import * as React from 'react';
 import {
   ParsedStratMetaRow,
   YieldType,
 } from '../../chain-interaction/contracts';
+import ChangeStrategyModal from './ChangeStrategyModal';
 
 export default function StrategyNameAndSwitch({
+  chooseStrategy,
   stratMeta,
   chosenStrategy,
 }: {
+  chooseStrategy: (strategyToChoose: string) => void;
   stratMeta: Record<string, ParsedStratMetaRow>;
   chosenStrategy: string;
 }) {
@@ -19,6 +22,7 @@ export default function StrategyNameAndSwitch({
 
   const multipleOptions = Object.values(stratMeta).length > 1;
   const textVariant = multipleOptions ? 'bodySmall' : 'bodyLarge';
+
   return (
     <GridItem colSpan={1} rowSpan={1}>
       <Container variant={'token'}>
@@ -36,9 +40,11 @@ export default function StrategyNameAndSwitch({
           </Text>
           <br />
           {multipleOptions && (
-            <Button borderRadius={'full'} width={'auto'} marginTop="20px">
-              <Text variant="bodySmall">Change</Text>
-            </Button>
+            <ChangeStrategyModal
+              stratMeta={stratMeta}
+              chooseStrategy={chooseStrategy}
+              currentStrategy={chosenStrategy}
+            />
           )}
         </VStack>
       </Container>

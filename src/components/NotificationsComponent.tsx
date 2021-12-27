@@ -30,7 +30,7 @@ export const NotificationsComponent: React.FC = () => {
         </a>
       ),
       status: status,
-      duration: 5000,
+      duration: 7000,
       isClosable: true,
       position: 'bottom-right',
     });

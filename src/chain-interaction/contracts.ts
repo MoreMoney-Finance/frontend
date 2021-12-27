@@ -40,6 +40,7 @@ export type DeploymentAddresses = {
   PangolinMiniChefStrategy: string;
   AMMYieldConverter: string;
   WrapNativeIsolatedLending: string;
+  CurvePoolRewards: string;
 };
 
 export function useAddresses() {

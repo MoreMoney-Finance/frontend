@@ -13,7 +13,10 @@ import {
   ParsedStratMetaRow,
   TxStatus,
 } from '../../chain-interaction/contracts';
-import { useApproveTrans } from '../../chain-interaction/transactions';
+import {
+  useApproveTrans,
+  useStake,
+} from '../../chain-interaction/transactions';
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
 import { useWalletBalance } from '../../contexts/WalletBalancesContext';
 import { EnsureWalletConnected } from '../EnsureWalletConnected';
@@ -49,6 +52,8 @@ export default function DepositForm({
 
   const { approveState, sendApprove } = useApproveTrans(token.address);
 
+  const { sendStake, stakeState } = useStake();
+
   const {
     handleSubmit: handleSubmitDepForm,
     register: registerDepForm,
@@ -57,7 +62,7 @@ export default function DepositForm({
   } = useForm();
   function onDeposit(data: { [x: string]: any }) {
     console.log('data', data, position);
-    //TODO: call contract
+    sendStake(data['amount-stake']);
   }
 
   const depositBorrowDisabled = isNativeToken
@@ -77,7 +82,7 @@ export default function DepositForm({
           </Text>
         </Box>
         <TokenAmountInputField
-          name="collateral-deposit"
+          name="amount-stake"
           width="full"
           max={isNativeToken ? nativeTokenBalance : walletBalance}
           isDisabled={depositBorrowDisabled}
@@ -89,6 +94,7 @@ export default function DepositForm({
       </Flex>
 
       <StatusTrackModal state={approveState} title={'Approve'} />
+      <StatusTrackModal state={stakeState} title={'Stake Action'} />
 
       <Box marginTop={'10px'}>
         {allowance.gt(walletBalance) === false && isNativeToken === false ? (

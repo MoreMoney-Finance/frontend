@@ -13,6 +13,7 @@ import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.so
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
+import CurvePoolRewards from '../contracts/artifacts/contracts/rewards/CurvePoolRewards.sol/CurvePoolRewards.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import { useContext } from 'react';
@@ -26,6 +27,38 @@ import {
 } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber, ethers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
+
+export function useStake() {
+  const ilAddress = useAddresses().CurvePoolRewards;
+  const ilContract = new Contract(
+    ilAddress,
+    new Interface(CurvePoolRewards.abi)
+  );
+  const { send, state } = useContractFunction(ilContract, 'stake');
+
+  return {
+    sendStake: (amount: string | number) => {
+      return send(amount);
+    },
+    stakeState: state,
+  };
+}
+
+export function useWithdraw() {
+  const ilAddress = useAddresses().CurvePoolRewards;
+  const ilContract = new Contract(
+    ilAddress,
+    new Interface(CurvePoolRewards.abi)
+  );
+  const { send, state } = useContractFunction(ilContract, 'withdraw');
+
+  return {
+    sendWithdraw: (amount: string | number) => {
+      return send(amount);
+    },
+    withdrawState: state,
+  };
+}
 
 export function useNativeDepositBorrowTrans(
   trancheId: number | null | undefined

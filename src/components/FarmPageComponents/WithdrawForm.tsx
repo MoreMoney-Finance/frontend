@@ -13,7 +13,10 @@ import {
   ParsedStratMetaRow,
   TxStatus,
 } from '../../chain-interaction/contracts';
-import { useApproveTrans } from '../../chain-interaction/transactions';
+import {
+  useApproveTrans,
+  useWithdraw,
+} from '../../chain-interaction/transactions';
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
 import { useWalletBalance } from '../../contexts/WalletBalancesContext';
 import { EnsureWalletConnected } from '../EnsureWalletConnected';
@@ -48,15 +51,20 @@ export default function WithdrawForm({
     new CurrencyValue(token, BigNumber.from('0'));
 
   const { approveState, sendApprove } = useApproveTrans(token.address);
+
+  const { sendWithdraw, withdrawState } = useWithdraw();
+
   const {
     handleSubmit: handleSubmitDepForm,
     register: registerDepForm,
     setValue: setValueDepForm,
     formState: { errors: errorsDepForm, isSubmitting: isSubmittingDepForm },
   } = useForm();
+
   function onWithdraw(data: { [x: string]: any }) {
     console.log('deposit borrow');
     console.log(data, position);
+    sendWithdraw(data['amount-withdraw']);
   }
 
   const depositBorrowDisabled = isNativeToken
@@ -76,11 +84,11 @@ export default function WithdrawForm({
           </Text>
         </Box>
         <TokenAmountInputField
-          name="collateral-deposit"
+          name="amount-withdraw"
           width="full"
           max={isNativeToken ? nativeTokenBalance : walletBalance}
           isDisabled={depositBorrowDisabled}
-          placeholder={'Collateral Deposit'}
+          placeholder={'Withdraw'}
           registerForm={registerDepForm}
           setValueForm={setValueDepForm}
           errorsForm={errorsDepForm}
@@ -88,6 +96,7 @@ export default function WithdrawForm({
       </Flex>
 
       <StatusTrackModal state={approveState} title={'Approve'} />
+      <StatusTrackModal state={withdrawState} title={'Withdraw Action'} />
 
       <Box marginTop={'10px'}>
         {allowance.gt(walletBalance) === false && isNativeToken === false ? (

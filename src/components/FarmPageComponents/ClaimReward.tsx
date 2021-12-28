@@ -16,16 +16,18 @@ export default function ClaimReward({
   }
 
   return (
-    <Flex flexDirection={'column'} textAlign={'center'} alignItems={'center'}>
+    <Flex
+      flexDirection={'column'}
+      textAlign={'center'}
+      alignItems={'center'}
+      justifyContent={'space-between'}
+      height={'full'}
+    >
       <Text>Reward</Text>
-      <br />
       <Flex textAlign={'center'}>
         <Avatar size={'sm'} src={getIconsFromTokenAddress(token.address)[0]} />
-        <Text>
-          {'  '} 200.15 {token.name}
-        </Text>
+        <Text>&nbsp; 200.15 {token.name}</Text>
       </Flex>
-      <br />
       <Button type="submit" w={'50%'} onClick={onClaim}>
         Claim
       </Button>

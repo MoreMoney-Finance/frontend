@@ -59,11 +59,17 @@ export default function DepositForm({
     register: registerDepForm,
     setValue: setValueDepForm,
     formState: { errors: errorsDepForm, isSubmitting: isSubmittingDepForm },
+    watch,
   } = useForm();
+
+  const [depositInput] = watch(['amount-stake']);
+
   function onDeposit(data: { [x: string]: any }) {
     console.log('data', data, position);
     sendStake(data['amount-stake']);
   }
+
+  const confirmButtonDisabled = parseFloat(depositInput) > 0;
 
   const depositBorrowDisabled = isNativeToken
     ? nativeTokenBalance.isZero()
@@ -100,8 +106,8 @@ export default function DepositForm({
         {allowance.gt(walletBalance) === false && isNativeToken === false ? (
           <EnsureWalletConnected>
             <Button
-              variant={'submit'}
               onClick={() => sendApprove(strategyAddress)}
+              width={'full'}
               isLoading={
                 approveState.status == TxStatus.SUCCESS &&
                 allowance.gt(walletBalance) === false
@@ -112,11 +118,11 @@ export default function DepositForm({
           </EnsureWalletConnected>
         ) : (
           <Button
-            variant={'submit'}
             type="submit"
-            disabled={depositBorrowDisabled}
+            width={'full'}
+            variant={'primary'}
             isLoading={isSubmittingDepForm}
-            isDisabled={depositBorrowDisabled}
+            isDisabled={!confirmButtonDisabled}
           >
             Confirm
           </Button>

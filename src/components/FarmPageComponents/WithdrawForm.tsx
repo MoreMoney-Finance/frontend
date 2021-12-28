@@ -59,6 +59,7 @@ export default function WithdrawForm({
     register: registerDepForm,
     setValue: setValueDepForm,
     formState: { errors: errorsDepForm, isSubmitting: isSubmittingDepForm },
+    watch,
   } = useForm();
 
   function onWithdraw(data: { [x: string]: any }) {
@@ -66,6 +67,10 @@ export default function WithdrawForm({
     console.log(data, position);
     sendWithdraw(data['amount-withdraw']);
   }
+
+  const [withdrawInput] = watch(['amount-withdraw']);
+
+  const confirmButtonDisabled = parseFloat(withdrawInput) > 0;
 
   const depositBorrowDisabled = isNativeToken
     ? nativeTokenBalance.isZero()
@@ -80,13 +85,13 @@ export default function WithdrawForm({
             color={'whiteAlpha.600'}
             lineHeight={'14px'}
           >
-            Deposit
+            Withdraw
           </Text>
         </Box>
         <TokenAmountInputField
           name="amount-withdraw"
           width="full"
-          max={isNativeToken ? nativeTokenBalance : walletBalance}
+          max={walletBalance}
           isDisabled={depositBorrowDisabled}
           placeholder={'Withdraw'}
           registerForm={registerDepForm}
@@ -102,8 +107,8 @@ export default function WithdrawForm({
         {allowance.gt(walletBalance) === false && isNativeToken === false ? (
           <EnsureWalletConnected>
             <Button
-              variant={'submit'}
               onClick={() => sendApprove(strategyAddress)}
+              width={'full'}
               isLoading={
                 approveState.status == TxStatus.SUCCESS &&
                 allowance.gt(walletBalance) === false
@@ -114,11 +119,11 @@ export default function WithdrawForm({
           </EnsureWalletConnected>
         ) : (
           <Button
-            variant={'submit'}
             type="submit"
-            disabled={depositBorrowDisabled}
+            width={'full'}
+            variant={'primary'}
             isLoading={isSubmittingDepForm}
-            isDisabled={depositBorrowDisabled}
+            isDisabled={!confirmButtonDisabled}
           >
             Withdraw
           </Button>

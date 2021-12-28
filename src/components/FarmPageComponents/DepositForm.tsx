@@ -108,6 +108,7 @@ export default function DepositForm({
             <Button
               onClick={() => sendApprove(strategyAddress)}
               width={'full'}
+              variant={'primary'}
               isLoading={
                 approveState.status == TxStatus.SUCCESS &&
                 allowance.gt(walletBalance) === false

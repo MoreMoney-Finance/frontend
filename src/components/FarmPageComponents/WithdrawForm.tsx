@@ -109,6 +109,7 @@ export default function WithdrawForm({
             <Button
               onClick={() => sendApprove(strategyAddress)}
               width={'full'}
+              variant={'primary'}
               isLoading={
                 approveState.status == TxStatus.SUCCESS &&
                 allowance.gt(walletBalance) === false

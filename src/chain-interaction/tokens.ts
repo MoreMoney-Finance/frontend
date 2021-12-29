@@ -120,7 +120,7 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
     )
   );
   addressIcons.set(getAddress(addresses.Stablecoin), [
-    'https://github.com/MoreMoney-Finance/logos/blob/main/MONEY%20logo.png',
+    'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/MONEY%20logo.png',
   ]);
 }
 

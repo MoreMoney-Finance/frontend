@@ -114,7 +114,9 @@ export default function DepositBorrow({
   ]);
 
   const depositBorrowButtonDisabled =
-    (collateralInput === '0' && borrowInput === '0') ||
+    isNaN(parseFloat(collateralInput)) ||
+    isNaN(parseFloat(borrowInput)) ||
+    (parseFloat(collateralInput) === 0 && parseFloat(borrowInput) === 0) ||
     (parseFloat(collateralInput) < 0 && parseFloat(borrowInput) < 0);
 
   const extantCollateral =

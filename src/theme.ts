@@ -104,6 +104,19 @@ const Button = {
         },
       },
     },
+    'submit-primary': {
+      padding: '16px',
+      h: '56px',
+      borderRadius: '10px',
+      bg: 'brand.accent',
+      border: 'none',
+      _hover: {
+        _disabled: {
+          bg: 'brand.accent',
+        },
+      },
+      width: '100%',
+    },
     submit: {
       padding: '16px',
       h: '56px',

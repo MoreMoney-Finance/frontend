@@ -79,6 +79,9 @@ export default function RepayWithdraw({
     'custom-percentage',
   ]);
 
+  const repayWithdrawButtonDisabled =
+    parseFloat(collateralInput) > 0 && parseFloat(repayInput) > 0;
+
   const extantCollateral =
     position && position.collateral
       ? parseFloat(
@@ -297,11 +300,11 @@ export default function RepayWithdraw({
       />
 
       <Button
-        variant={'submit'}
+        variant={repayWithdrawButtonDisabled ? 'submit-primary' : 'submit'}
         marginTop={'10px'}
         type="submit"
         isLoading={isSubmittingRepayForm}
-        isDisabled={repayWithdrawDisabled}
+        isDisabled={!repayWithdrawButtonDisabled}
       >
         <Text variant={'bodyMedium'} fontWeight={'600'}>
           Repay & Withdraw

@@ -49,9 +49,7 @@ export function IsolatedTranche(
       : new CurrencyValue(stable, BigNumber.from(0));
 
   const stratLabel =
-    params.yieldType === YieldType.REPAYING
-      ? 'Self-repaying'
-      : 'Compounding';
+    params.yieldType === YieldType.REPAYING ? 'Self-repaying' : 'Compounding';
 
   return (
     <>
@@ -85,15 +83,20 @@ export function IsolatedTranche(
 
         <Td>$ {params.liquidationPrice.toFixed(2)}</Td>
 
-        <Td>{collateral.format({
+        <Td>
+          {collateral.format({
             significantDigits: 6,
-            suffix: ''
-          })}</Td>
+            suffix: '',
+          })}
+        </Td>
 
-        <Td> {debt.format({
+        <Td>
+          {' '}
+          {debt.format({
             significantDigits: 3,
-            suffix: ''
-          })} </Td>
+            suffix: '',
+          })}{' '}
+        </Td>
 
         {action ? (
           <Td>

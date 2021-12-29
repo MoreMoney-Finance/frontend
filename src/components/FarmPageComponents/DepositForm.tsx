@@ -121,7 +121,7 @@ export default function DepositForm({
           <Button
             type="submit"
             width={'full'}
-            variant={'primary'}
+            variant={!confirmButtonDisabled ? 'submit' : 'primary'}
             isLoading={isSubmittingDepForm}
             isDisabled={!confirmButtonDisabled}
           >

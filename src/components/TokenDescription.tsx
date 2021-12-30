@@ -21,7 +21,7 @@ export function TokenDescription({
             <Avatar src={iconUrl} key={i + 1} />
           ))}
         </AvatarGroup>
-        <Text size={textSize}>{token.name}</Text>
+        <Text size={textSize} isTruncated>{token.ticker}</Text>
       </Flex>
     </HStack>
   ) : (

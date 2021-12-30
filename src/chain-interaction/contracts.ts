@@ -11,6 +11,8 @@ import {
 import { formatEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber, ethers } from 'ethers';
 import { Interface, parseBytes32String } from 'ethers/lib/utils';
+import { useContext } from 'react';
+import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
@@ -112,6 +114,7 @@ export type ParsedStratMetaRow = {
   tvlInPeg: CurrencyValue;
   harvestBalance2Tally: CurrencyValue;
   yieldType: YieldType;
+  balance: number;
 };
 
 function parseStratMeta(
@@ -121,6 +124,11 @@ function parseStratMeta(
 ): ParsedStratMetaRow {
   const token = getTokenFromAddress(chainId, row.token);
   const tvlInToken = tokenAmount(chainId, row.token, row.tvl)!;
+  const balancesCtx = useContext(WalletBalancesContext);
+  const balance =
+    balancesCtx.get(token!.address) ??
+    new CurrencyValue(token, BigNumber.from('0'));
+
   return {
     debtCeiling: new CurrencyValue(stable, row.debtCeiling)!,
     totalDebt: new CurrencyValue(stable, row.totalDebt),
@@ -143,6 +151,9 @@ function parseStratMeta(
     yieldType: [YieldType.REPAYING, YieldType.COMPOUNDING, YieldType.NOYIELD][
       row.yieldType
     ],
+    balance: parseFloat(
+      balance.format({ significantDigits: Infinity, suffix: '' })
+    ),
   };
 }
 

@@ -119,6 +119,9 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
       18
     )
   );
+  addressIcons.set(getAddress(addresses.Stablecoin), [
+    'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/MONEY%20WHITE.jpg',
+  ]);
 }
 
 export const nativeCurrency: Map<ChainId, NativeCurrency> = new Map();

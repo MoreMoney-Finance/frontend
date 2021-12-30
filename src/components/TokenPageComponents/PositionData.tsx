@@ -37,7 +37,7 @@ export function PositionData({
           />
           <TitleValue title="DEBT" value={position.debt.format()} />
           <TitleValue
-            title="CRATIO"
+            title="cRATIO"
             value={
               position.debt.isZero()
                 ? '∞'

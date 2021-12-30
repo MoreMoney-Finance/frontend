@@ -1,13 +1,13 @@
+import { Box, Flex, Table, Tbody, Td, Text, Thead, Tr } from '@chakra-ui/react';
 import * as React from 'react';
-import { ParsedStratMetaRow } from '../chain-interaction/contracts';
-import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
-import { Box, Text, Flex, Table, Thead, Tbody, Tr, Td } from '@chakra-ui/react';
-import { TableTabs } from './TableTabs';
-import { TableSearch } from './TableSearch';
-import { TokenDescription } from './TokenDescription';
-import { Column, useTable } from 'react-table';
 import { Link } from 'react-router-dom';
+import { Column, useTable } from 'react-table';
+import { ParsedStratMetaRow } from '../chain-interaction/contracts';
 import { LiquidationFeesContext } from '../contexts/LiquidationFeesContext';
+import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
+import { TableSearch } from './TableSearch';
+import { TableTabs } from './TableTabs';
+import { TokenDescription } from './TokenDescription';
 
 type Entity = ParsedStratMetaRow & {
   asset: any;
@@ -16,6 +16,7 @@ type Entity = ParsedStratMetaRow & {
   minColRatio: string;
   totalBorrowed: string;
   liquidationFee: string;
+  balance: number;
 };
 
 export function AllSupportedCollateral() {
@@ -60,8 +61,10 @@ export function AllSupportedCollateral() {
           ((1 / (meta.borrowablePercent / 100)) * 100).toFixed(2) + '%',
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
         liquidationFee: tokenFees.get(meta.token.address) + '%' ?? '',
+        balance: meta.balance,
       };
-    });
+    })
+    .sort((a, b) => b.balance - a.balance);
 
   const columns = React.useMemo<Column<Entity>[]>(
     () => [

@@ -113,6 +113,12 @@ export default function DepositBorrow({
     'custom-percentage',
   ]);
 
+  const depositBorrowButtonDisabled =
+    isNaN(parseFloat(collateralInput)) ||
+    isNaN(parseFloat(borrowInput)) ||
+    (parseFloat(collateralInput) === 0 && parseFloat(borrowInput) === 0) ||
+    (parseFloat(collateralInput) < 0 && parseFloat(borrowInput) < 0);
+
   const extantCollateral =
     position && position.collateral
       ? parseFloat(
@@ -329,11 +335,10 @@ export default function DepositBorrow({
           </EnsureWalletConnected>
         ) : (
           <Button
-            variant={'submit'}
+            variant={depositBorrowButtonDisabled ? 'submit' : 'submit-primary'}
             type="submit"
-            disabled={depositBorrowDisabled}
             isLoading={isSubmittingDepForm}
-            isDisabled={depositBorrowDisabled}
+            isDisabled={depositBorrowButtonDisabled}
           >
             Deposit & Borrow
           </Button>

@@ -46,7 +46,7 @@ export function TokenAmountInputField(props: {
       <InputGroup>
         <Input
           {...registerForm(name, {
-            required: 'This is required',
+            required: '',
           })}
           placeholder={placeholder}
           type="text"
@@ -75,6 +75,7 @@ export function TokenAmountInputField(props: {
                     significantDigits: Infinity,
                     prefix: '',
                     suffix: '',
+                    thousandSeparator: '',
                   })
                 )
               }

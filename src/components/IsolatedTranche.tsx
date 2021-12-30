@@ -8,7 +8,7 @@ import {
 import { useWalletBalance } from '../contexts/WalletBalancesContext';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
-import { Tr, Td, Button } from '@chakra-ui/react';
+import { Tr, Td, Button, Text } from '@chakra-ui/react';
 import { TokenDescription } from './TokenDescription';
 import { TrancheAction } from './TrancheTable';
 import { Link, useLocation } from 'react-router-dom';
@@ -49,9 +49,7 @@ export function IsolatedTranche(
       : new CurrencyValue(stable, BigNumber.from(0));
 
   const stratLabel =
-    params.yieldType === YieldType.REPAYING
-      ? 'Self-repaying loan'
-      : 'Compound collateral';
+    params.yieldType === YieldType.REPAYING ? 'Self-repaying' : 'Compounding';
 
   return (
     <>
@@ -83,11 +81,23 @@ export function IsolatedTranche(
           %
         </Td>
 
-        <Td>$ {params.liquidationPrice.toFixed(2)}</Td>
+        <Td>
+          <Text isTruncated>$ {params.liquidationPrice.toFixed(2)}</Text>
+        </Td>
 
-        <Td>{collateral.format({ significantDigits: Infinity })}</Td>
+        <Td>
+          {collateral.format({
+            significantDigits: 6,
+            suffix: '',
+          })}
+        </Td>
 
-        <Td> {debt.format({ significantDigits: Infinity })} </Td>
+        <Td>
+          {debt.format({
+            significantDigits: 3,
+            suffix: '',
+          })}
+        </Td>
 
         {action ? (
           <Td>

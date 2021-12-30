@@ -73,6 +73,7 @@ export function TokenAmountInputField(props: {
                     significantDigits: Infinity,
                     prefix: '',
                     suffix: '',
+                    thousandSeparator: '',
                   })
                 )
               }

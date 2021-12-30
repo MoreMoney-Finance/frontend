@@ -9,7 +9,7 @@ import {
   useEthers,
 } from '@usedapp/core';
 import { formatEther } from '@usedapp/core/node_modules/@ethersproject/units';
-import { BigNumber } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { Interface, parseBytes32String } from 'ethers/lib/utils';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
@@ -18,6 +18,7 @@ import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
+import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 
 /* eslint-disable */
@@ -408,4 +409,91 @@ export function useEstimatedHarvestable(
     method: 'viewEstimatedHarvestable',
     args: [tokenAddress],
   }) ?? [undefined])[0];
+}
+
+export function useStakingMetadata(
+  stakingContracts: string[],
+  account?: string
+): [RawStakingMetadata][] {
+  const abi = new Interface(VestingStakingRewards.abi);
+  const userAccount = account ?? ethers.constants.AddressZero;
+  const calls: ContractCall[] = stakingContracts.map((address) => ({
+    abi,
+    address,
+    method: 'stakingMetadata',
+    args: [userAccount],
+  }));
+
+  const results = (useContractCalls(calls) ?? []) as unknown as [
+    RawStakingMetadata
+  ][];
+  return results;
+}
+
+type RawStakingMetadata = {
+  stakingToken: string;
+  rewardsToken: string;
+  totalSupply: BigNumber;
+  tvl: BigNumber;
+  aprPer10k: BigNumber;
+  vestingCliff: BigNumber;
+  periodFinish: BigNumber;
+  stakedBalance: BigNumber;
+  vestingStart: BigNumber;
+  earned: BigNumber;
+  vested: BigNumber;
+};
+
+type ParsedStakingMetadata = {
+  stakingToken: Token;
+  rewardsToken: Token;
+  totalSupply: CurrencyValue;
+  tvl: CurrencyValue;
+  aprPercent: number;
+  vestingCliff: Date;
+  periodFinish: Date;
+  stakedBalance: CurrencyValue;
+  vestingStart: Date;
+  earned: CurrencyValue;
+  vested: CurrencyValue;
+};
+
+export function useParsedStakingMetadata(
+  stakingContract: string[],
+  account?: string
+) {
+  const { chainId } = useEthers();
+  const stable = useStable();
+  useStakingMetadata(stakingContract, account)
+    .filter(([x]) => x)
+    .map(([stakingMeta]: [RawStakingMetadata]) => {
+      const stakingToken = getTokenFromAddress(
+        chainId,
+        stakingMeta.stakingToken
+      )!;
+      const rewardsToken = getTokenFromAddress(
+        chainId,
+        stakingMeta.rewardsToken
+      )!;
+      return {
+        stakingToken,
+        rewardsToken,
+        totalSupply: new CurrencyValue(stakingToken, stakingMeta.totalSupply),
+        tvl: new CurrencyValue(stable, stakingMeta.tvl),
+        aprPercent: (100 * stakingMeta.aprPer10k.toNumber()) / 10000,
+        vestingCliff: timestamp2Date(stakingMeta.vestingCliff),
+        periodFinish: timestamp2Date(stakingMeta.periodFinish),
+        stakedBalance: new CurrencyValue(
+          stakingToken,
+          stakingMeta.stakedBalance
+        ),
+        vestingStart: timestamp2Date(stakingMeta.vestingStart),
+        earned: new CurrencyValue(rewardsToken, stakingMeta.earned),
+        vested: new CurrencyValue(rewardsToken, stakingMeta.vested),
+      };
+    });
+}
+
+function timestamp2Date(tstamp: BigNumber) {
+  return new Date(tstamp.toNumber() * 1000);
 }

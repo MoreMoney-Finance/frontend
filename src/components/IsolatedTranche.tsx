@@ -93,11 +93,10 @@ export function IsolatedTranche(
         </Td>
 
         <Td>
-          {' '}
           {debt.format({
             significantDigits: 3,
             suffix: '',
-          })}{' '}
+          })}
         </Td>
 
         {action ? (

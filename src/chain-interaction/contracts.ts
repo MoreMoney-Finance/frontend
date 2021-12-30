@@ -459,12 +459,12 @@ type ParsedStakingMetadata = {
 };
 
 export function useParsedStakingMetadata(
-  stakingContract: string[],
+  stakingContracts: string[],
   account?: string
 ) {
   const { chainId } = useEthers();
   const stable = useStable();
-  useStakingMetadata(stakingContract, account)
+  useStakingMetadata(stakingContracts, account)
     .filter(([x]) => x)
     .map(([stakingMeta]: [RawStakingMetadata]) => {
       const stakingToken = getTokenFromAddress(

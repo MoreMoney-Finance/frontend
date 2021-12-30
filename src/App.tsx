@@ -11,9 +11,37 @@ import NetworkNotSupported from './components/NetworkNotSupported';
 import { theme } from './theme';
 import FooterBar from './components/FooterBar';
 import { LiquidationFeesCtxProvider } from './contexts/LiquidationFeesContext';
+import { useEthers } from '@usedapp/core';
+import { useEffect } from 'react';
+import { ethers } from 'ethers';
+
+declare let window: any;
 
 export const App = (params: React.PropsWithChildren<unknown>) => {
   const addresses = useAddresses();
+  const { active, chainId, account } = useEthers();
+
+  useEffect(() => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    if (active == true && !account) {
+      provider.provider.request!({
+        method: 'wallet_addEthereumChain',
+        params: [
+          {
+            chainId: '0xa86a',
+            chainName: 'Avalanche Network',
+            nativeCurrency: {
+              name: 'avax',
+              symbol: 'AVAX',
+              decimals: 18,
+            },
+            rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'],
+            blockExplorerUrls: ['https://snowtrace.io/'],
+          },
+        ],
+      });
+    }
+  }, [active, chainId]);
 
   return (
     <ChakraProvider theme={theme}>

@@ -92,10 +92,6 @@ export function AllSupportedCollateral() {
         Header: 'Liquidation Fee',
         accessor: 'liquidationFee',
       },
-      {
-        Header: 'Balance',
-        accessor: 'balance',
-      },
     ],
     []
   );

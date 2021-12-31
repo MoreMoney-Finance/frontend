@@ -11,7 +11,7 @@ import NetworkNotSupported from './components/NetworkNotSupported';
 import { theme } from './theme';
 import FooterBar from './components/FooterBar';
 import { LiquidationFeesCtxProvider } from './contexts/LiquidationFeesContext';
-import { useEthers } from '@usedapp/core';
+import { useConfig, useEthers } from '@usedapp/core';
 import { useEffect } from 'react';
 import { ethers } from 'ethers';
 
@@ -19,28 +19,58 @@ declare let window: any;
 
 export const App = (params: React.PropsWithChildren<unknown>) => {
   const addresses = useAddresses();
-  const { active, chainId, account } = useEthers();
+  const { active, chainId, activateBrowserWallet, account } = useEthers();
+  const config = useConfig();
 
+  const [requestedSwitch, setRequestedSwitch] = React.useState(false);
   useEffect(() => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    if (active == true && !account) {
-      provider.provider.request!({
-        method: 'wallet_addEthereumChain',
-        params: [
-          {
-            chainId: '0xa86a',
-            chainName: 'Avalanche Network',
-            nativeCurrency: {
-              name: 'avax',
-              symbol: 'AVAX',
-              decimals: 18,
-            },
-            rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'],
-            blockExplorerUrls: ['https://snowtrace.io/'],
-          },
-        ],
-      });
-    }
+    (async () => {
+      const wallet = new ethers.providers.Web3Provider(window.ethereum);
+      const { chainId: walletChainId } = await wallet.getNetwork();
+      const accounts = await wallet.listAccounts();
+
+      if (
+        accounts.length > 0 &&
+        !requestedSwitch &&
+        walletChainId &&
+        !config.supportedChains.includes(walletChainId)
+      ) {
+        setRequestedSwitch(true);
+        try {
+          await wallet.provider.request!({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0xa86a' }],
+          });
+          activateBrowserWallet();
+        } catch (switchError) {
+          try {
+            await wallet.provider.request!({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId: '0xa86a',
+                  chainName: 'Avalanche Network',
+                  nativeCurrency: {
+                    name: 'avax',
+                    symbol: 'AVAX',
+                    decimals: 18,
+                  },
+                  rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'],
+                  blockExplorerUrls: ['https://snowtrace.io/'],
+                },
+              ],
+            });
+            activateBrowserWallet();
+          } catch (addError) {
+            alert(
+              `Your wallet may be connected to an unsupported network. Please manually switch to a supported network: ${addError}`
+            );
+          }
+        }
+      } else if (accounts.length > 0 && !account) {
+        activateBrowserWallet();
+      }
+    })();
   }, [active, chainId]);
 
   return (

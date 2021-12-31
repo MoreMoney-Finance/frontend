@@ -10,8 +10,10 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import {
   ParsedPositionMetaRow,
+  ParsedStakingMetadata,
   ParsedStratMetaRow,
   TxStatus,
+  useAddresses,
 } from '../../chain-interaction/contracts';
 import {
   useApproveTrans,
@@ -25,12 +27,14 @@ import { TokenAmountInputField } from '../TokenAmountInputField';
 
 export default function WithdrawForm({
   position,
-  stratMeta,
+  stakeMeta,
 }: React.PropsWithChildren<{
   position?: ParsedPositionMetaRow;
-  stratMeta: ParsedStratMetaRow;
+  stakeMeta: ParsedStakingMetadata;
 }>) {
-  const { token, strategyAddress } = stratMeta;
+  const token = stakeMeta.stakingToken;
+  const strategyAddress = useAddresses().CurvePoolRewards;
+
   const { chainId, account } = useEthers();
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;

@@ -28,6 +28,25 @@ import {
 import { BigNumber, ethers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 
+export function useClaimReward() {
+  const ilAddress = useAddresses().CurvePoolRewards;
+  const ilContract = new Contract(
+    ilAddress,
+    new Interface(CurvePoolRewards.abi)
+  );
+  const { send, state } = useContractFunction(
+    ilContract,
+    'withdrawVestedReward'
+  );
+
+  return {
+    sendClaim: (amount: string | number) => {
+      return send(amount);
+    },
+    claimState: state,
+  };
+}
+
 export function useStake() {
   const ilAddress = useAddresses().CurvePoolRewards;
   const ilContract = new Contract(

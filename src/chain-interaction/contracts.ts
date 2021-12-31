@@ -435,9 +435,8 @@ export function useStakingMetadata(
     args: [userAccount],
   }));
 
-  const results = (useContractCalls(calls) ?? []) as unknown as [
-    RawStakingMetadata
-  ][];
+  let contractCalls2 = useContractCalls(calls);
+  const results = (contractCalls2 ?? []) as unknown as [RawStakingMetadata][];
   return results;
 }
 
@@ -455,7 +454,7 @@ type RawStakingMetadata = {
   vested: BigNumber;
 };
 
-type ParsedStakingMetadata = {
+export type ParsedStakingMetadata = {
   stakingToken: Token;
   rewardsToken: Token;
   totalSupply: CurrencyValue;
@@ -472,10 +471,11 @@ type ParsedStakingMetadata = {
 export function useParsedStakingMetadata(
   stakingContracts: string[],
   account?: string
-):ParsedStakingMetadata[] {
+): ParsedStakingMetadata[] {
   const { chainId } = useEthers();
   const stable = useStable();
   return useStakingMetadata(stakingContracts, account)
+    .filter((x) => x)
     .filter(([x]) => x)
     .map(([stakingMeta]: [RawStakingMetadata]) => {
       const stakingToken = getTokenFromAddress(

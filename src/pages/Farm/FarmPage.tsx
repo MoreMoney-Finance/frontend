@@ -12,41 +12,25 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
+import { useEthers } from '@usedapp/core';
 import * as React from 'react';
-import { ParsedStratMetaRow } from '../../chain-interaction/contracts';
+import {
+  ParsedStakingMetadata,
+  useAddresses,
+  useParsedStakingMetadata,
+} from '../../chain-interaction/contracts';
 import ClaimReward from '../../components/FarmPageComponents/ClaimReward';
 import DepositForm from '../../components/FarmPageComponents/DepositForm';
 import WithdrawForm from '../../components/FarmPageComponents/WithdrawForm';
 import { TokenDescription } from '../../components/TokenDescription';
-import { LiquidationFeesContext } from '../../contexts/LiquidationFeesContext';
-import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 
 export function FarmPage(params: React.PropsWithChildren<unknown>) {
-  const stratMeta: ParsedStratMetaRow[] = Object.values(
-    React.useContext(StrategyMetadataContext)
-  ).map((x) =>
-    Object.values(x).reduce((aggStrat, nextStrat) => ({
-      ...aggStrat,
-      APY: aggStrat.APY > nextStrat.APY ? aggStrat.APY : nextStrat.APY,
-      debtCeiling: aggStrat.debtCeiling.add(nextStrat.debtCeiling),
-      totalDebt: aggStrat.totalDebt.add(nextStrat.totalDebt),
-    }))
-  );
+  const { account } = useEthers();
 
-  const tokenFees = React.useContext(LiquidationFeesContext);
-
-  const data = stratMeta.map((meta) => {
-    return {
-      ...meta,
-      asset: <TokenDescription token={meta.token} />,
-      apy: meta.APY.toFixed(4) + '%',
-      MONEYavailable: meta.debtCeiling.sub(meta.totalDebt).format(),
-      minColRatio:
-        ((1 / (meta.borrowablePercent / 100)) * 100).toFixed(2) + '%',
-      totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
-      liquidationFee: tokenFees.get(meta.token.address) + '%' ?? '',
-    };
-  });
+  const stakeMeta: ParsedStakingMetadata[] = useParsedStakingMetadata(
+    [useAddresses().CurvePoolRewards],
+    account ?? ''
+  ).flat(1);
 
   return (
     <>
@@ -66,15 +50,15 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
               <Td textAlign={'center'}>Stake</Td>
               <Td textAlign={'center'}>TVL</Td>
               <Td textAlign={'center'}>Reward</Td>
-              <Td textAlign={'center'}>APY</Td>
+              <Td textAlign={'center'}>APR</Td>
               <Td textAlign={'center'}>Actions</Td>
             </Tr>
           </Thead>
         </Table>
         <Accordion allowToggle allowMultiple width={'full'} variant={'farm'}>
-          {data.map((item) => {
+          {stakeMeta.map((item, index) => {
             return (
-              <div key={item.asset.key}>
+              <div key={'item' + index}>
                 <AccordionItem
                   width={'full'}
                   style={{
@@ -102,18 +86,18 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
                       verticalAlign={'center'}
                     >
                       <Box w="120%">
-                        <TokenDescription token={item.token} />
+                        <TokenDescription token={item.stakingToken} />
                       </Box>
                       <Box w="90%">
-                        <Text>$200</Text>
+                        <Text>{item.stakedBalance.format({ suffix: '' })}</Text>
                       </Box>
                       <Box w="100%">
-                        <Text>$200,000.30</Text>
+                        <Text>{item.tvl.format({ suffix: '' })}</Text>
                       </Box>
                       <Box w="120%">
-                        <TokenDescription token={item.token} />
+                        <TokenDescription token={item.rewardsToken} />
                       </Box>
-                      <Box w="100%">20%</Box>
+                      <Box w="100%">{item.aprPercent} %</Box>
                       <Box w="100%">
                         <Button>Stake</Button>
                       </Box>
@@ -122,13 +106,16 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
                   <AccordionPanel>
                     <Grid templateColumns="repeat(3, 1fr)" gap={6}>
                       <Box w="100%">
-                        <DepositForm stratMeta={item} />
+                        <DepositForm stakeMeta={item} />
                       </Box>
                       <Box w="100%">
-                        <WithdrawForm stratMeta={item} />
+                        <WithdrawForm stakeMeta={item} />
                       </Box>
                       <Box w="100%">
-                        <ClaimReward stratMeta={item} token={item.token} />
+                        <ClaimReward
+                          stakeMeta={item}
+                          token={item.rewardsToken}
+                        />
                       </Box>
                     </Grid>
                   </AccordionPanel>

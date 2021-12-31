@@ -122,6 +122,30 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
   addressIcons.set(getAddress(addresses.Stablecoin), [
     'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/MONEY%20WHITE.jpg',
   ]);
+
+  if ('CurvePool' in addresses) {
+    addressToken[chainIds[chainId]].set(
+      getAddress(addresses.CurvePool),
+      new Token(
+        'Money Curve MetaPool Token',
+        'MONEYCRV',
+        chainIds[chainId],
+        getAddress(addresses.CurvePool)
+      )
+    );
+  }
+
+  if ('ProtocolToken' in addresses) {
+    addressToken[chainIds[chainId]].set(
+      getAddress(addresses['ProtocolToken']),
+      new Token(
+        'MoreMoney',
+        'MORE',
+        chainIds[chainId],
+        getAddress(addresses['ProtocolToken'])
+      )
+    );
+  }
 }
 
 export const nativeCurrency: Map<ChainId, NativeCurrency> = new Map();

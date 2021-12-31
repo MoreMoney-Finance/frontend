@@ -3,21 +3,19 @@ import {
   CurrencyValue,
   useEtherBalance,
   useEthers,
-  useTokenAllowance,
+  useTokenAllowance
 } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import {
   ParsedPositionMetaRow,
-  ParsedStakingMetadata,
-  ParsedStratMetaRow,
-  TxStatus,
-  useAddresses,
+  ParsedStakingMetadata, TxStatus,
+  useAddresses
 } from '../../chain-interaction/contracts';
 import {
   useApproveTrans,
-  useWithdraw,
+  useWithdraw
 } from '../../chain-interaction/transactions';
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
 import { useWalletBalance } from '../../contexts/WalletBalancesContext';

@@ -40,8 +40,8 @@ export function useClaimReward() {
   );
 
   return {
-    sendClaim: (amount: string | number) => {
-      return send(amount);
+    sendClaim: () => {
+      return send();
     },
     claimState: state,
   };
@@ -56,8 +56,9 @@ export function useStake() {
   const { send, state } = useContractFunction(ilContract, 'stake');
 
   return {
-    sendStake: (amount: string | number) => {
-      return send(amount);
+    sendStake: (stakeToken: Token, amount: string | number) => {
+      const sAmount = parseUnits(amount.toString(), stakeToken.decimals);
+      return send(sAmount);
     },
     stakeState: state,
   };
@@ -72,8 +73,9 @@ export function useWithdraw() {
   const { send, state } = useContractFunction(ilContract, 'withdraw');
 
   return {
-    sendWithdraw: (amount: string | number) => {
-      return send(amount);
+    sendWithdraw: (withdrawToken: Token, amount: string | number) => {
+      const wAmount = parseUnits(amount.toString(), withdrawToken.decimals);
+      return send(wAmount);
     },
     withdrawState: state,
   };

@@ -3,22 +3,22 @@ import {
   CurrencyValue,
   useEtherBalance,
   useEthers,
-  useTokenAllowance
+  useTokenAllowance,
 } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import {
   ParsedPositionMetaRow,
-  ParsedStakingMetadata, TxStatus,
-  useAddresses
+  ParsedStakingMetadata,
+  TxStatus,
+  useAddresses,
 } from '../../chain-interaction/contracts';
 import {
   useApproveTrans,
-  useWithdraw
+  useWithdraw,
 } from '../../chain-interaction/transactions';
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
-import { useWalletBalance } from '../../contexts/WalletBalancesContext';
 import { EnsureWalletConnected } from '../EnsureWalletConnected';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
@@ -49,8 +49,7 @@ export default function WithdrawForm({
     : new CurrencyValue(token, BigNumber.from('0'));
 
   const walletBalance =
-    useWalletBalance(token.address) ??
-    new CurrencyValue(token, BigNumber.from('0'));
+    stakeMeta.stakedBalance ?? new CurrencyValue(token, BigNumber.from('0'));
 
   const { approveState, sendApprove } = useApproveTrans(token.address);
 
@@ -67,7 +66,8 @@ export default function WithdrawForm({
   function onWithdraw(data: { [x: string]: any }) {
     console.log('deposit borrow');
     console.log(data, position);
-    sendWithdraw(data['amount-withdraw']);
+    sendWithdraw(token, data['amount-withdraw']);
+    setValueDepForm('amount-withdraw', '');
   }
 
   const [withdrawInput] = watch(['amount-withdraw']);

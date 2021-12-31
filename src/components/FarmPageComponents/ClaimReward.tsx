@@ -15,9 +15,6 @@ export default function ClaimReward({
 }>) {
   const { sendClaim, claimState } = useClaimReward();
 
-  function onClaim() {
-    sendClaim(token.address);
-  }
   return (
     <>
       <StatusTrackModal state={claimState} title={'Claim Reward'} />
@@ -38,7 +35,7 @@ export default function ClaimReward({
             &nbsp; {stakeMeta.vested.format({ suffix: '' })} {token.name}
           </Text>
         </Flex>
-        <Button type="submit" w={'50%'} onClick={onClaim}>
+        <Button type="submit" w={'50%'} onClick={sendClaim}>
           Claim
         </Button>
       </Flex>

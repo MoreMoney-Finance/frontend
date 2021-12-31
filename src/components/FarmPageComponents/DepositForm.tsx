@@ -68,7 +68,8 @@ export default function DepositForm({
 
   function onDeposit(data: { [x: string]: any }) {
     console.log('data', data, position);
-    sendStake(data['amount-stake']);
+    sendStake(token, data['amount-stake']);
+    setValueDepForm('amount-stake', '');
   }
 
   const confirmButtonDisabled = parseFloat(depositInput) > 0;

@@ -132,9 +132,9 @@ export default function DepositBorrow({
   const totalCollateral = parseFloat(collateralInput) + extantCollateral;
 
   const extantDebt =
-    position && position.debt
+    position && position.debt && position.debt.gt(position.yield)
       ? parseFloat(
-        position.debt.format({
+        position.debt.sub(position.yield).format({
           significantDigits: Infinity,
           prefix: '',
           suffix: '',

@@ -44,8 +44,8 @@ export function IsolatedTranche(
       ? params.collateral
       : new CurrencyValue(token, BigNumber.from(0));
   const debt =
-    'debt' in params
-      ? params.debt
+    'debt' in params && params.debt.gt(params.yield)
+      ? params.debt.sub(params.yield)
       : new CurrencyValue(stable, BigNumber.from(0));
 
   const stratLabel =
@@ -70,12 +70,12 @@ export function IsolatedTranche(
         <Td>{((100 * 100) / params.borrowablePercent).toFixed(0)}%</Td>
 
         <Td>
-          {params.debt.isZero()
+          {debt.isZero()
             ? '∞'
             : (
               params.collateralValue.value
                 .mul(10000)
-                .div(params.debt.value)
+                .div(debt.value)
                 .toNumber() / 100
             ).toFixed(1)}
           %

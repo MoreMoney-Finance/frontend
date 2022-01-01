@@ -15,6 +15,10 @@ export function PositionData({
   position: ParsedPositionMetaRow;
   stratMeta: ParsedStratMetaRow;
 }) {
+  const effectiveDebt = position.debt.gt(position.yield)
+    ? position.debt.sub(position.yield)
+    : new CurrencyValue(position.debt.currency, BigNumber.from(0));
+
   return (
     <GridItem colSpan={3} rowSpan={1}>
       <Container variant={'token'}>
@@ -35,16 +39,16 @@ export function PositionData({
               suffix: '',
             })}`}
           />
-          <TitleValue title="DEBT" value={position.debt.format()} />
+          <TitleValue title="DEBT" value={effectiveDebt.format()} />
           <TitleValue
             title="cRATIO"
             value={
-              position.debt.isZero()
+              effectiveDebt.isZero()
                 ? '∞'
                 : (
                   position.collateralValue.value
                     .mul(10000)
-                    .div(position.debt.value)
+                    .div(effectiveDebt.value)
                     .toNumber() / 100
                 ).toFixed(2)
             }

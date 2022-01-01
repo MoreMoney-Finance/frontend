@@ -282,6 +282,7 @@ function parsePositionMeta(
   stable: Token
 ): ParsedPositionMetaRow {
   const debt = new CurrencyValue(stable, row.debt);
+  const posYield = new CurrencyValue(stable, row.yield);
   const collateral = tokenAmount(stable.chainId, row.token, row.collateral);
   const borrowablePercent = row.borrowablePer10k.toNumber() / 100;
 
@@ -291,15 +292,13 @@ function parsePositionMeta(
     debt,
     collateral,
     token: getTokenFromAddress(stable.chainId, row.token)!,
-    yield: new CurrencyValue(stable, row.yield),
+    yield: posYield,
     collateralValue: new CurrencyValue(stable, row.collateralValue),
     borrowablePercent,
     owner: row.owner,
-    liquidationPrice: calcLiquidationPrice(
-      borrowablePercent,
-      debt,
-      collateral!
-    ),
+    liquidationPrice: debt.gt(posYield)
+      ? calcLiquidationPrice(borrowablePercent, debt.sub(posYield), collateral!)
+      : 0,
   };
 }
 

@@ -9,7 +9,8 @@ import {
   NumberInputField,
   InputRightElement,
 } from '@chakra-ui/react';
-import { useEthers } from '@usedapp/core';
+import { CurrencyValue, useEthers } from '@usedapp/core';
+import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import {
@@ -95,9 +96,9 @@ export default function RepayWithdraw({
   const totalCollateral = extantCollateral - parseFloat(collateralInput);
 
   const extantDebt =
-    position && position.debt
+    position && position.debt && position.debt.gt(position.yield)
       ? parseFloat(
-        position.debt.format({
+        position.debt.sub(position.yield).format({
           significantDigits: Infinity,
           prefix: '',
           suffix: '',
@@ -201,7 +202,11 @@ export default function RepayWithdraw({
           <TokenDescription token={stable} />
           <TokenAmountInputField
             name="money-repay"
-            max={position?.debt}
+            max={
+              position && position.debt.gt(position.yield)
+                ? position.debt.sub(position.yield)
+                : new CurrencyValue(stratMeta.token, BigNumber.from(0))
+            }
             isDisabled={repayWithdrawDisabled}
             placeholder={'MONEY repay'}
             registerForm={registerRepayForm}

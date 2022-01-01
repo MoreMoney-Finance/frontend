@@ -26,9 +26,7 @@ export default function ClaimReward({
       <Text>Reward</Text>
       <HStack textAlign={'center'}>
         <Avatar size={'sm'} src={getIconsFromTokenAddress(token.address)[0]} />
-        <Text>
-          &nbsp; {stakeMeta.vested.format({})}
-        </Text>
+        <Text>&nbsp; {stakeMeta.vested.format({})}</Text>
       </HStack>
       <Button type="submit" w={'50%'} onClick={sendClaim}>
         Claim

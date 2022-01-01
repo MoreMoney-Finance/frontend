@@ -10,7 +10,7 @@ import {
 } from '@usedapp/core';
 import { formatEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber, ethers } from 'ethers';
-import { Interface, parseBytes32String } from 'ethers/lib/utils';
+import { getAddress, Interface, parseBytes32String } from 'ethers/lib/utils';
 import { useContext } from 'react';
 import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
@@ -22,6 +22,7 @@ import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFe
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
+import { YYMetadata, YYMetadataContext } from '../contexts/YYMetadataContext';
 
 /* eslint-disable */
 export const addresses: Record<
@@ -84,6 +85,7 @@ type RawStratMetaRow = {
   tvl: BigNumber;
   harvestBalance2Tally: BigNumber;
   yieldType: number;
+  underlyingStrategy?: string;
 };
 
 export enum TxStatus {
@@ -120,23 +122,35 @@ export type ParsedStratMetaRow = {
 function parseStratMeta(
   chainId: ChainId,
   row: RawStratMetaRow,
-  stable: Token
+  stable: Token,
+  balancesCtx: Map<string, CurrencyValue>,
+  yyMetadata: YYMetadata
 ): ParsedStratMetaRow {
   const token = getTokenFromAddress(chainId, row.token);
+
   const tvlInToken = tokenAmount(chainId, row.token, row.tvl)!;
-  const balancesCtx = useContext(WalletBalancesContext);
   const balance =
     balancesCtx.get(token!.address) ??
     new CurrencyValue(token, BigNumber.from('0'));
+
+  const strategyAddress = getAddress(row.strategy);
+  const underlyingAddress = row.underlyingStrategy
+    ? getAddress(row.underlyingStrategy)
+    : strategyAddress;
+
+  const APY =
+    underlyingAddress in yyMetadata
+      ? yyMetadata[strategyAddress].apy * 0.9
+      : convertAPF2APY(row.APF);
 
   return {
     debtCeiling: new CurrencyValue(stable, row.debtCeiling)!,
     totalDebt: new CurrencyValue(stable, row.totalDebt),
     stabilityFeePercent: row.stabilityFee.toNumber() / 100,
     mintingFeePercent: row.mintingFee.toNumber() / 100,
-    strategyAddress: row.strategy,
+    strategyAddress,
     token,
-    APY: convertAPF2APY(row.APF),
+    APY,
     totalCollateral: tokenAmount(chainId, row.token, row.totalCollateral)!,
     borrowablePercent: row.borrowablePer10k.toNumber() / 100,
     usdPrice:
@@ -186,9 +200,18 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
     [],
     []
   );
+
+  const balancesCtx = useContext(WalletBalancesContext);
+  const yyMetadata = useContext(YYMetadataContext);
   return allStratMeta.reduce(
     (result: StrategyMetadata, row: RawStratMetaRow) => {
-      const parsedRow = parseStratMeta(chainId!, row, stable);
+      const parsedRow = parseStratMeta(
+        chainId!,
+        row,
+        stable,
+        balancesCtx,
+        yyMetadata
+      );
       const tokenAddress = parsedRow.token.address;
       return {
         ...result,
@@ -357,8 +380,8 @@ const ONE_WEEK_SECONDS = 60 * 60 * 24 * 7;
 export function useUpdatedPositions(timeStart: number) {
   const endPeriod = Math.floor(Date.now() / 1000 / ONE_WEEK_SECONDS);
   const startPeriod = Math.floor(timeStart / 1000 / ONE_WEEK_SECONDS);
-  console.log('endPeriod', endPeriod);
-  console.log('startPeriod', startPeriod);
+  // console.log('endPeriod', endPeriod);
+  // console.log('startPeriod', startPeriod);
   const stable = useStable();
   const iL = useAddresses().IsolatedLending;
 

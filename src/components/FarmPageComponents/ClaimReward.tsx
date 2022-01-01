@@ -1,4 +1,4 @@
-import { Avatar, Button, Flex, Text } from '@chakra-ui/react';
+import { Avatar, Button, HStack, VStack, Text } from '@chakra-ui/react';
 import { Token } from '@usedapp/core';
 import * as React from 'react';
 import { ParsedStakingMetadata } from '../../chain-interaction/contracts';
@@ -16,29 +16,24 @@ export default function ClaimReward({
   const { sendClaim, claimState } = useClaimReward();
 
   return (
-    <>
+    <VStack
+      flexDirection={'column'}
+      textAlign={'center'}
+      alignItems={'center'}
+      justifyContent={'space-between'}
+      height={'full'}
+    >
+      <Text>Reward</Text>
+      <HStack textAlign={'center'}>
+        <Avatar size={'sm'} src={getIconsFromTokenAddress(token.address)[0]} />
+        <Text>
+          &nbsp; {stakeMeta.vested.format({})}
+        </Text>
+      </HStack>
+      <Button type="submit" w={'50%'} onClick={sendClaim}>
+        Claim
+      </Button>
       <StatusTrackModal state={claimState} title={'Claim Reward'} />
-      <Flex
-        flexDirection={'column'}
-        textAlign={'center'}
-        alignItems={'center'}
-        justifyContent={'space-between'}
-        height={'full'}
-      >
-        <Text>Reward</Text>
-        <Flex textAlign={'center'}>
-          <Avatar
-            size={'sm'}
-            src={getIconsFromTokenAddress(token.address)[0]}
-          />
-          <Text>
-            &nbsp; {stakeMeta.vested.format({ suffix: '' })} {token.name}
-          </Text>
-        </Flex>
-        <Button type="submit" w={'50%'} onClick={sendClaim}>
-          Claim
-        </Button>
-      </Flex>
-    </>
+    </VStack>
   );
 }

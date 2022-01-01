@@ -32,14 +32,14 @@ export default function DepositForm({
   stakeMeta: ParsedStakingMetadata;
 }>) {
   const token = stakeMeta.stakingToken;
-  const strategyAddress = useAddresses().CurvePoolRewards;
+  const stakingAddress = useAddresses().CurvePoolRewards;
   const { chainId, account } = useEthers();
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
 
   const allowance = new CurrencyValue(
     token,
-    useTokenAllowance(token.address, account, strategyAddress) ??
+    useTokenAllowance(token.address, account, stakingAddress) ??
       BigNumber.from('0')
   );
   const etherBalance = useEtherBalance(account);
@@ -72,7 +72,7 @@ export default function DepositForm({
     setValueDepForm('amount-stake', '');
   }
 
-  const confirmButtonDisabled = parseFloat(depositInput) > 0;
+  const confirmButtonEnabled = parseFloat(depositInput) > 0;
 
   const depositBorrowDisabled = isNativeToken
     ? nativeTokenBalance.isZero()
@@ -109,24 +109,24 @@ export default function DepositForm({
         {allowance.gt(walletBalance) === false && isNativeToken === false ? (
           <EnsureWalletConnected>
             <Button
-              onClick={() => sendApprove(strategyAddress)}
+              onClick={() => sendApprove(stakingAddress)}
               width={'full'}
-              variant={'primary'}
+              variant={'submit-primary'}
               isLoading={
                 approveState.status == TxStatus.SUCCESS &&
                 allowance.gt(walletBalance) === false
               }
             >
-              Approve {token.name}{' '}
+              Approve
             </Button>
           </EnsureWalletConnected>
         ) : (
           <Button
             type="submit"
             width={'full'}
-            variant={!confirmButtonDisabled ? 'submit' : 'primary'}
+            variant={!confirmButtonEnabled ? 'submit' : 'submit-primary'}
             isLoading={isSubmittingDepForm}
-            isDisabled={!confirmButtonDisabled}
+            isDisabled={!confirmButtonEnabled}
           >
             Confirm
           </Button>

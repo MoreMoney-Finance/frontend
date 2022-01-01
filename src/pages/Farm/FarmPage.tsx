@@ -1,3 +1,4 @@
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 import {
   Accordion,
   AccordionButton,
@@ -6,6 +7,7 @@ import {
   Box,
   Button,
   Grid,
+  GridItem,
   Table,
   Td,
   Text,
@@ -14,6 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import {
   ParsedStakingMetadata,
   useAddresses,
@@ -23,14 +26,18 @@ import ClaimReward from '../../components/FarmPageComponents/ClaimReward';
 import DepositForm from '../../components/FarmPageComponents/DepositForm';
 import WithdrawForm from '../../components/FarmPageComponents/WithdrawForm';
 import { TokenDescription } from '../../components/TokenDescription';
+import farminfo from '../../contracts/farminfo.json';
 
 export function FarmPage(params: React.PropsWithChildren<unknown>) {
-  const { account } = useEthers();
+  const { account, chainId } = useEthers();
 
   const stakeMeta: ParsedStakingMetadata[] = useParsedStakingMetadata(
     [useAddresses().CurvePoolRewards],
     account ?? ''
   ).flat(1);
+
+  const farmInfoIdx = (chainId?.toString() ?? '43114') as keyof typeof farminfo;
+  const getLPTokenLinks = [`https://avax.curve.fi/factory/${farminfo[farmInfoIdx].curvePoolIdx}/deposit`];
 
   return (
     <>
@@ -51,11 +58,11 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
               <Td textAlign={'center'}>TVL</Td>
               <Td textAlign={'center'}>Reward</Td>
               <Td textAlign={'center'}>APR</Td>
-              <Td textAlign={'center'}>Actions</Td>
+              <Td textAlign={'center'}>Acquire</Td>
             </Tr>
           </Thead>
         </Table>
-        <Accordion allowToggle allowMultiple width={'full'} variant={'farm'}>
+        <Accordion allowToggle allowMultiple width={'full'} variant={'farm'} defaultIndex={0}>
           {stakeMeta.map((item, index) => {
             return (
               <div key={'item' + index}>
@@ -92,31 +99,31 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
                         <Text>{item.stakedBalance.format({ suffix: '' })}</Text>
                       </Box>
                       <Box w="100%">
-                        <Text>{item.tvl.format({ suffix: '' })}</Text>
+                        <Text>$ {item.tvl.format({ suffix: '' })}</Text>
                       </Box>
                       <Box w="120%">
                         <TokenDescription token={item.rewardsToken} />
                       </Box>
                       <Box w="100%">{item.aprPercent} %</Box>
                       <Box w="100%">
-                        <Button>Stake</Button>
+                        <Button as={Link} to={getLPTokenLinks[index]}>Get LP Token &nbsp; <ExternalLinkIcon /> </Button>
                       </Box>
                     </Grid>
                   </AccordionButton>
-                  <AccordionPanel>
-                    <Grid templateColumns="repeat(3, 1fr)" gap={6}>
-                      <Box w="100%">
+                  <AccordionPanel mt="16px">
+                    <Grid templateColumns="repeat(13, 1fr)" gap={6}>
+                      <GridItem w="100%" colSpan={5}>
                         <DepositForm stakeMeta={item} />
-                      </Box>
-                      <Box w="100%">
+                      </GridItem>
+                      <GridItem w="100%" colSpan={5}>
                         <WithdrawForm stakeMeta={item} />
-                      </Box>
-                      <Box w="100%">
+                      </GridItem>
+                      <GridItem colSpan={3} w="110%">
                         <ClaimReward
                           stakeMeta={item}
                           token={item.rewardsToken}
                         />
-                      </Box>
+                      </GridItem>
                     </Grid>
                   </AccordionPanel>
                 </AccordionItem>

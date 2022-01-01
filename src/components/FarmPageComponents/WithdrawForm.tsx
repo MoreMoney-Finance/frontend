@@ -1,21 +1,13 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
-import {
-  CurrencyValue,
-  useEtherBalance,
-  useEthers,
-  useTokenAllowance,
-} from '@usedapp/core';
+import { CurrencyValue, useEtherBalance, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import {
   ParsedPositionMetaRow,
   ParsedStakingMetadata,
-  TxStatus,
-  useAddresses,
 } from '../../chain-interaction/contracts';
 import {
-  useApproveTrans,
   useWithdraw,
 } from '../../chain-interaction/transactions';
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
@@ -31,17 +23,11 @@ export default function WithdrawForm({
   stakeMeta: ParsedStakingMetadata;
 }>) {
   const token = stakeMeta.stakingToken;
-  const strategyAddress = useAddresses().CurvePoolRewards;
 
   const { chainId, account } = useEthers();
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
 
-  const allowance = new CurrencyValue(
-    token,
-    useTokenAllowance(token.address, account, strategyAddress) ??
-      BigNumber.from('0')
-  );
   const etherBalance = useEtherBalance(account);
 
   const nativeTokenBalance = etherBalance
@@ -50,8 +36,6 @@ export default function WithdrawForm({
 
   const walletBalance =
     stakeMeta.stakedBalance ?? new CurrencyValue(token, BigNumber.from('0'));
-
-  const { approveState, sendApprove } = useApproveTrans(token.address);
 
   const { sendWithdraw, withdrawState } = useWithdraw();
 
@@ -102,35 +86,20 @@ export default function WithdrawForm({
         />
       </Flex>
 
-      <StatusTrackModal state={approveState} title={'Approve'} />
       <StatusTrackModal state={withdrawState} title={'Withdraw Action'} />
 
       <Box marginTop={'10px'}>
-        {allowance.gt(walletBalance) === false && isNativeToken === false ? (
-          <EnsureWalletConnected>
-            <Button
-              onClick={() => sendApprove(strategyAddress)}
-              width={'full'}
-              variant={'primary'}
-              isLoading={
-                approveState.status == TxStatus.SUCCESS &&
-                allowance.gt(walletBalance) === false
-              }
-            >
-              Approve {token.name}{' '}
-            </Button>
-          </EnsureWalletConnected>
-        ) : (
+        <EnsureWalletConnected>
           <Button
             type="submit"
             width={'full'}
-            variant={!confirmButtonDisabled ? 'submit' : 'primary'}
+            variant={!confirmButtonDisabled ? 'submit' : 'submit-primary'}
             isLoading={isSubmittingDepForm}
             isDisabled={!confirmButtonDisabled}
           >
             Withdraw
           </Button>
-        )}
+        </EnsureWalletConnected>
       </Box>
     </form>
   );

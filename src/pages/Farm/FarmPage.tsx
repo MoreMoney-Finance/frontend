@@ -13,10 +13,10 @@ import {
   Text,
   Thead,
   Tr,
+  Link
 } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import {
   ParsedStakingMetadata,
   useAddresses,
@@ -106,7 +106,10 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
                       </Box>
                       <Box w="100%">{item.aprPercent} %</Box>
                       <Box w="100%">
-                        <Button as={Link} to={getLPTokenLinks[index]}>Get LP Token &nbsp; <ExternalLinkIcon /> </Button>
+                        <Button as={Link} href={getLPTokenLinks[index]} isExternal>
+                          Get LP Token &nbsp;
+                          <ExternalLinkIcon />
+                        </Button>
                       </Box>
                     </Grid>
                   </AccordionButton>

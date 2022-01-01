@@ -112,7 +112,7 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
   addressToken[chainIds[chainId]].set(
     getAddress(addresses.Stablecoin),
     new Token(
-      'MoreMoney US Dollar',
+      'Moremoney USD',
       'MONEY',
       chainIds[chainId],
       getAddress(addresses.Stablecoin),
@@ -139,7 +139,7 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
     addressToken[chainIds[chainId]].set(
       getAddress(addresses['ProtocolToken']),
       new Token(
-        'MoreMoney',
+        'More Token',
         'MORE',
         chainIds[chainId],
         getAddress(addresses['ProtocolToken'])

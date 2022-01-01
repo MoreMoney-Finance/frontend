@@ -323,7 +323,7 @@ export default function DepositBorrow({
         {allowance.gt(walletBalance) === false && isNativeToken === false ? (
           <EnsureWalletConnected>
             <Button
-              variant={'submit'}
+              variant={'submit-primary'}
               onClick={() => sendApprove(strategyAddress)}
               isLoading={
                 approveState.status == TxStatus.SUCCESS &&

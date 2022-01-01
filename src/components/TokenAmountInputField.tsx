@@ -19,6 +19,7 @@ export function TokenAmountInputField(props: {
   errorsForm?: Record<string, any>;
   isDisabled?: boolean;
   percentage?: string;
+  width?: string;
 }) {
   const {
     name,
@@ -29,6 +30,7 @@ export function TokenAmountInputField(props: {
     errorsForm,
     isDisabled,
     percentage,
+    width = '200px',
   } = props;
 
   const error = errorsForm?.[name];
@@ -38,7 +40,7 @@ export function TokenAmountInputField(props: {
       isInvalid={error}
       isDisabled={isDisabled}
       borderRadius={'10px'}
-      w={'200px'}
+      w={width}
       bg={'brand.bgOpacity'}
     >
       <InputGroup>

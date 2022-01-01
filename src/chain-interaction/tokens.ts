@@ -26,7 +26,7 @@ export function getTokenFromAddress(
 }
 
 export function getIconsFromTokenAddress(address: string): string[] {
-  return addressIcons.get(getAddress(address))!;
+  return addressIcons.get(getAddress(address)) ?? [];
 }
 
 export function tokenAmount(

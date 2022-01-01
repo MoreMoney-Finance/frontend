@@ -7,9 +7,7 @@ import {
   ParsedPositionMetaRow,
   ParsedStakingMetadata,
 } from '../../chain-interaction/contracts';
-import {
-  useWithdraw,
-} from '../../chain-interaction/transactions';
+import { useWithdraw } from '../../chain-interaction/transactions';
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
 import { EnsureWalletConnected } from '../EnsureWalletConnected';
 import { StatusTrackModal } from '../StatusTrackModal';

@@ -14,6 +14,7 @@ import { LiquidationFeesCtxProvider } from './contexts/LiquidationFeesContext';
 import { useConfig, useEthers } from '@usedapp/core';
 import { useEffect } from 'react';
 import { ethers } from 'ethers';
+import { YYMetadataCtxProvider } from './contexts/YYMetadataContext';
 
 declare let window: any;
 
@@ -78,47 +79,49 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
       <UserAddressCtxProvider>
         <WalletBalancesCtxProvider>
           <LiquidationFeesCtxProvider>
-            {addresses ? (
-              <StrategyMetadataCtxProvider>
-                <Box maxWidth="1280px" margin="0 auto" px={4}>
-                  <Box
-                    position="absolute"
-                    left="0"
-                    opacity="0.3"
-                    width="500px"
-                    height="300px"
-                    top="300px"
-                    filter="blur(200px)"
-                    pointerEvents="none"
-                    bgGradient="radial(farthest-side, hsla(0, 100%, 64%, 1), hsla(0, 100%, 64%, 0))"
-                    zIndex="var(--chakra-zIndices-docked)"
-                  />
-                  <Box
-                    position="absolute"
-                    width="350px"
-                    height="230px"
-                    filter="blur(200px)"
-                    opacity="0.3"
-                    right="100px"
-                    bottom="200px"
-                    pointerEvents="none"
-                    bgGradient="radial(farthest-side, hsla(169, 100%, 46%, 1), hsla(169, 100%, 46%, 0))"
-                    zIndex="var(--chakra-zIndices-base)"
-                  />
-                  <NotificationsComponent />
-                  <NavigationBar />
-                  <Grid minH="100vh">
-                    <Box>
-                      {params.children}
-                      <Outlet />
-                    </Box>
-                  </Grid>
-                  <FooterBar />
-                </Box>
-              </StrategyMetadataCtxProvider>
-            ) : (
-              <NetworkNotSupported />
-            )}
+            <YYMetadataCtxProvider>
+              {addresses ? (
+                <StrategyMetadataCtxProvider>
+                  <Box maxWidth="1280px" margin="0 auto" px={4}>
+                    <Box
+                      position="absolute"
+                      left="0"
+                      opacity="0.3"
+                      width="500px"
+                      height="300px"
+                      top="300px"
+                      filter="blur(200px)"
+                      pointerEvents="none"
+                      bgGradient="radial(farthest-side, hsla(0, 100%, 64%, 1), hsla(0, 100%, 64%, 0))"
+                      zIndex="var(--chakra-zIndices-docked)"
+                    />
+                    <Box
+                      position="absolute"
+                      width="350px"
+                      height="230px"
+                      filter="blur(200px)"
+                      opacity="0.3"
+                      right="100px"
+                      bottom="200px"
+                      pointerEvents="none"
+                      bgGradient="radial(farthest-side, hsla(169, 100%, 46%, 1), hsla(169, 100%, 46%, 0))"
+                      zIndex="var(--chakra-zIndices-base)"
+                    />
+                    <NotificationsComponent />
+                    <NavigationBar />
+                    <Grid minH="100vh">
+                      <Box>
+                        {params.children}
+                        <Outlet />
+                      </Box>
+                    </Grid>
+                    <FooterBar />
+                  </Box>
+                </StrategyMetadataCtxProvider>
+              ) : (
+                <NetworkNotSupported />
+              )}
+            </YYMetadataCtxProvider>
           </LiquidationFeesCtxProvider>
         </WalletBalancesCtxProvider>
       </UserAddressCtxProvider>

@@ -1,20 +1,21 @@
+import { Box, ChakraProvider, Grid } from '@chakra-ui/react';
+import { useConfig, useEthers } from '@usedapp/core';
+import { ethers } from 'ethers';
 import * as React from 'react';
-import { ChakraProvider, Box, Grid } from '@chakra-ui/react';
+import { useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
+import { useAddresses } from './chain-interaction/contracts';
+import FooterBar from './components/FooterBar';
+import NavigationBar from './components/NavigationBar';
+import NetworkNotSupported from './components/NetworkNotSupported';
+import { NotificationsComponent } from './components/NotificationsComponent';
+import PhishingAlertComponent from './components/PhishingAlertComponent';
+import { LiquidationFeesCtxProvider } from './contexts/LiquidationFeesContext';
+import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
 import { UserAddressCtxProvider } from './contexts/UserAddressContext';
 import { WalletBalancesCtxProvider } from './contexts/WalletBalancesContext';
-import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
-import { Outlet } from 'react-router-dom';
-import { NotificationsComponent } from './components/NotificationsComponent';
-import NavigationBar from './components/NavigationBar';
-import { useAddresses } from './chain-interaction/contracts';
-import NetworkNotSupported from './components/NetworkNotSupported';
-import { theme } from './theme';
-import FooterBar from './components/FooterBar';
-import { LiquidationFeesCtxProvider } from './contexts/LiquidationFeesContext';
-import { useConfig, useEthers } from '@usedapp/core';
-import { useEffect } from 'react';
-import { ethers } from 'ethers';
 import { YYMetadataCtxProvider } from './contexts/YYMetadataContext';
+import { theme } from './theme';
 
 declare let window: any;
 
@@ -82,6 +83,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
             <YYMetadataCtxProvider>
               {addresses ? (
                 <StrategyMetadataCtxProvider>
+                  <PhishingAlertComponent />
                   <Box maxWidth="1280px" margin="0 auto" px={4}>
                     <Box
                       position="absolute"

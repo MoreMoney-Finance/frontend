@@ -5,13 +5,16 @@ import { BigNumber } from 'ethers';
 import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import { useStable } from '../chain-interaction/contracts';
 import colorDot from '../assets/img/color_dot.svg';
+import { UserAddressContext } from '../contexts/UserAddressContext';
+import { useContext } from 'react';
 
 type Props = {
   handleOpenModal: any;
 };
 
 export function UserAddressComponent({ handleOpenModal }: Props) {
-  const { activateBrowserWallet, account } = useEthers();
+  const { activateBrowserWallet } = useEthers();
+  const account = useContext(UserAddressContext);
   const stable = useStable();
   const balanceCtx = React.useContext(WalletBalancesContext);
   const walletBalance =

@@ -1,13 +1,13 @@
 import { Button, VStack } from '@chakra-ui/react';
-import { useEthers } from '@usedapp/core';
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   TxStatus,
-  useStable,
+  useStable
 } from '../chain-interaction/contracts';
 import { useMigrateStrategy } from '../chain-interaction/transactions';
+import { UserAddressContext } from '../contexts/UserAddressContext';
 import { StatusTrackModal } from './StatusTrackModal';
 import { StrategyDataTable } from './StrategyDataTable';
 
@@ -15,7 +15,7 @@ export function MigrateStrategy(
   params: ParsedStratMetaRow & ParsedPositionMetaRow
 ) {
   const { strategyAddress, strategyName, trancheId } = params;
-  const { account } = useEthers();
+  const account = useContext(UserAddressContext);
 
   const stable = useStable();
   const { sendMigrateStrategy, migrateStrategyState } = useMigrateStrategy();

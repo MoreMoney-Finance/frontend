@@ -1,18 +1,19 @@
+import { Grid } from '@chakra-ui/react';
 import * as React from 'react';
+import { useContext } from 'react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
-  useStable,
+  useStable
 } from '../../chain-interaction/contracts';
-import { Grid } from '@chakra-ui/react';
-import { PositionData } from './PositionData';
-import EditPosition from './EditPosition';
+import { useMigrateStrategy } from '../../chain-interaction/transactions';
+import { UserAddressContext } from '../../contexts/UserAddressContext';
+import { StatusTrackModal } from '../StatusTrackModal';
 import CollateralAPY from './CollateralAPY';
+import EditPosition from './EditPosition';
+import { PositionData } from './PositionData';
 import StrategyNameAndSwitch from './StrategyNameAndSwitch';
 import StrategyTokenInformation from './StrategyTokenInformation';
-import { useEthers } from '@usedapp/core';
-import { useMigrateStrategy } from '../../chain-interaction/transactions';
-import { StatusTrackModal } from '../StatusTrackModal';
 
 export function PositionBody({
   position,
@@ -24,7 +25,7 @@ export function PositionBody({
   const [chosenStrategy, setChosenStrategy] = React.useState<string>(
     position?.strategy ?? Object.keys(stratMeta)[0]
   );
-  const { account } = useEthers();
+  const account = useContext(UserAddressContext);
   const stable = useStable();
   const { sendMigrateStrategy, migrateStrategyState } = useMigrateStrategy();
 

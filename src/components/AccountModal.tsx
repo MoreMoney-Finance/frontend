@@ -20,6 +20,8 @@ import {
   shortenAddress,
   useEthers,
 } from '@usedapp/core';
+import { useContext } from 'react';
+import { UserAddressContext } from '../contexts/UserAddressContext';
 
 type Props = {
   isOpen: any;
@@ -27,7 +29,8 @@ type Props = {
 };
 
 export default function AccountModal({ isOpen, onClose }: Props) {
-  const { account, deactivate } = useEthers();
+  const { deactivate } = useEthers();
+  const account = useContext(UserAddressContext);
   const { chainId } = useEthers();
   const _chainId = chainId === ChainId.Hardhat ? ChainId.Avalanche : chainId;
   const explorerLink = account

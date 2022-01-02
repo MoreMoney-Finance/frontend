@@ -4,7 +4,7 @@ import {
   ERC20Interface,
   Token,
   useContractCalls,
-  useEthers,
+  useEthers
 } from '@usedapp/core';
 import { getAddress } from 'ethers/lib/utils';
 import React, { useContext } from 'react';
@@ -32,7 +32,9 @@ export function WalletBalancesCtxProvider({
     };
   }
   const tokensInQuestion = getTokensInQuestion(chainId!);
-  const calls: ContractCall[] = account ? tokensInQuestion.map(convert2ContractCall) : [];
+  const calls: ContractCall[] = account
+    ? tokensInQuestion.map(convert2ContractCall)
+    : [];
   const results = useContractCalls(calls) ?? [];
   results?.forEach((result: any[] | undefined, index: number) => {
     if (result) {
@@ -58,7 +60,7 @@ export function WalletBalancesCtxProvider({
 }
 
 export function useWalletBalance(tokenAddress: string | undefined | null) {
-  const { account } = useEthers();
+  const account = useContext(UserAddressContext);
   const ctxAccount = useContext(UserAddressContext);
   const balancesCtx = useContext(WalletBalancesContext);
 

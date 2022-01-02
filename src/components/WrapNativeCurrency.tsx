@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button, FormControl } from '@chakra-ui/react';
 import { BigNumber } from '@ethersproject/bignumber';
 import {
@@ -6,13 +5,15 @@ import {
   CurrencyValue,
   NativeCurrency,
   useEtherBalance,
-  useEthers,
+  useEthers
 } from '@usedapp/core';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { useWrapNative } from '../chain-interaction/transactions';
-import { TokenAmountInputField } from './TokenAmountInputField';
+import { UserAddressContext } from '../contexts/UserAddressContext';
 import { EnsureWalletConnected } from './EnsureWalletConnected';
 import { StatusTrackModal } from './StatusTrackModal';
+import { TokenAmountInputField } from './TokenAmountInputField';
 
 export function WrapNativeCurrency() {
   const {
@@ -21,7 +22,8 @@ export function WrapNativeCurrency() {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm();
-  const { account, chainId } = useEthers();
+  const { chainId } = useEthers();
+  const account = useContext(UserAddressContext);
   const bignumBalance = useEtherBalance(account) ?? BigNumber.from('0');
 
   const ethBalance = new CurrencyValue(

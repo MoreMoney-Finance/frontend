@@ -7,29 +7,30 @@ import {
   Box,
   Button,
   Grid,
-  GridItem,
-  Table,
+  GridItem, Link, Table,
   Td,
   Text,
   Thead,
-  Tr,
-  Link
+  Tr
 } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
+import { useContext } from 'react';
 import {
   ParsedStakingMetadata,
   useAddresses,
-  useParsedStakingMetadata,
+  useParsedStakingMetadata
 } from '../../chain-interaction/contracts';
 import ClaimReward from '../../components/FarmPageComponents/ClaimReward';
 import DepositForm from '../../components/FarmPageComponents/DepositForm';
 import WithdrawForm from '../../components/FarmPageComponents/WithdrawForm';
 import { TokenDescription } from '../../components/TokenDescription';
+import { UserAddressContext } from '../../contexts/UserAddressContext';
 import farminfo from '../../contracts/farminfo.json';
 
 export function FarmPage(params: React.PropsWithChildren<unknown>) {
-  const { account, chainId } = useEthers();
+  const { chainId } = useEthers();
+  const account = useContext(UserAddressContext);
 
   const stakeMeta: ParsedStakingMetadata[] = useParsedStakingMetadata(
     [useAddresses().CurvePoolRewards],
@@ -37,7 +38,9 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
   ).flat(1);
 
   const farmInfoIdx = (chainId?.toString() ?? '43114') as keyof typeof farminfo;
-  const getLPTokenLinks = [`https://avax.curve.fi/factory/${farminfo[farmInfoIdx].curvePoolIdx}/deposit`];
+  const getLPTokenLinks = [
+    `https://avax.curve.fi/factory/${farminfo[farmInfoIdx].curvePoolIdx}/deposit`,
+  ];
 
   return (
     <>
@@ -62,7 +65,13 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
             </Tr>
           </Thead>
         </Table>
-        <Accordion allowToggle allowMultiple width={'full'} variant={'farm'} defaultIndex={0}>
+        <Accordion
+          allowToggle
+          allowMultiple
+          width={'full'}
+          variant={'farm'}
+          defaultIndex={0}
+        >
           {stakeMeta.map((item, index) => {
             return (
               <div key={'item' + index}>
@@ -106,7 +115,11 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
                       </Box>
                       <Box w="100%">{item.aprPercent} %</Box>
                       <Box w="100%">
-                        <Button as={Link} href={getLPTokenLinks[index]} isExternal>
+                        <Button
+                          as={Link}
+                          href={getLPTokenLinks[index]}
+                          isExternal
+                        >
                           Get LP Token &nbsp;
                           <ExternalLinkIcon />
                         </Button>

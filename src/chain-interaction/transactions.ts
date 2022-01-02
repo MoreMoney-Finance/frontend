@@ -301,6 +301,7 @@ export function useMigrateStrategy() {
 const PNG = '0x60781C2586D68229fde47564546784ab3fACA982';
 const JOE = '0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd';
 const USDCe = '0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664';
+const USDTe = '0xc7198437980c041c805A1EDcbA50c1Ce5db95118';
 
 const ammDefaults: Record<string, { router: string; path: string[] }> = {
   [PNG]: {
@@ -311,6 +312,10 @@ const ammDefaults: Record<string, { router: string; path: string[] }> = {
     router: '0x60aE616a2155Ee3d9A68541Ba4544862310933d4',
     path: [JOE, USDCe],
   },
+  [USDTe]: {
+    router: '0x60aE616a2155Ee3d9A68541Ba4544862310933d4',
+    path: [USDTe, USDCe]
+  }
 };
 
 export function useAMMHarvest(strategyAddress: string) {

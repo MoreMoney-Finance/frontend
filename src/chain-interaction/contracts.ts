@@ -140,7 +140,7 @@ function parseStratMeta(
 
   const APY =
     underlyingAddress in yyMetadata
-      ? yyMetadata[strategyAddress].apy * 0.9
+      ? yyMetadata[underlyingAddress].apy * 0.9
       : convertAPF2APY(row.APF);
 
   return {

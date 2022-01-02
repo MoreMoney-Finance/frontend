@@ -1,4 +1,3 @@
-import { Box } from '@chakra-ui/react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -15,15 +14,13 @@ export default function CurrentlyOpenPositions({
 
   const positions = Object.values(allPositionMeta).flatMap((x) => x);
   return positions.length > 0 ? (
-    <Box mx="-95px">
-      <TrancheTable
-        positions={positions}
-        action={{
-          label: 'Edit',
-          args: (pos) => ({ as: Link, to: `/token/${pos.token.address}` }),
-        }}
-      />
-    </Box>
+    <TrancheTable
+      positions={positions}
+      action={{
+        label: 'Edit',
+        args: (pos) => ({ as: Link, to: `/token/${pos.token.address}` }),
+      }}
+    />
   ) : (
     <> </>
   );

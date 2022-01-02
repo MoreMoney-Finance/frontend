@@ -1,6 +1,7 @@
-import { HStack, Box } from '@chakra-ui/react';
+import { Box, HStack } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
+import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { ParsedStratMetaRow } from '../chain-interaction/contracts';
 import { getTokenFromAddress } from '../chain-interaction/tokens';
@@ -9,9 +10,11 @@ import { TokenDescription } from '../components/TokenDescription';
 import { PositionBody } from '../components/TokenPageComponents/PositionBody';
 import { TokenPageBody } from '../components/TokenPageComponents/TokenPageBody';
 import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
+import { UserAddressContext } from '../contexts/UserAddressContext';
 
 export function TokenPage(props: React.PropsWithChildren<unknown>) {
-  const { chainId, account } = useEthers();
+  const { chainId } = useEthers();
+  const account = useContext(UserAddressContext);
   const params = useParams<'tokenAddress'>();
   const tokenAddress = params.tokenAddress;
   const allStratMeta = React.useContext(StrategyMetadataContext);

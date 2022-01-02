@@ -1,19 +1,16 @@
-import * as React from 'react';
+import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
 import {
   Box,
   Flex,
   HStack,
-  IconButton,
-  useDisclosure,
-  Stack,
-  Image,
-  Link as LinkComponent,
+  IconButton, Image,
+  Link as LinkComponent, Stack, useDisclosure
 } from '@chakra-ui/react';
+import * as React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import { UserAddressComponent } from './UserAddressComponent';
-import AccountModal from './AccountModal';
 import logo from '../assets/logo/logo.svg';
+import AccountModal from './AccountModal';
+import { UserAddressComponent } from './UserAddressComponent';
 
 const Links = [
   { title: 'Borrow', link: '/' },
@@ -34,6 +31,7 @@ export default function NavigationBar() {
 
   return (
     <>
+     
       <Box position="relative" zIndex="var(--chakra-zIndices-header)">
         <Flex
           alignItems={'center'}

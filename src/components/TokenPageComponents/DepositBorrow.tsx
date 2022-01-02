@@ -17,6 +17,7 @@ import {
 } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   calcLiqPriceFromNum,
@@ -31,6 +32,7 @@ import {
   useNativeDepositBorrowTrans,
 } from '../../chain-interaction/transactions';
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
+import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../contexts/WalletBalancesContext';
 import { EnsureWalletConnected } from '../EnsureWalletConnected';
 import { StatusTrackModal } from '../StatusTrackModal';
@@ -45,7 +47,8 @@ export default function DepositBorrow({
   stratMeta: ParsedStratMetaRow;
 }>) {
   const { token, strategyAddress, borrowablePercent, usdPrice } = stratMeta;
-  const { chainId, account } = useEthers();
+  const { chainId } = useEthers();
+  const account = useContext(UserAddressContext);
   const stable = useStable();
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;

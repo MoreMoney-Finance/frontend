@@ -2,6 +2,7 @@ import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { CurrencyValue, useEtherBalance, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   ParsedPositionMetaRow,
@@ -9,6 +10,7 @@ import {
 } from '../../chain-interaction/contracts';
 import { useWithdraw } from '../../chain-interaction/transactions';
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
+import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { EnsureWalletConnected } from '../EnsureWalletConnected';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
@@ -22,7 +24,8 @@ export default function WithdrawForm({
 }>) {
   const token = stakeMeta.stakingToken;
 
-  const { chainId, account } = useEthers();
+  const { chainId } = useEthers();
+  const account = useContext(UserAddressContext);
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
 

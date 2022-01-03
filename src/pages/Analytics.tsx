@@ -1,16 +1,16 @@
-import * as React from 'react';
-import { Box, Grid, GridItem, Text } from '@chakra-ui/react';
-import { AnalyticsBox } from './Analytics/AnalyticsBox';
-import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
+import { Box, Container, Flex, Grid, GridItem, Text } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
+import * as React from 'react';
 import {
   DeploymentAddresses,
   useAddresses,
+  useAllFeesEver,
   useStable,
   useTotalSupply,
-  useAllFeesEver,
 } from '../chain-interaction/contracts';
+import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
+import { AnalyticsBox } from './Analytics/AnalyticsBox';
 
 export function Analytics(props: React.PropsWithChildren<unknown>) {
   const allStratMeta = React.useContext(StrategyMetadataContext);
@@ -43,7 +43,7 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
     );
 
   const supply = useTotalSupply('totalSupply', [], ['']);
-  const colRatio = supply != 0 ? supply.div(tvl) : 0;
+  const colRatio = !tvl.isZero() ? supply.div(tvl.value) : 0;
 
   const fees = useAllFeesEver(contracts);
   console.log('fees', fees);
@@ -64,44 +64,58 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
       <br />
       <br />
       <br />
-      <Grid templateColumns="repeat(4, 1fr)" gap={6}>
-        <GridItem rowSpan={2} colSpan={1} alignSelf={'center'}>
-          <Box>
-            <AnalyticsBox
-              title={'Total Value Locked'}
-              subtitle={'Total deposits on MoreMoney'}
-              value={'$' + tvl.value.toString()}
-            />
-          </Box>
+      <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+        <GridItem rowSpan={2} colSpan={1} height={'100%'}>
+          <Container variant={'token'} padding={'35px 20px 20px 20px'}>
+            <Flex
+              w={'full'}
+              h={'full'}
+              direction={'column'}
+              justifyContent={'center'}
+            >
+              <AnalyticsBox
+                title={'Total Value Locked'}
+                subtitle={'Total deposits on MoreMoney'}
+                value={'$' + tvl.value.toString()}
+              />
+            </Flex>
+          </Container>
         </GridItem>
-
-        <Box w="100%" h="150">
-          <AnalyticsBox
-            title={'Total Protocol Collateralization Ratio'}
-            subtitle={'Total protocol collateral on MoreMoney'}
-            value={'$' + colRatio}
-          />
+        <Box w="100%" h="200">
+          <Container variant={'token'} padding={'35px 20px 20px 20px'}>
+            <AnalyticsBox
+              title={'Total Protocol Collateralization Ratio'}
+              subtitle={'Total protocol collateral on MoreMoney'}
+              value={'$' + colRatio}
+            />
+          </Container>
         </Box>
-        <Box w="100%" h="150">
-          <AnalyticsBox
-            title={'Fees earned'}
-            subtitle={'Fees paid to MoreMoney'}
-            value={totalFees.format()}
-          />
+        <Box w="100%" h="200">
+          <Container variant={'token'} padding={'35px 20px 20px 20px'}>
+            <AnalyticsBox
+              title={'Fees earned'}
+              subtitle={'Fees paid to MoreMoney'}
+              value={totalFees.format()}
+            />
+          </Container>
         </Box>
-        <Box w="100%" h="150">
-          <AnalyticsBox
-            title={'Assets supported'}
-            subtitle={`${Object.keys(allStratMeta).length} assets supported`}
-            value={''}
-          />
+        <Box w="100%" h="200">
+          <Container variant={'token'} padding={'35px 20px 20px 20px'}>
+            <AnalyticsBox
+              title={'Assets supported'}
+              subtitle={`${Object.keys(allStratMeta).length} assets supported`}
+              value={''}
+            />
+          </Container>
         </Box>
-        <Box w="100%" h="150">
-          <AnalyticsBox
-            title={'MONEY circulating supply'}
-            subtitle={'Circulating volume of MONEY'}
-            value={'$' + supply}
-          />
+        <Box w="100%" h="200">
+          <Container variant={'token'} padding={'35px 20px 20px 20px'}>
+            <AnalyticsBox
+              title={'MONEY circulating supply'}
+              subtitle={'Circulating volume of MONEY'}
+              value={'$' + supply}
+            />
+          </Container>
         </Box>
       </Grid>
       {props.children}

@@ -43,10 +43,9 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
     );
 
   const supply = useTotalSupply('totalSupply', [], ['']);
-  const colRatio = supply != 0 ? supply.div(tvl) : 0;
+  const colRatio = !tvl.isZero() ? supply.div(tvl.value) : 0;
 
   const fees = useAllFeesEver(contracts);
-  console.log('fees', fees);
 
   const totalFees = fees
     .filter((fee) => fee)

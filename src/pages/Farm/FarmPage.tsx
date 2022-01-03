@@ -6,12 +6,15 @@ import {
   AccordionPanel,
   Box,
   Button,
+  Container,
   Grid,
-  GridItem, Link, Table,
+  GridItem,
+  Link,
+  Table,
   Td,
   Text,
   Thead,
-  Tr
+  Tr,
 } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
@@ -19,7 +22,7 @@ import { useContext } from 'react';
 import {
   ParsedStakingMetadata,
   useAddresses,
-  useParsedStakingMetadata
+  useParsedStakingMetadata,
 } from '../../chain-interaction/contracts';
 import ClaimReward from '../../components/FarmPageComponents/ClaimReward';
 import DepositForm from '../../components/FarmPageComponents/DepositForm';
@@ -111,7 +114,11 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
                         <Text>$ {item.tvl.format({ suffix: '' })}</Text>
                       </Box>
                       <Box w="120%">
-                        <TokenDescription token={item.rewardsToken} />
+                        {item.earned.isZero() ? (
+                          <TokenDescription token={item.rewardsToken} />
+                        ) : (
+                          item.earned.format()
+                        )}
                       </Box>
                       <Box w="100%">{item.aprPercent} %</Box>
                       <Box w="100%">
@@ -119,6 +126,7 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
                           as={Link}
                           href={getLPTokenLinks[index]}
                           isExternal
+                          color={'white'}
                         >
                           Get LP Token &nbsp;
                           <ExternalLinkIcon />
@@ -129,16 +137,34 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
                   <AccordionPanel mt="16px">
                     <Grid templateColumns="repeat(13, 1fr)" gap={6}>
                       <GridItem w="100%" colSpan={5}>
-                        <DepositForm stakeMeta={item} />
+                        <Container
+                          variant={'token'}
+                          padding={'16px'}
+                          position="relative"
+                        >
+                          <DepositForm stakeMeta={item} />
+                        </Container>
                       </GridItem>
                       <GridItem w="100%" colSpan={5}>
-                        <WithdrawForm stakeMeta={item} />
+                        <Container
+                          variant={'token'}
+                          padding={'16px'}
+                          position="relative"
+                        >
+                          <WithdrawForm stakeMeta={item} />
+                        </Container>
                       </GridItem>
                       <GridItem colSpan={3} w="110%">
-                        <ClaimReward
-                          stakeMeta={item}
-                          token={item.rewardsToken}
-                        />
+                        <Container
+                          variant={'token'}
+                          padding={'16px'}
+                          position="relative"
+                        >
+                          <ClaimReward
+                            stakeMeta={item}
+                            token={item.rewardsToken}
+                          />
+                        </Container>
                       </GridItem>
                     </Grid>
                   </AccordionPanel>

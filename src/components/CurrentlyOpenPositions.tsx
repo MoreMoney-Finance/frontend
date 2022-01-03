@@ -1,3 +1,4 @@
+import { Flex } from '@chakra-ui/react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -14,13 +15,15 @@ export default function CurrentlyOpenPositions({
 
   const positions = Object.values(allPositionMeta).flatMap((x) => x);
   return positions.length > 0 ? (
-    <TrancheTable
-      positions={positions}
-      action={{
-        label: 'Edit',
-        args: (pos) => ({ as: Link, to: `/token/${pos.token.address}` }),
-      }}
-    />
+    <Flex justifyContent={'center'}>
+      <TrancheTable
+        positions={positions}
+        action={{
+          label: 'Edit',
+          args: (pos) => ({ as: Link, to: `/token/${pos.token.address}` }),
+        }}
+      />
+    </Flex>
   ) : (
     <> </>
   );

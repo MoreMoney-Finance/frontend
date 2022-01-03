@@ -7,14 +7,11 @@ import {
   Box,
   Button,
   Container,
+  Flex,
   Grid,
   GridItem,
   Link,
-  Table,
-  Td,
   Text,
-  Thead,
-  Tr,
 } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
@@ -56,18 +53,20 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
             token, sit back and relax!
           </Text>
         </Box>
-        <Table width="full">
-          <Thead>
-            <Tr>
-              <Td textAlign={'center'}>Asset</Td>
-              <Td textAlign={'center'}>Stake</Td>
-              <Td textAlign={'center'}>TVL</Td>
-              <Td textAlign={'center'}>Reward</Td>
-              <Td textAlign={'center'}>APR</Td>
-              <Td textAlign={'center'}>Acquire</Td>
-            </Tr>
-          </Thead>
-        </Table>
+        <Grid
+          templateColumns="repeat(6, 1fr)"
+          w={'auto'}
+          padding={'0px 45px'}
+          alignContent={'center'}
+          verticalAlign={'center'}
+        >
+          <Text textAlign={'center'}>Asset</Text>
+          <Text textAlign={'center'}>Stake</Text>
+          <Text textAlign={'center'}>TVL</Text>
+          <Text textAlign={'center'}>Reward</Text>
+          <Text textAlign={'center'}>APR</Text>
+          <Text textAlign={'center'}>Acquire</Text>
+        </Grid>
         <Accordion
           allowToggle
           allowMultiple
@@ -104,24 +103,28 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
                       alignContent={'center'}
                       verticalAlign={'center'}
                     >
-                      <Box w="120%">
-                        <TokenDescription token={item.stakingToken} />
-                      </Box>
-                      <Box w="90%">
+                      <Flex w={'full'} justifyContent={'center'}>
+                        <Box w={'fit-content'}>
+                          <TokenDescription token={item.stakingToken} />
+                        </Box>
+                      </Flex>
+                      <Box>
                         <Text>{item.stakedBalance.format({ suffix: '' })}</Text>
                       </Box>
-                      <Box w="100%">
+                      <Box>
                         <Text>$ {item.tvl.format({ suffix: '' })}</Text>
                       </Box>
-                      <Box w="120%">
+                      <Flex w={'full'} justifyContent={'center'}>
                         {item.earned.isZero() ? (
-                          <TokenDescription token={item.rewardsToken} />
+                          <Box w={'fit-content'}>
+                            <TokenDescription token={item.rewardsToken} />
+                          </Box>
                         ) : (
                           item.earned.format()
                         )}
-                      </Box>
-                      <Box w="100%">{item.aprPercent} %</Box>
-                      <Box w="100%">
+                      </Flex>
+                      <Box>{item.aprPercent} %</Box>
+                      <Box>
                         <Button
                           as={Link}
                           href={getLPTokenLinks[index]}

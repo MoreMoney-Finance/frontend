@@ -87,7 +87,7 @@ export function IsolatedTranche(
 
         <Td>
           {collateral.format({
-            significantDigits: 6,
+            significantDigits: Infinity,
             suffix: '',
           })}
         </Td>

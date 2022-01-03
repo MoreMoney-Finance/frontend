@@ -11,7 +11,7 @@ export function AnalyticsBox({
   value: string;
 }) {
   return (
-    <Box textAlign={'start'}>
+    <Box textAlign={'center'} lineHeight={'2'}>
       <Text fontSize={'xl'}>{title}</Text>
       <Text fontSize={'md'} color={'gray.400'}>
         {subtitle}

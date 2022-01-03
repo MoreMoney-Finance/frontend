@@ -15,6 +15,8 @@ export default function ClaimReward({
 }>) {
   const { sendClaim, claimState } = useClaimReward();
 
+  const buttonDisabled = stakeMeta?.vested?.isZero();
+
   return (
     <VStack
       flexDirection={'column'}
@@ -23,12 +25,17 @@ export default function ClaimReward({
       justifyContent={'space-between'}
       height={'full'}
     >
-      <Text>Reward</Text>
+      <Text>Vested Reward</Text>
       <HStack textAlign={'center'}>
         <Avatar size={'sm'} src={getIconsFromTokenAddress(token.address)[0]} />
         <Text>&nbsp; {stakeMeta.vested.format({})}</Text>
       </HStack>
-      <Button type="submit" w={'50%'} onClick={sendClaim}>
+      <Button
+        isDisabled={buttonDisabled}
+        type="submit"
+        w={'50%'}
+        onClick={sendClaim}
+      >
         Claim
       </Button>
       <StatusTrackModal state={claimState} title={'Claim Reward'} />

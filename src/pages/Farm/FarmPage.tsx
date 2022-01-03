@@ -6,12 +6,12 @@ import {
   AccordionPanel,
   Box,
   Button,
+  Container,
+  Flex,
   Grid,
-  GridItem, Link, Table,
-  Td,
+  GridItem,
+  Link,
   Text,
-  Thead,
-  Tr
 } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
@@ -19,7 +19,7 @@ import { useContext } from 'react';
 import {
   ParsedStakingMetadata,
   useAddresses,
-  useParsedStakingMetadata
+  useParsedStakingMetadata,
 } from '../../chain-interaction/contracts';
 import ClaimReward from '../../components/FarmPageComponents/ClaimReward';
 import DepositForm from '../../components/FarmPageComponents/DepositForm';
@@ -53,18 +53,20 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
             token, sit back and relax!
           </Text>
         </Box>
-        <Table width="full">
-          <Thead>
-            <Tr>
-              <Td textAlign={'center'}>Asset</Td>
-              <Td textAlign={'center'}>Stake</Td>
-              <Td textAlign={'center'}>TVL</Td>
-              <Td textAlign={'center'}>Reward</Td>
-              <Td textAlign={'center'}>APR</Td>
-              <Td textAlign={'center'}>Acquire</Td>
-            </Tr>
-          </Thead>
-        </Table>
+        <Grid
+          templateColumns="repeat(6, 1fr)"
+          w={'auto'}
+          padding={'0px 45px'}
+          alignContent={'center'}
+          verticalAlign={'center'}
+        >
+          <Text textAlign={'center'}>Asset</Text>
+          <Text textAlign={'center'}>Stake</Text>
+          <Text textAlign={'center'}>TVL</Text>
+          <Text textAlign={'center'}>Reward</Text>
+          <Text textAlign={'center'}>APR</Text>
+          <Text textAlign={'center'}>Acquire</Text>
+        </Grid>
         <Accordion
           allowToggle
           allowMultiple
@@ -101,24 +103,33 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
                       alignContent={'center'}
                       verticalAlign={'center'}
                     >
-                      <Box w="120%">
-                        <TokenDescription token={item.stakingToken} />
-                      </Box>
-                      <Box w="90%">
+                      <Flex w={'full'} justifyContent={'center'}>
+                        <Box w={'fit-content'}>
+                          <TokenDescription token={item.stakingToken} />
+                        </Box>
+                      </Flex>
+                      <Box>
                         <Text>{item.stakedBalance.format({ suffix: '' })}</Text>
                       </Box>
-                      <Box w="100%">
+                      <Box>
                         <Text>$ {item.tvl.format({ suffix: '' })}</Text>
                       </Box>
-                      <Box w="120%">
-                        <TokenDescription token={item.rewardsToken} />
-                      </Box>
-                      <Box w="100%">{item.aprPercent} %</Box>
-                      <Box w="100%">
+                      <Flex w={'full'} justifyContent={'center'}>
+                        {item.earned.isZero() ? (
+                          <Box w={'fit-content'}>
+                            <TokenDescription token={item.rewardsToken} />
+                          </Box>
+                        ) : (
+                          item.earned.format()
+                        )}
+                      </Flex>
+                      <Box>{item.aprPercent} %</Box>
+                      <Box>
                         <Button
                           as={Link}
                           href={getLPTokenLinks[index]}
                           isExternal
+                          color={'white'}
                         >
                           Get LP Token &nbsp;
                           <ExternalLinkIcon />
@@ -129,16 +140,34 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
                   <AccordionPanel mt="16px">
                     <Grid templateColumns="repeat(13, 1fr)" gap={6}>
                       <GridItem w="100%" colSpan={5}>
-                        <DepositForm stakeMeta={item} />
+                        <Container
+                          variant={'token'}
+                          padding={'16px'}
+                          position="relative"
+                        >
+                          <DepositForm stakeMeta={item} />
+                        </Container>
                       </GridItem>
                       <GridItem w="100%" colSpan={5}>
-                        <WithdrawForm stakeMeta={item} />
+                        <Container
+                          variant={'token'}
+                          padding={'16px'}
+                          position="relative"
+                        >
+                          <WithdrawForm stakeMeta={item} />
+                        </Container>
                       </GridItem>
                       <GridItem colSpan={3} w="110%">
-                        <ClaimReward
-                          stakeMeta={item}
-                          token={item.rewardsToken}
-                        />
+                        <Container
+                          variant={'token'}
+                          padding={'16px'}
+                          position="relative"
+                        >
+                          <ClaimReward
+                            stakeMeta={item}
+                            token={item.rewardsToken}
+                          />
+                        </Container>
                       </GridItem>
                     </Grid>
                   </AccordionPanel>

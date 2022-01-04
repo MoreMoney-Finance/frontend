@@ -330,6 +330,21 @@ export function useIsolatedPositionMetadata(
   );
 }
 
+export function useGlobalDebtCeiling(
+  method: string,
+  args: any[],
+  defaultResult: any
+) {
+  const address = useAddresses().Stablecoin;
+  const abi = new Interface(ERC20.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method,
+    args,
+  }) ?? [defaultResult])[0];
+}
+
 export function useTotalSupply(
   method: string,
   args: any[],

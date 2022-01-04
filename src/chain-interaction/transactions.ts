@@ -1,32 +1,30 @@
 import { Interface } from '@ethersproject/abi';
 import { Contract } from '@ethersproject/contracts';
+import IERC20 from '@openzeppelin/contracts/build/contracts/IERC20.json';
 import { useContractFunction } from '@usedapp/core';
 import { Token } from '@usedapp/core/dist/esm/src/model';
-import {
-  useAddresses,
-  useRegisteredOracle,
-  useStable,
-  useYieldConversionStrategyView,
-} from './contracts';
-
-import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
-import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
-import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
-import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
-import CurvePoolRewards from '../contracts/artifacts/contracts/rewards/CurvePoolRewards.sol/CurvePoolRewards.json';
-import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
-import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
-import { useContext } from 'react';
-import { UserAddressContext } from '../contexts/UserAddressContext';
-
-import IWETH from '../contracts/artifacts/interfaces/IWETH.sol/IWETH.json';
-import IERC20 from '@openzeppelin/contracts/build/contracts/IERC20.json';
 import {
   parseEther,
   parseUnits,
 } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber, ethers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
+import { useContext } from 'react';
+import { UserAddressContext } from '../contexts/UserAddressContext';
+import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
+import CurvePoolRewards from '../contracts/artifacts/contracts/rewards/CurvePoolRewards.sol/CurvePoolRewards.json';
+import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
+import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
+import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
+import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
+import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
+import IWETH from '../contracts/artifacts/interfaces/IWETH.sol/IWETH.json';
+import {
+  useAddresses,
+  useRegisteredOracle,
+  useStable,
+  useYieldConversionStrategyView,
+} from './contracts';
 
 export function useClaimReward() {
   const ilAddress = useAddresses().CurvePoolRewards;
@@ -314,8 +312,8 @@ const ammDefaults: Record<string, { router: string; path: string[] }> = {
   },
   [USDTe]: {
     router: '0x60aE616a2155Ee3d9A68541Ba4544862310933d4',
-    path: [USDTe, USDCe]
-  }
+    path: [USDTe, USDCe],
+  },
 };
 
 export function useAMMHarvest(strategyAddress: string) {

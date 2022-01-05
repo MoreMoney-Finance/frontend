@@ -1,8 +1,8 @@
+import { VStack } from '@chakra-ui/react';
 import * as React from 'react';
 import { useUpdatedPositions } from '../chain-interaction/contracts';
 import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
-import { TrancheTable } from './TrancheTable';
-import { VStack } from '@chakra-ui/react';
+import { LiquidatablePositionsTable } from './LiquidatablePositionsTable';
 
 export function LiquidatablePositions() {
   const tokenPrices = Object.fromEntries(
@@ -25,11 +25,11 @@ export function LiquidatablePositions() {
       {liquidatablePositions.length > 0 ? (
         <VStack mt="40px">
           <h1>Liquidatable positions</h1>
-          <TrancheTable
+          <LiquidatablePositionsTable
             positions={liquidatablePositions}
             action={{
               callback: (pos) => console.log('liquidating', pos),
-              label: 'liquidate',
+              label: 'Liquidate',
             }}
           />
         </VStack>

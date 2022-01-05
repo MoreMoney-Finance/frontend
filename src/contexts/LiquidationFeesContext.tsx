@@ -2,14 +2,13 @@ import {
   ContractCall,
   Token,
   useContractCalls,
-  useEthers,
+  useEthers
 } from '@usedapp/core';
 import { getAddress, Interface } from 'ethers/lib/utils';
-import React, { useContext } from 'react';
-import { getTokensInQuestion } from '../chain-interaction/tokens';
-import { UserAddressContext } from './UserAddressContext';
-import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
+import React from 'react';
 import { useAddresses } from '../chain-interaction/contracts';
+import { getTokensInQuestion } from '../chain-interaction/tokens';
+import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
 
 export const LiquidationFeesContext = React.createContext<Map<string, number>>(
   new Map<string, number>()
@@ -19,7 +18,6 @@ export function LiquidationFeesCtxProvider({
   children,
 }: React.PropsWithChildren<any>) {
   const { chainId } = useEthers();
-  const account = useContext(UserAddressContext);
   const address = useAddresses().IsolatedLendingLiquidation;
   const tokenFees = new Map<string, number>();
 
@@ -32,9 +30,7 @@ export function LiquidationFeesCtxProvider({
     };
   }
   const tokensInQuestion = getTokensInQuestion(chainId!);
-  const calls: ContractCall[] = account
-    ? tokensInQuestion.map(convert2ContractCall)
-    : [];
+  const calls: ContractCall[] = tokensInQuestion.map(convert2ContractCall);
   const results = useContractCalls(calls) ?? [];
   results?.forEach((result: any[] | undefined, index: number) => {
     if (result) {

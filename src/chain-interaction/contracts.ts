@@ -392,7 +392,7 @@ export function useYieldConversionStrategyView(
 
 const ONE_WEEK_SECONDS = 60 * 60 * 24 * 7;
 export function useUpdatedPositions(timeStart: number) {
-  const endPeriod = Math.floor(Date.now() / 1000 / ONE_WEEK_SECONDS);
+  const endPeriod = Math.round(Date.now() / 1000 / ONE_WEEK_SECONDS);
   const startPeriod = Math.floor(timeStart / 1000 / ONE_WEEK_SECONDS);
   // console.log('endPeriod', endPeriod);
   // console.log('startPeriod', startPeriod);

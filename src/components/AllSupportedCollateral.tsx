@@ -60,7 +60,8 @@ export function AllSupportedCollateral() {
         minColRatio:
           ((1 / (meta.borrowablePercent / 100)) * 100).toFixed(2) + '%',
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
-        liquidationFee: tokenFees.get(meta.token.address) + '%' ?? '',
+        liquidationFee:
+          (tokenFees.get(meta.token.address) ?? 'Loading...') + '%',
         balance: meta.balance,
       };
     })

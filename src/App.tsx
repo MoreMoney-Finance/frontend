@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useAddresses } from './chain-interaction/contracts';
 import FooterBar from './components/FooterBar';
+import GlobalDebtCeilingMessage from './components/GlobalDebtCeilingMessage';
 import NavigationBar from './components/NavigationBar';
 import NetworkNotSupported from './components/NetworkNotSupported';
 import { NotificationsComponent } from './components/NotificationsComponent';
@@ -111,6 +112,8 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                     />
                     <NotificationsComponent />
                     <NavigationBar />
+                    <br />
+                    <GlobalDebtCeilingMessage />
                     <Grid minH="100vh">
                       <Box>
                         {params.children}

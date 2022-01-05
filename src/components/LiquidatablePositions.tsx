@@ -23,8 +23,8 @@ export function LiquidatablePositions() {
   return (
     <>
       {liquidatablePositions.length > 0 ? (
-        <VStack>
-          <h2>Liquidatable positions</h2>
+        <VStack mt="40px">
+          <h1>Liquidatable positions</h1>
           <TrancheTable
             positions={liquidatablePositions}
             action={{

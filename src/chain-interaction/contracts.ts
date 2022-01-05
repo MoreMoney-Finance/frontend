@@ -330,6 +330,21 @@ export function useIsolatedPositionMetadata(
   );
 }
 
+export function useGlobalDebtCeiling(
+  method: string,
+  args: any[],
+  defaultResult: any
+) {
+  const address = useAddresses().Stablecoin;
+  const abi = new Interface(ERC20.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method,
+    args,
+  }) ?? [defaultResult])[0];
+}
+
 export function useTotalSupply(
   method: string,
   args: any[],
@@ -377,7 +392,7 @@ export function useYieldConversionStrategyView(
 
 const ONE_WEEK_SECONDS = 60 * 60 * 24 * 7;
 export function useUpdatedPositions(timeStart: number) {
-  const endPeriod = Math.floor(Date.now() / 1000 / ONE_WEEK_SECONDS);
+  const endPeriod = Math.round(Date.now() / 1000 / ONE_WEEK_SECONDS);
   const startPeriod = Math.floor(timeStart / 1000 / ONE_WEEK_SECONDS);
   // console.log('endPeriod', endPeriod);
   // console.log('startPeriod', startPeriod);

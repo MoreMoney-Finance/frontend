@@ -1,11 +1,10 @@
-import * as React from 'react';
 import { Box, HStack, Link as LinkComponent } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import * as React from 'react';
 
 const Links = [
-  { title: 'Facebook', link: '/' },
-  { title: 'Twitter', link: '/' },
-  { title: 'Instagram', link: '/' },
+  { title: 'Twitter', link: 'https://twitter.com/Moremoneyfi' },
+  { title: 'Discord', link: 'https://discord.gg/uHwQgNE776' },
+  { title: 'Github', link: 'https://github.com/MoreMoney-Finance' },
 ];
 
 export default function FooterBar() {
@@ -22,7 +21,9 @@ export default function FooterBar() {
         <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
           {Links.map((link) => (
             <LinkComponent variant="footer" key={link.title}>
-              <Link to={link.link}>{link.title}</Link>
+              <a href={link.link} target={'_blank'} rel="noreferrer">
+                {link.title}
+              </a>
             </LinkComponent>
           ))}
         </HStack>

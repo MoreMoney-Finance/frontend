@@ -30,7 +30,9 @@ export function getIconsFromTokenAddress(address: string): string[] {
   return addressIcons.get(getAddress(address)) ?? [];
 }
 
-export function getAuxIconFromTokenAddress(address: string): string | undefined {
+export function getAuxIconFromTokenAddress(
+  address: string
+): string | undefined {
   return addressAuxIcon.get(getAddress(address));
 }
 
@@ -81,11 +83,9 @@ const chainIds: Record<string, ChainId> = {
 };
 
 const exchangeIcons: Record<string, string> = {
-  JPL: 'todo_find_url_of_trader_joe_icon',
-  PGL: 'todo_ind_url_of_pangolin_icon'
+  JPL: 'https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd/logo.png',
+  PGL: 'https://github.com/marginswap/token-list/raw/main/logo/png.png',
 };
-
-
 
 for (const [chainId, lpTokensPerChain] of Object.entries(lptokens) as [
   string,
@@ -114,7 +114,10 @@ for (const [chainId, lpTokensPerChain] of Object.entries(lptokens) as [
         );
 
         addressIcons.set(getAddress(record.pairAddress), icons);
-        addressAuxIcon.set(getAddress(record.pairAddress), exchangeIcons[exchange]);
+        addressAuxIcon.set(
+          getAddress(record.pairAddress),
+          exchangeIcons[exchange]
+        );
       }
     }
   }

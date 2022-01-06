@@ -15,6 +15,7 @@ import { useContext } from 'react';
 import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
+import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
 import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
@@ -124,10 +125,10 @@ function parseStratMeta(
   row: RawStratMetaRow,
   stable: Token,
   balancesCtx: Map<string, CurrencyValue>,
-  yyMetadata: YYMetadata
+  yyMetadata: YYMetadata,
+  globalMoneyAvailable: BigNumber
 ): ParsedStratMetaRow {
   const token = getTokenFromAddress(chainId, row.token);
-
   const tvlInToken = tokenAmount(chainId, row.token, row.tvl)!;
   const balance =
     balancesCtx.get(token!.address) ??
@@ -143,8 +144,15 @@ function parseStratMeta(
       ? yyMetadata[underlyingAddress].apy * 0.9
       : convertAPF2APY(row.APF);
 
+  let syntheticDebtCeil = globalMoneyAvailable.add(row.totalDebt);
+
   return {
-    debtCeiling: new CurrencyValue(stable, row.debtCeiling)!,
+    debtCeiling: new CurrencyValue(
+      stable,
+      row.debtCeiling.gt(syntheticDebtCeil)
+        ? syntheticDebtCeil
+        : row.debtCeiling
+    ),
     totalDebt: new CurrencyValue(stable, row.totalDebt),
     stabilityFeePercent: row.stabilityFee.toNumber() / 100,
     mintingFeePercent: row.mintingFee.toNumber() / 100,
@@ -201,6 +209,15 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
     []
   );
 
+  const globalDebtCeiling = useGlobalDebtCeiling(
+    'globalDebtCeiling',
+    [],
+    BigNumber.from(0)
+  );
+  const totalSupply = useTotalSupply('totalSupply', [], BigNumber.from(0));
+
+  const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
+
   const balancesCtx = useContext(WalletBalancesContext);
   const yyMetadata = useContext(YYMetadataContext);
   return allStratMeta.reduce(
@@ -210,7 +227,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
         row,
         stable,
         balancesCtx,
-        yyMetadata
+        yyMetadata,
+        globalMoneyAvailable
       );
       const tokenAddress = parsedRow.token.address;
       return {
@@ -336,7 +354,7 @@ export function useGlobalDebtCeiling(
   defaultResult: any
 ) {
   const address = useAddresses().Stablecoin;
-  const abi = new Interface(ERC20.abi);
+  const abi = new Interface(Stablecoin.abi);
   return (useContractCall({
     abi,
     address,

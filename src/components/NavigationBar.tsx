@@ -18,8 +18,8 @@ import { UserAddressComponent } from './UserAddressComponent';
 
 const Links = [
   { title: 'Borrow', link: '/' },
-  { title: 'Farm', link: '/farm' },
   { title: 'My Positions', link: '/positions' },
+  { title: 'Farm', link: '/farm' },
   { title: 'Liquidation Protected Loans', link: '/loans' },
   { title: 'Analytics', link: '/analytics' },
 ];

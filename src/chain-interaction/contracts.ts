@@ -507,6 +507,7 @@ type RawStakingMetadata = {
   vestingStart: BigNumber;
   earned: BigNumber;
   vested: BigNumber;
+  rewards: BigNumber;
 };
 
 export type ParsedStakingMetadata = {
@@ -521,6 +522,7 @@ export type ParsedStakingMetadata = {
   vestingStart: Date;
   earned: CurrencyValue;
   vested: CurrencyValue;
+  rewards: CurrencyValue;
 };
 
 export function useParsedStakingMetadata(
@@ -556,6 +558,7 @@ export function useParsedStakingMetadata(
         vestingStart: timestamp2Date(stakingMeta.vestingStart),
         earned: new CurrencyValue(rewardsToken, stakingMeta.earned),
         vested: new CurrencyValue(rewardsToken, stakingMeta.vested),
+        rewards: new CurrencyValue(rewardsToken, stakingMeta.rewards)
       };
     });
 }

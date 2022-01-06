@@ -152,14 +152,14 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
     );
   }
 
-  if ('ProtocolToken' in addresses) {
+  if ('MoreToken' in addresses) {
     addressToken[chainIds[chainId]].set(
-      getAddress(addresses['ProtocolToken']),
+      getAddress(addresses['MoreToken']),
       new Token(
         'More Token',
         'MORE',
         chainIds[chainId],
-        getAddress(addresses['ProtocolToken'])
+        getAddress(addresses['MoreToken'])
       )
     );
   }

@@ -123,27 +123,30 @@ export default function StrategyTokenInformation({
                 {stratMeta.stabilityFeePercent.toFixed(2)}%
               </Text>
             </Flex> */}
-            <Flex w={'full'} marginTop={'30px'}>
-              <Text variant="h200" color={'whiteAlpha.400'}>
-                Harvestable
-              </Text>
-              <Spacer />
-              <Button
-                borderRadius={'full'}
-                width={'auto'}
-                marginTop="-5px"
-                marginRight="-20px"
-                onClick={() => {
-                  if (stratMeta.yieldType === YieldType.REPAYING) {
-                    sendAMMHarvest(stratMeta.token.address);
-                  } else if (stratMeta.yieldType === YieldType.COMPOUNDING) {
-                    sendHarvestPartially(stratMeta.token.address);
-                  }
-                }}
-              >
-                <Text variant="bodySmall">{`Harvest${harvestLabel}`}</Text>
-              </Button>
-            </Flex>
+
+            {stratMeta.yieldType === YieldType.COMPOUNDING ? (
+              <Flex w={'full'} marginTop={'30px'}>
+                <Text variant="h200" color={'whiteAlpha.400'}>
+                  Harvestable
+                </Text>
+                <Spacer />
+                <Button
+                  borderRadius={'full'}
+                  width={'auto'}
+                  marginTop="-5px"
+                  marginRight="-20px"
+                  onClick={() => {
+                    if (stratMeta.yieldType === YieldType.REPAYING) {
+                      sendAMMHarvest(stratMeta.token.address);
+                    } else if (stratMeta.yieldType === YieldType.COMPOUNDING) {
+                      sendHarvestPartially(stratMeta.token.address);
+                    }
+                  }}
+                >
+                  <Text variant="bodySmall">{`Harvest${harvestLabel}`}</Text>
+                </Button>
+              </Flex>
+            ) : undefined}
           </Box>
         </Flex>
       </Container>

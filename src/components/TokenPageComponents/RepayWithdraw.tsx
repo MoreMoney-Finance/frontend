@@ -264,7 +264,7 @@ export default function RepayWithdraw({
             Amount
           </Text>
           <Text variant={'bodyMedium'} fontWeight={'500'}>
-            -$0.00
+            $ {(usdPrice * (extantCollateral - totalCollateral)).toFixed(2)}
           </Text>
         </VStack>
         <VStack spacing={'2px'}>
@@ -285,7 +285,7 @@ export default function RepayWithdraw({
             cRatio
           </Text>
           <Text variant={'bodyMedium'} fontWeight={'500'}>
-            {totalDebt > 0.1 ? (totalCollateral / totalDebt).toFixed(2) : '∞'}
+            {totalDebt > 0.01 ? 100 * (totalCollateral / totalDebt).toFixed(2) : '∞'}
           </Text>
         </VStack>
       </HStack>

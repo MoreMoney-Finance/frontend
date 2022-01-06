@@ -17,6 +17,7 @@ const addressToken: Record<ChainId, Map<string, Token>> = Object.fromEntries(
   Object.values(ChainId).map((key) => [key, new Map()])
 ) as any;
 const addressIcons: Map<string, string[]> = new Map();
+const addressAuxIcon: Map<string, string> = new Map();
 
 export function getTokenFromAddress(
   chainId: ChainId | undefined,
@@ -27,6 +28,12 @@ export function getTokenFromAddress(
 
 export function getIconsFromTokenAddress(address: string): string[] {
   return addressIcons.get(getAddress(address)) ?? [];
+}
+
+export function getAuxIconFromTokenAddress(
+  address: string
+): string | undefined {
+  return addressAuxIcon.get(getAddress(address));
 }
 
 export function tokenAmount(
@@ -75,17 +82,23 @@ const chainIds: Record<string, ChainId> = {
   43114: ChainId.Avalanche,
 };
 
+const exchangeIcons: Record<string, string> = {
+  JPL: 'https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd/logo.png',
+  PGL: 'https://github.com/marginswap/token-list/raw/main/logo/png.png',
+};
+
 for (const [chainId, lpTokensPerChain] of Object.entries(lptokens) as [
   string,
   Record<string, Record<string, { pairAddress?: string; addresses: string[] }>>
 ][]) {
-  for (const records of Object.values(lpTokensPerChain)) {
-    for (const [ticker, record] of Object.entries(records)) {
+  for (const [exchange, records] of Object.entries(lpTokensPerChain)) {
+    for (const [longTicker, record] of Object.entries(records)) {
       if ('pairAddress' in record && record.pairAddress) {
+        const ticker = longTicker.split('-').slice(1).join('/');
         addressToken[chainIds[chainId]].set(
           getAddress(record.pairAddress),
           new Token(
-            ticker,
+            longTicker,
             ticker,
             chainIds[chainId],
             getAddress(record.pairAddress),
@@ -101,6 +114,10 @@ for (const [chainId, lpTokensPerChain] of Object.entries(lptokens) as [
         );
 
         addressIcons.set(getAddress(record.pairAddress), icons);
+        addressAuxIcon.set(
+          getAddress(record.pairAddress),
+          exchangeIcons[exchange]
+        );
       }
     }
   }

@@ -3,12 +3,16 @@ import {
   Box,
   Flex,
   HStack,
-  IconButton, Image,
-  Link as LinkComponent, Stack, useDisclosure
+  IconButton,
+  Image,
+  Link as LinkComponent,
+  Stack,
+  Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import logo from '../assets/logo/logo.svg';
+import logo from '../assets/logo/logo.png';
 import AccountModal from './AccountModal';
 import { UserAddressComponent } from './UserAddressComponent';
 
@@ -31,7 +35,6 @@ export default function NavigationBar() {
 
   return (
     <>
-     
       <Box position="relative" zIndex="var(--chakra-zIndices-header)">
         <Flex
           alignItems={'center'}
@@ -46,7 +49,13 @@ export default function NavigationBar() {
             onClick={isOpen ? onClose : onOpen}
           />
           <Link to="/">
-            <Image src={logo} alt="Logo" />
+            <Flex alignItems={'center'}>
+              <Image src={logo} alt="Logo" width={'50px'} />
+              &nbsp;
+              <Text>
+                <b>moremoney</b>
+              </Text>
+            </Flex>
           </Link>
           <HStack
             as={'nav'}

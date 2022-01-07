@@ -5,9 +5,9 @@ import {
   Text,
   HStack,
   VStack,
-  NumberInput,
-  NumberInputField,
-  InputRightElement,
+  // NumberInput,
+  // NumberInputField,
+  // InputRightElement,
 } from '@chakra-ui/react';
 import { CurrencyValue, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
@@ -24,6 +24,7 @@ import {
   useRepayWithdrawTrans,
 } from '../../chain-interaction/transactions';
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
+import { useWalletBalance } from '../../contexts/WalletBalancesContext';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
 import { TokenDescription } from '../TokenDescription';
@@ -69,13 +70,16 @@ export default function RepayWithdraw({
     }
   }
 
-  const repayWithdrawDisabled =
-    position &&
-    position.collateral &&
-    position.collateral.isZero() &&
-    position.debt.isZero();
+  const walletBalance =
+    useWalletBalance(stable.address) ??
+    new CurrencyValue(stable, BigNumber.from('0'));
 
-  const [collateralInput, repayInput, customPercentageInput] = watch([
+  const repayWithdrawDisabled =
+    !position ||
+    !position.collateral ||
+    (position.collateral.isZero() && position.debt.isZero());
+
+  const [collateralInput, repayInput /*customPercentageInput*/] = watch([
     'collateral-withdraw',
     'money-repay',
     'custom-percentage',
@@ -109,52 +113,52 @@ export default function RepayWithdraw({
       : 0;
   const totalDebt = extantDebt - parseFloat(repayInput);
 
-  const currentPercentage =
-    totalCollateral > 0 ? (100 * extantDebt) / (totalCollateral * usdPrice) : 0;
+  // const currentPercentage =
+  //   totalCollateral > 0 ? (100 * extantDebt) / (totalCollateral * usdPrice) : 0;
 
-  const percentageStep = Math.max(currentPercentage / 5, 10);
-  const percentageSteps =
-    10 >= currentPercentage
-      ? [currentPercentage / 2]
-      : Array(Math.floor((currentPercentage - 0.5) / percentageStep))
-        .fill(0)
-        .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
+  // const percentageStep = Math.max(currentPercentage / 5, 10);
+  // const percentageSteps =
+  //   10 >= currentPercentage
+  //     ? [currentPercentage / 2]
+  //     : Array(Math.floor((currentPercentage - 0.5) / percentageStep))
+  //       .fill(0)
+  //       .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
 
   const totalPercentage =
     totalCollateral > 0 ? (100 * totalDebt) / (totalCollateral * usdPrice) : 0;
 
   const percentageLabel =
     totalCollateral > 0 ? `${totalPercentage.toFixed(0)} %` : 'LTV %';
-  const percentages = Object.fromEntries(
-    percentageSteps.map((percentage) => [
-      `${percentage.toFixed(0)} %`,
-      extantDebt - (percentage * totalCollateral * usdPrice) / 100,
-    ])
-  );
+  // const percentages = Object.fromEntries(
+  //   percentageSteps.map((percentage) => [
+  //     `${percentage.toFixed(0)} %`,
+  //     totalCollateral - (totalDebt * 100) / (usdPrice * customPercentageInput)
+  //   ])
+  // );
 
-  React.useEffect(() => {
-    if (customPercentageInput) {
-      setValueRepayForm(
-        'money-repay',
-        (customPercentageInput * totalCollateral * usdPrice) / 100 - extantDebt
-      );
-    } else if (
-      collateralInput &&
-      collateralInput > 0 &&
-      totalPercentage > borrowablePercent
-    ) {
-      setValueRepayForm(
-        'money-repay',
-        (borrowablePercent * totalCollateral * usdPrice) / 100 - extantDebt
-      );
-    }
-  }, [
-    customPercentageInput,
-    collateralInput,
-    totalCollateral,
-    extantDebt,
-    usdPrice,
-  ]);
+  // React.useEffect(() => {
+  //   if (customPercentageInput) {
+  //     setValueRepayForm(
+  //       'collateral-withdraw',
+  //       totalCollateral - (totalDebt * 100) / (usdPrice * customPercentageInput)
+  //     );
+  //   } else if (
+  //     collateralInput &&
+  //     collateralInput > 0 &&
+  //     totalPercentage > borrowablePercent
+  //   ) {
+  //     setValueRepayForm(
+  //       'money-repay',
+  //       (borrowablePercent * totalCollateral * usdPrice) / 100 - extantDebt
+  //     );
+  //   }
+  // }, [
+  //   customPercentageInput,
+  //   collateralInput,
+  //   totalCollateral,
+  //   extantDebt,
+  //   usdPrice,
+  // ]);
 
   const repayWithdrawButtonDisabled =
     (parseFloat(collateralInput) === 0 && parseFloat(repayInput) === 0) ||
@@ -170,6 +174,11 @@ export default function RepayWithdraw({
   const showWarning =
     !(parseFloat(collateralInput) === 0 && parseFloat(repayInput) === 0) &&
     totalPercentage > borrowablePercent;
+
+  const residualDebt =
+    position && position.debt.gt(position.yield)
+      ? position.debt.sub(position.yield)
+      : new CurrencyValue(stratMeta.token, BigNumber.from(0));
 
   return (
     <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
@@ -189,11 +198,7 @@ export default function RepayWithdraw({
           <TokenDescription token={stable} />
           <TokenAmountInputField
             name="money-repay"
-            max={
-              position && position.debt.gt(position.yield)
-                ? position.debt.sub(position.yield)
-                : new CurrencyValue(stratMeta.token, BigNumber.from(0))
-            }
+            max={residualDebt.gt(walletBalance) ? walletBalance : residualDebt}
             isDisabled={repayWithdrawDisabled}
             placeholder={'MONEY repay'}
             registerForm={registerRepayForm}
@@ -228,7 +233,7 @@ export default function RepayWithdraw({
       </Flex>
       <br />
       <HStack justifyContent={'space-between'}>
-        {percentages &&
+        {/* {percentages &&
           Object.entries(percentages).map(([key, value]) => (
             <Button
               variant={'secondary'}
@@ -236,14 +241,14 @@ export default function RepayWithdraw({
               padding={'6px 16px'}
               key={'percentage' + key}
               onClick={() =>
-                setValueRepayForm('money-repay', value.toFixed(10))
+                setValueRepayForm('collateral-withdraw', value.toFixed(18))
               }
             >
               {key}
             </Button>
-          ))}
+          ))} */}
 
-        <NumberInput
+        {/* <NumberInput
           borderRadius={'full'}
           padding={'0px 16px'}
           bg="whiteAlpha.100"
@@ -266,9 +271,9 @@ export default function RepayWithdraw({
           <InputRightElement width="auto" marginRight="16px">
             %
           </InputRightElement>
-        </NumberInput>
+        </NumberInput> */}
       </HStack>
-      <HStack justifyContent={'space-between'} marginTop={'40px'}>
+      <HStack justifyContent={'space-between'} marginTop={'70px'}>
         <VStack spacing={'2px'}>
           <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
             Amount
@@ -317,11 +322,11 @@ export default function RepayWithdraw({
       />
 
       <Button
-        variant={repayWithdrawButtonDisabled ? 'submit-primary' : 'submit'}
+        variant={repayWithdrawButtonDisabled ? 'submit' : 'submit-primary'}
         marginTop={'10px'}
         type="submit"
         isLoading={isSubmittingRepayForm}
-        isDisabled={!repayWithdrawButtonDisabled}
+        isDisabled={repayWithdrawButtonDisabled}
       >
         <Text variant={'bodyMedium'} fontWeight={'600'}>
           Repay & Withdraw

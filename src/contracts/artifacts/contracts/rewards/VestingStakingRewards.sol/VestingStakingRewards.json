@@ -781,6 +781,11 @@
             },
             {
               "internalType": "uint256",
+              "name": "rewards",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
               "name": "vested",
               "type": "uint256"
             }

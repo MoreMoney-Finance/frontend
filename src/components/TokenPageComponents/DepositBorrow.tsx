@@ -123,6 +123,8 @@ export default function DepositBorrow({
           significantDigits: Infinity,
           prefix: '',
           suffix: '',
+          decimalSeparator: '.',
+          thousandSeparator: '',
         })
       )
       : 0;
@@ -135,6 +137,8 @@ export default function DepositBorrow({
           significantDigits: Infinity,
           prefix: '',
           suffix: '',
+          decimalSeparator: '.',
+          thousandSeparator: '',
         })
       )
       : 0;
@@ -304,7 +308,7 @@ export default function DepositBorrow({
           </Text>
           <Text variant={'bodyMedium'} fontWeight={'500'}>
             {totalDebt > 0.01
-              ? ((100 * totalCollateral) / totalDebt).toFixed(2)
+              ? ((100 * usdPrice * totalCollateral) / totalDebt).toFixed(2)
               : '∞'}
           </Text>
         </VStack>

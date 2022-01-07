@@ -10,9 +10,9 @@ import {
 import * as React from 'react';
 
 export default function WarningMessage(
-  props: React.PropsWithChildren<{ isOpen: boolean }>
+  props: React.PropsWithChildren<{ isOpen: boolean; message: string }>
 ) {
-  const { isOpen } = props;
+  const { message, isOpen } = props;
   return (
     <>
       <Popover
@@ -27,7 +27,7 @@ export default function WarningMessage(
           <PopoverBody>
             <Alert status="warning">
               <AlertIcon />
-              Borrow amount too high
+              {message}
             </Alert>
           </PopoverBody>
         </PopoverContent>

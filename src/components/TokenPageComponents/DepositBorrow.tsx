@@ -166,7 +166,7 @@ export default function DepositBorrow({
   );
 
   const showWarning =
-    (parseFloat(collateralInput) === 0 && parseFloat(borrowInput) === 0) ||
+    !(parseFloat(collateralInput) === 0 && parseFloat(borrowInput) === 0) &&
     totalPercentage > borrowablePercent;
 
   React.useEffect(() => {
@@ -219,7 +219,7 @@ export default function DepositBorrow({
       </Flex>
       <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
         <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-          <WarningMessage isOpen={showWarning}>
+          <WarningMessage message="Borrow amount too high" isOpen={showWarning}>
             <Text
               variant={'bodyExtraSmall'}
               color={'whiteAlpha.600'}

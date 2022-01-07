@@ -15,7 +15,12 @@ export default function WarningMessage(
   const { isOpen } = props;
   return (
     <>
-      <Popover placement="right" isOpen={isOpen}>
+      <Popover
+        autoFocus={false}
+        returnFocusOnClose={true}
+        placement="right"
+        isOpen={isOpen}
+      >
         <PopoverTrigger>{props.children}</PopoverTrigger>
         <PopoverContent marginTop={'90px'}>
           <PopoverArrow />

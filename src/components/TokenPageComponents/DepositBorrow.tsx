@@ -171,6 +171,8 @@ export default function DepositBorrow({
     ])
   );
 
+  const showWarning = totalPercentage > borrowablePercent;
+
   React.useEffect(() => {
     console.log('In effect', customPercentageInput);
     if (customPercentageInput) {
@@ -215,7 +217,7 @@ export default function DepositBorrow({
       </Flex>
       <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
         <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-          <WarningMessage isOpen={true}>
+          <WarningMessage isOpen={showWarning}>
             <Text
               variant={'bodyExtraSmall'}
               color={'whiteAlpha.600'}

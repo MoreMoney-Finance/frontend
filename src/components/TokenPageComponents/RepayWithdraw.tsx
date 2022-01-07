@@ -285,7 +285,9 @@ export default function RepayWithdraw({
             cRatio
           </Text>
           <Text variant={'bodyMedium'} fontWeight={'500'}>
-            {totalDebt > 0.01 ? (100 * totalCollateral / totalDebt).toFixed(2) : '∞'}
+            {totalDebt > 0.01
+              ? ((100 * totalCollateral) / totalDebt).toFixed(2)
+              : '∞'}
           </Text>
         </VStack>
       </HStack>

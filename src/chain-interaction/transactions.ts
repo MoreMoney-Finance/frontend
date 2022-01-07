@@ -107,7 +107,7 @@ export function useNativeDepositBorrowTrans(
       const bAmount = parseEther(borrowAmount.toString());
 
       return trancheId
-        ? send(trancheId, bAmount, account, { value: cAmount})
+        ? send(trancheId, bAmount, account, { value: cAmount })
         : send(strategyAddress, bAmount, account, { value: cAmount });
     },
     depositBorrowState: state,
@@ -179,7 +179,7 @@ export function useDepositBorrowTrans(trancheId: number | null | undefined) {
           bAmount,
           account,
           {
-            gasLimit: 1400000
+            gasLimit: 1400000,
           }
         );
     },

@@ -5,7 +5,7 @@ import {
   CurrencyValue,
   NativeCurrency,
   useEtherBalance,
-  useEthers
+  useEthers,
 } from '@usedapp/core';
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';

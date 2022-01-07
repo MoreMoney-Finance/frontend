@@ -558,7 +558,7 @@ export function useParsedStakingMetadata(
         vestingStart: timestamp2Date(stakingMeta.vestingStart),
         earned: new CurrencyValue(rewardsToken, stakingMeta.earned),
         vested: new CurrencyValue(rewardsToken, stakingMeta.vested),
-        rewards: new CurrencyValue(rewardsToken, stakingMeta.rewards)
+        rewards: new CurrencyValue(rewardsToken, stakingMeta.rewards),
       };
     });
 }

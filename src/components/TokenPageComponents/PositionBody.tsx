@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
-  useStable
+  useStable,
 } from '../../chain-interaction/contracts';
 import { useMigrateStrategy } from '../../chain-interaction/transactions';
 import { UserAddressContext } from '../../contexts/UserAddressContext';

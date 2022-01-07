@@ -117,12 +117,6 @@ export default function DepositBorrow({
     'custom-percentage',
   ]);
 
-  const depositBorrowButtonDisabled =
-    isNaN(parseFloat(collateralInput)) ||
-    isNaN(parseFloat(borrowInput)) ||
-    (parseFloat(collateralInput) === 0 && parseFloat(borrowInput) === 0) ||
-    (parseFloat(collateralInput) < 0 && parseFloat(borrowInput) < 0);
-
   const extantCollateral =
     position && position.collateral
       ? parseFloat(
@@ -182,6 +176,12 @@ export default function DepositBorrow({
       );
     }
   }, [customPercentageInput, totalCollateral, extantDebt, usdPrice]);
+
+  const depositBorrowButtonDisabled =
+    isNaN(parseFloat(collateralInput)) ||
+    isNaN(parseFloat(borrowInput)) ||
+    (parseFloat(collateralInput) === 0 && parseFloat(borrowInput) === 0) ||
+    totalPercentage > borrowablePercent;
 
   const inputStyle = {
     padding: '8px 8px 8px 20px',

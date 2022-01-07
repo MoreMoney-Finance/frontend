@@ -1,6 +1,7 @@
 import {
   Alert,
   AlertIcon,
+  Container,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -23,13 +24,15 @@ export default function WarningMessage(
       >
         <PopoverTrigger>{props.children}</PopoverTrigger>
         <PopoverContent marginTop={'90px'}>
-          <PopoverArrow />
-          <PopoverBody>
-            <Alert status="warning">
-              <AlertIcon />
-              {message}
-            </Alert>
-          </PopoverBody>
+          <Container variant={'token'}>
+            <PopoverArrow />
+            <PopoverBody>
+              <Alert bg={'transparent'}>
+                <AlertIcon />
+                {message}
+              </Alert>
+            </PopoverBody>
+          </Container>
         </PopoverContent>
       </Popover>
     </>

@@ -2,9 +2,14 @@ import { Box, HStack, Link as LinkComponent } from '@chakra-ui/react';
 import * as React from 'react';
 
 const Links = [
+  {
+    title: 'Audit',
+    link: 'https://github.com/MoreMoney-Finance/audits/blob/main/PeckShield-Audit-Report-Moremoney-1.0.pdf',
+  },
   { title: 'Twitter', link: 'https://twitter.com/Moremoneyfi' },
   { title: 'Discord', link: 'https://discord.gg/uHwQgNE776' },
   { title: 'Github', link: 'https://github.com/MoreMoney-Finance' },
+  { title: 'Swap', link: 'https://avax.curve.fi/factory/39' },
 ];
 
 export default function FooterBar() {

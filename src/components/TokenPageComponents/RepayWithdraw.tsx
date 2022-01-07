@@ -27,6 +27,7 @@ import { WNATIVE_ADDRESS } from '../../constants/addresses';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
 import { TokenDescription } from '../TokenDescription';
+import WarningMessage from './WarningMessage';
 
 export default function RepayWithdraw({
   position,
@@ -164,6 +165,10 @@ export default function RepayWithdraw({
     justifyContent: 'space-between',
   };
 
+  const showWarning =
+    !(parseFloat(collateralInput) === 0 && parseFloat(repayInput) === 0) &&
+    totalPercentage > borrowablePercent;
+
   return (
     <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
       <Flex flexDirection={'column'} justify={'start'}>
@@ -191,13 +196,15 @@ export default function RepayWithdraw({
       </Flex>
       <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
         <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-          <Text
-            variant={'bodyExtraSmall'}
-            color={'whiteAlpha.600'}
-            lineHeight={'14px'}
-          >
-            Repay MONEY
-          </Text>
+          <WarningMessage message={"Repay amount too low"} isOpen={showWarning}>
+            <Text
+              variant={'bodyExtraSmall'}
+              color={'whiteAlpha.600'}
+              lineHeight={'14px'}
+            >
+              Repay MONEY
+            </Text>
+          </WarningMessage>
         </Box>
         <HStack {...inputStyle}>
           <TokenDescription token={stable} />

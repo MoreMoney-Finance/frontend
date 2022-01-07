@@ -38,6 +38,7 @@ import { EnsureWalletConnected } from '../EnsureWalletConnected';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
 import { TokenDescription } from '../TokenDescription';
+import WarningMessage from './WarningMessage';
 
 export default function DepositBorrow({
   position,
@@ -164,6 +165,10 @@ export default function DepositBorrow({
     ])
   );
 
+  const showWarning =
+    !(parseFloat(collateralInput) === 0 && parseFloat(borrowInput) === 0) &&
+    totalPercentage > borrowablePercent;
+
   React.useEffect(() => {
     console.log('In effect', customPercentageInput);
     if (customPercentageInput) {
@@ -214,13 +219,15 @@ export default function DepositBorrow({
       </Flex>
       <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
         <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-          <Text
-            variant={'bodyExtraSmall'}
-            color={'whiteAlpha.600'}
-            lineHeight={'14px'}
-          >
-            Borrow MONEY
-          </Text>
+          <WarningMessage message="Borrow amount too high" isOpen={showWarning}>
+            <Text
+              variant={'bodyExtraSmall'}
+              color={'whiteAlpha.600'}
+              lineHeight={'14px'}
+            >
+              Borrow MONEY
+            </Text>
+          </WarningMessage>
         </Box>
         <HStack {...inputStyle}>
           <TokenDescription token={stable} />

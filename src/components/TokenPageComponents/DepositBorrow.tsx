@@ -279,7 +279,7 @@ export default function DepositBorrow({
       <HStack justifyContent={'space-between'} marginTop={'40px'}>
         <VStack spacing={'2px'}>
           <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-            Amount
+            Deposit Value
           </Text>
           <Text variant={'bodyMedium'} fontWeight={'500'}>
             $ {(usdPrice * (totalCollateral - extantCollateral)).toFixed(2)}
@@ -303,7 +303,9 @@ export default function DepositBorrow({
             cRatio
           </Text>
           <Text variant={'bodyMedium'} fontWeight={'500'}>
-            {totalDebt > 0.01 ? (100 * totalCollateral / totalDebt).toFixed(2) : '∞'}
+            {totalDebt > 0.01
+              ? ((100 * totalCollateral) / totalDebt).toFixed(2)
+              : '∞'}
           </Text>
         </VStack>
       </HStack>

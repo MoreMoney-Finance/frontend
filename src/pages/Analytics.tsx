@@ -43,7 +43,7 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
     );
 
   const supply = useTotalSupply('totalSupply', [], ['']);
-  const colRatio = !tvl.isZero() ? supply.div(tvl.value) : 0;
+  const colRatio = !tvl.isZero() ? tvl.value.mul(10000).div(supply).toNumber() / 100 : 0;
 
   const fees = useAllFeesEver(contracts);
 
@@ -75,7 +75,7 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
               <AnalyticsBox
                 title={'Total Value Locked'}
                 subtitle={'Total deposits on MoreMoney'}
-                value={'$' + tvl.value.toString()}
+                value={'$' + tvl.format({ suffix: '' })}
               />
             </Flex>
           </Container>
@@ -83,9 +83,9 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
         <Box w="100%" h="200">
           <Container variant={'token'} padding={'35px 20px 20px 20px'}>
             <AnalyticsBox
-              title={'Total Protocol Collateralization Ratio'}
-              subtitle={'Total protocol collateral on MoreMoney'}
-              value={'$' + colRatio}
+              title={'Protocol Col. Ratio'}
+              subtitle={'Total collateral divided by debt'}
+              value={`${colRatio} %`}
             />
           </Container>
         </Box>
@@ -94,7 +94,7 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
             <AnalyticsBox
               title={'Fees earned'}
               subtitle={'Fees paid to MoreMoney'}
-              value={totalFees.format()}
+              value={`$ ${totalFees.format({ suffix: '' })}`}
             />
           </Container>
         </Box>
@@ -112,7 +112,7 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
             <AnalyticsBox
               title={'MONEY circulating supply'}
               subtitle={'Circulating volume of MONEY'}
-              value={'$' + supply}
+              value={(new CurrencyValue(stable, supply)).format()}
             />
           </Container>
         </Box>

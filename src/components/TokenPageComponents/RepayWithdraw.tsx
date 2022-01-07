@@ -80,9 +80,6 @@ export default function RepayWithdraw({
     'custom-percentage',
   ]);
 
-  const repayWithdrawButtonDisabled =
-    parseFloat(collateralInput) > 0 && parseFloat(repayInput) > 0;
-
   const extantCollateral =
     position && position.collateral
       ? parseFloat(
@@ -155,6 +152,10 @@ export default function RepayWithdraw({
     extantDebt,
     usdPrice,
   ]);
+
+  const repayWithdrawButtonDisabled =
+    (parseFloat(collateralInput) === 0 && parseFloat(repayInput) === 0) ||
+    totalPercentage > borrowablePercent;
 
   const inputStyle = {
     padding: '8px 8px 8px 20px',

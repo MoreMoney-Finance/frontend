@@ -47,7 +47,7 @@ const Link = {
   variants: {
     footer: {
       lineHeight: '21px',
-      color: 'whiteAlpha.500',
+      color: 'whiteAlpha.700',
     },
     header: {
       fontWeight: '600',

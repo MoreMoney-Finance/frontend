@@ -27,6 +27,7 @@ import { WNATIVE_ADDRESS } from '../../constants/addresses';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
 import { TokenDescription } from '../TokenDescription';
+import WarningMessage from './WarningMessage';
 
 export default function RepayWithdraw({
   position,
@@ -80,9 +81,6 @@ export default function RepayWithdraw({
     'custom-percentage',
   ]);
 
-  const repayWithdrawButtonDisabled =
-    parseFloat(collateralInput) > 0 && parseFloat(repayInput) > 0;
-
   const extantCollateral =
     position && position.collateral
       ? parseFloat(
@@ -90,6 +88,8 @@ export default function RepayWithdraw({
           significantDigits: Infinity,
           prefix: '',
           suffix: '',
+          decimalSeparator: '.',
+          thousandSeparator: ',',
         })
       )
       : 0;
@@ -102,6 +102,8 @@ export default function RepayWithdraw({
           significantDigits: Infinity,
           prefix: '',
           suffix: '',
+          decimalSeparator: '.',
+          thousandSeparator: ',',
         })
       )
       : 0;
@@ -136,16 +138,14 @@ export default function RepayWithdraw({
         'money-repay',
         (customPercentageInput * totalCollateral * usdPrice) / 100 - extantDebt
       );
-    }
-
-    if (collateralInput && collateralInput > 0) {
+    } else if (
+      collateralInput &&
+      collateralInput > 0 &&
+      totalPercentage > borrowablePercent
+    ) {
       setValueRepayForm(
         'money-repay',
-        position?.debt.format({
-          significantDigits: Infinity,
-          prefix: '',
-          suffix: '',
-        })
+        (borrowablePercent * totalCollateral * usdPrice) / 100 - extantDebt
       );
     }
   }, [
@@ -156,12 +156,20 @@ export default function RepayWithdraw({
     usdPrice,
   ]);
 
+  const repayWithdrawButtonDisabled =
+    (parseFloat(collateralInput) === 0 && parseFloat(repayInput) === 0) ||
+    totalPercentage > borrowablePercent;
+
   const inputStyle = {
     padding: '8px 8px 8px 20px',
     bg: 'whiteAlpha.50',
     borderRadius: '10px',
     justifyContent: 'space-between',
   };
+
+  const showWarning =
+    !(parseFloat(collateralInput) === 0 && parseFloat(repayInput) === 0) &&
+    totalPercentage > borrowablePercent;
 
   return (
     <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
@@ -190,13 +198,15 @@ export default function RepayWithdraw({
       </Flex>
       <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
         <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-          <Text
-            variant={'bodyExtraSmall'}
-            color={'whiteAlpha.600'}
-            lineHeight={'14px'}
-          >
-            Repay MONEY
-          </Text>
+          <WarningMessage message={"Repay amount too low"} isOpen={showWarning}>
+            <Text
+              variant={'bodyExtraSmall'}
+              color={'whiteAlpha.600'}
+              lineHeight={'14px'}
+            >
+              Repay MONEY
+            </Text>
+          </WarningMessage>
         </Box>
         <HStack {...inputStyle}>
           <TokenDescription token={stable} />
@@ -285,7 +295,9 @@ export default function RepayWithdraw({
             cRatio
           </Text>
           <Text variant={'bodyMedium'} fontWeight={'500'}>
-            {totalDebt > 0.01 ? (100 * totalCollateral / totalDebt).toFixed(2) : '∞'}
+            {totalDebt > 0.01
+              ? ((100 * usdPrice * totalCollateral) / totalDebt).toFixed(2)
+              : '∞'}
           </Text>
         </VStack>
       </HStack>

@@ -131,6 +131,7 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
                           href={getLPTokenLinks[index]}
                           isExternal
                           color={'white'}
+                          variant={'primary'}
                         >
                           Get LP Token &nbsp;
                           <ExternalLinkIcon />

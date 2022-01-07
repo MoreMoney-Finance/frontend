@@ -162,6 +162,9 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
         getAddress(addresses['MoreToken'])
       )
     );
+    addressIcons.set(getAddress(addresses['MoreToken']), [
+      'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg'
+    ]);
   }
 }
 

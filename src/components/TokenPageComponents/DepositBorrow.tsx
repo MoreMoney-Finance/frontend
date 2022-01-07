@@ -38,6 +38,7 @@ import { EnsureWalletConnected } from '../EnsureWalletConnected';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
 import { TokenDescription } from '../TokenDescription';
+import WarningMessage from './WarningMessage';
 
 export default function DepositBorrow({
   position,
@@ -116,12 +117,6 @@ export default function DepositBorrow({
     'custom-percentage',
   ]);
 
-  const depositBorrowButtonDisabled =
-    isNaN(parseFloat(collateralInput)) ||
-    isNaN(parseFloat(borrowInput)) ||
-    (parseFloat(collateralInput) === 0 && parseFloat(borrowInput) === 0) ||
-    (parseFloat(collateralInput) < 0 && parseFloat(borrowInput) < 0);
-
   const extantCollateral =
     position && position.collateral
       ? parseFloat(
@@ -129,6 +124,8 @@ export default function DepositBorrow({
           significantDigits: Infinity,
           prefix: '',
           suffix: '',
+          decimalSeparator: '.',
+          thousandSeparator: '',
         })
       )
       : 0;
@@ -141,6 +138,8 @@ export default function DepositBorrow({
           significantDigits: Infinity,
           prefix: '',
           suffix: '',
+          decimalSeparator: '.',
+          thousandSeparator: '',
         })
       )
       : 0;
@@ -170,6 +169,10 @@ export default function DepositBorrow({
     ])
   );
 
+  const showWarning =
+    !(parseFloat(collateralInput) === 0 && parseFloat(borrowInput) === 0) &&
+    totalPercentage > borrowablePercent;
+
   React.useEffect(() => {
     console.log('In effect', customPercentageInput);
     if (customPercentageInput) {
@@ -179,6 +182,12 @@ export default function DepositBorrow({
       );
     }
   }, [customPercentageInput, totalCollateral, extantDebt, usdPrice]);
+
+  const depositBorrowButtonDisabled =
+    isNaN(parseFloat(collateralInput)) ||
+    isNaN(parseFloat(borrowInput)) ||
+    (parseFloat(collateralInput) === 0 && parseFloat(borrowInput) === 0) ||
+    totalPercentage > borrowablePercent;
 
   const inputStyle = {
     padding: '8px 8px 8px 20px',
@@ -214,13 +223,15 @@ export default function DepositBorrow({
       </Flex>
       <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
         <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-          <Text
-            variant={'bodyExtraSmall'}
-            color={'whiteAlpha.600'}
-            lineHeight={'14px'}
-          >
-            Borrow MONEY
-          </Text>
+          <WarningMessage message="Borrow amount too high" isOpen={showWarning}>
+            <Text
+              variant={'bodyExtraSmall'}
+              color={'whiteAlpha.600'}
+              lineHeight={'14px'}
+            >
+              Borrow MONEY
+            </Text>
+          </WarningMessage>
         </Box>
         <HStack {...inputStyle}>
           <TokenDescription token={stable} />
@@ -304,7 +315,7 @@ export default function DepositBorrow({
           </Text>
           <Text variant={'bodyMedium'} fontWeight={'500'}>
             {totalDebt > 0.01
-              ? ((100 * totalCollateral) / totalDebt).toFixed(2)
+              ? ((100 * usdPrice * totalCollateral) / totalDebt).toFixed(2)
               : '∞'}
           </Text>
         </VStack>

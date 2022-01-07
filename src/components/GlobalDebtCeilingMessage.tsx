@@ -19,7 +19,12 @@ export default function GlobalDebtCeilingMessage() {
   return (
     <>
       {hasMaxedOut ? (
-        <Alert status="info" justifyContent={'center'}  fontSize={'lg'} borderRadius={'full'}>
+        <Alert
+          status="info"
+          justifyContent={'center'}
+          fontSize={'lg'}
+          borderRadius={'full'}
+        >
           <AlertIcon />
           <b>Global debt ceiling has been maxed out, please come back later!</b>
         </Alert>

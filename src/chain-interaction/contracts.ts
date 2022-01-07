@@ -174,7 +174,12 @@ function parseStratMeta(
       row.yieldType
     ],
     balance: parseFloat(
-      balance.format({ significantDigits: Infinity, suffix: '' })
+      balance.format({
+        significantDigits: Infinity,
+        thousandSeparator: '',
+        decimalSeparator: '.',
+        suffix: '',
+      })
     ),
   };
 }
@@ -274,10 +279,20 @@ export function calcLiquidationPrice(
   collateral: CurrencyValue
 ) {
   const debtNum = parseFloat(
-    debt.format({ significantDigits: Infinity, suffix: '' })
+    debt.format({
+      significantDigits: Infinity,
+      suffix: '',
+      thousandSeparator: '',
+      decimalSeparator: '.',
+    })
   );
   const colNum = parseFloat(
-    collateral.format({ significantDigits: Infinity, suffix: '' })
+    collateral.format({
+      significantDigits: Infinity,
+      suffix: '',
+      thousandSeparator: '',
+      decimalSeparator: '.',
+    })
   );
 
   return calcLiqPriceFromNum(borrowablePercent, debtNum, colNum);
@@ -558,7 +573,7 @@ export function useParsedStakingMetadata(
         vestingStart: timestamp2Date(stakingMeta.vestingStart),
         earned: new CurrencyValue(rewardsToken, stakingMeta.earned),
         vested: new CurrencyValue(rewardsToken, stakingMeta.vested),
-        rewards: new CurrencyValue(rewardsToken, stakingMeta.rewards)
+        rewards: new CurrencyValue(rewardsToken, stakingMeta.rewards),
       };
     });
 }

@@ -5,6 +5,8 @@ const Links = [
   { title: 'Twitter', link: 'https://twitter.com/Moremoneyfi' },
   { title: 'Discord', link: 'https://discord.gg/uHwQgNE776' },
   { title: 'Github', link: 'https://github.com/MoreMoney-Finance' },
+  { title: 'Audit', link: 'https://github.com/MoreMoney-Finance/audits/blob/main/PeckShield-Audit-Report-Moremoney-1.0.pdf' },
+  { title: 'Swap', link: 'https://avax.curve.fi/factory/39' },
 ];
 
 export default function FooterBar() {

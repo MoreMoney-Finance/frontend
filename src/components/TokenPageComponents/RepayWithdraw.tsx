@@ -178,7 +178,7 @@ export default function RepayWithdraw({
   const residualDebt =
     position && position.debt.gt(position.yield)
       ? position.debt.sub(position.yield)
-      : new CurrencyValue(stratMeta.token, BigNumber.from(0));
+      : new CurrencyValue(stable, BigNumber.from(0));
 
   return (
     <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>

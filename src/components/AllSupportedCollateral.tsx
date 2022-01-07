@@ -55,10 +55,10 @@ export function AllSupportedCollateral() {
       return {
         ...meta,
         asset: <TokenDescription token={meta.token} />,
-        apy: meta.APY.toFixed(4) + '%',
+        apy: Math.round(meta.APY) + '%',
         MONEYavailable: meta.debtCeiling.sub(meta.totalDebt).format(),
         minColRatio:
-          ((1 / (meta.borrowablePercent / 100)) * 100).toFixed(2) + '%',
+          Math.round((1 / (meta.borrowablePercent / 100)) * 100) + '%',
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
         liquidationFee:
           (tokenFees.get(meta.token.address) ?? 'Loading...') + '%',

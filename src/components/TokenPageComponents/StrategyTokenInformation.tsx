@@ -124,7 +124,7 @@ export default function StrategyTokenInformation({
               </Text>
             </Flex> */}
 
-            {stratMeta.yieldType === YieldType.COMPOUNDING ? (
+            {stratMeta.yieldType !== YieldType.COMPOUNDING ? (
               <Flex w={'full'} marginTop={'30px'}>
                 <Text variant="h200" color={'whiteAlpha.400'}>
                   Harvestable

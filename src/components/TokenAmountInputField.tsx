@@ -76,6 +76,7 @@ export function TokenAmountInputField(props: {
                     prefix: '',
                     suffix: '',
                     thousandSeparator: '',
+                    decimalSeparator: '.',
                   })
                 )
               }

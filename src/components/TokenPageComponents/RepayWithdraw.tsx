@@ -88,6 +88,8 @@ export default function RepayWithdraw({
           significantDigits: Infinity,
           prefix: '',
           suffix: '',
+          decimalSeparator: '.',
+          thousandSeparator: ',',
         })
       )
       : 0;
@@ -100,6 +102,8 @@ export default function RepayWithdraw({
           significantDigits: Infinity,
           prefix: '',
           suffix: '',
+          decimalSeparator: '.',
+          thousandSeparator: ',',
         })
       )
       : 0;
@@ -134,16 +138,14 @@ export default function RepayWithdraw({
         'money-repay',
         (customPercentageInput * totalCollateral * usdPrice) / 100 - extantDebt
       );
-    }
-
-    if (collateralInput && collateralInput > 0) {
+    } else if (
+      collateralInput &&
+      collateralInput > 0 &&
+      totalPercentage > borrowablePercent
+    ) {
       setValueRepayForm(
         'money-repay',
-        position?.debt.format({
-          significantDigits: Infinity,
-          prefix: '',
-          suffix: '',
-        })
+        (borrowablePercent * totalCollateral * usdPrice) / 100 - extantDebt
       );
     }
   }, [
@@ -294,7 +296,7 @@ export default function RepayWithdraw({
           </Text>
           <Text variant={'bodyMedium'} fontWeight={'500'}>
             {totalDebt > 0.01
-              ? ((100 * totalCollateral) / totalDebt).toFixed(2)
+              ? ((100 * usdPrice * totalCollateral) / totalDebt).toFixed(2)
               : '∞'}
           </Text>
         </VStack>

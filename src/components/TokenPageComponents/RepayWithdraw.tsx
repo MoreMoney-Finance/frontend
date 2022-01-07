@@ -175,30 +175,7 @@ export default function RepayWithdraw({
     <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
       <Flex flexDirection={'column'} justify={'start'}>
         <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-          <Text
-            variant={'bodyExtraSmall'}
-            color={'whiteAlpha.600'}
-            lineHeight={'14px'}
-          >
-            Withdraw Collateral
-          </Text>
-        </Box>
-        <HStack {...inputStyle}>
-          <TokenDescription token={stratMeta.token} />
-          <TokenAmountInputField
-            name="collateral-withdraw"
-            max={position?.collateral}
-            isDisabled={repayWithdrawDisabled}
-            placeholder={'Collateral withdraw'}
-            registerForm={registerRepayForm}
-            setValueForm={setValueRepayForm}
-            errorsForm={errorsRepayForm}
-          />
-        </HStack>
-      </Flex>
-      <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
-        <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-          <WarningMessage message={"Repay amount too low"} isOpen={showWarning}>
+          <WarningMessage message={'Repay amount too low'} isOpen={showWarning}>
             <Text
               variant={'bodyExtraSmall'}
               color={'whiteAlpha.600'}
@@ -223,6 +200,29 @@ export default function RepayWithdraw({
             setValueForm={setValueRepayForm}
             errorsForm={errorsRepayForm}
             percentage={percentageLabel}
+          />
+        </HStack>
+      </Flex>
+      <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
+        <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
+          <Text
+            variant={'bodyExtraSmall'}
+            color={'whiteAlpha.600'}
+            lineHeight={'14px'}
+          >
+            Withdraw Collateral
+          </Text>
+        </Box>
+        <HStack {...inputStyle}>
+          <TokenDescription token={stratMeta.token} />
+          <TokenAmountInputField
+            name="collateral-withdraw"
+            max={position?.collateral}
+            isDisabled={repayWithdrawDisabled}
+            placeholder={'Collateral withdraw'}
+            registerForm={registerRepayForm}
+            setValueForm={setValueRepayForm}
+            errorsForm={errorsRepayForm}
           />
         </HStack>
       </Flex>

@@ -56,9 +56,9 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
     );
 
   return (
-    <Box padding={'12'} width={'full'}>
-      <Text align={'start'} fontSize={'4xl'}>
-        MoreMoney Analytics
+    <Box padding={'12'} width={'full'} textAlign={'center'}>
+      <Text fontSize={'4xl'}>
+        Moremoney Analytics
       </Text>
       <br />
       <br />

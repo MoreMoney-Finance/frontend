@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "Oracle",
-  "sourceName": "contracts/oracles/Oracle.sol",
+  "contractName": "FlashAMMLiquidation",
+  "sourceName": "contracts/liquidation/FlashAMMLiquidation.sol",
   "abi": [
     {
       "anonymous": false,
@@ -126,6 +126,30 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "_oracleCache",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
@@ -184,63 +208,23 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        },
-        {
           "internalType": "uint256",
-          "name": "inAmount",
+          "name": "trancheId",
           "type": "uint256"
         },
         {
           "internalType": "address",
-          "name": "pegCurrency",
+          "name": "router",
           "type": "address"
-        }
-      ],
-      "name": "getAmountInPeg",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "inAmount",
-          "type": "uint256"
         },
         {
           "internalType": "address",
-          "name": "pegCurrency",
+          "name": "recipient",
           "type": "address"
         }
       ],
-      "name": "getPegAmountAndBorrowable",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "name": "liquidate",
+      "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
@@ -261,6 +245,70 @@
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "pegCurrency",
+          "type": "address"
+        }
+      ],
+      "name": "newCurrentOracle",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "onFlashLoan",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "resetApproval",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -317,23 +365,19 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "token",
+          "name": "",
           "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "pegCurrency",
-          "type": "address"
-        },
-        {
-          "internalType": "bytes",
-          "name": "data",
-          "type": "bytes"
         }
       ],
-      "name": "setOracleParams",
-      "outputs": [],
-      "stateMutability": "nonpayable",
+      "name": "stableIndices",
+      "outputs": [
+        {
+          "internalType": "int128",
+          "name": "",
+          "type": "int128"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -365,69 +409,6 @@
       "name": "updateRoleCache",
       "outputs": [],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "inAmount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "pegCurrency",
-          "type": "address"
-        }
-      ],
-      "name": "viewAmountInPeg",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "inAmount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "pegCurrency",
-          "type": "address"
-        }
-      ],
-      "name": "viewPegAmountAndBorrowable",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     }
   ],

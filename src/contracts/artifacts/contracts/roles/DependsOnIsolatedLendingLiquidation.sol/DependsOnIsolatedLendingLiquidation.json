@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "CallsStableCoinMintBurn",
-  "sourceName": "contracts/roles/CallsStableCoinMintBurn.sol",
+  "contractName": "DependsOnIsolatedLendingLiquidation",
+  "sourceName": "contracts/roles/DependsOnIsolatedLendingLiquidation.sol",
   "abi": [
     {
       "inputs": [

@@ -272,11 +272,6 @@
           "type": "address"
         },
         {
-          "internalType": "uint256",
-          "name": "depositLimit",
-          "type": "uint256"
-        },
-        {
           "internalType": "bytes",
           "name": "data",
           "type": "bytes"
@@ -447,6 +442,19 @@
       "name": "disapproveToken",
       "outputs": [],
       "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "disapprovedTokensCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -761,24 +769,6 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "limit",
-          "type": "uint256"
-        }
-      ],
-      "name": "setDepositLimit",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
           "name": "",
           "type": "address"
         }
@@ -835,11 +825,6 @@
         {
           "internalType": "uint256",
           "name": "apf",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "depositLimit",
           "type": "uint256"
         }
       ],
@@ -968,6 +953,94 @@
     },
     {
       "inputs": [],
+      "name": "viewAllDisapprovedTokenStrategyMetadata",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "strategy",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "APF",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "totalCollateral",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "borrowablePer10k",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "valuePer1e18",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "strategyName",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "tvl",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "harvestBalance2Tally",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum IStrategy.YieldType",
+              "name": "yieldType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "stabilityFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "underlyingStrategy",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct IStrategy.StrategyMetadata[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "viewAllDisapprovedTokens",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
       "name": "viewAllFeesEver",
       "outputs": [
         {
@@ -1039,6 +1112,11 @@
               "internalType": "uint256",
               "name": "stabilityFee",
               "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "underlyingStrategy",
+              "type": "address"
             }
           ],
           "internalType": "struct IStrategy.StrategyMetadata[]",
@@ -1204,6 +1282,11 @@
               "internalType": "uint256",
               "name": "stabilityFee",
               "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "underlyingStrategy",
+              "type": "address"
             }
           ],
           "internalType": "struct IStrategy.StrategyMetadata",
@@ -1228,6 +1311,25 @@
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "viewUnderlyingStrategy",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
         }
       ],
       "stateMutability": "view",

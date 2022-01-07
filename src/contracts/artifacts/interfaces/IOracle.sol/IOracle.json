@@ -79,11 +79,6 @@
           "type": "address"
         },
         {
-          "internalType": "uint256",
-          "name": "borrowable",
-          "type": "uint256"
-        },
-        {
           "internalType": "bytes",
           "name": "data",
           "type": "bytes"

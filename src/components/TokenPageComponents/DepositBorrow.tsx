@@ -165,7 +165,9 @@ export default function DepositBorrow({
     ])
   );
 
-  const showWarning = totalPercentage > borrowablePercent;
+  const showWarning =
+    (parseFloat(collateralInput) === 0 && parseFloat(borrowInput) === 0) ||
+    totalPercentage > borrowablePercent;
 
   React.useEffect(() => {
     console.log('In effect', customPercentageInput);

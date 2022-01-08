@@ -1,6 +1,15 @@
 import { VStack } from '@chakra-ui/react';
+import { useEthers } from '@usedapp/core';
 import * as React from 'react';
 import { useUpdatedPositions } from '../chain-interaction/contracts';
+import {
+  getLiquidationParams,
+  LiquidationType,
+} from '../chain-interaction/tokens';
+import {
+  useDirectLiquidationTrans,
+  useLPTLiquidationTrans,
+} from '../chain-interaction/transactions';
 import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
 import { LiquidatablePositionsTable } from './LiquidatablePositionsTable';
 
@@ -17,6 +26,12 @@ export function LiquidatablePositions() {
   const START = new Date(2021, 10, 26).valueOf();
   const updatedPositions = useUpdatedPositions(START);
 
+  const { sendDirectLiquidation } = useDirectLiquidationTrans();
+  const { sendLPTLiquidation } = useLPTLiquidationTrans();
+
+  // in this case using account is OK
+  const { account } = useEthers();
+
   const liquidatablePositions = updatedPositions.filter(
     (posMeta) => posMeta.liquidationPrice > tokenPrices[posMeta.token.address]
   );
@@ -28,7 +43,17 @@ export function LiquidatablePositions() {
           <LiquidatablePositionsTable
             positions={liquidatablePositions}
             action={{
-              callback: (pos) => console.log('liquidating', pos),
+              callback: (pos) => {
+                console.log('liquidating', pos);
+                const { liqType, router } = getLiquidationParams(
+                  pos.token.address
+                );
+                if (liqType === LiquidationType.LPT) {
+                  sendLPTLiquidation(pos.trancheId, router, account);
+                } else {
+                  sendDirectLiquidation(pos.trancheId, router, account);
+                }
+              },
               label: 'Liquidate',
             }}
           />

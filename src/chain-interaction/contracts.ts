@@ -46,6 +46,8 @@ export type DeploymentAddresses = {
   AMMYieldConverter: string;
   WrapNativeIsolatedLending: string;
   CurvePoolRewards: string;
+  DirectFlashLiquidation: string;
+  LPTFlashLiquidation: string;
 };
 
 export function useAddresses() {

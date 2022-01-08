@@ -1,3 +1,4 @@
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -5,6 +6,9 @@ import {
   Text,
   HStack,
   VStack,
+  Alert,
+  AlertIcon,
+  Link,
   // NumberInput,
   // NumberInputField,
   // InputRightElement,
@@ -31,6 +35,7 @@ import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
 import { TokenDescription } from '../TokenDescription';
 import WarningMessage from './WarningMessage';
+import farminfo from '../../contracts/farminfo.json';
 
 export default function RepayWithdraw({
   position,
@@ -164,6 +169,9 @@ export default function RepayWithdraw({
   //   usdPrice,
   // ]);
 
+  const farmInfoIdx = (chainId?.toString() ?? '43114') as keyof typeof farminfo;
+  const curveLink = `https://avax.curve.fi/factory/${farminfo[farmInfoIdx].curvePoolIdx}/`;
+
   const repayWithdrawButtonDisabled =
     (parseFloatNoNaN(collateralInput) === 0 &&
       parseFloatNoNaN(repayInput) === 0) ||
@@ -280,11 +288,33 @@ export default function RepayWithdraw({
             %
           </InputRightElement>
         </NumberInput> */}
+        <Alert
+          status="info"
+          justifyContent={'center'}
+          fontSize={'md'}
+          borderRadius={'lg'}
+        >
+          <AlertIcon />
+          <b>To unwind / repay minting fee:</b>
+
+          <Button
+            as={Link}
+            href={curveLink}
+            isExternal
+            color={'white'}
+            variant={'primary'}
+            padding="12px"
+            ml="16px"
+          >
+            Buy MONEY &nbsp;
+            <ExternalLinkIcon />
+          </Button>
+        </Alert>
       </HStack>
-      <HStack justifyContent={'space-between'} marginTop={'70px'}>
+      <HStack justifyContent={'space-between'} marginTop={'24px'}>
         <VStack spacing={'2px'}>
           <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-            Amount
+            Withdrawal Value
           </Text>
           <Text variant={'bodyMedium'} fontWeight={'500'}>
             $ {(usdPrice * (extantCollateral - totalCollateral)).toFixed(2)}
@@ -314,11 +344,11 @@ export default function RepayWithdraw({
           </Text>
         </VStack>
       </HStack>
-      <HStack marginTop={'30px'} spacing={'8px'}>
-        <Text varinat={'h300'} color={'whiteAlpha.600'}>
+      <HStack marginTop={'24px'} spacing={'8px'}>
+        <Text variant={'h300'} color={'whiteAlpha.600'}>
           Price:
         </Text>
-        <Text varinat={'bodySmall'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(
+        <Text variant={'bodySmall'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(
           2
         )}`}</Text>
       </HStack>

@@ -183,10 +183,8 @@ export default function DepositBorrow({
   }, [customPercentageInput, totalCollateral, extantDebt, usdPrice]);
 
   const depositBorrowDisabled =
-    currentPercentage >= borrowablePercent ||
-    (!position && isNativeToken
-      ? nativeTokenBalance.isZero()
-      : walletBalance.isZero());
+    !position &&
+    (isNativeToken ? nativeTokenBalance.isZero() : walletBalance.isZero());
 
   const depositBorrowButtonDisabled =
     (parseFloatNoNaN(collateralInput) === 0 &&
@@ -325,10 +323,10 @@ export default function DepositBorrow({
         </VStack>
       </HStack>
       <HStack marginTop={'30px'} spacing={'8px'}>
-        <Text varinat={'h300'} color={'whiteAlpha.600'}>
+        <Text variant={'h300'} color={'whiteAlpha.600'}>
           Price:
         </Text>
-        <Text varinat={'bodySmall'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(
+        <Text variant={'bodySmall'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(
           2
         )}`}</Text>
       </HStack>

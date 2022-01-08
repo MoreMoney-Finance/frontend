@@ -142,7 +142,7 @@ export function useNativeRepayWithdrawTrans(
           parseEther(repayAmount.toString()),
           account,
           {
-            gasLimit: 8000000,
+            gasLimit: 2600000,
           }
         )
         : console.error('Trying to withdraw but parameters not set'),

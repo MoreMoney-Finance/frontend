@@ -39,7 +39,7 @@ export default function StrategyTokenInformation({
   // );
 
   const calcCRatio = () => {
-    return `${((1 / (stratMeta.borrowablePercent / 100)) * 100).toFixed(2)}%`;
+    return `${Math.round((1 / (stratMeta.borrowablePercent / 100)) * 100)}%`;
   };
 
   const { sendAMMHarvest, AMMHarvestState } = useAMMHarvest(
@@ -103,7 +103,9 @@ export default function StrategyTokenInformation({
                 Minimum cRatio / LTV
               </Text>
               <Spacer />
-              <Text variant={'bodyLarge'}>{calcCRatio()} / {stratMeta.borrowablePercent}%</Text>
+              <Text variant={'bodyLarge'}>
+                {calcCRatio()} / {Math.round(stratMeta.borrowablePercent)}%
+              </Text>
             </Flex>
             <Flex w={'full'} marginTop={'30px'}>
               <Text variant="h200" color={'whiteAlpha.400'}>

@@ -34,6 +34,7 @@ import {
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../contexts/WalletBalancesContext';
+import { parseFloatNoNaN } from '../../utils';
 import { EnsureWalletConnected } from '../EnsureWalletConnected';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
@@ -115,7 +116,7 @@ export default function DepositBorrow({
 
   const extantCollateral =
     position && position.collateral
-      ? parseFloat(
+      ? parseFloatNoNaN(
         position.collateral.format({
           significantDigits: Infinity,
           prefix: '',
@@ -125,11 +126,11 @@ export default function DepositBorrow({
         })
       )
       : 0;
-  const totalCollateral = parseFloat(collateralInput) + extantCollateral;
+  const totalCollateral = parseFloatNoNaN(collateralInput) + extantCollateral;
 
   const extantDebt =
     position && position.debt && position.debt.gt(position.yield)
-      ? parseFloat(
+      ? parseFloatNoNaN(
         position.debt.sub(position.yield).format({
           significantDigits: Infinity,
           prefix: '',
@@ -139,7 +140,7 @@ export default function DepositBorrow({
         })
       )
       : 0;
-  const totalDebt = parseFloat(borrowInput) + extantDebt;
+  const totalDebt = parseFloatNoNaN(borrowInput) + extantDebt;
 
   const currentPercentage =
     totalCollateral > 0 ? (100 * extantDebt) / (totalCollateral * usdPrice) : 0;
@@ -166,8 +167,10 @@ export default function DepositBorrow({
   );
 
   const showWarning =
-    !(parseFloat(collateralInput) === 0 && parseFloat(borrowInput) === 0) &&
-    totalPercentage > borrowablePercent;
+    !(
+      parseFloatNoNaN(collateralInput) === 0 &&
+      parseFloatNoNaN(borrowInput) === 0
+    ) && totalPercentage > borrowablePercent;
 
   React.useEffect(() => {
     console.log('In effect', customPercentageInput);
@@ -186,9 +189,8 @@ export default function DepositBorrow({
       : walletBalance.isZero());
 
   const depositBorrowButtonDisabled =
-    isNaN(parseFloat(collateralInput)) ||
-    isNaN(parseFloat(borrowInput)) ||
-    (parseFloat(collateralInput) === 0 && parseFloat(borrowInput) === 0) ||
+    (parseFloatNoNaN(collateralInput) === 0 &&
+      parseFloatNoNaN(borrowInput) === 0) ||
     totalPercentage > borrowablePercent;
 
   const inputStyle = {

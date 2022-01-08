@@ -22,6 +22,7 @@ import {
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../contexts/WalletBalancesContext';
+import { parseFloatNoNaN } from '../../utils';
 import { EnsureWalletConnected } from '../EnsureWalletConnected';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
@@ -75,7 +76,7 @@ export default function DepositForm({
     setValueDepForm('amount-stake', '');
   }
 
-  const confirmButtonEnabled = parseFloat(depositInput) > 0;
+  const confirmButtonEnabled = parseFloatNoNaN(depositInput) > 0;
 
   const depositBorrowDisabled = isNativeToken
     ? nativeTokenBalance.isZero()

@@ -11,6 +11,7 @@ import {
 import { useWithdraw } from '../../chain-interaction/transactions';
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
+import { parseFloatNoNaN } from '../../utils';
 import { EnsureWalletConnected } from '../EnsureWalletConnected';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
@@ -56,7 +57,7 @@ export default function WithdrawForm({
 
   const [withdrawInput] = watch(['amount-withdraw']);
 
-  const confirmButtonDisabled = parseFloat(withdrawInput) > 0;
+  const confirmButtonEnabled = parseFloatNoNaN(withdrawInput) > 0;
 
   const depositBorrowDisabled = isNativeToken
     ? nativeTokenBalance.isZero()
@@ -93,9 +94,9 @@ export default function WithdrawForm({
           <Button
             type="submit"
             width={'full'}
-            variant={!confirmButtonDisabled ? 'submit' : 'submit-primary'}
+            variant={!confirmButtonEnabled ? 'submit' : 'submit-primary'}
             isLoading={isSubmittingDepForm}
-            isDisabled={!confirmButtonDisabled}
+            isDisabled={!confirmButtonEnabled}
           >
             Withdraw
           </Button>

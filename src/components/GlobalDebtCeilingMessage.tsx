@@ -13,8 +13,9 @@ export default function GlobalDebtCeilingMessage() {
     [],
     BigNumber.from(0)
   );
-  const totalSupply = useTotalSupply('totalSupply', [], BigNumber.from(0));
-  const hasMaxedOut = totalSupply.gt(globalDebtCeiling.sub(parseEther('1000')));
+  const totalSupply = useTotalSupply('totalSupply', [], undefined);
+  const hasMaxedOut =
+    totalSupply && totalSupply.gt(globalDebtCeiling.sub(parseEther('1000')));
 
   return (
     <>

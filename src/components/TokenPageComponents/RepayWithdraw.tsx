@@ -26,6 +26,7 @@ import {
 } from '../../chain-interaction/transactions';
 import { WNATIVE_ADDRESS } from '../../constants/addresses';
 import { useWalletBalance } from '../../contexts/WalletBalancesContext';
+import { parseFloatNoNaN } from '../../utils';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
 import { TokenDescription } from '../TokenDescription';
@@ -88,7 +89,7 @@ export default function RepayWithdraw({
 
   const extantCollateral =
     position && position.collateral
-      ? parseFloat(
+      ? parseFloatNoNaN(
         position.collateral.format({
           significantDigits: Infinity,
           prefix: '',
@@ -98,11 +99,11 @@ export default function RepayWithdraw({
         })
       )
       : 0;
-  const totalCollateral = extantCollateral - parseFloat(collateralInput);
+  const totalCollateral = extantCollateral - parseFloatNoNaN(collateralInput);
 
   const extantDebt =
     position && position.debt && position.debt.gt(position.yield)
-      ? parseFloat(
+      ? parseFloatNoNaN(
         position.debt.sub(position.yield).format({
           significantDigits: Infinity,
           prefix: '',
@@ -112,7 +113,7 @@ export default function RepayWithdraw({
         })
       )
       : 0;
-  const totalDebt = extantDebt - parseFloat(repayInput);
+  const totalDebt = extantDebt - parseFloatNoNaN(repayInput);
 
   // const currentPercentage =
   //   totalCollateral > 0 ? (100 * extantDebt) / (totalCollateral * usdPrice) : 0;
@@ -126,7 +127,9 @@ export default function RepayWithdraw({
   //       .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
 
   const totalPercentage =
-    totalCollateral > 0 ? (100 * totalDebt) / (totalCollateral * usdPrice) : 0;
+    totalCollateral > 0 && usdPrice > 0
+      ? (100 * totalDebt) / (totalCollateral * usdPrice)
+      : 0;
 
   const percentageLabel =
     totalCollateral > 0 ? `${totalPercentage.toFixed(0)} %` : 'LTV %';
@@ -162,7 +165,8 @@ export default function RepayWithdraw({
   // ]);
 
   const repayWithdrawButtonDisabled =
-    (parseFloat(collateralInput) === 0 && parseFloat(repayInput) === 0) ||
+    (parseFloatNoNaN(collateralInput) === 0 &&
+      parseFloatNoNaN(repayInput) === 0) ||
     totalPercentage > borrowablePercent ||
     parseEther(repayInput || '0').gt(walletBalance.value);
 
@@ -174,8 +178,10 @@ export default function RepayWithdraw({
   };
 
   const showWarning =
-    !(parseFloat(collateralInput) === 0 && parseFloat(repayInput) === 0) &&
-    totalPercentage > borrowablePercent;
+    !(
+      parseFloatNoNaN(collateralInput) === 0 &&
+      parseFloatNoNaN(repayInput) === 0
+    ) && totalPercentage > borrowablePercent;
 
   const residualDebt =
     position && position.debt.gt(position.yield)

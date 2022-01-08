@@ -54,7 +54,7 @@ export default function RepayWithdraw({
     position && position.trancheId,
     token
   );
-
+  console.log('position.trancheId', position?.trancheId);
   const {
     sendRepayWithdraw: sendNativeRepayWithdraw,
     repayWithdrawState: sendNativeWithdrawState,

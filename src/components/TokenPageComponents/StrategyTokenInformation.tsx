@@ -38,7 +38,7 @@ export default function StrategyTokenInformation({
   //   BigNumber.from(0)
   // );
 
-  const countCRation = () => {
+  const calcCRatio = () => {
     return `${((1 / (stratMeta.borrowablePercent / 100)) * 100).toFixed(2)}%`;
   };
 
@@ -100,10 +100,10 @@ export default function StrategyTokenInformation({
             </Flex>
             <Flex w={'full'} marginTop={'30px'}>
               <Text variant="h200" color={'whiteAlpha.400'}>
-                Minimum cRatio
+                Minimum cRatio / LTV
               </Text>
               <Spacer />
-              <Text variant={'bodyLarge'}>{countCRation()}</Text>
+              <Text variant={'bodyLarge'}>{calcCRatio()} / {stratMeta.borrowablePercent}%</Text>
             </Flex>
             <Flex w={'full'} marginTop={'30px'}>
               <Text variant="h200" color={'whiteAlpha.400'}>

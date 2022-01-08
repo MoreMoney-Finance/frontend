@@ -76,6 +76,18 @@ for (const {
   addressIcons.set(getAddress(address), [logoURI]);
 }
 
+export enum LiquidationType {
+  LPT,
+  Direct,
+}
+
+export type LiquidationParams = {
+  liqType: LiquidationType;
+  router: string;
+};
+
+const liquidationParams = new Map<string, LiquidationParams>();
+
 // TODO make this more complete
 const chainIds: Record<string, ChainId> = {
   31337: ChainId.Hardhat,
@@ -86,6 +98,16 @@ const exchangeIcons: Record<string, string> = {
   JPL: 'https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd/logo.png',
   PGL: 'https://github.com/marginswap/token-list/raw/main/logo/png.png',
 };
+
+const exchangeRouters: Record<string, string> = {
+  JPL: '0x60aE616a2155Ee3d9A68541Ba4544862310933d4',
+  PGL: '0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106',
+};
+
+liquidationParams.set('0x60781C2586D68229fde47564546784ab3fACA982', {
+  router: exchangeRouters.PGL,
+  liqType: LiquidationType.Direct,
+});
 
 for (const [chainId, lpTokensPerChain] of Object.entries(lptokens) as [
   string,
@@ -118,12 +140,24 @@ for (const [chainId, lpTokensPerChain] of Object.entries(lptokens) as [
           getAddress(record.pairAddress),
           exchangeIcons[exchange]
         );
+
+        liquidationParams.set(getAddress(record.pairAddress), {
+          router: exchangeRouters[exchange],
+          liqType: LiquidationType.LPT,
+        });
       }
     }
   }
 }
 
-console.log(addressToken);
+export function getLiquidationParams(token: string): LiquidationParams {
+  return (
+    liquidationParams.get(getAddress(token)) ?? {
+      router: exchangeRouters.JPL,
+      liqType: LiquidationType.Direct,
+    }
+  );
+}
 
 for (const [chainId, addresses] of Object.entries(deployAddresses)) {
   addressToken[chainIds[chainId]].set(

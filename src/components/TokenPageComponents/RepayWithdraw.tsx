@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { CurrencyValue, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
+import { parseEther } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import {
@@ -162,7 +163,8 @@ export default function RepayWithdraw({
 
   const repayWithdrawButtonDisabled =
     (parseFloat(collateralInput) === 0 && parseFloat(repayInput) === 0) ||
-    totalPercentage > borrowablePercent;
+    totalPercentage > borrowablePercent ||
+    parseEther(repayInput).gt(walletBalance.value);
 
   const inputStyle = {
     padding: '8px 8px 8px 20px',

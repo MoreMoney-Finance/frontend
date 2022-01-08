@@ -107,10 +107,6 @@ export default function DepositBorrow({
     }
   }
 
-  const depositBorrowDisabled = isNativeToken
-    ? nativeTokenBalance.isZero()
-    : walletBalance.isZero();
-
   const [collateralInput, borrowInput, customPercentageInput] = watch([
     'collateral-deposit',
     'money-borrow',
@@ -182,6 +178,12 @@ export default function DepositBorrow({
       );
     }
   }, [customPercentageInput, totalCollateral, extantDebt, usdPrice]);
+
+  const depositBorrowDisabled =
+    currentPercentage >= borrowablePercent ||
+    (!position && isNativeToken
+      ? nativeTokenBalance.isZero()
+      : walletBalance.isZero());
 
   const depositBorrowButtonDisabled =
     isNaN(parseFloat(collateralInput)) ||

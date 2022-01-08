@@ -38,8 +38,8 @@ export default function StrategyTokenInformation({
   //   BigNumber.from(0)
   // );
 
-  const countCRation = () => {
-    return `${((1 / (stratMeta.borrowablePercent / 100)) * 100).toFixed(2)}%`;
+  const calcCRatio = () => {
+    return `${Math.round((1 / (stratMeta.borrowablePercent / 100)) * 100)}%`;
   };
 
   const { sendAMMHarvest, AMMHarvestState } = useAMMHarvest(
@@ -103,7 +103,16 @@ export default function StrategyTokenInformation({
                 Minimum cRatio
               </Text>
               <Spacer />
-              <Text variant={'bodyLarge'}>{countCRation()}</Text>
+              <Text variant={'bodyLarge'}>{calcCRatio()}</Text>
+            </Flex>
+            <Flex w={'full'} marginTop={'30px'}>
+              <Text variant="h200" color={'whiteAlpha.400'}>
+                Max Loan-To-Value
+              </Text>
+              <Spacer />
+              <Text variant={'bodyLarge'}>
+                {Math.round(stratMeta.borrowablePercent)}%
+              </Text>
             </Flex>
             <Flex w={'full'} marginTop={'30px'}>
               <Text variant="h200" color={'whiteAlpha.400'}>

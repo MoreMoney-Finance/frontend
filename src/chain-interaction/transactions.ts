@@ -140,10 +140,7 @@ export function useNativeRepayWithdrawTrans(
           trancheId,
           parseUnits(collateralAmount.toString(), collateralToken.decimals),
           parseEther(repayAmount.toString()),
-          account,
-          {
-            gasLimit: 2600000,
-          }
+          account
         )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,

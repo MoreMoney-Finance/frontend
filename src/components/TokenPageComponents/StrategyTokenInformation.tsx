@@ -100,11 +100,18 @@ export default function StrategyTokenInformation({
             </Flex>
             <Flex w={'full'} marginTop={'30px'}>
               <Text variant="h200" color={'whiteAlpha.400'}>
-                Minimum cRatio / LTV
+                Minimum cRatio
+              </Text>
+              <Spacer />
+              <Text variant={'bodyLarge'}>{calcCRatio()}</Text>
+            </Flex>
+            <Flex w={'full'} marginTop={'30px'}>
+              <Text variant="h200" color={'whiteAlpha.400'}>
+                Max Loan-To-Value
               </Text>
               <Spacer />
               <Text variant={'bodyLarge'}>
-                {calcCRatio()} / {Math.round(stratMeta.borrowablePercent)}%
+                {Math.round(stratMeta.borrowablePercent)}%
               </Text>
             </Flex>
             <Flex w={'full'} marginTop={'30px'}>

@@ -57,8 +57,9 @@ export function AllSupportedCollateral() {
         asset: <TokenDescription token={meta.token} />,
         apy: Math.round(meta.APY) + '%',
         MONEYavailable: meta.debtCeiling.sub(meta.totalDebt).format(),
-        minColRatio:
-          `${Math.round((1 / (meta.borrowablePercent / 100)) * 100)}% / ${Math.round(meta.borrowablePercent)}%`,
+        minColRatio: `${Math.round(
+          (1 / (meta.borrowablePercent / 100)) * 100
+        )}% / ${Math.round(meta.borrowablePercent)}%`,
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
         liquidationFee:
           (tokenFees.get(meta.token.address) ?? 'Loading...') + '%',

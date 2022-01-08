@@ -58,7 +58,7 @@
     "TrancheIDService": "0xc83f27c0180e8e29419f4Cab189c3529a2A3Fa8a",
     "TwapOracle": "0x4220a06bd4d15b4C3d1f3419AB2Ac8E4768b82B6",
     "UniswapV2LPTOracle": "0x3b825168716D79A656BB48Cb7Ae64fcB3bc32203",
-    "WrapNativeIsolatedLending": "0x7Ed38c4FE5AF58bB95bbd283b478D6Bf64b568D9",
+    "WrapNativeIsolatedLending": "0xE1eE22654BB3108c4471A0F79F594b0471959455",
     "YieldYakAVAXStrategy": "0xaa3Ea561a656cbE310F2E10981085DA2D989f17e",
     "YieldYakStrategy": "0x888fC8d90177a4097e196EF6BBDc7d2e8CfFDb17"
   }

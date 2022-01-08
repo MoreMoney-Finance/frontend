@@ -49,8 +49,7 @@ export default function WithdrawForm({
   } = useForm();
 
   function onWithdraw(data: { [x: string]: any }) {
-    console.log('deposit borrow');
-    console.log(data, position);
+    console.log('withdraw from farm', data, position);
     sendWithdraw(token, data['amount-withdraw']);
     setValueDepForm('amount-withdraw', '');
   }

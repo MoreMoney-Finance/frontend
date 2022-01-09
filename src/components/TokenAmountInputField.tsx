@@ -15,7 +15,11 @@ export function TokenAmountInputField(props: {
   max?: CurrencyValue;
   placeholder: string;
   registerForm: (name: string, params: { required: string }) => any;
-  setValueForm: (name: string, max: string) => any;
+  setValueForm: (
+    name: string,
+    max: string,
+    args?: { shouldDirty: boolean; shouldTouch: boolean }
+  ) => any;
   errorsForm?: Record<string, any>;
   isDisabled?: boolean;
   percentage?: string;
@@ -77,7 +81,8 @@ export function TokenAmountInputField(props: {
                     suffix: '',
                     thousandSeparator: '',
                     decimalSeparator: '.',
-                  })
+                  }),
+                  { shouldDirty: true, shouldTouch: true }
                 )
               }
             >

@@ -143,7 +143,9 @@ export default function DepositBorrow({
   const totalDebt = parseFloatNoNaN(borrowInput) + extantDebt;
 
   const currentPercentage =
-    totalCollateral > 0 ? (100 * extantDebt) / (totalCollateral * usdPrice) : 0;
+    totalCollateral > 0 && usdPrice > 0
+      ? (100 * extantDebt) / (totalCollateral * usdPrice)
+      : 0;
   const percentageRange = borrowablePercent - currentPercentage;
 
   const percentageStep = Math.max(percentageRange / 5, 10);
@@ -155,10 +157,14 @@ export default function DepositBorrow({
         .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
 
   const totalPercentage =
-    totalCollateral > 0 ? (100 * totalDebt) / (totalCollateral * usdPrice) : 0;
+    totalCollateral > 0 && usdPrice > 0
+      ? (100 * totalDebt) / (totalCollateral * usdPrice)
+      : 0;
 
   const percentageLabel =
-    totalCollateral > 0 ? `${totalPercentage.toFixed(0)} %` : 'LTV %';
+    totalCollateral > 0 && usdPrice > 0
+      ? `${totalPercentage.toFixed(0)} %`
+      : 'LTV %';
   const percentages = Object.fromEntries(
     percentageSteps.map((percentage) => [
       `${percentage.toFixed(0)} %`,
@@ -177,7 +183,8 @@ export default function DepositBorrow({
     if (customPercentageInput) {
       setValueDepForm(
         'money-borrow',
-        (customPercentageInput * totalCollateral * usdPrice) / 100 - extantDebt
+        (customPercentageInput * totalCollateral * usdPrice) / 100 - extantDebt,
+        { shouldDirty: true }
       );
     }
   }, [customPercentageInput, totalCollateral, extantDebt, usdPrice]);
@@ -257,7 +264,11 @@ export default function DepositBorrow({
               borderRadius={'full'}
               padding={'6px 16px'}
               key={'percentage' + key}
-              onClick={() => setValueDepForm('money-borrow', value.toFixed(10))}
+              onClick={() =>
+                setValueDepForm('money-borrow', value.toFixed(10), {
+                  shouldDirty: true,
+                })
+              }
             >
               <Text variant={'bodySmall'} fontWeight={'500'}>
                 {key}

@@ -89,7 +89,7 @@ export default function RepayWithdraw({
   const [collateralInput, repayInput /*customPercentageInput*/] = watch([
     'collateral-withdraw',
     'money-repay',
-    'custom-percentage',
+    // 'custom-percentage',
   ]);
 
   const extantCollateral =
@@ -172,11 +172,16 @@ export default function RepayWithdraw({
   const farmInfoIdx = (chainId?.toString() ?? '43114') as keyof typeof farminfo;
   const curveLink = `https://avax.curve.fi/factory/${farminfo[farmInfoIdx].curvePoolIdx}/`;
 
+  const repayingMoreThanBalance =
+    !isNaN(parseFloat(repayInput)) &&
+    parseEther(repayInput || '0').gt(walletBalance.value);
+
   const repayWithdrawButtonDisabled =
     (parseFloatNoNaN(collateralInput) === 0 &&
       parseFloatNoNaN(repayInput) === 0) ||
     totalPercentage > borrowablePercent ||
-    parseEther(repayInput || '0').gt(walletBalance.value);
+    (totalCollateral === 0 && totalDebt > 0) ||
+    repayingMoreThanBalance;
 
   const inputStyle = {
     padding: '8px 8px 8px 20px',
@@ -186,10 +191,17 @@ export default function RepayWithdraw({
   };
 
   const showWarning =
-    !(
+    (!(
       parseFloatNoNaN(collateralInput) === 0 &&
       parseFloatNoNaN(repayInput) === 0
-    ) && totalPercentage > borrowablePercent;
+    ) &&
+      totalPercentage > borrowablePercent) ||
+    repayingMoreThanBalance ||
+    (totalCollateral === 0 && totalDebt > 0);
+
+  const warningMsgText = repayingMoreThanBalance
+    ? 'Input more than wallet balance: buy more MONEY'
+    : 'Repay more to keep position cRatio healthy';
 
   const residualDebt =
     position && position.debt.gt(position.yield)
@@ -200,7 +212,7 @@ export default function RepayWithdraw({
     <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
       <Flex flexDirection={'column'} justify={'start'}>
         <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-          <WarningMessage message={'Repay amount too low'} isOpen={showWarning}>
+          <WarningMessage message={warningMsgText} isOpen={showWarning}>
             <Text
               variant={'bodyExtraSmall'}
               color={'whiteAlpha.600'}
@@ -214,7 +226,7 @@ export default function RepayWithdraw({
           <TokenDescription token={stable} />
           <TokenAmountInputField
             name="money-repay"
-            max={residualDebt.gt(walletBalance) ? walletBalance : residualDebt}
+            max={residualDebt}
             isDisabled={repayWithdrawDisabled}
             placeholder={'MONEY repay'}
             registerForm={registerRepayForm}

@@ -214,8 +214,7 @@ export default function DepositBorrow({
     justifyContent: 'space-between',
   };
 
-  // const dangerousPosition = totalPercentage > borrowablePercent * 0.92;
-  const dangerousPosition = true;
+  const dangerousPosition = totalPercentage > borrowablePercent * 0.92;
 
   return (
     <>

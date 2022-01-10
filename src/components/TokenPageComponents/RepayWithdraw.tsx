@@ -233,11 +233,11 @@ export default function RepayWithdraw({
         confirm={repayWithdraw}
         body={[
           {
-            title: 'Money Repay',
+            title: 'Collateral withdrawn',
             value: data ? data['money-repay'] : '',
           },
           {
-            title: 'Collateral Withdraw',
+            title: 'Debt repaid',
             value: data ? data!['collateral-withdraw'] : ' ',
           },
           {

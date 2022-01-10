@@ -242,7 +242,7 @@ export default function RepayWithdraw({
           },
           {
             title: 'Resulting Loan-To-Value Ratio',
-            value: totalPercentage,
+            value: totalPercentage + '%',
           },
         ]}
         dangerous={dangerousPosition}

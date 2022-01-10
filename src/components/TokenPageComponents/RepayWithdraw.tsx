@@ -233,12 +233,12 @@ export default function RepayWithdraw({
         confirm={repayWithdraw}
         body={[
           {
-            title: 'Collateral withdrawn',
-            value: data ? data['money-repay'] : '',
+            title: <TokenDescription token={stable} />,
+            value: <Text>{data ? data!['money-repay'] : ''}</Text>,
           },
           {
-            title: 'Debt repaid',
-            value: data ? data!['collateral-withdraw'] : ' ',
+            title: <TokenDescription token={stratMeta.token} />,
+            value: <Text>{data ? data!['collateral-withdraw'] : ''}</Text>,
           },
           {
             title: 'Resulting Loan-To-Value Ratio',

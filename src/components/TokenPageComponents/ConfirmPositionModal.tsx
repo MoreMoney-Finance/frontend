@@ -3,17 +3,14 @@ import {
   AlertIcon,
   Box,
   Button,
+  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
-  Table,
-  Tbody,
-  Td,
-  Tr,
+  ModalOverlay
 } from '@chakra-ui/react';
 import * as React from 'react';
 
@@ -28,7 +25,7 @@ export const ConfirmPositionModal = ({
   title: string;
   isOpen: boolean;
   onClose: () => void;
-  body: { title: string; value: string | undefined }[];
+  body: { title: any; value: any }[];
   confirm: any;
   dangerous: boolean;
 }) => {
@@ -48,16 +45,18 @@ export const ConfirmPositionModal = ({
             <ModalBody>
               {/* Your position would be close to liquidation, if the collateral loses
             value. Are you sure you want to proceed? */}
-              <Table size="sm">
-                <Tbody>
-                  {body.map((item, index) => (
-                    <Tr key={'confirm-modal-tr-' + index}>
-                      <Td>{item.title}</Td>
-                      <Td isNumeric>{item.value}</Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
+
+              {body.map((item, index) => (
+                <Flex
+                  alignContent={'space-between'}
+                  justifyContent={'space-between'}
+                  key={'confirm-modal-tr-' + index}
+                >
+                  <Box p="2">{item.title}</Box>
+                  <Box p="2">{item.value}</Box>
+                </Flex>
+              ))}
+
               <br />
               {dangerous ? (
                 <Alert status="info">

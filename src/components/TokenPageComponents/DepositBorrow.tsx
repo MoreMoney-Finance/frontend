@@ -225,12 +225,12 @@ export default function DepositBorrow({
         confirm={confirmDeposit}
         body={[
           {
-            title: 'Deposit Collateral',
-            value: data ? data['collateral-deposit'] : '',
+            title: <TokenDescription token={stratMeta.token} />,
+            value: <Text>{data ? data!['collateral-deposit'] : ''}</Text>,
           },
           {
-            title: 'Debt taken',
-            value: data ? data!['money-borrow'] : ' ',
+            title: <TokenDescription token={stable} />,
+            value: <Text>{data ? data!['money-borrow'] : ''}</Text>,
           },
           {
             title: 'Resulting Loan-To-Value Ratio',

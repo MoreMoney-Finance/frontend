@@ -7,6 +7,7 @@ import {
   NumberInput,
   NumberInputField,
   Text,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import {
@@ -17,7 +18,7 @@ import {
 } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   calcLiqPriceFromNum,
@@ -39,6 +40,7 @@ import { EnsureWalletConnected } from '../EnsureWalletConnected';
 import { StatusTrackModal } from '../StatusTrackModal';
 import { TokenAmountInputField } from '../TokenAmountInputField';
 import { TokenDescription } from '../TokenDescription';
+import { ConfirmPositionModal } from './ConfirmPositionModal';
 import WarningMessage from './WarningMessage';
 
 export default function DepositBorrow({
@@ -50,6 +52,8 @@ export default function DepositBorrow({
 }>) {
   const { token, strategyAddress, borrowablePercent, usdPrice } = stratMeta;
   const { chainId } = useEthers();
+  const [data, setData] = useState<{ [x: string]: any }>();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const account = useContext(UserAddressContext);
   const stable = useStable();
 
@@ -91,19 +95,24 @@ export default function DepositBorrow({
   function onDepositBorrow(data: { [x: string]: any }) {
     console.log('deposit borrow');
     console.log(data);
+    setData(data);
+    onOpen();
+  }
+
+  function confirmDeposit() {
     if (isNativeToken) {
       sendNativeDepositBorrow(
         token,
         strategyAddress,
-        data['collateral-deposit'],
-        data['money-borrow']
+        data!['collateral-deposit'],
+        data!['money-borrow']
       );
     } else {
       sendDepositBorrow(
         token,
         strategyAddress,
-        data['collateral-deposit'],
-        data['money-borrow']
+        data!['collateral-deposit'],
+        data!['money-borrow']
       );
     }
   }
@@ -205,174 +214,205 @@ export default function DepositBorrow({
     justifyContent: 'space-between',
   };
 
+  // const dangerousPosition = totalPercentage > borrowablePercent * 0.92;
+  const dangerousPosition = true;
+
   return (
-    <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
-      <Flex flexDirection={'column'} justify={'start'}>
-        <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-          <Text
-            variant={'bodyExtraSmall'}
-            color={'whiteAlpha.600'}
-            lineHeight={'14px'}
-          >
-            Deposit Collateral
-          </Text>
-        </Box>
-        <HStack {...inputStyle}>
-          <TokenDescription token={stratMeta.token} />
-          <TokenAmountInputField
-            name="collateral-deposit"
-            max={isNativeToken ? nativeTokenBalance : walletBalance}
-            isDisabled={depositBorrowDisabled}
-            placeholder={'Collateral Deposit'}
-            registerForm={registerDepForm}
-            setValueForm={setValueDepForm}
-            errorsForm={errorsDepForm}
-          />
-        </HStack>
-      </Flex>
-      <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
-        <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-          <WarningMessage message="Borrow amount too high" isOpen={showWarning}>
+    <>
+      <ConfirmPositionModal
+        title="Confirm Borrow"
+        isOpen={isOpen}
+        onClose={onClose}
+        confirm={confirmDeposit}
+        body={[
+          {
+            title: 'Deposit Collateral',
+            value: data ? data['collateral-deposit'] : '',
+          },
+          {
+            title: 'Debt taken',
+            value: data ? data!['money-borrow'] : ' ',
+          },
+          {
+            title: 'Resulting Loan-To-Value Ratio',
+            value: totalPercentage,
+          },
+        ]}
+        dangerous={dangerousPosition}
+      />
+      <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
+        <Flex flexDirection={'column'} justify={'start'}>
+          <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
             <Text
               variant={'bodyExtraSmall'}
               color={'whiteAlpha.600'}
               lineHeight={'14px'}
             >
-              Borrow MONEY
+              Deposit Collateral
             </Text>
-          </WarningMessage>
-        </Box>
-        <HStack {...inputStyle}>
-          <TokenDescription token={stable} />
-          <TokenAmountInputField
-            name="money-borrow"
-            isDisabled={depositBorrowDisabled}
-            placeholder={'MONEY borrow'}
-            registerForm={registerDepForm}
-            setValueForm={setValueDepForm}
-            errorsForm={errorsDepForm}
-            percentage={percentageLabel}
-          />
-        </HStack>
-      </Flex>
-      <br />
-      <HStack justifyContent={'space-between'}>
-        {percentages &&
-          Object.entries(percentages).map(([key, value]) => (
-            <Button
-              variant={'secondary'}
-              borderRadius={'full'}
-              padding={'6px 16px'}
-              key={'percentage' + key}
-              onClick={() =>
-                setValueDepForm('money-borrow', value.toFixed(10), {
-                  shouldDirty: true,
-                })
-              }
+          </Box>
+          <HStack {...inputStyle}>
+            <TokenDescription token={stratMeta.token} />
+            <TokenAmountInputField
+              name="collateral-deposit"
+              max={isNativeToken ? nativeTokenBalance : walletBalance}
+              isDisabled={depositBorrowDisabled}
+              placeholder={'Collateral Deposit'}
+              registerForm={registerDepForm}
+              setValueForm={setValueDepForm}
+              errorsForm={errorsDepForm}
+            />
+          </HStack>
+        </Flex>
+        <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
+          <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
+            <WarningMessage
+              message="Borrow amount too high"
+              isOpen={showWarning}
             >
-              <Text variant={'bodySmall'} fontWeight={'500'}>
-                {key}
+              <Text
+                variant={'bodyExtraSmall'}
+                color={'whiteAlpha.600'}
+                lineHeight={'14px'}
+              >
+                Borrow MONEY
               </Text>
-            </Button>
-          ))}
-        <NumberInput
-          borderRadius={'full'}
-          padding={'0px 16px'}
-          bg="whiteAlpha.100"
-          border="none"
-          key={'custom'}
-          fontWeight="500"
-        >
-          <NumberInputField
-            {...registerDepForm('custom-percentage')}
-            placeholder="Custom"
-            name="custom-percentage"
+            </WarningMessage>
+          </Box>
+          <HStack {...inputStyle}>
+            <TokenDescription token={stable} />
+            <TokenAmountInputField
+              name="money-borrow"
+              isDisabled={depositBorrowDisabled}
+              placeholder={'MONEY borrow'}
+              registerForm={registerDepForm}
+              setValueForm={setValueDepForm}
+              errorsForm={errorsDepForm}
+              percentage={percentageLabel}
+            />
+          </HStack>
+        </Flex>
+        <br />
+        <HStack justifyContent={'space-between'}>
+          {percentages &&
+            Object.entries(percentages).map(([key, value]) => (
+              <Button
+                variant={'secondary'}
+                borderRadius={'full'}
+                padding={'6px 16px'}
+                key={'percentage' + key}
+                onClick={() =>
+                  setValueDepForm('money-borrow', value.toFixed(10), {
+                    shouldDirty: true,
+                  })
+                }
+              >
+                <Text variant={'bodySmall'} fontWeight={'500'}>
+                  {key}
+                </Text>
+              </Button>
+            ))}
+          <NumberInput
+            borderRadius={'full'}
+            padding={'0px 16px'}
+            bg="whiteAlpha.100"
             border="none"
-            marginLeft="0px"
-            marginRight="18px"
-            bg="transparent"
-            width="65px"
-            padding="0px"
-            textAlign="right"
-          />
-          <InputRightElement width="auto" marginRight="16px">
-            %
-          </InputRightElement>
-        </NumberInput>
-      </HStack>
-      <HStack justifyContent={'space-between'} marginTop={'40px'}>
-        <VStack spacing={'2px'}>
-          <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-            Deposit Value
-          </Text>
-          <Text variant={'bodyMedium'} fontWeight={'500'}>
-            $ {(usdPrice * (totalCollateral - extantCollateral)).toFixed(2)}
-          </Text>
-        </VStack>
-        <VStack spacing={'2px'}>
-          <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-            Expected Liquidation Price
-          </Text>
-          <Text variant={'bodyMedium'} fontWeight={'500'}>
-            ${' '}
-            {calcLiqPriceFromNum(
-              borrowablePercent,
-              totalDebt,
-              totalCollateral
-            ).toFixed(2)}
-          </Text>
-        </VStack>
-        <VStack spacing={'2px'}>
-          <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-            cRatio
-          </Text>
-          <Text variant={'bodyMedium'} fontWeight={'500'}>
-            {totalDebt > 0.01
-              ? ((100 * usdPrice * totalCollateral) / totalDebt).toFixed(2)
-              : '∞'}
-          </Text>
-        </VStack>
-      </HStack>
-      <HStack marginTop={'30px'} spacing={'8px'}>
-        <Text variant={'h300'} color={'whiteAlpha.600'}>
-          Price:
-        </Text>
-        <Text variant={'bodySmall'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(
-          2
-        )}`}</Text>
-      </HStack>
-      <StatusTrackModal state={approveState} title={'Approve'} />
-      <StatusTrackModal state={depositBorrowState} title={'Deposit Borrow'} />
-      <StatusTrackModal
-        state={nativeDepositBorrowState}
-        title={'Deposit Borrow'}
-      />
-
-      <Box marginTop={'10px'}>
-        {allowance.gt(walletBalance) === false && isNativeToken === false ? (
-          <EnsureWalletConnected>
-            <Button
-              variant={'submit-primary'}
-              onClick={() => sendApprove(strategyAddress)}
-              isLoading={
-                approveState.status == TxStatus.SUCCESS &&
-                allowance.gt(walletBalance) === false
-              }
-            >
-              Approve {token.name}{' '}
-            </Button>
-          </EnsureWalletConnected>
-        ) : (
-          <Button
-            variant={depositBorrowButtonDisabled ? 'submit' : 'submit-primary'}
-            type="submit"
-            isLoading={isSubmittingDepForm}
-            isDisabled={depositBorrowButtonDisabled}
+            key={'custom'}
+            fontWeight="500"
           >
-            Deposit & Borrow
-          </Button>
-        )}
-      </Box>
-    </form>
+            <NumberInputField
+              {...registerDepForm('custom-percentage')}
+              placeholder="Custom"
+              name="custom-percentage"
+              border="none"
+              marginLeft="0px"
+              marginRight="18px"
+              bg="transparent"
+              width="65px"
+              padding="0px"
+              textAlign="right"
+            />
+            <InputRightElement width="auto" marginRight="16px">
+              %
+            </InputRightElement>
+          </NumberInput>
+        </HStack>
+        <HStack justifyContent={'space-between'} marginTop={'40px'}>
+          <VStack spacing={'2px'}>
+            <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
+              Deposit Value
+            </Text>
+            <Text variant={'bodyMedium'} fontWeight={'500'}>
+              $ {(usdPrice * (totalCollateral - extantCollateral)).toFixed(2)}
+            </Text>
+          </VStack>
+          <VStack spacing={'2px'}>
+            <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
+              Expected Liquidation Price
+            </Text>
+            <Text variant={'bodyMedium'} fontWeight={'500'}>
+              ${' '}
+              {calcLiqPriceFromNum(
+                borrowablePercent,
+                totalDebt,
+                totalCollateral
+              ).toFixed(2)}
+            </Text>
+          </VStack>
+          <VStack spacing={'2px'}>
+            <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
+              cRatio
+            </Text>
+            <Text variant={'bodyMedium'} fontWeight={'500'}>
+              {totalDebt > 0.01
+                ? ((100 * usdPrice * totalCollateral) / totalDebt).toFixed(2)
+                : '∞'}
+            </Text>
+          </VStack>
+        </HStack>
+        <HStack marginTop={'30px'} spacing={'8px'}>
+          <Text variant={'h300'} color={'whiteAlpha.600'}>
+            Price:
+          </Text>
+          <Text variant={'bodySmall'}>{`1 ${
+            token.ticker
+          } = $ ${usdPrice.toFixed(2)}`}</Text>
+        </HStack>
+        <StatusTrackModal state={approveState} title={'Approve'} />
+        <StatusTrackModal state={depositBorrowState} title={'Deposit Borrow'} />
+        <StatusTrackModal
+          state={nativeDepositBorrowState}
+          title={'Deposit Borrow'}
+        />
+
+        <Box marginTop={'10px'}>
+          {allowance.gt(walletBalance) === false && isNativeToken === false ? (
+            <EnsureWalletConnected>
+              <Button
+                variant={'submit-primary'}
+                onClick={() => sendApprove(strategyAddress)}
+                isLoading={
+                  approveState.status == TxStatus.SUCCESS &&
+                  allowance.gt(walletBalance) === false
+                }
+              >
+                Approve {token.name}{' '}
+              </Button>
+            </EnsureWalletConnected>
+          ) : (
+            <Button
+              variant={
+                depositBorrowButtonDisabled ? 'submit' : 'submit-primary'
+              }
+              type="submit"
+              isLoading={isSubmittingDepForm}
+              isDisabled={depositBorrowButtonDisabled}
+            >
+              Deposit & Borrow
+            </Button>
+          )}
+        </Box>
+      </form>
+    </>
   );
 }

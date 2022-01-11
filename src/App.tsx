@@ -1,4 +1,4 @@
-import { Box, ChakraProvider, Grid } from '@chakra-ui/react';
+import { Box, ChakraProvider } from '@chakra-ui/react';
 import { useConfig, useEthers } from '@usedapp/core';
 import { ethers } from 'ethers';
 import * as React from 'react';
@@ -85,7 +85,12 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
               {addresses ? (
                 <StrategyMetadataCtxProvider>
                   <PhishingAlertComponent />
-                  <Box maxWidth="1280px" margin="0 auto" px={4}>
+                  <Box
+                    maxWidth="1280px"
+                    margin="0 auto"
+                    px={4}
+                    minHeight={'100vh'}
+                  >
                     <Box
                       position="absolute"
                       left="0"
@@ -114,12 +119,10 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                     <NavigationBar />
                     <br />
                     <GlobalDebtCeilingMessage />
-                    <Grid minH="60vh">
-                      <Box>
-                        {params.children}
-                        <Outlet />
-                      </Box>
-                    </Grid>
+                    <Box paddingBottom={'30px'}> 
+                      {params.children}
+                      <Outlet />
+                    </Box>
                     <FooterBar />
                   </Box>
                 </StrategyMetadataCtxProvider>

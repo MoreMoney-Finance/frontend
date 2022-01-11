@@ -219,7 +219,7 @@ export default function DepositBorrow({
   return (
     <>
       <ConfirmPositionModal
-        title="Confirm Borrow"
+        title="Confirm Deposit / Borrow"
         isOpen={isOpen}
         onClose={onClose}
         confirm={confirmDeposit}
@@ -233,8 +233,8 @@ export default function DepositBorrow({
             value: <Text>{data ? data!['money-borrow'] : ''}</Text>,
           },
           {
-            title: 'Resulting Loan-To-Value Ratio',
-            value: totalPercentage + '%',
+            title: 'At Loan-To-Value %',
+            value: totalPercentage.toFixed(1) + ' %',
           },
         ]}
         dangerous={dangerousPosition}

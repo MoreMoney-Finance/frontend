@@ -114,7 +114,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                     <NavigationBar />
                     <br />
                     <GlobalDebtCeilingMessage />
-                    <Grid minH="100vh">
+                    <Grid minH="60vh">
                       <Box>
                         {params.children}
                         <Outlet />

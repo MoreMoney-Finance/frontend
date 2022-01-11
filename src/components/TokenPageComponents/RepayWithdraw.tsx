@@ -9,6 +9,7 @@ import {
   Alert,
   AlertIcon,
   Link,
+  useDisclosure,
   // NumberInput,
   // NumberInputField,
   // InputRightElement,
@@ -36,6 +37,8 @@ import { TokenAmountInputField } from '../TokenAmountInputField';
 import { TokenDescription } from '../TokenDescription';
 import WarningMessage from './WarningMessage';
 import farminfo from '../../contracts/farminfo.json';
+import { useState } from 'react';
+import { ConfirmPositionModal } from './ConfirmPositionModal';
 
 export default function RepayWithdraw({
   position,
@@ -46,6 +49,8 @@ export default function RepayWithdraw({
 }>) {
   const { token, usdPrice, borrowablePercent } = stratMeta;
   const { chainId } = useEthers();
+  const [data, setData] = useState<{ [x: string]: any }>();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const stable = useStable();
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
 
@@ -70,10 +75,18 @@ export default function RepayWithdraw({
   function onRepayWithdraw(data: { [x: string]: any }) {
     console.log('repay withdraw');
     console.log(data);
+    setData(data);
+    onOpen();
+  }
+
+  function repayWithdraw() {
     if (isNativeToken) {
-      sendNativeRepayWithdraw(data['collateral-withdraw'], data['money-repay']);
+      sendNativeRepayWithdraw(
+        data!['collateral-withdraw'],
+        data!['money-repay']
+      );
     } else {
-      sendRepayWithdraw(data['collateral-withdraw'], data['money-repay']);
+      sendRepayWithdraw(data!['collateral-withdraw'], data!['money-repay']);
     }
   }
 
@@ -208,60 +221,85 @@ export default function RepayWithdraw({
       ? position.debt.sub(position.yield)
       : new CurrencyValue(stable, BigNumber.from(0));
 
+  const dangerousPosition =
+    totalPercentage > borrowablePercent * 0.92 && totalDebt > 0;
+
   return (
-    <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
-      <Flex flexDirection={'column'} justify={'start'}>
-        <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-          <WarningMessage message={warningMsgText} isOpen={showWarning}>
+    <>
+      <ConfirmPositionModal
+        title="Confirm Repay / Withdraw"
+        isOpen={isOpen}
+        onClose={onClose}
+        confirm={repayWithdraw}
+        body={[
+          {
+            title: <TokenDescription token={stable} />,
+            value: <Text>{data ? data!['money-repay'] : ''}</Text>,
+          },
+          {
+            title: <TokenDescription token={stratMeta.token} />,
+            value: <Text>{data ? data!['collateral-withdraw'] : ''}</Text>,
+          },
+          {
+            title: 'At Loan-To-Value %',
+            value: totalPercentage.toFixed(1) + ' %',
+          },
+        ]}
+        dangerous={dangerousPosition}
+      />
+      <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
+        <Flex flexDirection={'column'} justify={'start'}>
+          <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
+            <WarningMessage message={warningMsgText} isOpen={showWarning}>
+              <Text
+                variant={'bodyExtraSmall'}
+                color={'whiteAlpha.600'}
+                lineHeight={'14px'}
+              >
+                Repay MONEY
+              </Text>
+            </WarningMessage>
+          </Box>
+          <HStack {...inputStyle}>
+            <TokenDescription token={stable} />
+            <TokenAmountInputField
+              name="money-repay"
+              max={residualDebt}
+              isDisabled={repayWithdrawDisabled}
+              placeholder={'MONEY repay'}
+              registerForm={registerRepayForm}
+              setValueForm={setValueRepayForm}
+              errorsForm={errorsRepayForm}
+              percentage={percentageLabel}
+            />
+          </HStack>
+        </Flex>
+        <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
+          <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
             <Text
               variant={'bodyExtraSmall'}
               color={'whiteAlpha.600'}
               lineHeight={'14px'}
             >
-              Repay MONEY
+              Withdraw Collateral
             </Text>
-          </WarningMessage>
-        </Box>
-        <HStack {...inputStyle}>
-          <TokenDescription token={stable} />
-          <TokenAmountInputField
-            name="money-repay"
-            max={residualDebt}
-            isDisabled={repayWithdrawDisabled}
-            placeholder={'MONEY repay'}
-            registerForm={registerRepayForm}
-            setValueForm={setValueRepayForm}
-            errorsForm={errorsRepayForm}
-            percentage={percentageLabel}
-          />
-        </HStack>
-      </Flex>
-      <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
-        <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-          <Text
-            variant={'bodyExtraSmall'}
-            color={'whiteAlpha.600'}
-            lineHeight={'14px'}
-          >
-            Withdraw Collateral
-          </Text>
-        </Box>
-        <HStack {...inputStyle}>
-          <TokenDescription token={stratMeta.token} />
-          <TokenAmountInputField
-            name="collateral-withdraw"
-            max={position?.collateral}
-            isDisabled={repayWithdrawDisabled}
-            placeholder={'Collateral withdraw'}
-            registerForm={registerRepayForm}
-            setValueForm={setValueRepayForm}
-            errorsForm={errorsRepayForm}
-          />
-        </HStack>
-      </Flex>
-      <br />
-      <HStack justifyContent={'space-between'}>
-        {/* {percentages &&
+          </Box>
+          <HStack {...inputStyle}>
+            <TokenDescription token={stratMeta.token} />
+            <TokenAmountInputField
+              name="collateral-withdraw"
+              max={position?.collateral}
+              isDisabled={repayWithdrawDisabled}
+              placeholder={'Collateral withdraw'}
+              registerForm={registerRepayForm}
+              setValueForm={setValueRepayForm}
+              errorsForm={errorsRepayForm}
+            />
+          </HStack>
+        </Flex>
+        <br />
+        <HStack justifyContent={'space-between'}>
+          {/* {percentages &&
           Object.entries(percentages).map(([key, value]) => (
             <Button
               variant={'secondary'}
@@ -276,7 +314,7 @@ export default function RepayWithdraw({
             </Button>
           ))} */}
 
-        {/* <NumberInput
+          {/* <NumberInput
           borderRadius={'full'}
           padding={'0px 16px'}
           bg="whiteAlpha.100"
@@ -300,88 +338,92 @@ export default function RepayWithdraw({
             %
           </InputRightElement>
         </NumberInput> */}
-        <Alert
-          status="info"
-          justifyContent={'center'}
-          fontSize={'md'}
-          borderRadius={'lg'}
-        >
-          <AlertIcon />
-          <b>To unwind / repay minting fee:</b>
-
-          <Button
-            as={Link}
-            href={curveLink}
-            isExternal
-            color={'white'}
-            variant={'primary'}
-            padding="12px"
-            ml="16px"
+          <Alert
+            status="info"
+            justifyContent={'center'}
+            fontSize={'md'}
+            borderRadius={'lg'}
           >
-            Buy MONEY &nbsp;
-            <ExternalLinkIcon />
-          </Button>
-        </Alert>
-      </HStack>
-      <HStack justifyContent={'space-between'} marginTop={'24px'}>
-        <VStack spacing={'2px'}>
-          <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-            Withdrawal Value
-          </Text>
-          <Text variant={'bodyMedium'} fontWeight={'500'}>
-            $ {(usdPrice * (extantCollateral - totalCollateral)).toFixed(2)}
-          </Text>
-        </VStack>
-        <VStack spacing={'2px'}>
-          <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-            Expected Liquidation Price
-          </Text>
-          <Text variant={'bodyMedium'} fontWeight={'500'}>
-            ${' '}
-            {calcLiqPriceFromNum(
-              borrowablePercent,
-              totalDebt,
-              totalCollateral
-            ).toFixed(2)}
-          </Text>
-        </VStack>
-        <VStack spacing={'2px'}>
-          <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-            cRatio
-          </Text>
-          <Text variant={'bodyMedium'} fontWeight={'500'}>
-            {totalDebt > 0.01
-              ? ((100 * usdPrice * totalCollateral) / totalDebt).toFixed(2)
-              : '∞'}
-          </Text>
-        </VStack>
-      </HStack>
-      <HStack marginTop={'24px'} spacing={'8px'}>
-        <Text variant={'h300'} color={'whiteAlpha.600'}>
-          Price:
-        </Text>
-        <Text variant={'bodySmall'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(
-          2
-        )}`}</Text>
-      </HStack>
+            <AlertIcon />
+            <b>To unwind / repay minting fee:</b>
 
-      <StatusTrackModal state={repayWithdrawState} title={'Repay | Withdraw'} />
-      <StatusTrackModal
-        state={sendNativeWithdrawState}
-        title={'Repay | Withdraw'}
-      />
+            <Button
+              as={Link}
+              href={curveLink}
+              isExternal
+              color={'white'}
+              variant={'primary'}
+              padding="12px"
+              ml="16px"
+            >
+              Buy MONEY &nbsp;
+              <ExternalLinkIcon />
+            </Button>
+          </Alert>
+        </HStack>
+        <HStack justifyContent={'space-between'} marginTop={'24px'}>
+          <VStack spacing={'2px'}>
+            <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
+              Withdrawal Value
+            </Text>
+            <Text variant={'bodyMedium'} fontWeight={'500'}>
+              $ {(usdPrice * (extantCollateral - totalCollateral)).toFixed(2)}
+            </Text>
+          </VStack>
+          <VStack spacing={'2px'}>
+            <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
+              Expected Liquidation Price
+            </Text>
+            <Text variant={'bodyMedium'} fontWeight={'500'}>
+              ${' '}
+              {calcLiqPriceFromNum(
+                borrowablePercent,
+                totalDebt,
+                totalCollateral
+              ).toFixed(2)}
+            </Text>
+          </VStack>
+          <VStack spacing={'2px'}>
+            <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
+              cRatio
+            </Text>
+            <Text variant={'bodyMedium'} fontWeight={'500'}>
+              {totalDebt > 0.01
+                ? ((100 * usdPrice * totalCollateral) / totalDebt).toFixed(2)
+                : '∞'}
+            </Text>
+          </VStack>
+        </HStack>
+        <HStack marginTop={'24px'} spacing={'8px'}>
+          <Text variant={'h300'} color={'whiteAlpha.600'}>
+            Price:
+          </Text>
+          <Text variant={'bodySmall'}>{`1 ${
+            token.ticker
+          } = $ ${usdPrice.toFixed(2)}`}</Text>
+        </HStack>
 
-      <Button
-        variant={repayWithdrawButtonDisabled ? 'submit' : 'submit-primary'}
-        marginTop={'10px'}
-        type="submit"
-        isLoading={isSubmittingRepayForm}
-        isDisabled={repayWithdrawButtonDisabled}
-      >
-        <Text variant={'bodyMedium'} fontWeight={'600'}>
-          Repay & Withdraw
-        </Text>
-      </Button>
-    </form>
+        <StatusTrackModal
+          state={repayWithdrawState}
+          title={'Repay | Withdraw'}
+        />
+        <StatusTrackModal
+          state={sendNativeWithdrawState}
+          title={'Repay | Withdraw'}
+        />
+
+        <Button
+          variant={repayWithdrawButtonDisabled ? 'submit' : 'submit-primary'}
+          marginTop={'10px'}
+          type="submit"
+          isLoading={isSubmittingRepayForm}
+          isDisabled={repayWithdrawButtonDisabled}
+        >
+          <Text variant={'bodyMedium'} fontWeight={'600'}>
+            Repay & Withdraw
+          </Text>
+        </Button>
+      </form>
+    </>
   );
 }

@@ -227,7 +227,7 @@ export default function RepayWithdraw({
   return (
     <>
       <ConfirmPositionModal
-        title="Confirm Repay"
+        title="Confirm Repay / Withdraw"
         isOpen={isOpen}
         onClose={onClose}
         confirm={repayWithdraw}
@@ -241,8 +241,8 @@ export default function RepayWithdraw({
             value: <Text>{data ? data!['collateral-withdraw'] : ''}</Text>,
           },
           {
-            title: 'Resulting Loan-To-Value Ratio',
-            value: totalPercentage + '%',
+            title: 'At Loan-To-Value %',
+            value: totalPercentage.toFixed(1) + ' %',
           },
         ]}
         dangerous={dangerousPosition}

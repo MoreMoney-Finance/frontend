@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
-  useStable,
+  useStable
 } from '../../chain-interaction/contracts';
 import { useMigrateStrategy } from '../../chain-interaction/transactions';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
@@ -44,7 +44,7 @@ export function PositionBody({
 
   console.log('strategy', chosenStrategy);
 
-  const positionRowHeight = '120px ';
+  // const positionRowHeight = '120px ';
   return (
     <>
       <StatusTrackModal
@@ -53,9 +53,9 @@ export function PositionBody({
       />
       <Grid
         w={'full'}
-        templateRows={`${position ? positionRowHeight : ''}240px 310px`}
+        // templateRows={`${position ? positionRowHeight : ''}240px 310px`}
         templateColumns="520px 240px 240px"
-        h={'760px'}
+        h={'auto'}
         gap={'20px'}
         marginTop={'30px'}
       >

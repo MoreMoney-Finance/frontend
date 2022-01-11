@@ -12,9 +12,9 @@ export default function CollateralAPY({
       <Container variant={'token'}>
         <Flex
           flexDirection={'column'}
+          justifyContent={'center'}
           alignItems={'center'}
           h={'100%'}
-          paddingTop="77px"
         >
           <Text variant="h400" color="whiteAlpha.400">
             Collateral APY

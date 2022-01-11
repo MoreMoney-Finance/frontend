@@ -14,6 +14,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
+import { ethers } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
 import {
@@ -34,7 +35,7 @@ export function FarmPage(params: React.PropsWithChildren<unknown>) {
 
   const stakeMeta: ParsedStakingMetadata[] = useParsedStakingMetadata(
     [useAddresses().CurvePoolRewards],
-    account ?? ''
+    account ?? ethers.constants.AddressZero
   ).flat(1);
 
   const farmInfoIdx = (chainId?.toString() ?? '43114') as keyof typeof farminfo;

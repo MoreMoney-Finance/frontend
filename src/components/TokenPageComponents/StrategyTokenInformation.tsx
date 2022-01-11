@@ -1,14 +1,16 @@
 import {
-  Box,
+  Button,
   Container,
   Flex,
   GridItem,
+  Image,
   Spacer,
   Text,
-  Image,
-  Button,
 } from '@chakra-ui/react';
+import { CurrencyValue } from '@usedapp/core';
+import { BigNumber } from 'ethers';
 import * as React from 'react';
+import lines from '../../assets/img/lines.svg';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
@@ -16,15 +18,12 @@ import {
   useStable,
   YieldType,
 } from '../../chain-interaction/contracts';
-import lines from '../../assets/img/lines.svg';
-import { BigNumber } from 'ethers';
-import { CurrencyValue } from '@usedapp/core';
 import {
   useAMMHarvest,
   useHarvestPartially,
 } from '../../chain-interaction/transactions';
-import { StatusTrackModal } from '../StatusTrackModal';
 import { LiquidationFeesContext } from '../../contexts/LiquidationFeesContext';
+import { StatusTrackModal } from '../StatusTrackModal';
 
 export default function StrategyTokenInformation({
   stratMeta,
@@ -86,44 +85,44 @@ export default function StrategyTokenInformation({
           justifyContent={'center'}
           alignContent={'center'}
           alignItems={'center'}
+          h={'full'}
           padding={'30px 130px 40px 40px'}
         >
-          <Box w={'full'}>
-            <Flex w={'full'}>
-              <Text variant="h200" color={'whiteAlpha.400'}>
-                Borrow Fee
-              </Text>
-              <Spacer />
-              <Text variant={'bodyLarge'}>
-                {stratMeta.mintingFeePercent.toFixed(2)}%
-              </Text>
-            </Flex>
-            <Flex w={'full'} marginTop={'30px'}>
-              <Text variant="h200" color={'whiteAlpha.400'}>
-                Minimum cRatio
-              </Text>
-              <Spacer />
-              <Text variant={'bodyLarge'}>{calcCRatio()}</Text>
-            </Flex>
-            <Flex w={'full'} marginTop={'30px'}>
-              <Text variant="h200" color={'whiteAlpha.400'}>
-                Max Loan-To-Value
-              </Text>
-              <Spacer />
-              <Text variant={'bodyLarge'}>
-                {Math.round(stratMeta.borrowablePercent)}%
-              </Text>
-            </Flex>
-            <Flex w={'full'} marginTop={'30px'}>
-              <Text variant="h200" color={'whiteAlpha.400'}>
-                Liquidation Fee
-              </Text>
-              <Spacer />
-              <Text variant={'bodyLarge'}>
-                {tokenFees.get(stratMeta.token.address) + '%'}
-              </Text>
-            </Flex>
-            {/* <Flex w={'full'} marginTop={'30px'}>
+          <Flex w={'full'}>
+            <Text variant="h200" color={'whiteAlpha.400'}>
+              Borrow Fee
+            </Text>
+            <Spacer />
+            <Text variant={'bodyLarge'}>
+              {stratMeta.mintingFeePercent.toFixed(2)}%
+            </Text>
+          </Flex>
+          <Flex w={'full'} marginTop={'30px'}>
+            <Text variant="h200" color={'whiteAlpha.400'}>
+              Minimum cRatio
+            </Text>
+            <Spacer />
+            <Text variant={'bodyLarge'}>{calcCRatio()}</Text>
+          </Flex>
+          <Flex w={'full'} marginTop={'30px'}>
+            <Text variant="h200" color={'whiteAlpha.400'}>
+              Max Loan-To-Value
+            </Text>
+            <Spacer />
+            <Text variant={'bodyLarge'}>
+              {Math.round(stratMeta.borrowablePercent)}%
+            </Text>
+          </Flex>
+          <Flex w={'full'} marginTop={'30px'}>
+            <Text variant="h200" color={'whiteAlpha.400'}>
+              Liquidation Fee
+            </Text>
+            <Spacer />
+            <Text variant={'bodyLarge'}>
+              {tokenFees.get(stratMeta.token.address) + '%'}
+            </Text>
+          </Flex>
+          {/* <Flex w={'full'} marginTop={'30px'}>
               <Text variant="h200" color={'whiteAlpha.400'}>
                 Stability fee
               </Text>
@@ -133,30 +132,29 @@ export default function StrategyTokenInformation({
               </Text>
             </Flex> */}
 
-            {stratMeta.yieldType !== YieldType.COMPOUNDING ? (
-              <Flex w={'full'} marginTop={'30px'}>
-                <Text variant="h200" color={'whiteAlpha.400'}>
-                  Harvestable
-                </Text>
-                <Spacer />
-                <Button
-                  borderRadius={'full'}
-                  width={'auto'}
-                  marginTop="-5px"
-                  marginRight="-20px"
-                  onClick={() => {
-                    if (stratMeta.yieldType === YieldType.REPAYING) {
-                      sendAMMHarvest(stratMeta.token.address);
-                    } else if (stratMeta.yieldType === YieldType.COMPOUNDING) {
-                      sendHarvestPartially(stratMeta.token.address);
-                    }
-                  }}
-                >
-                  <Text variant="bodySmall">{`Harvest${harvestLabel}`}</Text>
-                </Button>
-              </Flex>
-            ) : undefined}
-          </Box>
+          {stratMeta.yieldType !== YieldType.COMPOUNDING ? (
+            <Flex w={'full'} marginTop={'30px'}>
+              <Text variant="h200" color={'whiteAlpha.400'}>
+                Harvestable
+              </Text>
+              <Spacer />
+              <Button
+                borderRadius={'full'}
+                width={'auto'}
+                marginTop="-5px"
+                marginRight="-20px"
+                onClick={() => {
+                  if (stratMeta.yieldType === YieldType.REPAYING) {
+                    sendAMMHarvest(stratMeta.token.address);
+                  } else if (stratMeta.yieldType === YieldType.COMPOUNDING) {
+                    sendHarvestPartially(stratMeta.token.address);
+                  }
+                }}
+              >
+                <Text variant="bodySmall">{`Harvest${harvestLabel}`}</Text>
+              </Button>
+            </Flex>
+          ) : undefined}
         </Flex>
       </Container>
     </GridItem>

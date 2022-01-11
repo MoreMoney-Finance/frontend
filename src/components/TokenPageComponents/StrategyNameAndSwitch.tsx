@@ -1,8 +1,8 @@
-import { Container, GridItem, Text, VStack } from '@chakra-ui/react';
+import { Container, Flex, GridItem, Text } from '@chakra-ui/react';
 import * as React from 'react';
 import {
   ParsedStratMetaRow,
-  YieldType,
+  YieldType
 } from '../../chain-interaction/contracts';
 import ChangeStrategyModal from './ChangeStrategyModal';
 
@@ -26,10 +26,10 @@ export default function StrategyNameAndSwitch({
   return (
     <GridItem colSpan={1} rowSpan={1}>
       <Container variant={'token'}>
-        <VStack
+        <Flex
           flexDirection={'column'}
+          justifyContent={'center'}
           alignItems={'center'}
-          paddingTop="77px"
           h={'100%'}
         >
           <Text variant="h400" color="whiteAlpha.400">
@@ -46,7 +46,7 @@ export default function StrategyNameAndSwitch({
               currentStrategy={chosenStrategy}
             />
           )}
-        </VStack>
+        </Flex>
       </Container>
     </GridItem>
   );

@@ -9,6 +9,38 @@
   "keywords": [],
   "tokens": [
     {
+      "chainId": 43114,
+      "address": "0x2148D1B21Faa7eb251789a51B404fc063cA6AAd6",
+      "decimals": 18,
+      "name": "Wrapped sMAXI",
+      "symbol": "wsMAXI",
+      "logoURI": "https://raw.githubusercontent.com/traderjoe-xyz/joe-tokenlists/main/logos/0x7C08413cbf02202a1c13643dB173f2694e0F73f0/logo.png"
+    },
+    {
+      "chainId": 31337,
+      "address": "0x2148D1B21Faa7eb251789a51B404fc063cA6AAd6",
+      "decimals": 18,
+      "name": "Wrapped sMAXI",
+      "symbol": "wsMAXI",
+      "logoURI": "https://raw.githubusercontent.com/traderjoe-xyz/joe-tokenlists/main/logos/0x7C08413cbf02202a1c13643dB173f2694e0F73f0/logo.png"
+    },
+    {
+      "address": "0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33",
+      "chainId": 31337,
+      "symbol": "xJOE",
+      "name": "JoeBar",
+      "decimals": 18,
+      "logoURI": "https://traderjoexyz.com/static/media/Earn.610c93e4.png"
+    },
+    {
+      "address": "0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33",
+      "chainId": 43114,
+      "symbol": "xJOE",
+      "name": "JoeBar",
+      "decimals": 18,
+      "logoURI": "https://traderjoexyz.com/static/media/Earn.610c93e4.png"
+    },
+    {
       "address": "0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd",
       "chainId": 43114,
       "name": "Joe Token",

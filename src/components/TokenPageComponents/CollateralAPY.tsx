@@ -9,7 +9,7 @@ export default function CollateralAPY({
 }) {
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
-    {/* <GridItem colSpan={2}> */}
+      {/* <GridItem colSpan={2}> */}
       <Container variant={'token'} padding={['16px', '0px', '0px']}>
         <Flex
           flexDirection={'column'}

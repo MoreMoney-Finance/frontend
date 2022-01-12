@@ -129,61 +129,63 @@ function parseStratMeta(
   balancesCtx: Map<string, CurrencyValue>,
   yyMetadata: YYMetadata,
   globalMoneyAvailable: BigNumber
-): ParsedStratMetaRow {
+): ParsedStratMetaRow | undefined {
   const token = getTokenFromAddress(chainId, row.token);
-  const tvlInToken = tokenAmount(chainId, row.token, row.tvl)!;
-  const balance =
-    balancesCtx.get(token!.address) ??
-    new CurrencyValue(token, BigNumber.from('0'));
+  if (token) {
+    const tvlInToken = tokenAmount(chainId, row.token, row.tvl)!;
+    const balance =
+      balancesCtx.get(token!.address) ??
+      new CurrencyValue(token, BigNumber.from('0'));
 
-  const strategyAddress = getAddress(row.strategy);
-  const underlyingAddress = row.underlyingStrategy
-    ? getAddress(row.underlyingStrategy)
-    : strategyAddress;
+    const strategyAddress = getAddress(row.strategy);
+    const underlyingAddress = row.underlyingStrategy
+      ? getAddress(row.underlyingStrategy)
+      : strategyAddress;
 
-  const APY =
-    underlyingAddress in yyMetadata
-      ? yyMetadata[underlyingAddress].apy * 0.9
-      : convertAPF2APY(row.APF);
+    const APY =
+      underlyingAddress in yyMetadata
+        ? yyMetadata[underlyingAddress].apy * 0.9
+        : convertAPF2APY(row.APF);
 
-  let syntheticDebtCeil = globalMoneyAvailable.add(row.totalDebt);
+    let syntheticDebtCeil = globalMoneyAvailable.add(row.totalDebt);
 
-  return {
-    debtCeiling: new CurrencyValue(
-      stable,
-      row.debtCeiling.gt(syntheticDebtCeil)
-        ? syntheticDebtCeil
-        : row.debtCeiling
-    ),
-    totalDebt: new CurrencyValue(stable, row.totalDebt),
-    stabilityFeePercent: row.stabilityFee.toNumber() / 100,
-    mintingFeePercent: row.mintingFee.toNumber() / 100,
-    strategyAddress,
-    token,
-    APY,
-    totalCollateral: tokenAmount(chainId, row.token, row.totalCollateral)!,
-    borrowablePercent: row.borrowablePer10k.toNumber() / 100,
-    usdPrice:
-      parseFloat(formatEther(row.valuePer1e18)) / 10 ** (18 - token.decimals),
-    strategyName: parseBytes32String(row.strategyName),
-    tvlInToken,
-    tvlInPeg: new CurrencyValue(
-      stable,
-      row.tvl.mul(row.valuePer1e18).div(parseUnits('1', token.decimals))
-    ),
-    harvestBalance2Tally: new CurrencyValue(stable, row.harvestBalance2Tally),
-    yieldType: [YieldType.REPAYING, YieldType.COMPOUNDING, YieldType.NOYIELD][
-      row.yieldType
-    ],
-    balance: parseFloat(
-      balance.format({
-        significantDigits: Infinity,
-        thousandSeparator: '',
-        decimalSeparator: '.',
-        suffix: '',
-      })
-    ),
-  };
+    return {
+      debtCeiling: new CurrencyValue(
+        stable,
+        row.debtCeiling.gt(syntheticDebtCeil)
+          ? syntheticDebtCeil
+          : row.debtCeiling
+      ),
+      totalDebt: new CurrencyValue(stable, row.totalDebt),
+      stabilityFeePercent: row.stabilityFee.toNumber() / 100,
+      mintingFeePercent: row.mintingFee.toNumber() / 100,
+      strategyAddress,
+      token,
+      APY,
+      totalCollateral: tokenAmount(chainId, row.token, row.totalCollateral)!,
+      borrowablePercent: row.borrowablePer10k.toNumber() / 100,
+      usdPrice:
+        parseFloat(formatEther(row.valuePer1e18)) / 10 ** (18 - token.decimals),
+      strategyName: parseBytes32String(row.strategyName),
+      tvlInToken,
+      tvlInPeg: new CurrencyValue(
+        stable,
+        row.tvl.mul(row.valuePer1e18).div(parseUnits('1', token.decimals))
+      ),
+      harvestBalance2Tally: new CurrencyValue(stable, row.harvestBalance2Tally),
+      yieldType: [YieldType.REPAYING, YieldType.COMPOUNDING, YieldType.NOYIELD][
+        row.yieldType
+      ],
+      balance: parseFloat(
+        balance.format({
+          significantDigits: Infinity,
+          thousandSeparator: '',
+          decimalSeparator: '.',
+          suffix: '',
+        })
+      ),
+    };
+  }
 }
 
 const COMPOUNDING = 52;
@@ -237,14 +239,16 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
         yyMetadata,
         globalMoneyAvailable
       );
-      const tokenAddress = parsedRow.token.address;
-      return {
-        ...result,
-        [tokenAddress]: {
-          [parsedRow.strategyAddress]: parsedRow,
-          ...(result[tokenAddress] || {}),
-        },
-      };
+
+      return parsedRow
+        ? {
+            ...result,
+            [parsedRow.token.address]: {
+              [parsedRow.strategyAddress]: parsedRow,
+              ...(result[parsedRow.token.address] || {}),
+            },
+          }
+        : result;
     },
     {}
   );

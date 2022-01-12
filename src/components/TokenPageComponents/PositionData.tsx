@@ -1,12 +1,12 @@
-import { Container, GridItem, HStack } from '@chakra-ui/react';
-import { TitleValue } from '../TitleValue';
+import { Container, Flex, GridItem } from '@chakra-ui/react';
+import { CurrencyValue } from '@usedapp/core';
+import { BigNumber } from 'ethers';
 import React from 'react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
 } from '../../chain-interaction/contracts';
-import { CurrencyValue } from '@usedapp/core';
-import { BigNumber } from 'ethers';
+import { TitleValue } from '../TitleValue';
 
 export function PositionData({
   position,
@@ -20,9 +20,13 @@ export function PositionData({
     : new CurrencyValue(position.debt.currency, BigNumber.from(0));
 
   return (
-    <GridItem colSpan={3} rowSpan={1}>
+    <GridItem colSpan={[2, 3, 4]} rowSpan={[12, 1, 1]} marginTop={'30px'}>
       <Container variant={'token'}>
-        <HStack padding="25px 50px 37px 50px" justifyContent="space-between">
+        <Flex
+          flexDirection={['column', 'column', 'row']}
+          padding={['20px', '35px', '20px']}
+          justifyContent="space-between"
+        >
           <TitleValue
             title="COLLATERAL"
             value={
@@ -57,7 +61,7 @@ export function PositionData({
             title="LIQUIDATION PRICE"
             value={`$ ${position.liquidationPrice.toFixed(2)}`}
           />
-        </HStack>
+        </Flex>
       </Container>
     </GridItem>
   );

@@ -34,7 +34,7 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
     >
       <HStack>
         {walletBalance && !walletBalance.isZero() ? (
-          <Text variant={'bodySmall'} lineHeight={'24px'}>
+          <Text fontSize={['12px', '14px', '14px']}>
             {walletBalance?.format({ significantDigits: 2 })}
           </Text>
         ) : (
@@ -49,7 +49,7 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
       >
         {account ? (
           <Text
-            variant={'bodySmall'}
+            fontSize={['12px', '14px', '14px']}
             lineHeight={'24px'}
             color={'brand.bg'}
             fontWeight={'600'}

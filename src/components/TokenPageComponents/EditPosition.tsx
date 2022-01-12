@@ -23,7 +23,8 @@ export default function EditPosition({
   stratMeta: ParsedStratMetaRow;
 }>) {
   return (
-    <GridItem rowSpan={2} colSpan={1}>
+    <GridItem rowSpan={[12, 12, 2]} colSpan={[12, 12, 2]}>
+      {/* <GridItem rowSpan={2} colSpan={1}> */}
       <Container variant={'token'} padding={'35px 20px 20px 20px'}>
         <Tabs variant={'primary'}>
           <TabList>

@@ -50,9 +50,9 @@ export default function NavigationBar() {
           />
           <Link to="/">
             <Flex alignItems={'center'}>
-              <Image src={logo} alt="Logo" width={'50px'} />
+              <Image src={logo} alt="Logo" width={['30px', '40px', '50px']} />
               &nbsp;
-              <Text>
+              <Text fontSize={['sm', 'md', 'lg']}>
                 <b>moremoney</b>
               </Text>
             </Flex>

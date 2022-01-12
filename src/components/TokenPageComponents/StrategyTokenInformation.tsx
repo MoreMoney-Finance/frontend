@@ -65,7 +65,7 @@ export default function StrategyTokenInformation({
     })}`
     : '';
   return (
-    <GridItem colSpan={2} rowSpan={1}>
+    <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 2]}>
       <Container variant={'token'} position="relative">
         <Image
           src={lines}

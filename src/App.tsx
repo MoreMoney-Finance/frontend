@@ -95,7 +95,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                       position="absolute"
                       left="0"
                       opacity="0.3"
-                      width="500px"
+                      width={['0px', '0px', '500px']}
                       height="300px"
                       top="300px"
                       filter="blur(200px)"
@@ -105,7 +105,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                     />
                     <Box
                       position="absolute"
-                      width="350px"
+                      width={['0px', '0px', '350px']}
                       height="230px"
                       filter="blur(200px)"
                       opacity="0.3"
@@ -119,7 +119,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                     <NavigationBar />
                     <br />
                     <GlobalDebtCeilingMessage />
-                    <Box paddingBottom={'30px'}> 
+                    <Box paddingBottom={'30px'}>
                       {params.children}
                       <Outlet />
                     </Box>

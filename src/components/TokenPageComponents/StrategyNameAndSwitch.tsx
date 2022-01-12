@@ -2,7 +2,7 @@ import { Container, Flex, GridItem, Text } from '@chakra-ui/react';
 import * as React from 'react';
 import {
   ParsedStratMetaRow,
-  YieldType
+  YieldType,
 } from '../../chain-interaction/contracts';
 import ChangeStrategyModal from './ChangeStrategyModal';
 
@@ -24,7 +24,7 @@ export default function StrategyNameAndSwitch({
   const textVariant = multipleOptions ? 'bodySmall' : 'bodyLarge';
 
   return (
-    <GridItem colSpan={1} rowSpan={1}>
+    <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
       <Container variant={'token'}>
         <Flex
           flexDirection={'column'}

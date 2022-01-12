@@ -28,10 +28,10 @@ export function TokenPage(props: React.PropsWithChildren<unknown>) {
       : {};
 
   return Object.values(stratMeta).length > 0 ? (
-    <Box margin={'60px 100px 100px'}>
+    <Box margin={['0px', '0px', '60px 100px 100px']}>
       <Box
         position="absolute"
-        width="300px"
+        width={['full', '300px', '300px']}
         height="200px"
         filter="blur(200px)"
         opacity="0.3"

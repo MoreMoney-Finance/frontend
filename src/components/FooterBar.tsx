@@ -14,7 +14,7 @@ const Links = [
 
 export default function FooterBar() {
   return (
-    <Box py={4} position={'absolute'} bottom={0}>
+    <Box py={4} position={'absolute'} bottom={0} right={0} left={10}>
       <HStack
         spacing={8}
         alignItems={'center'}

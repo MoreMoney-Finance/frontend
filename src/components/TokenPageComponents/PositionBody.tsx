@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
-  useStable
+  useStable,
 } from '../../chain-interaction/contracts';
 import { useMigrateStrategy } from '../../chain-interaction/transactions';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
@@ -44,27 +44,30 @@ export function PositionBody({
 
   console.log('strategy', chosenStrategy);
 
-  // const positionRowHeight = '120px ';
   return (
     <>
       <StatusTrackModal
         state={migrateStrategyState}
         title={'Migrate Strategy'}
       />
+
+      {position && (
+        <PositionData
+          position={position}
+          stratMeta={stratMeta[chosenStrategy]}
+        />
+      )}
       <Grid
+        templateColumns={[
+          'repeat(1, 1fr)',
+          'repeat(5, 1fr)',
+          'repeat(4, 1fr)',
+        ]}
+        templateRows="repeat(2, 1fr)"
         w={'full'}
-        // templateRows={`${position ? positionRowHeight : ''}240px 310px`}
-        templateColumns="520px 240px 240px"
-        h={'auto'}
         gap={'20px'}
-        marginTop={'30px'}
+        marginTop={'20px'}
       >
-        {position && (
-          <PositionData
-            position={position}
-            stratMeta={stratMeta[chosenStrategy]}
-          />
-        )}
         <EditPosition
           position={position}
           stratMeta={stratMeta[chosenStrategy]}

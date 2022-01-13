@@ -51,12 +51,7 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
       (tvl, row) => tvl.add(row.tvlInPeg),
       new CurrencyValue(stable, BigNumber.from(0))
     )
-    .add(
-      stakeMeta.reduce(
-        (tvl, ) => tvl,
-        new CurrencyValue(stable, BigNumber.from(0))
-      )
-    );
+    .add(stakeMeta.map((item) => item.tvl)[0]);
 
   const supply = useTotalSupply('totalSupply', [], ['']);
   const colRatio = !tvl.isZero()

@@ -24,6 +24,8 @@ import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 import { YYMetadata, YYMetadataContext } from '../contexts/YYMetadataContext';
+import earnedRewards from '../constants/earned-rewards.json';
+import rewardsRewards from '../constants/rewards-rewards.json';
 
 /* eslint-disable */
 export const addresses: Record<
@@ -544,7 +546,25 @@ export type ParsedStakingMetadata = {
   earned: CurrencyValue;
   vested: CurrencyValue;
   rewards: CurrencyValue;
+  totalRewards: CurrencyValue;
 };
+
+function unifyRewards(account?:string): BigNumber {
+  const lcAccount = account ? account.toLowerCase() : undefined;
+  const earned = lcAccount && lcAccount in earnedRewards
+    ? BigNumber.from(
+      earnedRewards[lcAccount as keyof typeof earnedRewards]
+    )
+    : BigNumber.from(0);
+
+  const rewards = lcAccount && lcAccount in rewardsRewards
+    ? BigNumber.from(rewardsRewards[lcAccount as keyof typeof rewardsRewards])
+    : BigNumber.from(0);
+
+  console.log('unifying', formatEther(earned), formatEther(rewards));
+
+  return earned.add(rewards);
+}
 
 export function useParsedStakingMetadata(
   stakingContracts: string[],
@@ -555,7 +575,7 @@ export function useParsedStakingMetadata(
   return useStakingMetadata(stakingContracts, account)
     .filter((x) => x)
     .filter(([x]) => x)
-    .map(([stakingMeta]: [RawStakingMetadata]) => {
+    .map(([stakingMeta]: [RawStakingMetadata], i) => {
       const stakingToken = getTokenFromAddress(
         chainId,
         stakingMeta.stakingToken
@@ -564,12 +584,29 @@ export function useParsedStakingMetadata(
         chainId,
         stakingMeta.rewardsToken
       )!;
+
+      const earned = new CurrencyValue(rewardsToken, stakingMeta.earned);
+      const rewards = new CurrencyValue(rewardsToken, stakingMeta.rewards);
+      console.log('unifying with earned', formatEther(earned.value));
+
+      const rawTotalRewards = earned.add(rewards);
+      const totalRewards =  i === 0
+          ? new CurrencyValue(
+              rewardsToken,
+              rawTotalRewards.value.add(rawTotalRewards.value.sub(unifyRewards(account)).mul(4)
+              )
+            )
+          : rawTotalRewards;
+
+      const rawAprPercent = (100 * stakingMeta.aprPer10k.toNumber()) / 10000;
+      const aprPercent = i === 0 ? rawAprPercent * 5 : rawAprPercent;
+
       return {
         stakingToken,
         rewardsToken,
         totalSupply: new CurrencyValue(stakingToken, stakingMeta.totalSupply),
         tvl: new CurrencyValue(stable, stakingMeta.tvl),
-        aprPercent: (100 * stakingMeta.aprPer10k.toNumber()) / 10000,
+        aprPercent,
         vestingCliff: timestamp2Date(stakingMeta.vestingCliff),
         periodFinish: timestamp2Date(stakingMeta.periodFinish),
         stakedBalance: new CurrencyValue(
@@ -577,9 +614,10 @@ export function useParsedStakingMetadata(
           stakingMeta.stakedBalance
         ),
         vestingStart: timestamp2Date(stakingMeta.vestingStart),
-        earned: new CurrencyValue(rewardsToken, stakingMeta.earned),
+        earned,
         vested: new CurrencyValue(rewardsToken, stakingMeta.vested),
-        rewards: new CurrencyValue(rewardsToken, stakingMeta.rewards),
+        rewards,
+        totalRewards
       };
     });
 }

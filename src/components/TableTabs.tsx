@@ -13,15 +13,15 @@ export function TableTabs({
 }) {
   const { chainId } = useEthers();
 
-  const stableTickers = [
-    'USDT',
-    'USDC',
-    'DAI',
-    'FRAX',
-    'USDT.e',
-    'USDC.e',
-    'DAI.e',
-  ];
+  // const stableTickers = [
+  //   'USDT',
+  //   'USDC',
+  //   'DAI',
+  //   'FRAX',
+  //   'USDT.e',
+  //   'USDC.e',
+  //   'DAI.e',
+  // ];
 
   const chainIdStr: keyof typeof lptokens = chainId
     ? (chainId.toString() as keyof typeof lptokens)
@@ -31,7 +31,8 @@ export function TableTabs({
     .map(([, token]) => {
       return [...Object.keys(token)];
     })
-    .flat(1);
+    .flat(1)
+    .map((x) => x.replaceAll('PGL-', '').replaceAll('JPL-', ''));
 
   const singleAssetTickers = stratMeta
     .filter((meta) => !lpTickers.includes(meta.token.ticker))
@@ -44,18 +45,18 @@ export function TableTabs({
         onChange={(index) => {
           if (index === 0) {
             setTableTabFilter([]);
+            // } else if (index === 1) {
+            //   setTableTabFilter(stableTickers);
           } else if (index === 1) {
-            setTableTabFilter(stableTickers);
-          } else if (index === 2) {
             setTableTabFilter(singleAssetTickers);
-          } else if (index === 3) {
+          } else if (index === 2) {
             setTableTabFilter(lpTickers);
           }
         }}
       >
         <TabList>
           <Tab>All Assets</Tab>
-          <Tab>Stablecoins</Tab>
+          {/* <Tab>Stablecoins</Tab> */}
           <Tab>Single Asset</Tab>
           <Tab>LP Tokens</Tab>
         </TabList>

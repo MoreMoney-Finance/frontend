@@ -13,7 +13,7 @@ export function TableSearch({
   };
 
   return (
-    <Box>
+    <Box w={['full', 'full', 'auto']} marginTop={['20px', '20px', '0px']}>
       <InputGroup>
         <InputLeftElement pointerEvents="none">
           <SearchIcon />

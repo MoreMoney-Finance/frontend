@@ -1,4 +1,14 @@
-import { Box, Flex, Table, Tbody, Td, Text, Thead, Tr } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Thead,
+  Tr,
+} from '@chakra-ui/react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Column, useTable } from 'react-table';
@@ -107,20 +117,24 @@ export function AllSupportedCollateral() {
         <Text fontSize="24" lineHeight="56px" color="whiteAlpha.600">
           <b>Select a collateral asset to</b>
         </Text>
-        <Text fontSize="48" lineHeight="56px">
+        <Text fontSize={['36', '48', '48']} lineHeight="56px">
           <b>Open an interest-free debt position</b>
         </Text>
-        <Text fontSize="48" lineHeight="56px">
+        <Text fontSize={['36', '48', '48']} lineHeight="56px">
           that improves with yield from
         </Text>
-        <Text fontSize="48" lineHeight="56px">
+        <Text fontSize={['36', '48', '48']} lineHeight="56px">
           collateral
         </Text>
       </Box>
 
       <Box width="100%">
         <Box zIndex="var(--chakra-zIndices-header)" position="relative">
-          <Flex alignItems={'center'} justifyContent="space-between">
+          <Flex
+            wrap={'wrap'}
+            alignItems={'center'}
+            justifyContent="space-between"
+          >
             <TableTabs
               setTableTabFilter={setTableTabFilter}
               stratMeta={stratMeta}
@@ -128,45 +142,96 @@ export function AllSupportedCollateral() {
             <TableSearch setSearchString={setSearchString} />
           </Flex>
         </Box>
-        <>
-          <Table variant="dashboard" {...getTableProps()}>
-            <Thead>
-              {headerGroups.map((headerGroup) => (
-                // eslint-disable-next-line
-                <Tr {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    // eslint-disable-next-line
-                    <Td {...column.getHeaderProps()}>
-                      {column.render('Header')}
-                    </Td>
-                  ))}
-                </Tr>
-              ))}
-            </Thead>
-            <Tbody {...getTableBodyProps()}>
-              {rows.map((row) => {
-                prepareRow(row);
-                return (
-                  // eslint-disable-next-line
-                  <Tr
-                    {...row.getRowProps()}
-                    as={Link}
-                    to={`/token/${row.original.token.address}`}
-                    display="table-row"
-                  >
-                    {row.cells.map((cell) => {
-                      // eslint-disable-next-line
-                      return (
-                        // eslint-disable-next-line
-                        <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
-                      );
-                    })}
-                  </Tr>
+        <Flex
+          p={[0, 4, 4]}
+          display={['flex', 'flex', 'flex', 'none', 'none']}
+          flexDirection={'column'}
+        >
+          {rows.map((row) => {
+            prepareRow(row);
+            const headers = headerGroups
+              .map((headerGroup) => {
+                return headerGroup.headers.map((column) =>
+                  column.render('Header')
                 );
-              })}
-            </Tbody>
-          </Table>
-        </>
+              })
+              .flat(1);
+            return (
+              // eslint-disable-next-line
+              <Box marginTop={'20px'} borderWidth="1px" borderRadius="lg">
+                {row.cells.map((cell, index) => {
+                  // eslint-disable-next-line
+                  return (
+                    <Flex
+                      key={'cellMobile' + index}
+                      flexDirection={'row'}
+                      justifyContent={'space-between'}
+                      p={'4'}
+                    >
+                      <Box>
+                        <b>{headers[index]}</b>
+                      </Box>
+                      <Box>{cell.render('Cell')}</Box>
+                    </Flex>
+                  );
+                })}
+                {/* </Tbody> */}
+                {/* </Table> */}
+                <Button
+                  as={Link}
+                  to={`/token/${row.original.token.address}`}
+                  key={row.id}
+                  w={'full'}
+                  variant={'primary'}
+                >
+                  View
+                </Button>
+              </Box>
+            );
+          })}
+        </Flex>
+
+        <Table
+          display={['none', 'none', 'none', 'table', 'table']}
+          variant="dashboard"
+          {...getTableProps()}
+        >
+          <Thead>
+            {headerGroups.map((headerGroup) => (
+              // eslint-disable-next-line
+              <Tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  // eslint-disable-next-line
+                  <Td {...column.getHeaderProps()}>
+                    {column.render('Header')}
+                  </Td>
+                ))}
+              </Tr>
+            ))}
+          </Thead>
+          <Tbody {...getTableBodyProps()}>
+            {rows.map((row) => {
+              prepareRow(row);
+              return (
+                // eslint-disable-next-line
+                <Tr
+                  {...row.getRowProps()}
+                  as={Link}
+                  to={`/token/${row.original.token.address}`}
+                  display="table-row"
+                >
+                  {row.cells.map((cell) => {
+                    // eslint-disable-next-line
+                    return (
+                      // eslint-disable-next-line
+                      <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
+                    );
+                  })}
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </Table>
       </Box>
     </>
   );

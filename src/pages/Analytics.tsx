@@ -1,21 +1,31 @@
 import { Box, Container, Flex, Grid, GridItem, Text } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
-import { BigNumber } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import * as React from 'react';
+import { useContext } from 'react';
 import {
   DeploymentAddresses,
+  ParsedStakingMetadata,
   useAddresses,
   useAllFeesEver,
+  useParsedStakingMetadata,
   useStable,
   useTotalSupply,
 } from '../chain-interaction/contracts';
 import { StrategyMetadataContext } from '../contexts/StrategyMetadataContext';
+import { UserAddressContext } from '../contexts/UserAddressContext';
 import { AnalyticsBox } from './Analytics/AnalyticsBox';
 
 export function Analytics(props: React.PropsWithChildren<unknown>) {
   const allStratMeta = React.useContext(StrategyMetadataContext);
 
   console.log('allStratMeta', allStratMeta);
+  const account = useContext(UserAddressContext);
+
+  const stakeMeta: ParsedStakingMetadata[] = useParsedStakingMetadata(
+    [useAddresses().CurvePoolRewards],
+    account ?? ethers.constants.AddressZero
+  ).flat(1);
 
   const addresses = useAddresses();
   const feeContractNames = ['IsolatedLending', 'IsolatedLendingLiquidation'];
@@ -40,10 +50,18 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
     .reduce(
       (tvl, row) => tvl.add(row.tvlInPeg),
       new CurrencyValue(stable, BigNumber.from(0))
+    )
+    .add(
+      stakeMeta.reduce(
+        (tvl, ) => tvl,
+        new CurrencyValue(stable, BigNumber.from(0))
+      )
     );
 
   const supply = useTotalSupply('totalSupply', [], ['']);
-  const colRatio = !tvl.isZero() ? tvl.value.mul(10000).div(supply).toNumber() / 100 : 0;
+  const colRatio = !tvl.isZero()
+    ? tvl.value.mul(10000).div(supply).toNumber() / 100
+    : 0;
 
   const fees = useAllFeesEver(contracts);
 
@@ -57,9 +75,7 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
 
   return (
     <Box padding={'12'} width={'full'} textAlign={'center'}>
-      <Text fontSize={'4xl'}>
-        Moremoney Analytics
-      </Text>
+      <Text fontSize={'4xl'}>Moremoney Analytics</Text>
       <br />
       <br />
       <br />
@@ -112,7 +128,7 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
             <AnalyticsBox
               title={'MONEY circulating supply'}
               subtitle={'Circulating volume of MONEY'}
-              value={(new CurrencyValue(stable, supply)).format()}
+              value={new CurrencyValue(stable, supply).format()}
             />
           </Container>
         </Box>

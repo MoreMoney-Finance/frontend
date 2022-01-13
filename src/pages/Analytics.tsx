@@ -45,18 +45,18 @@ export function Analytics(props: React.PropsWithChildren<unknown>) {
   });
   console.log('contracts', contracts);
   const stable = useStable();
+  const tvlsFarm = stakeMeta.reduce(
+    (tvl, row) => tvl.add(row.tvl),
+    new CurrencyValue(stable, BigNumber.from(0))
+  );
+
   const tvl = Object.values(allStratMeta)
     .flatMap((rows) => Object.values(rows))
     .reduce(
       (tvl, row) => tvl.add(row.tvlInPeg),
       new CurrencyValue(stable, BigNumber.from(0))
     )
-    .add(
-      stakeMeta.reduce(
-        (tvl, ) => tvl,
-        new CurrencyValue(stable, BigNumber.from(0))
-      )
-    );
+    .add(tvlsFarm);
 
   const supply = useTotalSupply('totalSupply', [], ['']);
   const colRatio = !tvl.isZero()

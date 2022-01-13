@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Container,
   Flex,
   Table,
   Tbody,
@@ -158,7 +159,7 @@ export function AllSupportedCollateral() {
               .flat(1);
             return (
               // eslint-disable-next-line
-              <Box marginTop={'20px'} borderWidth="1px" borderRadius="lg">
+              <Container variant="token" marginTop={'20px'}>
                 {row.cells.map((cell, index) => {
                   // eslint-disable-next-line
                   return (
@@ -182,11 +183,10 @@ export function AllSupportedCollateral() {
                   to={`/token/${row.original.token.address}`}
                   key={row.id}
                   w={'full'}
-                  variant={'primary'}
                 >
                   View
                 </Button>
-              </Box>
+              </Container>
             );
           })}
         </Flex>

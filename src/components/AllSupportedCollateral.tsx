@@ -50,7 +50,11 @@ export function AllSupportedCollateral() {
     .filter((meta) => {
       if (tableTabFilter.length === 0) {
         return true;
-      } else if (tableTabFilter.includes(meta.token.ticker)) {
+      } else if (
+        tableTabFilter.includes(
+          meta.token.ticker.toUpperCase().replaceAll('/', '-')
+        )
+      ) {
         return true;
       } else {
         return false;
@@ -169,8 +173,8 @@ export function AllSupportedCollateral() {
                       justifyContent={'space-between'}
                       p={'4'}
                     >
-                      <Box>
-                        <b>{headers[index]}</b>
+                      <Box fontFamily={'Rubik'} color={'whiteAlpha.400'}>
+                        {headers[index]}
                       </Box>
                       <Box>{cell.render('Cell')}</Box>
                     </Flex>

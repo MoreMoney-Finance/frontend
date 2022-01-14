@@ -24,7 +24,7 @@ export function TokenDescription({
         <AvatarGroup size={targetSize} max={2}>
           {(getIconsFromTokenAddress(token.address) ?? []).map((iconUrl, i) => (
             <Avatar
-              borderColor="white"
+              borderColor="gray.300"
               showBorder={true}
               src={iconUrl}
               key={i + 1}
@@ -40,7 +40,7 @@ export function TokenDescription({
           <>
             (
             <AvatarGroup size={targetSize} max={2}>
-              <Avatar borderColor={'white'} src={auxIcon} />
+              <Avatar borderColor={'gray.300'} src={auxIcon} />
             </AvatarGroup>
             )
           </>

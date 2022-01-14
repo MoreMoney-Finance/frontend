@@ -54,9 +54,9 @@ export function getTokensInQuestion(_chainId: ChainId): [string, Token][] {
   const tokensInQuestion = Array.from(addressToken[_chainId].entries()).filter(
     (aT) => aT[1].chainId === _chainId
   );
-  console.log('tokens in question');
-  console.log(Array.from(addressToken[_chainId].entries()));
-  console.log(tokensInQuestion);
+  // console.log('tokens in question');
+  // console.log(Array.from(addressToken[_chainId].entries()));
+  // console.log(tokensInQuestion);
 
   return tokensInQuestion;
 }

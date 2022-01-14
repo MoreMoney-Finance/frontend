@@ -8,6 +8,7 @@ const Links = [
   },
   { title: 'Twitter', link: 'https://twitter.com/Moremoneyfi' },
   { title: 'Discord', link: 'https://discord.gg/uHwQgNE776' },
+  { title: 'Telegram', link: 'https://t.me/moremoneyfi' },
   { title: 'Github', link: 'https://github.com/MoreMoney-Finance' },
   { title: 'Swap', link: 'https://avax.curve.fi/factory/39' },
 ];

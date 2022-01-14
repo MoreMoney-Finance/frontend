@@ -23,7 +23,12 @@ export function TokenDescription({
       <Flex>
         <AvatarGroup size={targetSize} max={2}>
           {(getIconsFromTokenAddress(token.address) ?? []).map((iconUrl, i) => (
-            <Avatar src={iconUrl} key={i + 1} />
+            <Avatar
+              borderColor="white"
+              showBorder={true}
+              src={iconUrl}
+              key={i + 1}
+            />
           ))}
         </AvatarGroup>
         &nbsp;
@@ -35,7 +40,7 @@ export function TokenDescription({
           <>
             (
             <AvatarGroup size={targetSize} max={2}>
-              <Avatar src={auxIcon} />
+              <Avatar borderColor={'white'} src={auxIcon} />
             </AvatarGroup>
             )
           </>

@@ -481,7 +481,7 @@ export function useAllFeesEver(contracts: string[]) {
   }
 
   const calls: ContractCall[] = contracts.map(convert2ContractCall);
-  console.log('calls', calls);
+  // console.log('calls', calls);
   const results = useContractCalls(calls) ?? [];
 
   return results;
@@ -549,19 +549,19 @@ export type ParsedStakingMetadata = {
   totalRewards: CurrencyValue;
 };
 
-function unifyRewards(account?:string): BigNumber {
+function unifyRewards(account?: string): BigNumber {
   const lcAccount = account ? account.toLowerCase() : undefined;
-  const earned = lcAccount && lcAccount in earnedRewards
-    ? BigNumber.from(
-      earnedRewards[lcAccount as keyof typeof earnedRewards]
-    )
-    : BigNumber.from(0);
+  const earned =
+    lcAccount && lcAccount in earnedRewards
+      ? BigNumber.from(earnedRewards[lcAccount as keyof typeof earnedRewards])
+      : BigNumber.from(0);
 
-  const rewards = lcAccount && lcAccount in rewardsRewards
-    ? BigNumber.from(rewardsRewards[lcAccount as keyof typeof rewardsRewards])
-    : BigNumber.from(0);
+  const rewards =
+    lcAccount && lcAccount in rewardsRewards
+      ? BigNumber.from(rewardsRewards[lcAccount as keyof typeof rewardsRewards])
+      : BigNumber.from(0);
 
-  console.log('unifying', formatEther(earned), formatEther(rewards));
+  // console.log('unifying', formatEther(earned), formatEther(rewards));
 
   return earned.add(rewards);
 }
@@ -587,13 +587,15 @@ export function useParsedStakingMetadata(
 
       const earned = new CurrencyValue(rewardsToken, stakingMeta.earned);
       const rewards = new CurrencyValue(rewardsToken, stakingMeta.rewards);
-      console.log('unifying with earned', formatEther(earned.value));
+      // console.log('unifying with earned', formatEther(earned.value));
 
       const rawTotalRewards = earned.add(rewards);
-      const totalRewards =  i === 0
+      const totalRewards =
+        i === 0
           ? new CurrencyValue(
               rewardsToken,
-              rawTotalRewards.value.add(rawTotalRewards.value.sub(unifyRewards(account)).mul(4)
+              rawTotalRewards.value.add(
+                rawTotalRewards.value.sub(unifyRewards(account)).mul(4)
               )
             )
           : rawTotalRewards;
@@ -617,7 +619,7 @@ export function useParsedStakingMetadata(
         earned,
         vested: new CurrencyValue(rewardsToken, stakingMeta.vested),
         rewards,
-        totalRewards
+        totalRewards,
       };
     });
 }

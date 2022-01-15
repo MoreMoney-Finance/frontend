@@ -6,12 +6,12 @@ import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
 import { ChainId, DAppProvider } from '@usedapp/core';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Dashboard } from './pages/Dashboard';
-import { TokenPage } from './pages/TokenPage';
-import { Analytics } from './pages/Analytics';
-import { FarmPage } from './pages/Farm/FarmPage';
-import { PositionsPage } from './pages/Positions/PositionsPage';
-import LiquidationProtectedLoans from './pages/Loans/LiquidationProtectedLoans';
+import Dashboard from './pages/Dashboard';
+import TokenPage from './pages/TokenPage';
+import FarmPage from './pages/Farm';
+import PositionsPage from './pages/Positions';
+import LiquidationProtectedLoans from './pages/Loans';
+import Analytics from './pages/Analytics';
 
 ReactDOM.render(
   <React.StrictMode>

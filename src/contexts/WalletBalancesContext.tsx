@@ -4,7 +4,7 @@ import {
   ERC20Interface,
   Token,
   useContractCalls,
-  useEthers
+  useEthers,
 } from '@usedapp/core';
 import { getAddress } from 'ethers/lib/utils';
 import React, { useContext } from 'react';
@@ -43,12 +43,12 @@ export function WalletBalancesCtxProvider({
         getAddress(tokenAddress),
         new CurrencyValue(token, result[0])
       );
-      console.log(
-        `Set balance for ${token.name}: ${result[0]} (${tokenAddress})`
-      );
-    } else {
-      const [tokenAddress, token] = tokensInQuestion[index];
-      console.log(`No result for ${token.name} at ${tokenAddress}`);
+      // console.log(
+      //   `Set balance for ${token.name}: ${result[0]} (${tokenAddress})`
+      // );
+      // } else {
+      //   const [tokenAddress, token] = tokensInQuestion[index];
+      //   console.log(`No result for ${token.name} at ${tokenAddress}`);
     }
   });
 

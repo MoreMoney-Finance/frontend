@@ -344,13 +344,13 @@ export function useAMMHarvest(strategyAddress: string) {
 
   return {
     sendAMMHarvest: (yieldBearingToken: string) => {
-      console.log(
-        'Sending AMM harvest',
-        strategyAddress,
-        yieldBearingToken,
-        router,
-        path
-      );
+      // console.log(
+      //   'Sending AMM harvest',
+      //   strategyAddress,
+      //   yieldBearingToken,
+      //   router,
+      //   path
+      // );
       send(strategyAddress, yieldBearingToken, router, path);
     },
     AMMHarvestState: state,

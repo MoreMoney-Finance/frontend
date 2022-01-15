@@ -26,22 +26,22 @@ import {
   ParsedStratMetaRow,
   TxStatus,
   useStable,
-} from '../../../chain-interaction/contracts';
+} from '../../../../chain-interaction/contracts';
 import {
   useApproveTrans,
   useDepositBorrowTrans,
   useNativeDepositBorrowTrans,
-} from '../../../chain-interaction/transactions';
-import { EnsureWalletConnected } from '../../../components/EnsureWalletConnected/EnsureWalletConnected';
-import { StatusTrackModal } from '../../../components/StatusTrackModal/StatusTrackModal';
-import { TokenAmountInputField } from '../../../components/TokenAmountInputField/TokenAmountInputField';
-import { TokenDescription } from '../../../components/TokenDescription/TokenDescription';
-import { WNATIVE_ADDRESS } from '../../../constants/addresses';
-import { UserAddressContext } from '../../../contexts/UserAddressContext';
-import { useWalletBalance } from '../../../contexts/WalletBalancesContext';
-import { parseFloatNoNaN } from '../../../utils';
+} from '../../../../chain-interaction/transactions';
+import { EnsureWalletConnected } from '../../../../components/account/EnsureWalletConnected';
+import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
+import { TokenAmountInputField } from '../../../../components/tokens/TokenAmountInputField';
+import { TokenDescription } from '../../../../components/tokens/TokenDescription';
+import { WNATIVE_ADDRESS } from '../../../../constants/addresses';
+import { UserAddressContext } from '../../../../contexts/UserAddressContext';
+import { useWalletBalance } from '../../../../contexts/WalletBalancesContext';
+import { parseFloatNoNaN } from '../../../../utils';
 import { ConfirmPositionModal } from './ConfirmPositionModal';
-import WarningMessage from './WarningMessage';
+import WarningMessage from '../../../../components/notifications/WarningMessage';
 
 export default function DepositBorrow({
   position,
@@ -377,9 +377,9 @@ export default function DepositBorrow({
             token.ticker
           } = $ ${usdPrice.toFixed(2)}`}</Text>
         </HStack>
-        <StatusTrackModal state={approveState} title={'Approve'} />
-        <StatusTrackModal state={depositBorrowState} title={'Deposit Borrow'} />
-        <StatusTrackModal
+        <TransactionErrorDialog state={approveState} title={'Approve'} />
+        <TransactionErrorDialog state={depositBorrowState} title={'Deposit Borrow'} />
+        <TransactionErrorDialog
           state={nativeDepositBorrowState}
           title={'Deposit Borrow'}
         />

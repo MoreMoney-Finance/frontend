@@ -10,7 +10,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import * as React from 'react';
-import { ParsedStratMetaRow } from '../../../chain-interaction/contracts';
+import { ParsedStratMetaRow } from '../../../../chain-interaction/contracts';
 import { ChangeStrategyTable } from './ChangeStrategyTable';
 
 export default function ChangeStrategyModal({

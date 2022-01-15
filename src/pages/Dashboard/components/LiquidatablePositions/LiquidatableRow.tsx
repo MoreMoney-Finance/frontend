@@ -8,7 +8,7 @@ import {
   ParsedPositionMetaRow,
   useStable,
 } from '../../../../chain-interaction/contracts';
-import { TokenDescription } from '../../../../components/TokenDescription/TokenDescription';
+import { TokenDescription } from '../../../../components/tokens/TokenDescription';
 import { LiquidatableAction } from './LiquidatablePositionsTable';
 
 export function LiquidatableRow(

@@ -10,7 +10,7 @@ import {
   useTotalSupply,
 } from '../../chain-interaction/contracts';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
-import { AnalyticsBox } from './components/AnalyticsBox';
+import { AnalyticsBox } from './AnalyticsBox';
 
 export default function Analytics(props: React.PropsWithChildren<unknown>) {
   const allStratMeta = React.useContext(StrategyMetadataContext);

@@ -7,7 +7,7 @@ import {
   useNotifications,
 } from '@usedapp/core';
 
-export const NotificationsComponent: React.FC = () => {
+export const TransactionToasts: React.FC = () => {
   const { notifications } = useNotifications();
   const toast = useToast();
   const { chainId } = useEthers();

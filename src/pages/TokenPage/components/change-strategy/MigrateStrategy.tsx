@@ -5,10 +5,10 @@ import {
   ParsedStratMetaRow,
   TxStatus,
   useStable,
-} from '../../../chain-interaction/contracts';
-import { useMigrateStrategy } from '../../../chain-interaction/transactions';
-import { UserAddressContext } from '../../../contexts/UserAddressContext';
-import { StatusTrackModal } from '../../../components/StatusTrackModal/StatusTrackModal';
+} from '../../../../chain-interaction/contracts';
+import { useMigrateStrategy } from '../../../../chain-interaction/transactions';
+import { UserAddressContext } from '../../../../contexts/UserAddressContext';
+import { TransactionStatusOverlay } from '../../../../components/notifications/TransactionErrorDialog';
 import { StrategyDataTable } from './StrategyDataTable';
 
 export function MigrateStrategy(
@@ -22,7 +22,7 @@ export function MigrateStrategy(
 
   return (
     <VStack>
-      <StatusTrackModal
+      <TransactionStatusOverlay
         state={migrateStrategyState}
         title={'Migrate Strategy'}
       />

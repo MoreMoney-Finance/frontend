@@ -9,10 +9,10 @@ import {
   useStable,
   YieldType
 } from '../../chain-interaction/contracts';
-import { TokenDescription } from '../TokenDescription/TokenDescription';
+import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { TrancheAction } from './TrancheTable';
 
-export function IsolatedTranche(
+export function TrancheRow(
   params: React.PropsWithChildren<
     ParsedStratMetaRow & ParsedPositionMetaRow & { action?: TrancheAction }
   >

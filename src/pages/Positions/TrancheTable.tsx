@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Table, Thead, Tbody, Td, Tr } from '@chakra-ui/react';
-import { IsolatedTranche } from './IsolatedTranche';
+import { TrancheRow } from './TrancheRow';
 import { ParsedPositionMetaRow } from '../../chain-interaction/contracts';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 
@@ -40,7 +40,7 @@ export function TrancheTable({
           if (posMeta.collateralValue.isZero()) {
             return <></>;
           }
-          return <IsolatedTranche key={`isolatedTranche${i}`} {...data} />;
+          return <TrancheRow key={`isolatedTranche${i}`} {...data} />;
         })}
       </Tbody>
     </Table>

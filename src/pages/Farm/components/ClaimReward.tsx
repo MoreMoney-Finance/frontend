@@ -4,7 +4,7 @@ import * as React from 'react';
 import { ParsedStakingMetadata } from '../../../chain-interaction/contracts';
 import { getIconsFromTokenAddress } from '../../../chain-interaction/tokens';
 import { useClaimReward } from '../../../chain-interaction/transactions';
-import { StatusTrackModal } from '../../../components/StatusTrackModal/StatusTrackModal';
+import { TransactionStatusOverlay } from '../../../components/notifications/TransactionErrorDialog';
 
 export default function ClaimReward({
   token,
@@ -38,7 +38,7 @@ export default function ClaimReward({
       >
         Claim
       </Button>
-      <StatusTrackModal state={claimState} title={'Claim Reward'} />
+      <TransactionStatusOverlay state={claimState} title={'Claim Reward'} />
     </VStack>
   );
 }

@@ -5,12 +5,12 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useAddresses } from './chain-interaction/contracts';
-import FooterBar from './components/Footer/FooterBar';
-import GlobalDebtCeilingMessage from './components/GlobalDebtCeilingMessage/GlobalDebtCeilingMessage';
-import NavigationBar from './components/NavigationBar/NavigationBar';
-import NetworkNotSupported from './components/NetworkNotSupported/NetworkNotSupported';
-import { NotificationsComponent } from './components/NotificationsComponent/NotificationsComponent';
-import PhishingAlertComponent from './components/PhishingAlertComponent/PhishingAlertComponent';
+import FooterBar from './components/navigation/FooterBar';
+import GlobalDebtCeilingMessage from './components/notifications/GlobalDebtCeilingMessage';
+import NavigationBar from './components/navigation/NavigationBar';
+import NetworkNotSupported from './components/notifications/NetworkNotSupported';
+import { TransactionToasts } from './components/notifications/TransactionToasts';
+import PhishingAlertComponent from './components/notifications/PhishingAlertComponent';
 import { LiquidationFeesCtxProvider } from './contexts/LiquidationFeesContext';
 import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
 import { UserAddressCtxProvider } from './contexts/UserAddressContext';
@@ -115,7 +115,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                       bgGradient="radial(farthest-side, hsla(169, 100%, 46%, 1), hsla(169, 100%, 46%, 0))"
                       zIndex="var(--chakra-zIndices-base)"
                     />
-                    <NotificationsComponent />
+                    <TransactionToasts />
                     <NavigationBar />
                     <br />
                     <GlobalDebtCeilingMessage />

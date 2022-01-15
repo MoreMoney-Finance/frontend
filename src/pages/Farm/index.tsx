@@ -23,7 +23,7 @@ import {
   useParsedStakingMetadata,
 } from '../../chain-interaction/contracts';
 import ClaimReward from './components/ClaimReward';
-import { TokenDescription } from '../../components/TokenDescription/TokenDescription';
+import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import farminfo from '../../contracts/farminfo.json';
 import DepositForm from './components/DepositForm';

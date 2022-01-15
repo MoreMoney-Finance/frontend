@@ -1,16 +1,16 @@
 import * as React from 'react';
-import { ParsedStratMetaRow, YieldType } from '../../../chain-interaction/contracts';
+import { ParsedStratMetaRow, YieldType } from '../../../../chain-interaction/contracts';
 import { Table, Tbody, Tr, Th, Td, Button } from '@chakra-ui/react';
 import {
   useAMMHarvest,
   useHarvestPartially,
   useTallyHarvestBalance,
   // useTallyHarvestBalance,
-} from '../../../chain-interaction/transactions';
+} from '../../../../chain-interaction/transactions';
 import { getExplorerAddressLink } from '@usedapp/core';
-import { EnsureWalletConnected } from '../../../components/EnsureWalletConnected/EnsureWalletConnected';
+import { EnsureWalletConnected } from '../../../../components/account/EnsureWalletConnected';
 import { useLocation } from 'react-router-dom';
-import { StatusTrackModal } from '../../../components/StatusTrackModal/StatusTrackModal';
+import { TransactionStatusOverlay } from '../../../../components/notifications/TransactionErrorDialog';
 
 export function StrategyDataTable(row: ParsedStratMetaRow) {
   const location = useLocation();
@@ -38,11 +38,11 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
 
   return (
     <>
-      <StatusTrackModal
+      <TransactionStatusOverlay
         state={harvestPartiallyState}
         title={'Harvest Partially'}
       />
-      <StatusTrackModal state={AMMHarvestState} title={'AMM Harvest'} />
+      <TransactionStatusOverlay state={AMMHarvestState} title={'AMM Harvest'} />
 
       <Table variant="simple" width="auto">
         <Tbody>

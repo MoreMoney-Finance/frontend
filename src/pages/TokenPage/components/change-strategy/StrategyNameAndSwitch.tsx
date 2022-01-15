@@ -3,7 +3,7 @@ import * as React from 'react';
 import {
   ParsedStratMetaRow,
   YieldType,
-} from '../../../chain-interaction/contracts';
+} from '../../../../chain-interaction/contracts';
 import ChangeStrategyModal from './ChangeStrategyModal';
 
 export default function StrategyNameAndSwitch({

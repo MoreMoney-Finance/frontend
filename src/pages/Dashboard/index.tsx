@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { WrapNativeCurrency } from '../../components/WrapNativeCurrency/WrapNativeCurrency';
+import { WrapNativeCurrency } from './components/WrapNativeCurrency';
 import { AllSupportedCollateral } from './components/AllSupportedCollateral';
 import { LiquidatablePositions } from './components/LiquidatablePositions';
 
@@ -13,7 +13,6 @@ export default function Dashboard(params: React.PropsWithChildren<unknown>) {
     <>
       {params.children}
       <Outlet />
-      {/* {account && <CurrentlyOpenPositions account={account} />} */}
       <AllSupportedCollateral />
       {details ? <WrapNativeCurrency /> : undefined}
       <LiquidatablePositions />

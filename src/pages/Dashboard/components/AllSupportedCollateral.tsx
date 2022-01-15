@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 import { Column, useTable } from 'react-table';
 import { ParsedStratMetaRow } from '../../../chain-interaction/contracts';
 import { TableTabs } from './TableTabs';
-import { TokenDescription } from '../../../components/TokenDescription/TokenDescription';
+import { TokenDescription } from '../../../components/tokens/TokenDescription';
 import { LiquidationFeesContext } from '../../../contexts/LiquidationFeesContext';
 import { StrategyMetadataContext } from '../../../contexts/StrategyMetadataContext';
 import { TableSearch } from './TableSearch';

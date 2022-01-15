@@ -13,7 +13,7 @@ import { TransactionStatus } from '@usedapp/core';
 import * as React from 'react';
 import { useEffect } from 'react';
 
-export function StatusTrackModal({
+export function TransactionErrorDialog({
   title,
   state,
 }: {

@@ -7,12 +7,12 @@ import {
   useStable,
 } from '../../../chain-interaction/contracts';
 import { useMigrateStrategy } from '../../../chain-interaction/transactions';
-import { StatusTrackModal } from '../../../components/StatusTrackModal/StatusTrackModal';
+import { TransactionStatusOverlay } from '../../../components/notifications/TransactionErrorDialog';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import CollateralAPY from './CollateralAPY';
 import EditPosition from './EditPosition';
 import { PositionData } from './PositionData';
-import StrategyNameAndSwitch from './StrategyNameAndSwitch';
+import StrategyNameAndSwitch from './change-strategy/StrategyNameAndSwitch';
 import StrategyTokenInformation from './StrategyTokenInformation';
 
 export function PositionBody({
@@ -46,7 +46,7 @@ export function PositionBody({
 
   return (
     <>
-      <StatusTrackModal
+      <TransactionStatusOverlay
         state={migrateStrategyState}
         title={'Migrate Strategy'}
       />

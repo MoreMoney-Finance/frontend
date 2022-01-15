@@ -19,8 +19,8 @@ import { BigNumber } from 'ethers';
 import { parseEther } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import WarningMessage from './WarningMessage';
-import farminfo from '../../../contracts/farminfo.json';
+import WarningMessage from '../../../../components/notifications/WarningMessage';
+import farminfo from '../../../../contracts/farminfo.json';
 import { useState } from 'react';
 import { ConfirmPositionModal } from './ConfirmPositionModal';
 import {
@@ -28,17 +28,17 @@ import {
   ParsedStratMetaRow,
   useStable,
   calcLiqPriceFromNum,
-} from '../../../chain-interaction/contracts';
+} from '../../../../chain-interaction/contracts';
 import {
   useRepayWithdrawTrans,
   useNativeRepayWithdrawTrans,
-} from '../../../chain-interaction/transactions';
-import { StatusTrackModal } from '../../../components/StatusTrackModal/StatusTrackModal';
-import { TokenAmountInputField } from '../../../components/TokenAmountInputField/TokenAmountInputField';
-import { TokenDescription } from '../../../components/TokenDescription/TokenDescription';
-import { WNATIVE_ADDRESS } from '../../../constants/addresses';
-import { useWalletBalance } from '../../../contexts/WalletBalancesContext';
-import { parseFloatNoNaN } from '../../../utils';
+} from '../../../../chain-interaction/transactions';
+import { TransactionStatusOverlay } from '../../../../components/notifications/TransactionErrorDialog';
+import { TokenAmountInputField } from '../../../../components/tokens/TokenAmountInputField';
+import { TokenDescription } from '../../../../components/tokens/TokenDescription';
+import { WNATIVE_ADDRESS } from '../../../../constants/addresses';
+import { useWalletBalance } from '../../../../contexts/WalletBalancesContext';
+import { parseFloatNoNaN } from '../../../../utils';
 
 export default function RepayWithdraw({
   position,
@@ -403,11 +403,11 @@ export default function RepayWithdraw({
           } = $ ${usdPrice.toFixed(2)}`}</Text>
         </HStack>
 
-        <StatusTrackModal
+        <TransactionStatusOverlay
           state={repayWithdrawState}
           title={'Repay | Withdraw'}
         />
-        <StatusTrackModal
+        <TransactionStatusOverlay
           state={sendNativeWithdrawState}
           title={'Repay | Withdraw'}
         />

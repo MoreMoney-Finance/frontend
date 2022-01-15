@@ -11,7 +11,7 @@ import * as React from 'react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
-} from '../../../chain-interaction/contracts';
+} from '../../../../chain-interaction/contracts';
 import DepositBorrow from './DepositBorrow';
 import RepayWithdraw from './RepayWithdraw';
 

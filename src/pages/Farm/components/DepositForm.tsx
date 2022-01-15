@@ -18,9 +18,9 @@ import {
   useApproveTrans,
   useStake,
 } from '../../../chain-interaction/transactions';
-import { EnsureWalletConnected } from '../../../components/EnsureWalletConnected/EnsureWalletConnected';
-import { StatusTrackModal } from '../../../components/StatusTrackModal/StatusTrackModal';
-import { TokenAmountInputField } from '../../../components/TokenAmountInputField/TokenAmountInputField';
+import { EnsureWalletConnected } from '../../../components/account/EnsureWalletConnected';
+import { TransactionStatusOverlay } from '../../../components/notifications/TransactionErrorDialog';
+import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';
 import { WNATIVE_ADDRESS } from '../../../constants/addresses';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../contexts/WalletBalancesContext';
@@ -103,8 +103,8 @@ export default function DepositForm({
         />
       </Flex>
 
-      <StatusTrackModal state={approveState} title={'Approve'} />
-      <StatusTrackModal state={stakeState} title={'Stake Action'} />
+      <TransactionStatusOverlay state={approveState} title={'Approve'} />
+      <TransactionStatusOverlay state={stakeState} title={'Stake Action'} />
 
       <Box marginTop={'10px'}>
         {allowance.gt(walletBalance) === false && isNativeToken === false ? (

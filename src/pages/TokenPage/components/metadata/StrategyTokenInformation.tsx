@@ -16,13 +16,13 @@ import {
   useStable,
   useEstimatedHarvestable,
   YieldType,
-} from '../../../chain-interaction/contracts';
+} from '../../../../chain-interaction/contracts';
 import {
   useAMMHarvest,
   useHarvestPartially,
-} from '../../../chain-interaction/transactions';
-import { TransactionStatusOverlay } from '../../../components/notifications/TransactionErrorDialog';
-import { LiquidationFeesContext } from '../../../contexts/LiquidationFeesContext';
+} from '../../../../chain-interaction/transactions';
+import { TransactionStatusOverlay } from '../../../../components/notifications/TransactionErrorDialog';
+import { LiquidationFeesContext } from '../../../../contexts/LiquidationFeesContext';
 import lines from '../../../assets/img/lines.svg';
 
 export default function StrategyTokenInformation({

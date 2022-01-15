@@ -1,7 +1,7 @@
 import { Box, Text } from '@chakra-ui/react';
 import * as React from 'react';
 import { useContext } from 'react';
-import CurrentlyOpenPositions from '../../components/CurrentlyOpenPositions/CurrentlyOpenPositions';
+import CurrentlyOpenPositions from './CurrentlyOpenPositions';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 
 export default function PositionsPage(params: React.PropsWithChildren<unknown>) {

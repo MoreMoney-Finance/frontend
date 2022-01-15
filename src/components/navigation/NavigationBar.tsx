@@ -13,8 +13,8 @@ import {
 import * as React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../../assets/logo/logo.png';
-import AccountModal from './AccountModal';
-import { UserAddressComponent } from './UserAddressComponent';
+import AccountModal from '../account/AccountModal';
+import { UserAddressComponent } from '../account/UserAddressComponent';
 
 const Links = [
   { title: 'Borrow', link: '/' },

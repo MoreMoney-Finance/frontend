@@ -3,7 +3,7 @@ import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import React from 'react';
 import { ParsedPositionMetaRow, ParsedStratMetaRow } from '../../../chain-interaction/contracts';
-import { TitleValue } from './TitleValue';
+import { TitleValue } from '../../../components/data-display/TitleValue';
 
 export function PositionData({
   position,

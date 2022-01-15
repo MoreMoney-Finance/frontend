@@ -9,11 +9,11 @@ import {
 } from '@usedapp/core';
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { useWrapNative } from '../../chain-interaction/transactions';
-import { UserAddressContext } from '../../contexts/UserAddressContext';
-import { EnsureWalletConnected } from '../EnsureWalletConnected/EnsureWalletConnected';
-import { StatusTrackModal } from '../StatusTrackModal/StatusTrackModal';
-import { TokenAmountInputField } from '../TokenAmountInputField/TokenAmountInputField';
+import { useWrapNative } from '../../../chain-interaction/transactions';
+import { UserAddressContext } from '../../../contexts/UserAddressContext';
+import { EnsureWalletConnected } from '../../../components/account/EnsureWalletConnected';
+import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
+import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';
 
 export function WrapNativeCurrency() {
   const {
@@ -44,7 +44,7 @@ export function WrapNativeCurrency() {
 
   return (
     <>
-      <StatusTrackModal state={wrapNativeState} title={'Wrap Native'} />
+      <TransactionErrorDialog state={wrapNativeState} title={'Wrap Native'} />
       <form onSubmit={handleSubmit(onWrap)}>
         <FormControl isInvalid={errors.name}>
           <TokenAmountInputField

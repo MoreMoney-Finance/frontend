@@ -5,7 +5,7 @@ import {
   TokenStratPositionMetadata,
   useIsolatedPositionMetadata,
 } from '../../chain-interaction/contracts';
-import { TrancheTable } from '../TrancheTable/TrancheTable';
+import { TrancheTable } from './TrancheTable';
 
 export default function CurrentlyOpenPositions({
   account,

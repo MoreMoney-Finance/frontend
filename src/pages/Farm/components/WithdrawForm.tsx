@@ -6,9 +6,9 @@ import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { ParsedStakingMetadata } from '../../../chain-interaction/contracts';
 import { useWithdraw } from '../../../chain-interaction/transactions';
-import { EnsureWalletConnected } from '../../../components/EnsureWalletConnected/EnsureWalletConnected';
-import { StatusTrackModal } from '../../../components/StatusTrackModal/StatusTrackModal';
-import { TokenAmountInputField } from '../../../components/TokenAmountInputField/TokenAmountInputField';
+import { EnsureWalletConnected } from '../../../components/account/EnsureWalletConnected';
+import { TransactionStatusOverlay } from '../../../components/notifications/TransactionErrorDialog';
+import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';
 import { WNATIVE_ADDRESS } from '../../../constants/addresses';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { parseFloatNoNaN } from '../../../utils';
@@ -82,7 +82,7 @@ export default function WithdrawForm({
         />
       </Flex>
 
-      <StatusTrackModal state={withdrawState} title={'Withdraw Action'} />
+      <TransactionStatusOverlay state={withdrawState} title={'Withdraw Action'} />
 
       <Box marginTop={'10px'}>
         <EnsureWalletConnected>

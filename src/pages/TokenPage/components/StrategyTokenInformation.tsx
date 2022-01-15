@@ -21,7 +21,7 @@ import {
   useAMMHarvest,
   useHarvestPartially,
 } from '../../../chain-interaction/transactions';
-import { TransactionStatusOverlay } from '../../../components/notifications/TransactionErrorDialog';
+import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { LiquidationFeesContext } from '../../../contexts/LiquidationFeesContext';
 import lines from '../../../assets/img/lines.svg';
 
@@ -75,8 +75,8 @@ export default function StrategyTokenInformation({
           pointerEvents="none"
           zIndex={0}
         />
-        <TransactionStatusOverlay state={AMMHarvestState} title={'AMM Harvest'} />
-        <TransactionStatusOverlay
+        <TransactionErrorDialog state={AMMHarvestState} title={'AMM Harvest'} />
+        <TransactionErrorDialog
           state={harvestPartiallyState}
           title={'Source harvest'}
         />

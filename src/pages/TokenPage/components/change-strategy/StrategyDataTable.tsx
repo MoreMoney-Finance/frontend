@@ -10,7 +10,7 @@ import {
 import { getExplorerAddressLink } from '@usedapp/core';
 import { EnsureWalletConnected } from '../../../../components/account/EnsureWalletConnected';
 import { useLocation } from 'react-router-dom';
-import { TransactionStatusOverlay } from '../../../../components/notifications/TransactionErrorDialog';
+import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
 
 export function StrategyDataTable(row: ParsedStratMetaRow) {
   const location = useLocation();
@@ -38,11 +38,11 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
 
   return (
     <>
-      <TransactionStatusOverlay
+      <TransactionErrorDialog
         state={harvestPartiallyState}
         title={'Harvest Partially'}
       />
-      <TransactionStatusOverlay state={AMMHarvestState} title={'AMM Harvest'} />
+      <TransactionErrorDialog state={AMMHarvestState} title={'AMM Harvest'} />
 
       <Table variant="simple" width="auto">
         <Tbody>

@@ -19,7 +19,7 @@ import {
   useStake,
 } from '../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../components/account/EnsureWalletConnected';
-import { TransactionStatusOverlay } from '../../../components/notifications/TransactionErrorDialog';
+import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';
 import { WNATIVE_ADDRESS } from '../../../constants/addresses';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
@@ -103,8 +103,8 @@ export default function DepositForm({
         />
       </Flex>
 
-      <TransactionStatusOverlay state={approveState} title={'Approve'} />
-      <TransactionStatusOverlay state={stakeState} title={'Stake Action'} />
+      <TransactionErrorDialog state={approveState} title={'Approve'} />
+      <TransactionErrorDialog state={stakeState} title={'Stake Action'} />
 
       <Box marginTop={'10px'}>
         {allowance.gt(walletBalance) === false && isNativeToken === false ? (

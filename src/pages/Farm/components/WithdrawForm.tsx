@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { ParsedStakingMetadata } from '../../../chain-interaction/contracts';
 import { useWithdraw } from '../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../components/account/EnsureWalletConnected';
-import { TransactionStatusOverlay } from '../../../components/notifications/TransactionErrorDialog';
+import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';
 import { WNATIVE_ADDRESS } from '../../../constants/addresses';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
@@ -82,7 +82,7 @@ export default function WithdrawForm({
         />
       </Flex>
 
-      <TransactionStatusOverlay state={withdrawState} title={'Withdraw Action'} />
+      <TransactionErrorDialog state={withdrawState} title={'Withdraw Action'} />
 
       <Box marginTop={'10px'}>
         <EnsureWalletConnected>

@@ -8,7 +8,7 @@ import {
 } from '../../../../chain-interaction/contracts';
 import { useMigrateStrategy } from '../../../../chain-interaction/transactions';
 import { UserAddressContext } from '../../../../contexts/UserAddressContext';
-import { TransactionStatusOverlay } from '../../../../components/notifications/TransactionErrorDialog';
+import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
 import { StrategyDataTable } from './StrategyDataTable';
 
 export function MigrateStrategy(
@@ -22,7 +22,7 @@ export function MigrateStrategy(
 
   return (
     <VStack>
-      <TransactionStatusOverlay
+      <TransactionErrorDialog
         state={migrateStrategyState}
         title={'Migrate Strategy'}
       />

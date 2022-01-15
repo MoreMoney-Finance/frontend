@@ -33,7 +33,7 @@ import {
   useRepayWithdrawTrans,
   useNativeRepayWithdrawTrans,
 } from '../../../../chain-interaction/transactions';
-import { TransactionStatusOverlay } from '../../../../components/notifications/TransactionErrorDialog';
+import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
 import { TokenAmountInputField } from '../../../../components/tokens/TokenAmountInputField';
 import { TokenDescription } from '../../../../components/tokens/TokenDescription';
 import { WNATIVE_ADDRESS } from '../../../../constants/addresses';
@@ -403,11 +403,11 @@ export default function RepayWithdraw({
           } = $ ${usdPrice.toFixed(2)}`}</Text>
         </HStack>
 
-        <TransactionStatusOverlay
+        <TransactionErrorDialog
           state={repayWithdrawState}
           title={'Repay | Withdraw'}
         />
-        <TransactionStatusOverlay
+        <TransactionErrorDialog
           state={sendNativeWithdrawState}
           title={'Repay | Withdraw'}
         />

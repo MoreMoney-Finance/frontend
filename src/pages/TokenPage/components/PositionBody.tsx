@@ -7,10 +7,10 @@ import {
   useStable,
 } from '../../../chain-interaction/contracts';
 import { useMigrateStrategy } from '../../../chain-interaction/transactions';
-import { TransactionStatusOverlay } from '../../../components/notifications/TransactionErrorDialog';
+import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
-import CollateralAPY from './CollateralAPY';
-import EditPosition from './EditPosition';
+import CollateralAPY from './metadata/CollateralAPY';
+import EditPosition from './edit/EditPosition';
 import { PositionData } from './PositionData';
 import StrategyNameAndSwitch from './change-strategy/StrategyNameAndSwitch';
 import StrategyTokenInformation from './StrategyTokenInformation';
@@ -46,7 +46,7 @@ export function PositionBody({
 
   return (
     <>
-      <TransactionStatusOverlay
+      <TransactionErrorDialog
         state={migrateStrategyState}
         title={'Migrate Strategy'}
       />

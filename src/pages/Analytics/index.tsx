@@ -1,21 +1,30 @@
 import { Box, Container, Flex, Grid, GridItem, Text } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
-import { BigNumber } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import * as React from 'react';
+import { useContext } from 'react';
 import {
   DeploymentAddresses,
+  ParsedStakingMetadata,
   useAddresses,
   useAllFeesEver,
+  useParsedStakingMetadata,
   useStable,
   useTotalSupply,
 } from '../../chain-interaction/contracts';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 import { AnalyticsBox } from './AnalyticsBox';
+import { UserAddressContext } from '../../contexts/UserAddressContext';
 
 export default function Analytics(props: React.PropsWithChildren<unknown>) {
   const allStratMeta = React.useContext(StrategyMetadataContext);
 
-  // console.log('allStratMeta', allStratMeta);
+  const account = useContext(UserAddressContext);
+
+  const stakeMeta: ParsedStakingMetadata[] = useParsedStakingMetadata(
+    [useAddresses().CurvePoolRewards],
+    account ?? ethers.constants.AddressZero
+  ).flat(1);
 
   const addresses = useAddresses();
   const feeContractNames = ['IsolatedLending', 'IsolatedLendingLiquidation'];
@@ -35,12 +44,18 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
   });
   // console.log('contracts', contracts);
   const stable = useStable();
+  const tvlsFarm = stakeMeta.reduce(
+    (tvl, row) => tvl.add(row.tvl),
+    new CurrencyValue(stable, BigNumber.from(0))
+  );
+
   const tvl = Object.values(allStratMeta)
     .flatMap((rows) => Object.values(rows))
     .reduce(
       (tvl, row) => tvl.add(row.tvlInPeg),
       new CurrencyValue(stable, BigNumber.from(0))
-    );
+    )
+    .add(tvlsFarm);
 
   const supply = useTotalSupply('totalSupply', [], ['']);
   const colRatio = !tvl.isZero()

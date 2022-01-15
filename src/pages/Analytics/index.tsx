@@ -49,17 +49,18 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
     new CurrencyValue(stable, BigNumber.from(0))
   );
 
-  const tvl = Object.values(allStratMeta)
+  const tvlNoFarm = Object.values(allStratMeta)
     .flatMap((rows) => Object.values(rows))
     .reduce(
       (tvl, row) => tvl.add(row.tvlInPeg),
       new CurrencyValue(stable, BigNumber.from(0))
-    )
-    .add(tvlsFarm);
+    );
+
+  const tvl = tvlNoFarm.add(tvlsFarm);
 
   const supply = useTotalSupply('totalSupply', [], ['']);
   const colRatio = !tvl.isZero()
-    ? tvl.value.mul(10000).div(supply).toNumber() / 100
+    ? tvlNoFarm.value.mul(10000).div(supply).toNumber() / 100
     : 0;
 
   const fees = useAllFeesEver(contracts);

@@ -36,7 +36,7 @@ export function LiquidatablePositionsTable({
       <Tbody>
         {positions.map((posMeta, i) => {
           const stratMeta = allStratMeta[posMeta.token.address];
-          const data = { ...posMeta, ...stratMeta[posMeta.strategy] };
+          const data = { action, ...posMeta, ...stratMeta[posMeta.strategy] };
           if (posMeta.collateralValue.isZero()) {
             return <></>;
           }
@@ -44,7 +44,6 @@ export function LiquidatablePositionsTable({
             <LiquidatableRow
               key={`liquidatableRow${i}`}
               {...data}
-              {...action}
             />
           );
         })}

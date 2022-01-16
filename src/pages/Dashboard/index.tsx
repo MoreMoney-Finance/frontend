@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { WrapNativeCurrency } from './components/WrapNativeCurrency';
 import { AllSupportedCollateral } from './components/AllSupportedCollateral';
-import { LiquidatablePositions } from './components/LiquidatablePositions';
+// import { LiquidatablePositions } from './components/LiquidatablePositions';
 
 export default function Dashboard(params: React.PropsWithChildren<unknown>) {
   // const account = React.useContext(UserAddressContext);
@@ -15,7 +15,7 @@ export default function Dashboard(params: React.PropsWithChildren<unknown>) {
       <Outlet />
       <AllSupportedCollateral />
       {details ? <WrapNativeCurrency /> : undefined}
-      <LiquidatablePositions />
+      {/* <LiquidatablePositions /> */}
     </>
   );
 }

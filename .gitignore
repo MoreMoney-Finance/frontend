@@ -24,3 +24,4 @@ yarn-error.log*
 src/contracts/artifacts/**/*.dbg.json
 src/contracts/masterchefcache.json
 src/contracts/yy-strategies.json
+src/contracts/artifacts/build-info

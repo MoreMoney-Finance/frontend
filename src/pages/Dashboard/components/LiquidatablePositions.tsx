@@ -25,6 +25,7 @@ export function LiquidatablePositions() {
 
   const START = new Date(2021, 10, 26).valueOf();
   const updatedPositions = useUpdatedPositions(START);
+  console.log('updatedPositions', updatedPositions);
 
   const { sendDirectLiquidation } = useDirectLiquidationTrans();
   const { sendLPTLiquidation } = useLPTLiquidationTrans();
@@ -44,7 +45,7 @@ export function LiquidatablePositions() {
             positions={liquidatablePositions}
             action={{
               callback: (pos) => {
-                // console.log('liquidating', pos);
+                console.log('liquidating', pos);
                 const { liqType, router } = getLiquidationParams(
                   pos.token.address
                 );

@@ -2,7 +2,6 @@ import { Button, Td, Text, Tr } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import React from 'react';
-import { Link } from 'react-router-dom';
 import {
   ParsedStratMetaRow,
   ParsedPositionMetaRow,
@@ -50,9 +49,6 @@ export function LiquidatableRow(
     <>
       <Tr
         key={`${params.trancheId}`}
-        as={Link}
-        to={`/token/${params.token.address}`}
-        display="table-row"
       >
         <Td>
           <TokenDescription token={token} />

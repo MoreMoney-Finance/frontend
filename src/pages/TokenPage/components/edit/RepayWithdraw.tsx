@@ -113,7 +113,7 @@ export default function RepayWithdraw({
           prefix: '',
           suffix: '',
           decimalSeparator: '.',
-          thousandSeparator: ',',
+          thousandSeparator: '',
         })
       )
       : 0;
@@ -127,7 +127,7 @@ export default function RepayWithdraw({
           prefix: '',
           suffix: '',
           decimalSeparator: '.',
-          thousandSeparator: ',',
+          thousandSeparator: '',
         })
       )
       : 0;

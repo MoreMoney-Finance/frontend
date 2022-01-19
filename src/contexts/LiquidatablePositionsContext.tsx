@@ -29,11 +29,16 @@ export function LiquidatablePositionsCtxProvider({
   //check later if the position is liquidated is V
 
   const parsedPositions = new Map<number, ParsedPositionMetaRow>();
-
-  updatedPositions.forEach((pos) => {
+  for (let index = 0; index < updatedPositions.length; index++) {
+    const pos = updatedPositions[index];
     parsedPositions.set(pos.trancheId, pos);
-  });
-  console.log('Object.values(parsedPositions)', Object.values(parsedPositions));
+  }
+
+  console.log(
+    'Object.values(parsedPositions)',
+    parsedPositions,
+    Object.values(parsedPositions)
+  );
   const liquidatablePositions = Object.values(parsedPositions).filter(
     (posMeta) => posMeta.liquidationPrice > tokenPrices[posMeta.token.address]
   );

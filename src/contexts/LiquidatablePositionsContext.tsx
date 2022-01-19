@@ -25,7 +25,16 @@ export function LiquidatablePositionsCtxProvider({
   const updatedPositions = useUpdatedPositions(START);
   console.log('updatedPositions', updatedPositions);
 
-  const liquidatablePositions = updatedPositions.filter(
+  // liquidationPrice * 1.1
+  //check later if the position is liquidated is V
+
+  const parsedPositions = new Map<number, ParsedPositionMetaRow>();
+
+  updatedPositions.forEach((pos) => {
+    parsedPositions.set(pos.trancheId, pos);
+  });
+
+  const liquidatablePositions = Object.values(parsedPositions).filter(
     (posMeta) => posMeta.liquidationPrice > tokenPrices[posMeta.token.address]
   );
 

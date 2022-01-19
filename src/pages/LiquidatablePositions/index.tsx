@@ -1,41 +1,27 @@
 import { VStack } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
-import { useUpdatedPositions } from '../../../chain-interaction/contracts';
+import { useContext } from 'react';
 import {
   getLiquidationParams,
   LiquidationType,
-} from '../../../chain-interaction/tokens';
+} from '../../chain-interaction/tokens';
 import {
   useDirectLiquidationTrans,
   useLPTLiquidationTrans,
-} from '../../../chain-interaction/transactions';
-import { StrategyMetadataContext } from '../../../contexts/StrategyMetadataContext';
-import { LiquidatablePositionsTable } from './LiquidatablePositions/LiquidatablePositionsTable';
+} from '../../chain-interaction/transactions';
+import { LiquidatablePositionsContext } from '../../contexts/LiquidatablePositionsContext';
+import { LiquidatablePositionsTable } from './LiquidatablePositionsTable';
 
-export function LiquidatablePositions() {
-  const tokenPrices = Object.fromEntries(
-    Object.entries(React.useContext(StrategyMetadataContext))
-      .filter((row) => Object.values(row[1]).length > 0)
-      .map(([tokenAddress, stratMeta]) => [
-        tokenAddress,
-        Object.values(stratMeta)[0].usdPrice,
-      ])
-  );
-
-  const START = new Date(2021, 10, 26).valueOf();
-  const updatedPositions = useUpdatedPositions(START);
-  console.log('updatedPositions', updatedPositions);
-
+export default function LiquidatablePositions() {
   const { sendDirectLiquidation } = useDirectLiquidationTrans();
   const { sendLPTLiquidation } = useLPTLiquidationTrans();
 
   // in this case using account is OK
   const { account } = useEthers();
 
-  const liquidatablePositions = updatedPositions.filter(
-    (posMeta) => posMeta.liquidationPrice > tokenPrices[posMeta.token.address]
-  );
+  const liquidatablePositions = useContext(LiquidatablePositionsContext);
+
   return (
     <>
       {liquidatablePositions.length > 0 ? (

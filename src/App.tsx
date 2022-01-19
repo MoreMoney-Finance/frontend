@@ -17,6 +17,8 @@ import { UserAddressCtxProvider } from './contexts/UserAddressContext';
 import { WalletBalancesCtxProvider } from './contexts/WalletBalancesContext';
 import { YYMetadataCtxProvider } from './contexts/YYMetadataContext';
 import { theme } from './theme';
+import { LiquidatablePositionsCtxProvider } from './contexts/LiquidatablePositionsContext';
+import LiquidatablePositionsMessage from './components/notifications/LiquidatablePositionsMessage';
 
 declare let window: any;
 
@@ -84,47 +86,50 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
             <YYMetadataCtxProvider>
               {addresses ? (
                 <StrategyMetadataCtxProvider>
-                  <PhishingAlertComponent />
-                  <Box
-                    maxWidth="1280px"
-                    margin="0 auto"
-                    px={4}
-                    minHeight={'100vh'}
-                  >
+                  <LiquidatablePositionsCtxProvider>
+                    <PhishingAlertComponent />
                     <Box
-                      position="absolute"
-                      left="0"
-                      opacity="0.3"
-                      width={['0px', '0px', '500px']}
-                      height="300px"
-                      top="300px"
-                      filter="blur(200px)"
-                      pointerEvents="none"
-                      bgGradient="radial(farthest-side, hsla(0, 100%, 64%, 1), hsla(0, 100%, 64%, 0))"
-                      zIndex="var(--chakra-zIndices-docked)"
-                    />
-                    <Box
-                      position="absolute"
-                      width={['0px', '0px', '350px']}
-                      height="230px"
-                      filter="blur(200px)"
-                      opacity="0.3"
-                      right="100px"
-                      bottom="200px"
-                      pointerEvents="none"
-                      bgGradient="radial(farthest-side, hsla(169, 100%, 46%, 1), hsla(169, 100%, 46%, 0))"
-                      zIndex="var(--chakra-zIndices-base)"
-                    />
-                    <TransactionToasts />
-                    <NavigationBar />
-                    <br />
-                    <GlobalDebtCeilingMessage />
-                    <Box paddingBottom={'30px'}>
-                      {params.children}
-                      <Outlet />
+                      maxWidth="1280px"
+                      margin="0 auto"
+                      px={4}
+                      minHeight={'100vh'}
+                    >
+                      <Box
+                        position="absolute"
+                        left="0"
+                        opacity="0.3"
+                        width={['0px', '0px', '500px']}
+                        height="300px"
+                        top="300px"
+                        filter="blur(200px)"
+                        pointerEvents="none"
+                        bgGradient="radial(farthest-side, hsla(0, 100%, 64%, 1), hsla(0, 100%, 64%, 0))"
+                        zIndex="var(--chakra-zIndices-docked)"
+                      />
+                      <Box
+                        position="absolute"
+                        width={['0px', '0px', '350px']}
+                        height="230px"
+                        filter="blur(200px)"
+                        opacity="0.3"
+                        right="100px"
+                        bottom="200px"
+                        pointerEvents="none"
+                        bgGradient="radial(farthest-side, hsla(169, 100%, 46%, 1), hsla(169, 100%, 46%, 0))"
+                        zIndex="var(--chakra-zIndices-base)"
+                      />
+                      <TransactionToasts />
+                      <NavigationBar />
+                      <br />
+                      <GlobalDebtCeilingMessage />
+                      <LiquidatablePositionsMessage />
+                      <Box paddingBottom={'30px'}>
+                        {params.children}
+                        <Outlet />
+                      </Box>
+                      <FooterBar />
                     </Box>
-                    <FooterBar />
-                  </Box>
+                  </LiquidatablePositionsCtxProvider>
                 </StrategyMetadataCtxProvider>
               ) : (
                 <NetworkNotSupported />

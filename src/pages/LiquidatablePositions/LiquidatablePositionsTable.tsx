@@ -1,7 +1,7 @@
 import { Table, Tbody, Td, Thead, Tr } from '@chakra-ui/react';
 import * as React from 'react';
-import { ParsedPositionMetaRow } from '../../../../chain-interaction/contracts';
-import { StrategyMetadataContext } from '../../../../contexts/StrategyMetadataContext';
+import { ParsedPositionMetaRow } from '../../chain-interaction/contracts';
+import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 import { LiquidatableRow } from './LiquidatableRow';
 
 export type LiquidatableAction = {

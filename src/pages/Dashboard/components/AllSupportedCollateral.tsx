@@ -28,6 +28,7 @@ type Entity = ParsedStratMetaRow & {
   totalBorrowed: string;
   liquidationFee: string;
   balance: number;
+  ltv: string;
 };
 
 export function AllSupportedCollateral() {
@@ -74,7 +75,8 @@ export function AllSupportedCollateral() {
         MONEYavailable: meta.debtCeiling.sub(meta.totalDebt).format(),
         minColRatio: `${Math.round(
           (1 / (meta.borrowablePercent / 100)) * 100
-        )}% / ${Math.round(meta.borrowablePercent)}%`,
+        )}%`,
+        ltv: `${5 * Math.round(meta.borrowablePercent / 5)}%`, 
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
         liquidationFee:
           (tokenFees.get(meta.token.address) ?? 'Loading...') + '%',
@@ -94,17 +96,17 @@ export function AllSupportedCollateral() {
         accessor: 'apy',
       },
       {
-        Header: 'Total borrowed',
-        accessor: 'totalBorrowed',
-      },
-      {
         Header: 'MONEY available',
         accessor: 'MONEYavailable',
       },
       {
-        Header: 'Min. ColRatio / LTV',
+        Header: 'Min ColRatio',
         accessor: 'minColRatio',
       },
+      {
+        Header: 'Max LTV',
+        accessor: 'ltv',
+      },      
       {
         Header: 'Liquidation Fee',
         accessor: 'liquidationFee',

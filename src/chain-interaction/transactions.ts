@@ -20,7 +20,6 @@ import DirectFlashLiquidation from '../contracts/artifacts/contracts/liquidation
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
 import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
-import IWETH from '../contracts/artifacts/interfaces/IWETH.sol/IWETH.json';
 import {
   useAddresses,
   useRegisteredOracle,
@@ -48,12 +47,12 @@ export function useClaimReward() {
 }
 
 export function useStake() {
-  const ilAddress = useAddresses().CurvePoolRewards;
-  const ilContract = new Contract(
-    ilAddress,
+  const cprAddress = useAddresses().CurvePoolRewards;
+  const cprContract = new Contract(
+    cprAddress,
     new Interface(CurvePoolRewards.abi)
   );
-  const { send, state } = useContractFunction(ilContract, 'stake');
+  const { send, state } = useContractFunction(cprContract, 'stake');
 
   return {
     sendStake: (stakeToken: Token, amount: string | number) => {
@@ -65,12 +64,12 @@ export function useStake() {
 }
 
 export function useWithdraw() {
-  const ilAddress = useAddresses().CurvePoolRewards;
-  const ilContract = new Contract(
-    ilAddress,
+  const cprAddress = useAddresses().CurvePoolRewards;
+  const cprContract = new Contract(
+    cprAddress,
     new Interface(CurvePoolRewards.abi)
   );
-  const { send, state } = useContractFunction(ilContract, 'withdraw');
+  const { send, state } = useContractFunction(cprContract, 'withdraw');
 
   return {
     sendWithdraw: (withdrawToken: Token, amount: string | number) => {
@@ -82,15 +81,18 @@ export function useWithdraw() {
 }
 
 export function useNativeDepositBorrowTrans(
-  trancheId: number | null | undefined
+  trancheId: number | null | undefined,
+  lendingAddress: string | undefined | null
 ) {
-  const ilAddress = useAddresses().WrapNativeIsolatedLending;
-  const ilContract = new Contract(
-    ilAddress,
+  const addresses = useAddresses();
+  const lendingContract = new Contract(
+    lendingAddress ??
+      addresses.WrapNativeStableLending ??
+      addresses.WrapNativeIsolatedLending,
     new Interface(WrapNativeIsolatedLending.abi)
   );
   const { send, state } = useContractFunction(
-    ilContract,
+    lendingContract,
     trancheId ? 'depositAndBorrow' : 'mintDepositAndBorrow'
   );
   const account = useContext(UserAddressContext);
@@ -118,15 +120,21 @@ export function useNativeDepositBorrowTrans(
 
 export function useNativeRepayWithdrawTrans(
   trancheId: number | null | undefined,
-  collateralToken: Token | null | undefined
+  collateralToken: Token | null | undefined,
+  lendingAddress: string | undefined | null
 ) {
-  const ilAddress = useAddresses().WrapNativeIsolatedLending;
-  const ilContract = new Contract(
-    ilAddress,
+  const addresses = useAddresses();
+  const lendingContract = new Contract(
+    lendingAddress ??
+      addresses.WrapNativeStableLending ??
+      addresses.WrapNativeIsolatedLending,
     new Interface(WrapNativeIsolatedLending.abi)
   );
 
-  const { send, state } = useContractFunction(ilContract, 'repayAndWithdraw');
+  const { send, state } = useContractFunction(
+    lendingContract,
+    'repayAndWithdraw'
+  );
 
   const account = useContext(UserAddressContext);
 
@@ -147,14 +155,17 @@ export function useNativeRepayWithdrawTrans(
   };
 }
 
-export function useDepositBorrowTrans(trancheId: number | null | undefined) {
-  const ilAddress = useAddresses().IsolatedLending;
-  const ilContract = new Contract(
-    ilAddress,
+export function useDepositBorrowTrans(
+  trancheId: number | null | undefined,
+  lendingAddress: string | undefined | null
+) {
+  const addresses = useAddresses();
+  const lendingContract = new Contract(
+    lendingAddress ?? addresses.StableLending ?? addresses.IsolatedLending,
     new Interface(IsolatedLending.abi)
   );
   const { send, state } = useContractFunction(
-    ilContract,
+    lendingContract,
     trancheId ? 'depositAndBorrow' : 'mintDepositAndBorrow'
   );
   const account = useContext(UserAddressContext);
@@ -189,25 +200,6 @@ export function useDepositBorrowTrans(trancheId: number | null | undefined) {
   };
 }
 
-export function useWrapNative() {
-  // const { chainId } = useEthers();
-  const wrapperAddress = '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'; // wrappedNativeCurrency.get(chainId ?? ChainId.Localhost)!.address;
-  const wrapperContract = new Contract(
-    wrapperAddress,
-    new Interface(IWETH.abi)
-  );
-
-  const { send, state } = useContractFunction(wrapperContract, 'deposit', {
-    transactionName: 'Wrap',
-  });
-
-  return {
-    sendWrapNative: (wrapAmount: number) =>
-      send({ value: parseEther(wrapAmount.toString()) }),
-    wrapNativeState: state,
-  };
-}
-
 export function useApproveTrans(tokenAddress: string) {
   const tokenContract = new Contract(tokenAddress, new Interface(IERC20.abi));
   const { send, state } = useContractFunction(tokenContract, 'approve');
@@ -221,15 +213,19 @@ export function useApproveTrans(tokenAddress: string) {
 
 export function useRepayWithdrawTrans(
   trancheId: number | null | undefined,
-  collateralToken: Token | null | undefined
+  collateralToken: Token | null | undefined,
+  lendingAddress: string | undefined | null
 ) {
-  const ilAddress = useAddresses().IsolatedLending;
-  const ilContract = new Contract(
-    ilAddress,
+  const addresses = useAddresses();
+  const lendingContract = new Contract(
+    lendingAddress ?? addresses.StableLending ?? addresses.IsolatedLending,
     new Interface(IsolatedLending.abi)
   );
 
-  const { send, state } = useContractFunction(ilContract, 'repayAndWithdraw');
+  const { send, state } = useContractFunction(
+    lendingContract,
+    'repayAndWithdraw'
+  );
 
   const account = useContext(UserAddressContext);
 
@@ -286,10 +282,19 @@ export function useHarvestPartially(strategyAddress: string) {
   };
 }
 
-export function useMigrateStrategy() {
-  const ilAddress = useAddresses().IsolatedLending;
+export function useMigrateStrategy(
+  lendingContractAddress: string | undefined | null
+) {
+  const addresses = useAddresses();
+  const lendingAddress =
+    lendingContractAddress ??
+    addresses.StableLending ??
+    addresses.IsolatedLending;
 
-  const strategy = new Contract(ilAddress, new Interface(IsolatedLending.abi));
+  const strategy = new Contract(
+    lendingAddress,
+    new Interface(IsolatedLending.abi)
+  );
   const { send, state } = useContractFunction(strategy, 'migrateStrategy');
 
   return {

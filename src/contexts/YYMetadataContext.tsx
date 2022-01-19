@@ -15,7 +15,7 @@ export function YYMetadataCtxProvider({
       const response = await fetch('https://staging-api.yieldyak.com/apys');
       const data = (await response.json()) as YYMetadata;
       setYYMeta(data);
-      console.log('Set data', data);
+      // console.log('Set data', data);
     })();
   }, []);
   

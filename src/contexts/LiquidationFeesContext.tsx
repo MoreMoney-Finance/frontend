@@ -34,12 +34,12 @@ export function LiquidationFeesCtxProvider({
   const results = useContractCalls(calls) ?? [];
   results?.forEach((result: any[] | undefined, index: number) => {
     if (result) {
-      const [tokenAddress, token] = tokensInQuestion[index];
+      const [tokenAddress, ] = tokensInQuestion[index];
       tokenFees.set(getAddress(tokenAddress), result[0].toNumber() / 100);
-      console.log(`Set Fee for ${token.name}: ${result[0]} (${tokenAddress})`);
+      // console.log(`Set Fee for ${token.name}: ${result[0]} (${tokenAddress})`);
     } else {
-      const [tokenAddress, token] = tokensInQuestion[index];
-      console.log(`No result fee for ${token.name} at ${tokenAddress}`);
+      // const [tokenAddress, token] = tokensInQuestion[index];
+      // console.log(`No result fee for ${token.name} at ${tokenAddress}`);
     }
   });
 

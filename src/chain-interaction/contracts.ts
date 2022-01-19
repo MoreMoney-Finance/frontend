@@ -16,7 +16,6 @@ import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
-import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
@@ -24,6 +23,8 @@ import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 import { YYMetadata, YYMetadataContext } from '../contexts/YYMetadataContext';
+import earnedRewards from '../constants/earned-rewards.json';
+import rewardsRewards from '../constants/rewards-rewards.json';
 
 /* eslint-disable */
 export const addresses: Record<
@@ -48,6 +49,14 @@ export type DeploymentAddresses = {
   CurvePoolRewards: string;
   DirectFlashLiquidation: string;
   LPTFlashLiquidation: string;
+
+  StableLending: string;
+  StableLendingLiquidation: string;
+  DirectFlashStableLiquidation: string;
+  LPTFlashStableLiquidation: string;
+  wsMAXIStableLiquidation: string;
+  xJoeStableLiquidation: string;
+  WrapNativeStableLending: string;
 };
 
 export function useAddresses() {
@@ -63,14 +72,29 @@ export function useIsolatedLendingView(
   args: any[],
   defaultResult: any
 ) {
-  const address = useAddresses().IsolatedLending;
+  const addresses = useAddresses();
+
   const abi = new Interface(IsolatedLending.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method,
-    args,
-  }) ?? [defaultResult])[0];
+  return {
+    legacy:
+      'IsolatedLending' in addresses
+        ? (useContractCall({
+            abi,
+            address: addresses.IsolatedLending,
+            method,
+            args,
+          }) ?? [defaultResult])[0]
+        : defaultResult,
+    current:
+      'StableLending' in addresses
+        ? (useContractCall({
+            abi,
+            address: useAddresses().StableLending,
+            method,
+            args,
+          }) ?? [defaultResult])[0]
+        : defaultResult,
+  };
 }
 
 type RawStratMetaRow = {
@@ -212,7 +236,7 @@ export type StrategyMetadata = Record<
 export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const stable = useStable();
   const { chainId } = useEthers();
-  const allStratMeta = useIsolatedLendingView(
+  const { legacy, current } = useIsolatedLendingView(
     'viewAllStrategyMetadata',
     [],
     []
@@ -229,29 +253,47 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
   const balancesCtx = useContext(WalletBalancesContext);
   const yyMetadata = useContext(YYMetadataContext);
-  return allStratMeta.reduce(
-    (result: StrategyMetadata, row: RawStratMetaRow) => {
-      const parsedRow = parseStratMeta(
-        chainId!,
-        row,
-        stable,
-        balancesCtx,
-        yyMetadata,
-        globalMoneyAvailable
-      );
 
-      return parsedRow
-        ? {
-            ...result,
-            [parsedRow.token.address]: {
-              [parsedRow.strategyAddress]: parsedRow,
-              ...(result[parsedRow.token.address] || {}),
-            },
-          }
-        : result;
-    },
-    {}
-  );
+  const reduceFn = (result: StrategyMetadata, row: RawStratMetaRow) => {
+    const parsedRow = parseStratMeta(
+      chainId!,
+      row,
+      stable,
+      balancesCtx,
+      yyMetadata,
+      globalMoneyAvailable
+    );
+
+    return parsedRow
+      ? {
+          ...result,
+          [parsedRow.token.address]: {
+            [parsedRow.strategyAddress]: parsedRow,
+            ...(result[parsedRow.token.address] || {}),
+          },
+        }
+      : result;
+  };
+
+  const legacyParsed: StrategyMetadata = legacy.reduce(reduceFn, {});
+
+  const currentParsed: StrategyMetadata = current.reduce(reduceFn, {});
+
+  // const legacyDebt = Object.values(legacyParsed)
+  //   .flatMap((rows) => Object.values(rows))
+  //   .map((row) => row.totalDebt)
+  //   .reduce((agg, debt) => agg.add(debt));
+
+  // const currentDebt = Object.values(currentParsed)
+  //   .flatMap((rows) => Object.values(rows))
+  //   .map((row) => row.totalDebt)
+  //   .reduce((agg, debt) => agg.add(debt));
+
+  // const legacyMax = new CurrencyValue(stable, globalMoneyAvailable).sub(
+  //   currentDebt
+  // );
+
+  return { ...legacyParsed, ...currentParsed };
 }
 
 export type ParsedPositionMetaRow = {
@@ -265,6 +307,7 @@ export type ParsedPositionMetaRow = {
   borrowablePercent: number;
   owner: string;
   liquidationPrice: number;
+  trancheContract: string;
 };
 
 type RawPositionMetaRow = {
@@ -318,7 +361,8 @@ export function calcLiqPriceFromNum(
 
 function parsePositionMeta(
   row: RawPositionMetaRow,
-  stable: Token
+  stable: Token,
+  trancheContract: string
 ): ParsedPositionMetaRow {
   const debt = new CurrencyValue(stable, row.debt);
   const posYield = new CurrencyValue(stable, row.yield);
@@ -326,6 +370,7 @@ function parsePositionMeta(
   const borrowablePercent = row.borrowablePer10k.toNumber() / 100;
 
   return {
+    trancheContract,
     trancheId: row.trancheId.toNumber(),
     strategy: row.strategy,
     debt,
@@ -348,25 +393,33 @@ export type TokenStratPositionMetadata = Record<
 export function useIsolatedPositionMetadata(
   account: string
 ): TokenStratPositionMetadata {
-  const positionMeta = useIsolatedLendingView(
+  const { legacy, current } = useIsolatedLendingView(
     'viewPositionsByOwner',
     [account],
     []
   );
   const stable = useStable();
 
-  return positionMeta.reduce(
-    (result: TokenStratPositionMetadata, row: RawPositionMetaRow) => {
-      const parsedRow = parsePositionMeta(row, stable);
+  function reduceFn(trancheContract: string) {
+    return (result: TokenStratPositionMetadata, row: RawPositionMetaRow) => {
+      const parsedRow = parsePositionMeta(row, stable, trancheContract);
       const tokenAddress = parsedRow.token.address;
       const list = result[tokenAddress] || [];
       return {
         ...result,
         [tokenAddress]: [...list, parsedRow],
       };
-    },
-    {}
-  );
+    };
+  }
+
+  const addresses = useAddresses();
+  const legacyResults =
+    'IsolatedLending' in addresses
+      ? legacy.reduce(reduceFn(addresses.IsolatedLending))
+      : {};
+  return 'StableLending' in addresses
+    ? current.reduce(reduceFn(addresses.StableLending), legacyResults)
+    : legacyResults;
 }
 
 export function useGlobalDebtCeiling(
@@ -399,21 +452,6 @@ export function useTotalSupply(
   }) ?? [defaultResult])[0];
 }
 
-export function useIsolatedLendingLiquidationView(
-  method: string,
-  args: any[],
-  defaultResult: any
-) {
-  const address = useAddresses().IsolatedLendingLiquidation;
-  const abi = new Interface(IsolatedLendingLiquidation.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method,
-    args,
-  }) ?? [defaultResult])[0];
-}
-
 export function useYieldConversionStrategyView(
   strategyAddress: string,
   method: string,
@@ -431,29 +469,52 @@ export function useYieldConversionStrategyView(
 
 const ONE_WEEK_SECONDS = 60 * 60 * 24 * 7;
 export function useUpdatedPositions(timeStart: number) {
-  const endPeriod = Math.round(Date.now() / 1000 / ONE_WEEK_SECONDS);
+  const endPeriod = 1 + Math.round(Date.now() / 1000 / ONE_WEEK_SECONDS);
   const startPeriod = Math.floor(timeStart / 1000 / ONE_WEEK_SECONDS);
   // console.log('endPeriod', endPeriod);
   // console.log('startPeriod', startPeriod);
   const stable = useStable();
-  const iL = useAddresses().IsolatedLending;
+  const addresses = useAddresses();
 
-  const args = Array(endPeriod - startPeriod)
-    .fill(startPeriod)
-    .map((x, i) => ({
-      abi: new Interface(IsolatedLending.abi),
-      address: iL,
-      method: 'viewPositionsByTrackingPeriod',
-      args: [x + i],
-    }));
+  function args(trancheContract: string) {
+    return Array(endPeriod - startPeriod)
+      .fill(startPeriod)
+      .map((x, i) => ({
+        abi: new Interface(IsolatedLending.abi),
+        address: trancheContract,
+        method: 'viewPositionsByTrackingPeriod',
+        args: [x + i],
+      }));
+  }
 
-  const rows = (useContractCalls(args) as RawPositionMetaRow[][][]) ?? [];
+  const legacyRows =
+    ('IsolatedLending' in addresses &&
+      (useContractCalls(
+        args(addresses.IsolatedLending)
+      ) as RawPositionMetaRow[][][])) ||
+    [];
+  const currentRows =
+    ('StableLending' in addresses &&
+      (useContractCalls(
+        args(addresses.IsolatedLending)
+      ) as RawPositionMetaRow[][][])) ||
+    [];
 
-  return rows
-    .flatMap((x) => x)
-    .flatMap((x) => x)
-    .filter((x) => x)
-    .map((row) => parsePositionMeta(row, stable));
+  function parseRows(rows: RawPositionMetaRow[][][], trancheContract: string) {
+    return rows
+      .flatMap((x) => x)
+      .flatMap((x) => x)
+      .filter((x) => x)
+      .map((row) => parsePositionMeta(row, stable, trancheContract));
+  }
+  return [
+    ...((legacyRows.length > 0 &&
+      parseRows(legacyRows, addresses.IsolatedLending)) ||
+      []),
+    ...((currentRows.length > 0 &&
+      parseRows(currentRows, addresses.StableLending)) ||
+      []),
+  ];
 }
 
 export function useRegisteredOracle(tokenAddress?: string) {
@@ -479,7 +540,7 @@ export function useAllFeesEver(contracts: string[]) {
   }
 
   const calls: ContractCall[] = contracts.map(convert2ContractCall);
-  console.log('calls', calls);
+  // console.log('calls', calls);
   const results = useContractCalls(calls) ?? [];
 
   return results;
@@ -544,7 +605,25 @@ export type ParsedStakingMetadata = {
   earned: CurrencyValue;
   vested: CurrencyValue;
   rewards: CurrencyValue;
+  totalRewards: CurrencyValue;
 };
+
+function unifyRewards(account?: string): BigNumber {
+  const lcAccount = account ? account.toLowerCase() : undefined;
+  const earned =
+    lcAccount && lcAccount in earnedRewards
+      ? BigNumber.from(earnedRewards[lcAccount as keyof typeof earnedRewards])
+      : BigNumber.from(0);
+
+  const rewards =
+    lcAccount && lcAccount in rewardsRewards
+      ? BigNumber.from(rewardsRewards[lcAccount as keyof typeof rewardsRewards])
+      : BigNumber.from(0);
+
+  // console.log('unifying', formatEther(earned), formatEther(rewards));
+
+  return earned.add(rewards);
+}
 
 export function useParsedStakingMetadata(
   stakingContracts: string[],
@@ -555,7 +634,7 @@ export function useParsedStakingMetadata(
   return useStakingMetadata(stakingContracts, account)
     .filter((x) => x)
     .filter(([x]) => x)
-    .map(([stakingMeta]: [RawStakingMetadata]) => {
+    .map(([stakingMeta]: [RawStakingMetadata], i) => {
       const stakingToken = getTokenFromAddress(
         chainId,
         stakingMeta.stakingToken
@@ -564,12 +643,31 @@ export function useParsedStakingMetadata(
         chainId,
         stakingMeta.rewardsToken
       )!;
+
+      const earned = new CurrencyValue(rewardsToken, stakingMeta.earned);
+      const rewards = new CurrencyValue(rewardsToken, stakingMeta.rewards);
+      // console.log('unifying with earned', formatEther(earned.value));
+
+      const rawTotalRewards = earned.add(rewards);
+      const totalRewards =
+        i === 0
+          ? new CurrencyValue(
+              rewardsToken,
+              rawTotalRewards.value.add(
+                rawTotalRewards.value.sub(unifyRewards(account)).mul(4)
+              )
+            )
+          : rawTotalRewards;
+
+      const rawAprPercent = (100 * stakingMeta.aprPer10k.toNumber()) / 10000;
+      const aprPercent = i === 0 ? rawAprPercent * 5 : rawAprPercent;
+
       return {
         stakingToken,
         rewardsToken,
         totalSupply: new CurrencyValue(stakingToken, stakingMeta.totalSupply),
         tvl: new CurrencyValue(stable, stakingMeta.tvl),
-        aprPercent: (100 * stakingMeta.aprPer10k.toNumber()) / 10000,
+        aprPercent,
         vestingCliff: timestamp2Date(stakingMeta.vestingCliff),
         periodFinish: timestamp2Date(stakingMeta.periodFinish),
         stakedBalance: new CurrencyValue(
@@ -577,9 +675,10 @@ export function useParsedStakingMetadata(
           stakingMeta.stakedBalance
         ),
         vestingStart: timestamp2Date(stakingMeta.vestingStart),
-        earned: new CurrencyValue(rewardsToken, stakingMeta.earned),
+        earned,
         vested: new CurrencyValue(rewardsToken, stakingMeta.vested),
-        rewards: new CurrencyValue(rewardsToken, stakingMeta.rewards),
+        rewards,
+        totalRewards,
       };
     });
 }

@@ -5,12 +5,12 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useAddresses } from './chain-interaction/contracts';
-import FooterBar from './components/FooterBar';
-import GlobalDebtCeilingMessage from './components/GlobalDebtCeilingMessage';
-import NavigationBar from './components/NavigationBar';
-import NetworkNotSupported from './components/NetworkNotSupported';
-import { NotificationsComponent } from './components/NotificationsComponent';
-import PhishingAlertComponent from './components/PhishingAlertComponent';
+import FooterBar from './components/navigation/FooterBar';
+import GlobalDebtCeilingMessage from './components/notifications/GlobalDebtCeilingMessage';
+import NavigationBar from './components/navigation/NavigationBar';
+import NetworkNotSupported from './components/notifications/NetworkNotSupported';
+import { TransactionToasts } from './components/notifications/TransactionToasts';
+import PhishingAlertComponent from './components/notifications/PhishingAlertComponent';
 import { LiquidationFeesCtxProvider } from './contexts/LiquidationFeesContext';
 import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
 import { UserAddressCtxProvider } from './contexts/UserAddressContext';
@@ -95,7 +95,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                       position="absolute"
                       left="0"
                       opacity="0.3"
-                      width="500px"
+                      width={['0px', '0px', '500px']}
                       height="300px"
                       top="300px"
                       filter="blur(200px)"
@@ -105,7 +105,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                     />
                     <Box
                       position="absolute"
-                      width="350px"
+                      width={['0px', '0px', '350px']}
                       height="230px"
                       filter="blur(200px)"
                       opacity="0.3"
@@ -115,11 +115,11 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                       bgGradient="radial(farthest-side, hsla(169, 100%, 46%, 1), hsla(169, 100%, 46%, 0))"
                       zIndex="var(--chakra-zIndices-base)"
                     />
-                    <NotificationsComponent />
+                    <TransactionToasts />
                     <NavigationBar />
                     <br />
                     <GlobalDebtCeilingMessage />
-                    <Box paddingBottom={'30px'}> 
+                    <Box paddingBottom={'30px'}>
                       {params.children}
                       <Outlet />
                     </Box>

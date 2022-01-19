@@ -54,9 +54,9 @@ export function getTokensInQuestion(_chainId: ChainId): [string, Token][] {
   const tokensInQuestion = Array.from(addressToken[_chainId].entries()).filter(
     (aT) => aT[1].chainId === _chainId
   );
-  console.log('tokens in question');
-  console.log(Array.from(addressToken[_chainId].entries()));
-  console.log(tokensInQuestion);
+  // console.log('tokens in question');
+  // console.log(Array.from(addressToken[_chainId].entries()));
+  // console.log(tokensInQuestion);
 
   return tokensInQuestion;
 }
@@ -171,7 +171,7 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
     )
   );
   addressIcons.set(getAddress(addresses.Stablecoin), [
-    'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/MONEY%20WHITE.jpg',
+    'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Coin-Logo-FINAL.jpg',
   ]);
 
   if ('CurvePool' in addresses) {

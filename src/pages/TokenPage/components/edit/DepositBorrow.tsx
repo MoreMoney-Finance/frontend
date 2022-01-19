@@ -5,7 +5,7 @@ import {
   HStack,
   InputRightElement,
   NumberInput,
-  NumberInputField,
+  Input,
   Text,
   useDisclosure,
   VStack,
@@ -300,11 +300,12 @@ export default function DepositBorrow({
                 borderRadius={'full'}
                 padding={'6px 16px'}
                 key={'percentage' + key}
-                onClick={() =>
+                onClick={() => {
+                  setValueDepForm('custom-percentage', '');
                   setValueDepForm('money-borrow', value.toFixed(10), {
                     shouldDirty: true,
-                  })
-                }
+                  });
+                }}
               >
                 <Text variant={'bodySmall'} fontWeight={'500'}>
                   {key}
@@ -319,7 +320,7 @@ export default function DepositBorrow({
             key={'custom'}
             fontWeight="500"
           >
-            <NumberInputField
+            <Input
               {...registerDepForm('custom-percentage')}
               placeholder="Custom"
               name="custom-percentage"
@@ -378,7 +379,10 @@ export default function DepositBorrow({
           } = $ ${usdPrice.toFixed(2)}`}</Text>
         </HStack>
         <TransactionErrorDialog state={approveState} title={'Approve'} />
-        <TransactionErrorDialog state={depositBorrowState} title={'Deposit Borrow'} />
+        <TransactionErrorDialog
+          state={depositBorrowState}
+          title={'Deposit Borrow'}
+        />
         <TransactionErrorDialog
           state={nativeDepositBorrowState}
           title={'Deposit Borrow'}

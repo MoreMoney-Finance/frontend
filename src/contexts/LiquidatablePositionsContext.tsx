@@ -1,6 +1,9 @@
+import { CurrencyValue } from '@usedapp/core';
+import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import React from 'react';
 import {
   ParsedPositionMetaRow,
+  useStable,
   useUpdatedPositions,
 } from '../chain-interaction/contracts';
 import { StrategyMetadataContext } from './StrategyMetadataContext';
@@ -20,7 +23,7 @@ export function LiquidatablePositionsCtxProvider({
         Object.values(stratMeta)[0].usdPrice,
       ])
   );
-
+  const stable = useStable();
   const START = new Date(2021, 10, 26).valueOf();
   const updatedPositions = useUpdatedPositions(START);
   console.log('updatedPositions', updatedPositions);
@@ -34,13 +37,12 @@ export function LiquidatablePositionsCtxProvider({
     parsedPositions.set(pos.trancheId, pos);
   }
 
-  console.log(
-    'Object.values(parsedPositions)',
-    parsedPositions,
-    Object.values(parsedPositions)
-  );
-  const liquidatablePositions = Object.values(parsedPositions).filter(
-    (posMeta) => posMeta.liquidationPrice > tokenPrices[posMeta.token.address]
+  const dollar = new CurrencyValue(stable, parseEther('1'));
+
+  const liquidatablePositions = Array.from(parsedPositions.values()).filter(
+    (posMeta) =>
+      posMeta.liquidationPrice > tokenPrices[posMeta.token.address] &&
+      posMeta.debt.gt(dollar)
   );
 
   return (

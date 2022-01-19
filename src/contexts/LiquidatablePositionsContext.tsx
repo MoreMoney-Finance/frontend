@@ -33,7 +33,7 @@ export function LiquidatablePositionsCtxProvider({
   updatedPositions.forEach((pos) => {
     parsedPositions.set(pos.trancheId, pos);
   });
-
+  console.log('Object.values(parsedPositions)', Object.values(parsedPositions));
   const liquidatablePositions = Object.values(parsedPositions).filter(
     (posMeta) => posMeta.liquidationPrice > tokenPrices[posMeta.token.address]
   );

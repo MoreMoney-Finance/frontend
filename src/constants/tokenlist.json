@@ -9,14 +9,6 @@
   "keywords": [],
   "tokens": [
     {
-      "address": "0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd",
-      "chainId": 43114,
-      "name": "Joe Token",
-      "symbol": "JOE",
-      "decimals": 18,
-      "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd/logo.png"
-    },
-    {
       "chainId": 43114,
       "address": "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
       "decimals": 6,
@@ -386,15 +378,6 @@
       "name": "Dai Stablecoin",
       "symbol": "DAI.e",
       "logoURI": "https://raw.githubusercontent.com/ava-labs/avalanche-bridge-resources/main/tokens/DAI/logo.png"
-    },
-    {
-      "chainId": 31337,
-      "address": "0x8729438EB15e2C8B576fCc6AeCdA6A148776C0F5",
-      "decimals": 18,
-      "name": "BENQI",
-      "symbol": "QI",
-      "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x8729438EB15e2C8B576fCc6AeCdA6A148776C0F5/logo.png",
-      "coingeckoId": "benqi"
     },
     {
       "chainId": 31337,

@@ -21,7 +21,7 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import WarningMessage from '../../../../components/notifications/WarningMessage';
 import farminfo from '../../../../contracts/farminfo.json';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { ConfirmPositionModal } from './ConfirmPositionModal';
 import {
   ParsedPositionMetaRow,
@@ -37,7 +37,10 @@ import { TransactionErrorDialog } from '../../../../components/notifications/Tra
 import { TokenAmountInputField } from '../../../../components/tokens/TokenAmountInputField';
 import { TokenDescription } from '../../../../components/tokens/TokenDescription';
 import { WNATIVE_ADDRESS } from '../../../../constants/addresses';
-import { useWalletBalance } from '../../../../contexts/WalletBalancesContext';
+import {
+  useWalletBalance,
+  WalletBalancesContext,
+} from '../../../../contexts/WalletBalancesContext';
 import { parseFloatNoNaN } from '../../../../utils';
 
 export default function RepayWithdraw({
@@ -53,6 +56,7 @@ export default function RepayWithdraw({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const stable = useStable();
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
+  const balanceCtx = useContext(WalletBalancesContext);
 
   const {
     handleSubmit: handleSubmitRepayForm,
@@ -264,7 +268,11 @@ export default function RepayWithdraw({
             <TokenDescription token={stable} />
             <TokenAmountInputField
               name="money-repay"
-              max={residualDebt}
+              max={
+                balanceCtx.get(stable.address)?.gt(residualDebt)
+                  ? residualDebt
+                  : balanceCtx.get(stable.address)
+              }
               isDisabled={repayWithdrawDisabled}
               placeholder={'MONEY repay'}
               registerForm={registerRepayForm}

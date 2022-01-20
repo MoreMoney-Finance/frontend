@@ -238,6 +238,26 @@ const Input = {
       borderRadius: '20px',
       bg: 'transparent',
     },
+    percentage: {
+      field: {
+        borderRadius: 'full',
+        bg: 'whiteAlpha.100',
+        textAlign: 'right',
+        fontWeight: '500',
+        border: '1px',
+        borderColor: 'blue.500',
+      },
+    },
+    percentage_inactive: {
+      field: {
+        borderRadius: 'full',
+        bg: 'whiteAlpha.100',
+        textAlign: 'right',
+        fontWeight: '500',
+        border: 'none',
+        borderColor: '',
+      },
+    },
   },
 };
 

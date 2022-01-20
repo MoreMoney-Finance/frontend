@@ -3,9 +3,9 @@ import {
   Button,
   Flex,
   HStack,
+  Input,
+  InputGroup,
   InputRightElement,
-  NumberInput,
-  NumberInputField,
   Text,
   useDisclosure,
   VStack,
@@ -34,6 +34,7 @@ import {
 } from '../../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../../components/account/EnsureWalletConnected';
 import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
+import WarningMessage from '../../../../components/notifications/WarningMessage';
 import { TokenAmountInputField } from '../../../../components/tokens/TokenAmountInputField';
 import { TokenDescription } from '../../../../components/tokens/TokenDescription';
 import { WNATIVE_ADDRESS } from '../../../../constants/addresses';
@@ -41,7 +42,6 @@ import { UserAddressContext } from '../../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../../contexts/WalletBalancesContext';
 import { parseFloatNoNaN } from '../../../../utils';
 import { ConfirmPositionModal } from './ConfirmPositionModal';
-import WarningMessage from '../../../../components/notifications/WarningMessage';
 
 export default function DepositBorrow({
   position,
@@ -215,7 +215,7 @@ export default function DepositBorrow({
   };
 
   const dangerousPosition = totalPercentage > borrowablePercent * 0.92;
-
+  console.log('customPercentageInput', customPercentageInput);
   return (
     <>
       <ConfirmPositionModal
@@ -300,41 +300,31 @@ export default function DepositBorrow({
                 borderRadius={'full'}
                 padding={'6px 16px'}
                 key={'percentage' + key}
-                onClick={() =>
+                onClick={() => {
+                  setValueDepForm('custom-percentage', '');
                   setValueDepForm('money-borrow', value.toFixed(10), {
                     shouldDirty: true,
-                  })
-                }
+                  });
+                }}
               >
                 <Text variant={'bodySmall'} fontWeight={'500'}>
                   {key}
                 </Text>
               </Button>
             ))}
-          <NumberInput
-            borderRadius={'full'}
-            padding={'0px 16px'}
-            bg="whiteAlpha.100"
-            border="none"
-            key={'custom'}
-            fontWeight="500"
-          >
-            <NumberInputField
+          <InputGroup width="120px" border={'none'}>
+            <Input
               {...registerDepForm('custom-percentage')}
+              key={'custom'}
               placeholder="Custom"
-              name="custom-percentage"
-              border="none"
-              marginLeft="0px"
-              marginRight="18px"
-              bg="transparent"
-              width="65px"
-              padding="0px"
-              textAlign="right"
+              variant={
+                customPercentageInput ? 'percentage' : 'percentage_inactive'
+              }
             />
             <InputRightElement width="auto" marginRight="16px">
               %
             </InputRightElement>
-          </NumberInput>
+          </InputGroup>
         </HStack>
         <HStack justifyContent={'space-between'} marginTop={'40px'}>
           <VStack spacing={'2px'}>
@@ -378,7 +368,10 @@ export default function DepositBorrow({
           } = $ ${usdPrice.toFixed(2)}`}</Text>
         </HStack>
         <TransactionErrorDialog state={approveState} title={'Approve'} />
-        <TransactionErrorDialog state={depositBorrowState} title={'Deposit Borrow'} />
+        <TransactionErrorDialog
+          state={depositBorrowState}
+          title={'Deposit Borrow'}
+        />
         <TransactionErrorDialog
           state={nativeDepositBorrowState}
           title={'Deposit Borrow'}

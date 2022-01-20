@@ -415,7 +415,7 @@ export function useIsolatedPositionMetadata(
   const addresses = useAddresses();
   const legacyResults =
     'IsolatedLending' in addresses
-      ? legacy.reduce(reduceFn(addresses.IsolatedLending))
+      ? legacy.reduce(reduceFn(addresses.IsolatedLending), {})
       : {};
   return 'StableLending' in addresses
     ? current.reduce(reduceFn(addresses.StableLending), legacyResults)

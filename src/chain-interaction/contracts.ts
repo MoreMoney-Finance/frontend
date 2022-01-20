@@ -16,7 +16,6 @@ import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
-import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
@@ -50,6 +49,14 @@ export type DeploymentAddresses = {
   CurvePoolRewards: string;
   DirectFlashLiquidation: string;
   LPTFlashLiquidation: string;
+
+  StableLending: string;
+  StableLendingLiquidation: string;
+  DirectFlashStableLiquidation: string;
+  LPTFlashStableLiquidation: string;
+  wsMAXIStableLiquidation: string;
+  xJoeStableLiquidation: string;
+  WrapNativeStableLending: string;
 };
 
 export function useAddresses() {
@@ -65,14 +72,29 @@ export function useIsolatedLendingView(
   args: any[],
   defaultResult: any
 ) {
-  const address = useAddresses().IsolatedLending;
+  const addresses = useAddresses();
+
   const abi = new Interface(IsolatedLending.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method,
-    args,
-  }) ?? [defaultResult])[0];
+  return {
+    legacy:
+      'IsolatedLending' in addresses
+        ? (useContractCall({
+            abi,
+            address: addresses.IsolatedLending,
+            method,
+            args,
+          }) ?? [defaultResult])[0]
+        : defaultResult,
+    current:
+      'StableLending' in addresses
+        ? (useContractCall({
+            abi,
+            address: useAddresses().StableLending,
+            method,
+            args,
+          }) ?? [defaultResult])[0]
+        : defaultResult,
+  };
 }
 
 type RawStratMetaRow = {
@@ -214,7 +236,7 @@ export type StrategyMetadata = Record<
 export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const stable = useStable();
   const { chainId } = useEthers();
-  const allStratMeta = useIsolatedLendingView(
+  const { legacy, current } = useIsolatedLendingView(
     'viewAllStrategyMetadata',
     [],
     []
@@ -231,29 +253,47 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
   const balancesCtx = useContext(WalletBalancesContext);
   const yyMetadata = useContext(YYMetadataContext);
-  return allStratMeta.reduce(
-    (result: StrategyMetadata, row: RawStratMetaRow) => {
-      const parsedRow = parseStratMeta(
-        chainId!,
-        row,
-        stable,
-        balancesCtx,
-        yyMetadata,
-        globalMoneyAvailable
-      );
 
-      return parsedRow
-        ? {
-            ...result,
-            [parsedRow.token.address]: {
-              [parsedRow.strategyAddress]: parsedRow,
-              ...(result[parsedRow.token.address] || {}),
-            },
-          }
-        : result;
-    },
-    {}
-  );
+  const reduceFn = (result: StrategyMetadata, row: RawStratMetaRow) => {
+    const parsedRow = parseStratMeta(
+      chainId!,
+      row,
+      stable,
+      balancesCtx,
+      yyMetadata,
+      globalMoneyAvailable
+    );
+
+    return parsedRow
+      ? {
+          ...result,
+          [parsedRow.token.address]: {
+            [parsedRow.strategyAddress]: parsedRow,
+            ...(result[parsedRow.token.address] || {}),
+          },
+        }
+      : result;
+  };
+
+  const legacyParsed: StrategyMetadata = legacy.reduce(reduceFn, {});
+
+  const currentParsed: StrategyMetadata = current.reduce(reduceFn, {});
+
+  // const legacyDebt = Object.values(legacyParsed)
+  //   .flatMap((rows) => Object.values(rows))
+  //   .map((row) => row.totalDebt)
+  //   .reduce((agg, debt) => agg.add(debt));
+
+  // const currentDebt = Object.values(currentParsed)
+  //   .flatMap((rows) => Object.values(rows))
+  //   .map((row) => row.totalDebt)
+  //   .reduce((agg, debt) => agg.add(debt));
+
+  // const legacyMax = new CurrencyValue(stable, globalMoneyAvailable).sub(
+  //   currentDebt
+  // );
+
+  return { ...legacyParsed, ...currentParsed };
 }
 
 export type ParsedPositionMetaRow = {
@@ -267,6 +307,7 @@ export type ParsedPositionMetaRow = {
   borrowablePercent: number;
   owner: string;
   liquidationPrice: number;
+  trancheContract: string;
 };
 
 type RawPositionMetaRow = {
@@ -320,7 +361,8 @@ export function calcLiqPriceFromNum(
 
 function parsePositionMeta(
   row: RawPositionMetaRow,
-  stable: Token
+  stable: Token,
+  trancheContract: string
 ): ParsedPositionMetaRow {
   const debt = new CurrencyValue(stable, row.debt);
   const posYield = new CurrencyValue(stable, row.yield);
@@ -328,6 +370,7 @@ function parsePositionMeta(
   const borrowablePercent = row.borrowablePer10k.toNumber() / 100;
 
   return {
+    trancheContract,
     trancheId: row.trancheId.toNumber(),
     strategy: row.strategy,
     debt,
@@ -350,25 +393,33 @@ export type TokenStratPositionMetadata = Record<
 export function useIsolatedPositionMetadata(
   account: string
 ): TokenStratPositionMetadata {
-  const positionMeta = useIsolatedLendingView(
+  const { legacy, current } = useIsolatedLendingView(
     'viewPositionsByOwner',
     [account],
     []
   );
   const stable = useStable();
 
-  return positionMeta.reduce(
-    (result: TokenStratPositionMetadata, row: RawPositionMetaRow) => {
-      const parsedRow = parsePositionMeta(row, stable);
+  function reduceFn(trancheContract: string) {
+    return (result: TokenStratPositionMetadata, row: RawPositionMetaRow) => {
+      const parsedRow = parsePositionMeta(row, stable, trancheContract);
       const tokenAddress = parsedRow.token.address;
       const list = result[tokenAddress] || [];
       return {
         ...result,
         [tokenAddress]: [...list, parsedRow],
       };
-    },
-    {}
-  );
+    };
+  }
+
+  const addresses = useAddresses();
+  const legacyResults =
+    'IsolatedLending' in addresses
+      ? legacy.reduce(reduceFn(addresses.IsolatedLending))
+      : {};
+  return 'StableLending' in addresses
+    ? current.reduce(reduceFn(addresses.StableLending), legacyResults)
+    : legacyResults;
 }
 
 export function useGlobalDebtCeiling(
@@ -401,21 +452,6 @@ export function useTotalSupply(
   }) ?? [defaultResult])[0];
 }
 
-export function useIsolatedLendingLiquidationView(
-  method: string,
-  args: any[],
-  defaultResult: any
-) {
-  const address = useAddresses().IsolatedLendingLiquidation;
-  const abi = new Interface(IsolatedLendingLiquidation.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method,
-    args,
-  }) ?? [defaultResult])[0];
-}
-
 export function useYieldConversionStrategyView(
   strategyAddress: string,
   method: string,
@@ -438,24 +474,47 @@ export function useUpdatedPositions(timeStart: number) {
   // console.log('endPeriod', endPeriod);
   // console.log('startPeriod', startPeriod);
   const stable = useStable();
-  const iL = useAddresses().IsolatedLending;
+  const addresses = useAddresses();
 
-  const args = Array(endPeriod - startPeriod)
-    .fill(startPeriod)
-    .map((x, i) => ({
-      abi: new Interface(IsolatedLending.abi),
-      address: iL,
-      method: 'viewPositionsByTrackingPeriod',
-      args: [x + i],
-    }));
+  function args(trancheContract: string) {
+    return Array(endPeriod - startPeriod)
+      .fill(startPeriod)
+      .map((x, i) => ({
+        abi: new Interface(IsolatedLending.abi),
+        address: trancheContract,
+        method: 'viewPositionsByTrackingPeriod',
+        args: [x + i],
+      }));
+  }
 
-  const rows = (useContractCalls(args) as RawPositionMetaRow[][][]) ?? [];
+  const legacyRows =
+    ('IsolatedLending' in addresses &&
+      (useContractCalls(
+        args(addresses.IsolatedLending)
+      ) as RawPositionMetaRow[][][])) ||
+    [];
+  const currentRows =
+    ('StableLending' in addresses &&
+      (useContractCalls(
+        args(addresses.IsolatedLending)
+      ) as RawPositionMetaRow[][][])) ||
+    [];
 
-  return rows
-    .flatMap((x) => x)
-    .flatMap((x) => x)
-    .filter((x) => x)
-    .map((row) => parsePositionMeta(row, stable));
+  function parseRows(rows: RawPositionMetaRow[][][], trancheContract: string) {
+    return rows
+      .flatMap((x) => x)
+      .flatMap((x) => x)
+      .filter((x) => x)
+      .map((row) => parsePositionMeta(row, stable, trancheContract));
+  }
+  return [
+    ...((legacyRows.length > 0 &&
+      parseRows(legacyRows, addresses.IsolatedLending)) ||
+      []),
+    ...((currentRows.length > 0 &&
+      parseRows(currentRows, addresses.StableLending)) ||
+      []),
+  ];
 }
 
 export function useRegisteredOracle(tokenAddress?: string) {

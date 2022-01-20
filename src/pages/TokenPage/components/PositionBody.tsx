@@ -27,7 +27,9 @@ export function PositionBody({
   );
   const account = useContext(UserAddressContext);
   const stable = useStable();
-  const { sendMigrateStrategy, migrateStrategyState } = useMigrateStrategy();
+  const { sendMigrateStrategy, migrateStrategyState } = useMigrateStrategy(
+    position?.trancheContract
+  );
 
   function chooseStrategy(strategyToChoose: string) {
     if (position) {

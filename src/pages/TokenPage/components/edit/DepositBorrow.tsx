@@ -85,12 +85,16 @@ export default function DepositBorrow({
   } = useForm();
 
   const { sendDepositBorrow, depositBorrowState } = useDepositBorrowTrans(
-    position ? position.trancheId : undefined
+    position ? position.trancheId : undefined,
+    position ? position.trancheContract : undefined
   );
   const {
     sendDepositBorrow: sendNativeDepositBorrow,
     depositBorrowState: nativeDepositBorrowState,
-  } = useNativeDepositBorrowTrans(position ? position.trancheId : undefined);
+  } = useNativeDepositBorrowTrans(
+    position ? position.trancheId : undefined,
+    position ? position.trancheContract : undefined
+  );
 
   function onDepositBorrow(data: { [x: string]: any }) {
     // console.log('deposit borrow');

@@ -22,7 +22,11 @@ import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFe
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
-import { YYMetadata, YYMetadataContext } from '../contexts/YYMetadataContext';
+import {
+  YYMetadata,
+  ExternalMetadataContext,
+  YieldMonitorMetadata,
+} from '../contexts/ExternalMetadataContext';
 import earnedRewards from '../constants/earned-rewards.json';
 import rewardsRewards from '../constants/rewards-rewards.json';
 
@@ -152,7 +156,8 @@ function parseStratMeta(
   stable: Token,
   balancesCtx: Map<string, CurrencyValue>,
   yyMetadata: YYMetadata,
-  globalMoneyAvailable: BigNumber
+  globalMoneyAvailable: BigNumber,
+  yieldMonitor: Record<string, YieldMonitorMetadata>
 ): ParsedStratMetaRow | undefined {
   const token = getTokenFromAddress(chainId, row.token);
   if (token) {
@@ -166,10 +171,11 @@ function parseStratMeta(
       ? getAddress(row.underlyingStrategy)
       : strategyAddress;
 
-    const APY =
-      underlyingAddress in yyMetadata
-        ? yyMetadata[underlyingAddress].apy * 0.9
-        : convertAPF2APY(row.APF);
+    const APY = yieldMonitor[row.token]
+      ? yieldMonitor[row.token].totalApy
+      : underlyingAddress in yyMetadata
+      ? yyMetadata[underlyingAddress].apy * 0.9
+      : convertAPF2APY(row.APF);
 
     let syntheticDebtCeil = globalMoneyAvailable.add(row.totalDebt);
 
@@ -252,7 +258,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
 
   const balancesCtx = useContext(WalletBalancesContext);
-  const yyMetadata = useContext(YYMetadataContext);
+  const { yyMetadata, yieldMonitor } = useContext(ExternalMetadataContext);
 
   const reduceFn = (result: StrategyMetadata, row: RawStratMetaRow) => {
     const parsedRow = parseStratMeta(
@@ -261,7 +267,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       stable,
       balancesCtx,
       yyMetadata,
-      globalMoneyAvailable
+      globalMoneyAvailable,
+      yieldMonitor
     );
 
     return parsedRow

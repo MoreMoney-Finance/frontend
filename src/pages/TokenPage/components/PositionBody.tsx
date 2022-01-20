@@ -60,11 +60,19 @@ export function PositionBody({
         />
       )}
       <Grid
-        templateColumns={['repeat(1, 1fr)', 'repeat(5, 1fr)', 'repeat(4, 1fr)']}
-        templateRows="repeat(2, 1fr)"
+        templateColumns={[
+          'repeat(1, 1fr)',
+          'repeat(5, 1fr)',
+          '520px 240px 240px',
+        ]}
+        templateRows={[
+          'repeat(2, 1fr)',
+          'repeat(2, 1fr)',
+          'auto 340px 240px 310px',
+        ]}
         w={'full'}
         gap={'20px'}
-        marginTop={'20px'}
+        marginTop={'30px'}
       >
         <EditPosition
           position={position}

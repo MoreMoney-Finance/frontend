@@ -48,10 +48,30 @@ export function ExternalMetadataCtxProvider({
   >({});
 
   useEffect(() => {
+    fetch(
+      'https://app.yieldmonitor.io/api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
+      {
+        headers: {
+          accept: '*/*',
+          'accept-language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7,fr;q=0.6',
+          'sec-ch-ua':
+            '" Not;A Brand";v="99", "Google Chrome";v="97", "Chromium";v="97"',
+          'sec-ch-ua-mobile': '?0',
+          'sec-ch-ua-platform': '"macOS"',
+          'sec-fetch-dest': 'empty',
+          'sec-fetch-mode': 'cors',
+          'sec-fetch-site': 'cross-site',
+        },
+        referrer: 'https://app.yieldmonitor.io',
+        body: null,
+        method: 'GET',
+        credentials: 'omit',
+      }
+    );
     const urls = [
       'https://staging-api.yieldyak.com/apys',
       // TODO: fix this
-      // 'https://app.yieldmonitor.io/api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
+      'https://app.yieldmonitor.io/api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
     ];
     Promise.all(
       urls.map((url) => fetch(url).then((response) => response.json()))

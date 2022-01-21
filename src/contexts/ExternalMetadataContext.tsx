@@ -49,7 +49,7 @@ export function ExternalMetadataCtxProvider({
 
   useEffect(() => {
     fetch(
-      'https://app.yieldmonitor.io/api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
+      '/api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
       {
         headers: {
           accept: '*/*',

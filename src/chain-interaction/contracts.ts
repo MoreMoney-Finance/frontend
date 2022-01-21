@@ -496,7 +496,7 @@ export function useUpdatedPositions(timeStart: number) {
   const currentRows =
     ('StableLending' in addresses &&
       (useContractCalls(
-        args(addresses.IsolatedLending)
+        args(addresses.StableLending)
       ) as RawPositionMetaRow[][][])) ||
     [];
 

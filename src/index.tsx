@@ -36,7 +36,10 @@ ReactDOM.render(
             <Route path="/token/:tokenAddress" element={<TokenPage />} />
             <Route path="/farm" element={<FarmPage />} />
             <Route path="/positions" element={<PositionsPage />} />
-            <Route path="/liquidatable-positions" element={<LiquidatablePositions />} />
+            <Route
+              path="/liquidatable-positions"
+              element={<LiquidatablePositions />}
+            />
             <Route path="/loans" element={<LiquidationProtectedLoans />} />
             <Route path="/analytics" element={<Analytics />} />
           </Route>

@@ -376,28 +376,15 @@ export function useUpdatePriceOracle(token?: Token) {
   };
 }
 
-export function useDirectLiquidationTrans() {
+export function useLiquidationTrans(contractAddress: string) {
   const liquidationContract = new Contract(
-    useAddresses().DirectFlashLiquidation,
+    contractAddress,
     new Interface(DirectFlashLiquidation.abi)
   );
   const { send, state } = useContractFunction(liquidationContract, 'liquidate');
 
   return {
-    sendDirectLiquidation: send,
-    directLiquidationState: state,
-  };
-}
-
-export function useLPTLiquidationTrans() {
-  const liquidationContract = new Contract(
-    useAddresses().LPTFlashLiquidation,
-    new Interface(LPTFlashLiquidation.abi)
-  );
-  const { send, state } = useContractFunction(liquidationContract, 'liquidate');
-
-  return {
-    sendLPTLiquidation: send,
-    LPTLiquidationState: state,
+    sendLiquidation: send,
+    liquidationState: state,
   };
 }

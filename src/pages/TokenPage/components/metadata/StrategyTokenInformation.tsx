@@ -31,11 +31,6 @@ export default function StrategyTokenInformation({
   position?: ParsedPositionMetaRow;
   stratMeta: ParsedStratMetaRow;
 }>) {
-  // const liquidationRewardPer10k: BigNumber = useIsolatedLendingLiquidationView(
-  //   'liquidationRewardPer10k',
-  //   [stratMeta.token.address],
-  //   BigNumber.from(0)
-  // );
 
   const calcCRatio = () => {
     return `${Math.round((1 / (stratMeta.borrowablePercent / 100)) * 100)}%`;

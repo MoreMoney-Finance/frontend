@@ -14,11 +14,13 @@ import { StrategyDataTable } from './StrategyDataTable';
 export function MigrateStrategy(
   params: ParsedStratMetaRow & ParsedPositionMetaRow
 ) {
-  const { strategyAddress, strategyName, trancheId } = params;
+  const { strategyAddress, strategyName, trancheId, trancheContract } = params;
   const account = useContext(UserAddressContext);
 
   const stable = useStable();
-  const { sendMigrateStrategy, migrateStrategyState } = useMigrateStrategy();
+  const { sendMigrateStrategy, migrateStrategyState } = useMigrateStrategy(
+    trancheContract
+  );
 
   return (
     <VStack>
@@ -45,3 +47,4 @@ export function MigrateStrategy(
     </VStack>
   );
 }
+

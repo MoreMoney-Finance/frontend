@@ -61,7 +61,15 @@ export function ExternalMetadataCtxProvider({
       .then((responses) => {
         setYYMeta(responses[0] as YYMetadata);
         // console.log('from yield monitor', responses[1]);
-        setYieldMonitor(Object.fromEntries(responses[1].map((r:YieldMonitorMetadata) => [getAddress(r.lpAddress), r])));
+
+        const ymData: Record<string, YieldMonitorMetadata> = {};
+        for (const r of responses[1]) {
+          const a = getAddress(r.lpAddress);
+          if (!(a in ymData) || r.totalApy > ymData[a].totalApy) {
+            ymData[a] = r;
+          } 
+        }
+        setYieldMonitor(ymData);
       })
       .catch((err) => {
         console.error('Failed to fetch one or more of these URLs:');

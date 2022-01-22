@@ -10,7 +10,7 @@ import { getAddress, Interface, parseUnits } from 'ethers/lib/utils';
 import tokenlist from '../constants/tokenlist.json';
 import deployAddresses from '../contracts/addresses.json';
 import lptokens from '../contracts/lptokens.json';
-import { useAddresses, useStable } from './contracts';
+import { ParsedPositionMetaRow, useAddresses, useStable } from './contracts';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 
 const addressToken: Record<ChainId, Map<string, Token>> = Object.fromEntries(
@@ -150,9 +150,9 @@ for (const [chainId, lpTokensPerChain] of Object.entries(lptokens) as [
   }
 }
 
-export function getLiquidationParams(token: string): LiquidationParams {
+export function getLiquidationParams(pos: ParsedPositionMetaRow): LiquidationParams {
   return (
-    liquidationParams.get(getAddress(token)) ?? {
+    liquidationParams.get(getAddress(pos.token.address)) ?? {
       router: exchangeRouters.JPL,
       liqType: LiquidationType.Direct,
     }

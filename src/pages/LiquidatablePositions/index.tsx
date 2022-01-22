@@ -88,10 +88,11 @@ export default function LiquidatablePositions() {
             positions={liquidatablePositions}
             action={{
               callback: (pos) => {
-                console.log('liquidating', pos);
                 const { liqType, router } = getLiquidationParams(
-                  pos.token.address
+                  pos
                 );
+                console.log('liquidating', pos, liqType, router);
+                console.log(lending2Liquidation);
                 if (getAddress(pos.token.address) in token2Liquidation) {
                   token2Liquidation[getAddress(pos.token.address)](
                     pos.trancheId,

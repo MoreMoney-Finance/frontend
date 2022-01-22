@@ -15,7 +15,7 @@ import { LiquidationFeesCtxProvider } from './contexts/LiquidationFeesContext';
 import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
 import { UserAddressCtxProvider } from './contexts/UserAddressContext';
 import { WalletBalancesCtxProvider } from './contexts/WalletBalancesContext';
-import { YYMetadataCtxProvider } from './contexts/YYMetadataContext';
+import { ExternalMetadataCtxProvider } from './contexts/ExternalMetadataContext';
 import { theme } from './theme';
 import { LiquidatablePositionsCtxProvider } from './contexts/LiquidatablePositionsContext';
 import LiquidatablePositionsMessage from './components/notifications/LiquidatablePositionsMessage';
@@ -83,7 +83,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
       <UserAddressCtxProvider>
         <WalletBalancesCtxProvider>
           <LiquidationFeesCtxProvider>
-            <YYMetadataCtxProvider>
+            <ExternalMetadataCtxProvider>
               {addresses ? (
                 <StrategyMetadataCtxProvider>
                   <LiquidatablePositionsCtxProvider>
@@ -134,7 +134,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
               ) : (
                 <NetworkNotSupported />
               )}
-            </YYMetadataCtxProvider>
+            </ExternalMetadataCtxProvider>
           </LiquidationFeesCtxProvider>
         </WalletBalancesCtxProvider>
       </UserAddressCtxProvider>

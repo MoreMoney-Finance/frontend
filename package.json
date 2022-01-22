@@ -26,6 +26,7 @@
     "@web3-react/network-connector": "https://gitpkg.now.sh/MoreMoney-Finance/web3-react/packages/network-connector?built-branch",
     "ethers": "5.2.0",
     "framer-motion": "^4.0.0",
+    "http-proxy-middleware": "^2.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.17.5",

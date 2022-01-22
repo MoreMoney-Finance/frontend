@@ -49,7 +49,7 @@ export function ExternalMetadataCtxProvider({
 
   useEffect(() => {
     fetch(
-      '/api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
+      '/ym-api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
       {
         headers: {
           accept: '*/*',
@@ -66,15 +66,16 @@ export function ExternalMetadataCtxProvider({
         body: null,
         method: 'GET',
         credentials: 'omit',
+        mode: 'no-cors'
       }
     );
     const urls = [
       'https://staging-api.yieldyak.com/apys',
       // TODO: fix this
-      'https://app.yieldmonitor.io/api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
+      '/ym-api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
     ];
     Promise.all(
-      urls.map((url) => fetch(url).then((response) => response.json()))
+      urls.map((url) => fetch(url, {mode: 'no-cors'}).then((response) => response.json()))
     )
       .then((responses) => {
         setYYMeta(responses[0] as YYMetadata);
@@ -87,7 +88,8 @@ export function ExternalMetadataCtxProvider({
         //   parsedYieldMonitorData[pos.lpAddress] = pos;
         // }
 
-        setYieldMonitor({});
+        console.log('from yield monitor', responses[1]);
+        setYieldMonitor(responses[1]);
       })
       .catch((err) => {
         console.error('Failed to fetch one or more of these URLs:');

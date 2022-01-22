@@ -15,7 +15,6 @@ import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.so
 import CurvePoolRewards from '../contracts/artifacts/contracts/rewards/CurvePoolRewards.sol/CurvePoolRewards.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
-import LPTFlashLiquidation from '../contracts/artifacts/contracts/liquidation/LPTFlashLiquidation.sol/LPTFlashLiquidation.json';
 import DirectFlashLiquidation from '../contracts/artifacts/contracts/liquidation/DirectFlashLiquidation.sol/DirectFlashLiquidation.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
 import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
@@ -376,28 +375,15 @@ export function useUpdatePriceOracle(token?: Token) {
   };
 }
 
-export function useDirectLiquidationTrans() {
+export function useLiquidationTrans(contractAddress: string) {
   const liquidationContract = new Contract(
-    useAddresses().DirectFlashLiquidation,
+    contractAddress,
     new Interface(DirectFlashLiquidation.abi)
   );
   const { send, state } = useContractFunction(liquidationContract, 'liquidate');
 
   return {
-    sendDirectLiquidation: send,
-    directLiquidationState: state,
-  };
-}
-
-export function useLPTLiquidationTrans() {
-  const liquidationContract = new Contract(
-    useAddresses().LPTFlashLiquidation,
-    new Interface(LPTFlashLiquidation.abi)
-  );
-  const { send, state } = useContractFunction(liquidationContract, 'liquidate');
-
-  return {
-    sendLPTLiquidation: send,
-    LPTLiquidationState: state,
+    sendLiquidation: send,
+    liquidationState: state,
   };
 }

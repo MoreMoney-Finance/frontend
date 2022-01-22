@@ -12,6 +12,7 @@ import FarmPage from './pages/Farm';
 import PositionsPage from './pages/Positions';
 import LiquidationProtectedLoans from './pages/Loans';
 import Analytics from './pages/Analytics';
+import LiquidatablePositions from './pages/LiquidatablePositions';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -35,6 +36,10 @@ ReactDOM.render(
             <Route path="/token/:tokenAddress" element={<TokenPage />} />
             <Route path="/farm" element={<FarmPage />} />
             <Route path="/positions" element={<PositionsPage />} />
+            <Route
+              path="/liquidatable-positions"
+              element={<LiquidatablePositions />}
+            />
             <Route path="/loans" element={<LiquidationProtectedLoans />} />
             <Route path="/analytics" element={<Analytics />} />
           </Route>

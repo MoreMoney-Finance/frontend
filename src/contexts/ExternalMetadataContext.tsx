@@ -1,3 +1,4 @@
+import { getAddress } from 'ethers/lib/utils';
 import React, { useEffect, useState } from 'react';
 
 export type YYMetadata = Record<
@@ -48,30 +49,9 @@ export function ExternalMetadataCtxProvider({
   >({});
 
   useEffect(() => {
-    // fetch(
-    //   '/ym-api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
-    //   {
-    //     headers: {
-    //       accept: '*/*',
-    //       'accept-language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7,fr;q=0.6',
-    //       'sec-ch-ua':
-    //         '" Not;A Brand";v="99", "Google Chrome";v="97", "Chromium";v="97"',
-    //       'sec-ch-ua-mobile': '?0',
-    //       'sec-ch-ua-platform': '"macOS"',
-    //       'sec-fetch-dest': 'empty',
-    //       'sec-fetch-mode': 'cors',
-    //       'sec-fetch-site': 'cross-site',
-    //     },
-    //     referrer: 'https://app.yieldmonitor.io',
-    //     body: null,
-    //     method: 'GET',
-    //     credentials: 'omit',
-    //   }
-    // );
     const urls = [
       'https://staging-api.yieldyak.com/apys',
-      // TODO: fix this
-      '/ym-api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
+      '/ym/api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
     ];
     Promise.all(
       urls.map((url) =>
@@ -80,17 +60,8 @@ export function ExternalMetadataCtxProvider({
     )
       .then((responses) => {
         setYYMeta(responses[0] as YYMetadata);
-        // TODO: fix this
-        // const parsedYieldMonitorData: Record<string, YieldMonitorMetadata> = {};
-        // for (let index = 0; index < responses[1].length; index++) {
-        //   const pos: YieldMonitorMetadata = responses[1][
-        //     index
-        //   ] as unknown as YieldMonitorMetadata;
-        //   parsedYieldMonitorData[pos.lpAddress] = pos;
-        // }
-
-        console.log('from yield monitor', responses[1]);
-        setYieldMonitor(responses[1]);
+        // console.log('from yield monitor', responses[1]);
+        setYieldMonitor(Object.fromEntries(responses[1].map((r:YieldMonitorMetadata) => [getAddress(r.lpAddress), r])));
       })
       .catch((err) => {
         console.error('Failed to fetch one or more of these URLs:');

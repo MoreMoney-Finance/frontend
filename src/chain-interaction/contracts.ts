@@ -171,11 +171,12 @@ function parseStratMeta(
       ? getAddress(row.underlyingStrategy)
       : strategyAddress;
 
-    const APY = yieldMonitor[row.token]
-      ? yieldMonitor[row.token].totalApy
-      : underlyingAddress in yyMetadata
-      ? yyMetadata[underlyingAddress].apy * 0.9
-      : convertAPF2APY(row.APF);
+    const APY =
+      underlyingAddress in yyMetadata
+        ? yyMetadata[underlyingAddress].apy * 0.9
+        : token.address in yieldMonitor
+        ? yieldMonitor[token.address].totalApy
+        : convertAPF2APY(row.APF);
 
     let syntheticDebtCeil = globalMoneyAvailable.add(row.totalDebt);
 

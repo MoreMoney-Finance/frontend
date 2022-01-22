@@ -1,2 +1,2 @@
-/ym-api/* https://app.yieldmonitor.io/api/:splat 200
+/ym/* https://app.yieldmonitor.io/:splat 200
 /*    /index.html   200

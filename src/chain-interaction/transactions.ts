@@ -19,6 +19,7 @@ import DirectFlashLiquidation from '../contracts/artifacts/contracts/liquidation
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
 import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
+import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import {
   useAddresses,
   useRegisteredOracle,
@@ -386,4 +387,15 @@ export function useLiquidationTrans(contractAddress: string) {
     sendLiquidation: send,
     liquidationState: state,
   };
+}
+
+export function useWithdrawLaunchVestingTrans() {
+  const addresses = useAddresses();
+  return useContractFunction(
+    new Contract(
+      addresses.VestingLaunchReward,
+      new Interface(VestingLaunchReward.abi)
+    ),
+    'burn'
+  );
 }

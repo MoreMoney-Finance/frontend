@@ -21,6 +21,7 @@ import {
   ParsedStakingMetadata,
   useAddresses,
   useParsedStakingMetadata,
+  useSpecialRewardsData,
 } from '../../chain-interaction/contracts';
 import ClaimReward from './components/ClaimReward';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
@@ -28,6 +29,7 @@ import { UserAddressContext } from '../../contexts/UserAddressContext';
 import farminfo from '../../contracts/farminfo.json';
 import DepositForm from './components/DepositForm';
 import WithdrawForm from './components/WithdrawForm';
+import { useWithdrawLaunchVestingTrans } from '../../chain-interaction/transactions';
 
 export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const { chainId } = useEthers();
@@ -38,10 +40,31 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
     account ?? ethers.constants.AddressZero
   ).flat(1);
 
+  const { balance, vested } = useSpecialRewardsData(
+    account ?? ethers.constants.AddressZero
+  );
+  const { send: sendSpecialWithdraw } = useWithdrawLaunchVestingTrans();
+  console.log('specialRewards', balance, vested); // ethers.utils.formatEther(balance), ethers.utils.formatEther(vested));
+
   const farmInfoIdx = (chainId?.toString() ?? '43114') as keyof typeof farminfo;
   const getLPTokenLinks = [
     `https://avax.curve.fi/factory/${farminfo[farmInfoIdx].curvePoolIdx}/deposit`,
   ];
+
+  const accordionStyling = {
+    content: '""',
+    borderRadius: '10px',
+    marginTop: '10px',
+    border: '1px solid transparent',
+    backgroundClip: 'padding-box, border-box',
+    backgroundOrigin: 'padding-box, border-box',
+    backgroundImage:
+      'linear-gradient(hsla(227, 12%, 15%, 1), hsla(227, 12%, 15%, 1)), linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
+    zIndex: 'var(--chakra-zIndices-hide)',
+    fontSize: '18px',
+    lineHeight: '27px',
+    padding: '16px 30px',
+  };
 
   return (
     <>
@@ -75,27 +98,56 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           variant={'farm'}
           defaultIndex={0}
         >
+          {!balance.isZero() ? (
+            <AccordionItem
+              width={'full'}
+              style={{ boxSizing: 'border-box', ...accordionStyling }}
+            >
+              <AccordionButton width={'full'}>
+                <Grid
+                  templateColumns="repeat(6, 1fr)"
+                  gap={2}
+                  w={'full'}
+                  alignContent={'center'}
+                  verticalAlign={'center'}
+                >
+                  <Flex w={'full'} justifyContent={'center'}>
+                    <Box w={'fit-content'}>
+                      Special Launch Rewards
+                    </Box>
+                  </Flex>
+                  <Box>
+                    <Text>n/a</Text>
+                  </Box>
+                  <Box>
+                    <Text>$ {stakeMeta[0].tvl.format({ suffix: '' })}</Text>
+                  </Box>
+                  <Flex w={'full'} justifyContent={'center'}>
+                    {balance.format()}
+                  </Flex>
+                  <Box>n/a</Box>
+                  <Box>
+                    <Button
+                      color={'white'}
+                      variant={'primary'}
+                      onclick={() => sendSpecialWithdraw(vested.value)}
+                    >
+                      Withdraw {vested.format()}
+                    </Button>
+                  </Box>
+                </Grid>
+              </AccordionButton>
+            </AccordionItem>
+          ) : (
+            <></>
+          )}
           {stakeMeta.map((item, index) => {
-            const { totalRewards } = item;
+            const { rewards } = item;
             return (
               <div key={'item' + index}>
                 <AccordionItem
                   width={'full'}
-                  style={{
-                    content: '""',
-                    borderRadius: '10px',
-                    marginTop: '10px',
-                    boxSizing: 'border-box',
-                    border: '1px solid transparent',
-                    backgroundClip: 'padding-box, border-box',
-                    backgroundOrigin: 'padding-box, border-box',
-                    backgroundImage:
-                      'linear-gradient(hsla(227, 12%, 15%, 1), hsla(227, 12%, 15%, 1)), linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
-                    zIndex: 'var(--chakra-zIndices-hide)',
-                    fontSize: '18px',
-                    lineHeight: '27px',
-                    padding: '16px 30px',
-                  }}
+                  style={{ boxSizing: 'border-box', ...accordionStyling }}
                 >
                   <AccordionButton width={'full'}>
                     <Grid
@@ -117,12 +169,12 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                         <Text>$ {item.tvl.format({ suffix: '' })}</Text>
                       </Box>
                       <Flex w={'full'} justifyContent={'center'}>
-                        {totalRewards.isZero() ? (
+                        {rewards.isZero() ? (
                           <Box w={'fit-content'}>
                             <TokenDescription token={item.rewardsToken} />
                           </Box>
                         ) : (
-                          totalRewards.format()
+                          rewards.format()
                         )}
                       </Flex>
                       <Box>{item.aprPercent.toFixed(1)} %</Box>

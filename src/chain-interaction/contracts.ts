@@ -28,8 +28,8 @@ import {
   ExternalMetadataContext,
   YieldMonitorMetadata,
 } from '../contexts/ExternalMetadataContext';
-import earnedRewards from '../constants/earned-rewards.json';
-import rewardsRewards from '../constants/rewards-rewards.json';
+// import earnedRewards from '../constants/earned-rewards.json';
+// import rewardsRewards from '../constants/rewards-rewards.json';
 
 /* eslint-disable */
 export const addresses: Record<
@@ -622,22 +622,22 @@ export type ParsedStakingMetadata = {
   totalRewards: CurrencyValue;
 };
 
-function unifyRewards(account?: string): BigNumber {
-  const lcAccount = account ? account.toLowerCase() : undefined;
-  const earned =
-    lcAccount && lcAccount in earnedRewards
-      ? BigNumber.from(earnedRewards[lcAccount as keyof typeof earnedRewards])
-      : BigNumber.from(0);
+// function unifyRewards(account?: string): BigNumber {
+//   const lcAccount = account ? account.toLowerCase() : undefined;
+//   const earned =
+//     lcAccount && lcAccount in earnedRewards
+//       ? BigNumber.from(earnedRewards[lcAccount as keyof typeof earnedRewards])
+//       : BigNumber.from(0);
 
-  const rewards =
-    lcAccount && lcAccount in rewardsRewards
-      ? BigNumber.from(rewardsRewards[lcAccount as keyof typeof rewardsRewards])
-      : BigNumber.from(0);
+//   const rewards =
+//     lcAccount && lcAccount in rewardsRewards
+//       ? BigNumber.from(rewardsRewards[lcAccount as keyof typeof rewardsRewards])
+//       : BigNumber.from(0);
 
-  // console.log('unifying', formatEther(earned), formatEther(rewards));
+//   // console.log('unifying', formatEther(earned), formatEther(rewards));
 
-  return earned.add(rewards);
-}
+//   return earned.add(rewards);
+// }
 
 export function useParsedStakingMetadata(
   stakingContracts: string[],
@@ -663,15 +663,15 @@ export function useParsedStakingMetadata(
       // console.log('unifying with earned', formatEther(earned.value));
 
       const rawTotalRewards = earned.add(rewards);
-      const totalRewards =
-        i === 0
-          ? new CurrencyValue(
-              rewardsToken,
-              rawTotalRewards.value.add(
-                rawTotalRewards.value.sub(unifyRewards(account)).mul(4)
-              )
-            )
-          : rawTotalRewards;
+      const totalRewards = rawTotalRewards;
+      // i === 0
+      //   ? new CurrencyValue(
+      //       rewardsToken,
+      //       rawTotalRewards.value.add(
+      //         rawTotalRewards.value.sub(unifyRewards(account)).mul(4)
+      //       )
+      //     )
+      //   : rawTotalRewards;
 
       const rawAprPercent = (100 * stakingMeta.aprPer10k.toNumber()) / 10000;
       const aprPercent = rawAprPercent; //i === 0 ? rawAprPercent * 5 : rawAprPercent;

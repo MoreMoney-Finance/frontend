@@ -142,7 +142,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
             <></>
           )}
           {stakeMeta.map((item, index) => {
-            const { rewards } = item;
+            const { totalRewards } = item;
             return (
               <div key={'item' + index}>
                 <AccordionItem
@@ -169,12 +169,12 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                         <Text>$ {item.tvl.format({ suffix: '' })}</Text>
                       </Box>
                       <Flex w={'full'} justifyContent={'center'}>
-                        {rewards.isZero() ? (
+                        {totalRewards.isZero() ? (
                           <Box w={'fit-content'}>
                             <TokenDescription token={item.rewardsToken} />
                           </Box>
                         ) : (
-                          rewards.format()
+                          totalRewards.format()
                         )}
                       </Flex>
                       <Box>{item.aprPercent.toFixed(1)} %</Box>

@@ -32,16 +32,22 @@ type Entity = ParsedStratMetaRow & {
 };
 
 export function AllSupportedCollateral() {
+  const hiddenTokens = new Set(['JOE', 'xJOE', 'wsMAXI', 'QI']);
   const stratMeta: ParsedStratMetaRow[] = Object.values(
     React.useContext(StrategyMetadataContext)
-  ).map((x) =>
-    Object.values(x).reduce((aggStrat, nextStrat) => ({
-      ...aggStrat,
-      APY: aggStrat.APY > nextStrat.APY ? aggStrat.APY : nextStrat.APY,
-      debtCeiling: aggStrat.debtCeiling.add(nextStrat.debtCeiling),
-      totalDebt: aggStrat.totalDebt.add(nextStrat.totalDebt),
-    }))
-  );
+  )
+    .filter(
+      (stratRows: Record<string, ParsedStratMetaRow>) =>
+        !hiddenTokens.has(Object.values(stratRows)[0].token.ticker)
+    )
+    .map((x) =>
+      Object.values(x).reduce((aggStrat, nextStrat) => ({
+        ...aggStrat,
+        APY: aggStrat.APY > nextStrat.APY ? aggStrat.APY : nextStrat.APY,
+        debtCeiling: aggStrat.debtCeiling.add(nextStrat.debtCeiling),
+        totalDebt: aggStrat.totalDebt.add(nextStrat.totalDebt),
+      }))
+    );
 
   const tokenFees = React.useContext(LiquidationFeesContext);
   const [tableTabFilter, setTableTabFilter] = React.useState<string[]>([]);
@@ -76,7 +82,7 @@ export function AllSupportedCollateral() {
         minColRatio: `${Math.round(
           (1 / (meta.borrowablePercent / 100)) * 100
         )}%`,
-        ltv: `${5 * Math.round(meta.borrowablePercent / 5)}%`, 
+        ltv: `${5 * Math.round(meta.borrowablePercent / 5)}%`,
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
         liquidationFee:
           (tokenFees.get(meta.token.address) ?? 'Loading...') + '%',
@@ -106,7 +112,7 @@ export function AllSupportedCollateral() {
       {
         Header: 'Max LTV',
         accessor: 'ltv',
-      },      
+      },
       {
         Header: 'Liquidation Fee',
         accessor: 'liquidationFee',

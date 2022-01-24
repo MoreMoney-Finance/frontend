@@ -132,7 +132,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                       variant={'primary'}
                       onclick={() => sendSpecialWithdraw(vested.value)}
                     >
-                      Claim {vested.format()}
+                      Vested {vested.format()}
                     </Button>
                   </Box>
                 </Grid>

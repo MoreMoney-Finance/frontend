@@ -3,7 +3,7 @@ import { useConfig, useEthers } from '@usedapp/core';
 import { ethers } from 'ethers';
 import * as React from 'react';
 import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useAddresses } from './chain-interaction/contracts';
 import FooterBar from './components/navigation/FooterBar';
 import GlobalDebtCeilingMessage from './components/notifications/GlobalDebtCeilingMessage';
@@ -77,6 +77,9 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
       }
     })();
   }, [active, chainId]);
+
+  const location = useLocation();
+  useEffect(() => window.scrollTo(0,0), [location]);
 
   return (
     <ChakraProvider theme={theme}>

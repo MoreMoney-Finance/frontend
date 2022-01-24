@@ -150,7 +150,9 @@ for (const [chainId, lpTokensPerChain] of Object.entries(lptokens) as [
   }
 }
 
-export function getLiquidationParams(pos: ParsedPositionMetaRow): LiquidationParams {
+export function getLiquidationParams(
+  pos: ParsedPositionMetaRow
+): LiquidationParams {
   return (
     liquidationParams.get(getAddress(pos.token.address)) ?? {
       router: exchangeRouters.JPL,

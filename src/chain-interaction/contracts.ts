@@ -21,14 +21,15 @@ import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
+import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 import {
   YYMetadata,
   ExternalMetadataContext,
   YieldMonitorMetadata,
 } from '../contexts/ExternalMetadataContext';
-import earnedRewards from '../constants/earned-rewards.json';
-import rewardsRewards from '../constants/rewards-rewards.json';
+// import earnedRewards from '../constants/earned-rewards.json';
+// import rewardsRewards from '../constants/rewards-rewards.json';
 
 /* eslint-disable */
 export const addresses: Record<
@@ -54,6 +55,8 @@ export type DeploymentAddresses = {
   DirectFlashLiquidation: string;
   LPTFlashLiquidation: string;
 
+  MoreToken: string;
+
   StableLending: string;
   StableLendingLiquidation: string;
   DirectFlashStableLiquidation: string;
@@ -61,6 +64,8 @@ export type DeploymentAddresses = {
   wsMAXIStableLiquidation: string;
   xJoeStableLiquidation: string;
   WrapNativeStableLending: string;
+
+  VestingLaunchReward: string;
 };
 
 export function useAddresses() {
@@ -79,25 +84,26 @@ export function useIsolatedLendingView(
   const addresses = useAddresses();
 
   const abi = new Interface(IsolatedLending.abi);
+
   return {
-    legacy:
-      'IsolatedLending' in addresses
-        ? (useContractCall({
-            abi,
-            address: addresses.IsolatedLending,
-            method,
-            args,
-          }) ?? [defaultResult])[0]
-        : defaultResult,
-    current:
-      'StableLending' in addresses
-        ? (useContractCall({
-            abi,
-            address: useAddresses().StableLending,
-            method,
-            args,
-          }) ?? [defaultResult])[0]
-        : defaultResult,
+    legacy: (useContractCall({
+      abi,
+      address:
+        'IsolatedLending' in addresses
+          ? addresses.IsolatedLending
+          : addresses.StableLending,
+      method,
+      args,
+    }) ?? [defaultResult])[0],
+    current: (useContractCall({
+      abi,
+      address:
+        'StableLending' in addresses
+          ? addresses.StableLending
+          : addresses.IsolatedLending,
+      method,
+      args,
+    }) ?? [defaultResult])[0],
   };
 }
 
@@ -616,22 +622,22 @@ export type ParsedStakingMetadata = {
   totalRewards: CurrencyValue;
 };
 
-function unifyRewards(account?: string): BigNumber {
-  const lcAccount = account ? account.toLowerCase() : undefined;
-  const earned =
-    lcAccount && lcAccount in earnedRewards
-      ? BigNumber.from(earnedRewards[lcAccount as keyof typeof earnedRewards])
-      : BigNumber.from(0);
+// function unifyRewards(account?: string): BigNumber {
+//   const lcAccount = account ? account.toLowerCase() : undefined;
+//   const earned =
+//     lcAccount && lcAccount in earnedRewards
+//       ? BigNumber.from(earnedRewards[lcAccount as keyof typeof earnedRewards])
+//       : BigNumber.from(0);
 
-  const rewards =
-    lcAccount && lcAccount in rewardsRewards
-      ? BigNumber.from(rewardsRewards[lcAccount as keyof typeof rewardsRewards])
-      : BigNumber.from(0);
+//   const rewards =
+//     lcAccount && lcAccount in rewardsRewards
+//       ? BigNumber.from(rewardsRewards[lcAccount as keyof typeof rewardsRewards])
+//       : BigNumber.from(0);
 
-  // console.log('unifying', formatEther(earned), formatEther(rewards));
+//   // console.log('unifying', formatEther(earned), formatEther(rewards));
 
-  return earned.add(rewards);
-}
+//   return earned.add(rewards);
+// }
 
 export function useParsedStakingMetadata(
   stakingContracts: string[],
@@ -657,18 +663,18 @@ export function useParsedStakingMetadata(
       // console.log('unifying with earned', formatEther(earned.value));
 
       const rawTotalRewards = earned.add(rewards);
-      const totalRewards =
-        i === 0
-          ? new CurrencyValue(
-              rewardsToken,
-              rawTotalRewards.value.add(
-                rawTotalRewards.value.sub(unifyRewards(account)).mul(4)
-              )
-            )
-          : rawTotalRewards;
+      const totalRewards = rawTotalRewards;
+      // i === 0
+      //   ? new CurrencyValue(
+      //       rewardsToken,
+      //       rawTotalRewards.value.add(
+      //         rawTotalRewards.value.sub(unifyRewards(account)).mul(4)
+      //       )
+      //     )
+      //   : rawTotalRewards;
 
       const rawAprPercent = (100 * stakingMeta.aprPer10k.toNumber()) / 10000;
-      const aprPercent = i === 0 ? rawAprPercent * 5 : rawAprPercent;
+      const aprPercent = rawAprPercent; //i === 0 ? rawAprPercent * 5 : rawAprPercent;
 
       return {
         stakingToken,
@@ -689,6 +695,33 @@ export function useParsedStakingMetadata(
         totalRewards,
       };
     });
+}
+
+export function useSpecialRewardsData(account: string) {
+  const addresses = useAddresses();
+  const address = addresses.VestingLaunchReward;
+  const abi = new Interface(VestingLaunchReward.abi);
+  const { chainId } = useEthers();
+  const moreToken = getTokenFromAddress(chainId, addresses.MoreToken);
+
+  const balance = (useContractCall({
+    address,
+    abi,
+    method: 'balanceOf',
+    args: [account],
+  }) ?? [BigNumber.from(0)])[0];
+
+  const vested = (useContractCall({
+    address,
+    abi,
+    method: 'burnableByAccount',
+    args: [account],
+  }) ?? [BigNumber.from(0)])[0];
+
+  return {
+    balance: new CurrencyValue(moreToken, balance),
+    vested: new CurrencyValue(moreToken, vested),
+  };
 }
 
 function timestamp2Date(tstamp: BigNumber) {

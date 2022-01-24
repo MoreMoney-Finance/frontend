@@ -44,7 +44,6 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
     account ?? ethers.constants.AddressZero
   );
   const { send: sendSpecialWithdraw } = useWithdrawLaunchVestingTrans();
-  console.log('specialRewards', balance, vested); // ethers.utils.formatEther(balance), ethers.utils.formatEther(vested));
 
   const farmInfoIdx = (chainId?.toString() ?? '43114') as keyof typeof farminfo;
   const getLPTokenLinks = [
@@ -130,9 +129,12 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                     <Button
                       color={'white'}
                       variant={'primary'}
-                      onclick={() => sendSpecialWithdraw(vested.value)}
+                      onClick={() => {
+                        console.log(`Claiming vested`, vested.format());
+                        sendSpecialWithdraw(vested.value);
+                      }}
                     >
-                      Vested {vested.format()}
+                      {vested.format({suffix: ''})} Vested
                     </Button>
                   </Box>
                 </Grid>

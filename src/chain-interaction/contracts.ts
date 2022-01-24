@@ -704,8 +704,6 @@ export function useSpecialRewardsData(account: string) {
   const { chainId } = useEthers();
   const moreToken = getTokenFromAddress(chainId, addresses.MoreToken);
 
-  console.log(`VLR address:`, address, account, chainId);
-
   const balance = (useContractCall({
     address,
     abi,

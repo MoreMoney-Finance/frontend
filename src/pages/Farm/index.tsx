@@ -111,9 +111,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                   verticalAlign={'center'}
                 >
                   <Flex w={'full'} justifyContent={'center'}>
-                    <Box w={'fit-content'}>
-                      Special Launch Rewards
-                    </Box>
+                    <Box w={'fit-content'}>Special Launch Rewards</Box>
                   </Flex>
                   <Box>
                     <Text>n/a</Text>
@@ -126,16 +124,20 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                   </Flex>
                   <Box>n/a</Box>
                   <Box>
-                    <Button
-                      color={'white'}
-                      variant={'primary'}
-                      onClick={() => {
-                        console.log(`Claiming vested`, vested.format());
-                        sendSpecialWithdraw(vested.value);
-                      }}
-                    >
-                      {vested.format({suffix: ''})} Vested
-                    </Button>
+                    {false ? (
+                      <Button
+                        color={'white'}
+                        variant={'primary'}
+                        onClick={() => {
+                          console.log(`Claiming vested`, vested.format());
+                          sendSpecialWithdraw(vested.value);
+                        }}
+                      >
+                        {vested.format({ suffix: '' })} Vested
+                      </Button>
+                    ) : (
+                      <Text>Vesting starts in a few hours</Text>
+                    )}
                   </Box>
                 </Grid>
               </AccordionButton>

@@ -20,8 +20,17 @@ export default function ClaimReward({
   console.log(buttonDisabled);
 
   const timeDelta = (Date.now() - stakeMeta.vestingStart.getTime()) / 1000;
-  
-  const vested = parseFloatNoNaN(stakeMeta.rewards.format({suffix: '', thousandSeparator: '', decimalSeparator: '.'})) * timeDelta / (90 * 24 * 60 * 60);
+
+  const vested =
+    (parseFloatNoNaN(
+      stakeMeta.rewards.format({
+        suffix: '',
+        thousandSeparator: '',
+        decimalSeparator: '.',
+      })
+    ) *
+      timeDelta) /
+    (90 * 24 * 60 * 60);
 
   return (
     <VStack
@@ -34,17 +43,17 @@ export default function ClaimReward({
       <Text>Vested Reward</Text>
       <HStack textAlign={'center'}>
         <Avatar size={'sm'} src={getIconsFromTokenAddress(token.address)[0]} />
-        <Text>
-          {
-            vested.toFixed(2)
-          } MORE
-        </Text>
+        <Text>{vested.toFixed(2)} MORE</Text>
       </HStack>
-      <Button isDisabled={true} type="submit" w={'50%'} onClick={sendClaim}>
+      <Button
+        isDisabled={stakeMeta.earned.add(stakeMeta.rewards).isZero()}
+        type="submit"
+        w={'50%'}
+        onClick={sendClaim}
+      >
         {stakeMeta.earned.gt(stakeMeta.rewards.mul(2))
           ? 'Init vesting'
-          : 'Claim'
-        }
+          : 'Claim'}
       </Button>
       <TransactionErrorDialog state={claimState} title={'Claim Reward'} />
     </VStack>

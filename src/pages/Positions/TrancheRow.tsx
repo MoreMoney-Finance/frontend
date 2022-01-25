@@ -55,7 +55,13 @@ export function TrancheRow(
           : totalPercentage > healthyZone
             ? 'green'
             : 'accent';
-
+  const positionHealth = {
+    accent: 'Safe',
+    green: 'Healthy',
+    orange: 'Risky',
+    red: 'Critical',
+    button: 'Liquidatable',
+  };
   // const location = useLocation();
   // const details = location.search?.includes('details=true');
 
@@ -95,6 +101,17 @@ export function TrancheRow(
         to={`/token/${params.token.address}`}
         display="table-row"
       >
+        <Td>
+          <Text
+            color={
+              positionHealthColor == 'accent'
+                ? 'accent_color'
+                : positionHealthColor
+            }
+          >
+            {positionHealth[positionHealthColor]}
+          </Text>
+        </Td>
         <Td>
           <TokenDescription token={token} />
         </Td>

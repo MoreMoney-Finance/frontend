@@ -1,4 +1,4 @@
-import { Button, Td, Text, Tr } from '@chakra-ui/react';
+import { Button, Flex, Progress, Td, Text, Tr } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import React from 'react';
@@ -33,21 +33,29 @@ export function TrancheRow(
       ? (100 * parseFloatNoNaN(totalDebt.toString())) /
         (parseFloatNoNaN(totalCollateral.toString()) * usdPrice)
       : 0;
-  const greenZone = (33.33 * borrowablePercent) / 100;
-  const yellowZone = (66.66 * borrowablePercent) / 100;
+
+  // Of borrowable
+  // >90%: Critical,
+  // >80%: Risky,
+  // >50% Health,
+  //otherwise Safe -- if the health is worse than 100% --- Liquidatable
+
+  const liquidatableZone = borrowablePercent;
+  const criticalZone = (90 * borrowablePercent) / 100;
+  const riskyZone = (80 * borrowablePercent) / 100;
+  const healthyZone = (50 * borrowablePercent) / 100;
 
   const positionHealthColor =
-    totalPercentage < greenZone
-      ? 'accent_color'
-      : totalPercentage < yellowZone
-        ? 'green'
-        : 'red';
+    totalPercentage > liquidatableZone
+      ? 'button'
+      : totalPercentage > criticalZone
+        ? 'red'
+        : totalPercentage > riskyZone
+          ? 'orange'
+          : totalPercentage > healthyZone
+            ? 'green'
+            : 'accent';
 
-  const positionHealth = {
-    accent_color: 'Safe',
-    green: 'Healthy',
-    red: 'Critical',
-  };
   // const location = useLocation();
   // const details = location.search?.includes('details=true');
 
@@ -88,16 +96,34 @@ export function TrancheRow(
         display="table-row"
       >
         <Td>
-          <Text color={positionHealthColor}>
-            {positionHealth[positionHealthColor]}
-          </Text>
-        </Td>
-
-        <Td>
           <TokenDescription token={token} />
         </Td>
 
-        <Td>{stratLabel}</Td>
+        <Td>
+          {stratLabel}
+          <Flex
+            position="absolute"
+            width="600px"
+            top="0"
+            bottom="0"
+            marginTop="50px"
+            zIndex="full"
+            display="flex"
+            alignItems={'center'}
+          >
+            <Text flex={3} variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
+              Position Health &nbsp; {totalPercentage.toFixed(2)}%
+            </Text>
+            <Progress
+              width={'100%'}
+              flex={9}
+              hasStripe
+              isAnimated={true}
+              value={totalPercentage}
+              colorScheme={positionHealthColor}
+            />
+          </Flex>
+        </Td>
 
         <Td>{APY.toFixed(2)}%</Td>
 

@@ -22,7 +22,6 @@ export function TrancheTable({
     <Table variant="dashboard" width="auto">
       <Thead>
         <Tr>
-          <Td>Position Health</Td>
           <Td>Asset</Td>
           <Td>Strategy</Td>
           <Td>APY</Td>
@@ -35,7 +34,7 @@ export function TrancheTable({
       </Thead>
 
       <Tbody>
-        {positions.map((posMeta, i) => {
+        {[...positions, ...positions].map((posMeta, i) => {
           const stratMeta = allStratMeta[posMeta.token.address];
           const data = { ...posMeta, ...stratMeta[posMeta.strategy] };
           if (posMeta.collateralValue.isZero()) {

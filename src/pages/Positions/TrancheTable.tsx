@@ -34,7 +34,7 @@ export function TrancheTable({
       </Thead>
 
       <Tbody>
-        {[...positions, ...positions].map((posMeta, i) => {
+        {positions.map((posMeta, i) => {
           const stratMeta = allStratMeta[posMeta.token.address];
           const data = { ...posMeta, ...stratMeta[posMeta.strategy] };
           if (posMeta.collateralValue.isZero()) {

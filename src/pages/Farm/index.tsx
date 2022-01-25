@@ -124,20 +124,16 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                   </Flex>
                   <Box>n/a</Box>
                   <Box>
-                    {false ? (
-                      <Button
-                        color={'white'}
-                        variant={'primary'}
-                        onClick={() => {
-                          console.log(`Claiming vested`, vested.format());
-                          sendSpecialWithdraw(vested.value);
-                        }}
-                      >
-                        {vested.format({ suffix: '' })} Vested
-                      </Button>
-                    ) : (
-                      <Text>Vesting starts in a few hours</Text>
-                    )}
+                    <Button
+                      color={'white'}
+                      variant={'primary'}
+                      onClick={() => {
+                        console.log(`Claiming vested`, vested.format());
+                        sendSpecialWithdraw(vested.value);
+                      }}
+                    >
+                      {vested.format({ suffix: '' })} Vested
+                    </Button>
                   </Box>
                 </Grid>
               </AccordionButton>

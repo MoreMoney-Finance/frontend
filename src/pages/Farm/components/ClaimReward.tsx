@@ -5,6 +5,7 @@ import { ParsedStakingMetadata } from '../../../chain-interaction/contracts';
 import { getIconsFromTokenAddress } from '../../../chain-interaction/tokens';
 import { useClaimReward } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
+import { parseFloatNoNaN } from '../../../utils';
 
 export default function ClaimReward({
   token,
@@ -16,6 +17,20 @@ export default function ClaimReward({
   const { sendClaim, claimState } = useClaimReward();
 
   const buttonDisabled = stakeMeta?.vested?.isZero();
+  console.log(buttonDisabled);
+
+  const timeDelta = (Date.now() - stakeMeta.vestingStart.getTime()) / 1000;
+
+  const vested =
+    (parseFloatNoNaN(
+      stakeMeta.rewards.format({
+        suffix: '',
+        thousandSeparator: '',
+        decimalSeparator: '.',
+      })
+    ) *
+      timeDelta) /
+    (60 * 24 * 60 * 60);
 
   return (
     <VStack
@@ -28,15 +43,17 @@ export default function ClaimReward({
       <Text>Vested Reward</Text>
       <HStack textAlign={'center'}>
         <Avatar size={'sm'} src={getIconsFromTokenAddress(token.address)[0]} />
-        <Text>&nbsp; {stakeMeta.vested.format({})}</Text>
+        <Text>{vested.toFixed(2)} MORE</Text>
       </HStack>
       <Button
-        isDisabled={buttonDisabled}
+        isDisabled={stakeMeta.earned.add(stakeMeta.rewards).isZero()}
         type="submit"
         w={'50%'}
         onClick={sendClaim}
       >
-        Claim
+        {stakeMeta.earned.gt(stakeMeta.rewards.mul(2))
+          ? 'Init vesting'
+          : 'Claim'}
       </Button>
       <TransactionErrorDialog state={claimState} title={'Claim Reward'} />
     </VStack>

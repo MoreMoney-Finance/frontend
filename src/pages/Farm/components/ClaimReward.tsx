@@ -30,7 +30,7 @@ export default function ClaimReward({
       })
     ) *
       timeDelta) /
-    (90 * 24 * 60 * 60);
+    (60 * 24 * 60 * 60);
 
   return (
     <VStack

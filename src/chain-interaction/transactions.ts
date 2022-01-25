@@ -86,9 +86,9 @@ export function useNativeDepositBorrowTrans(
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    lendingAddress ??
-      addresses.WrapNativeStableLending ??
-      addresses.WrapNativeIsolatedLending,
+    lendingAddress === addresses.IsolatedLending
+      ? addresses.WrapNativeIsolatedLending
+      : addresses.WrapNativeStableLending,
     new Interface(WrapNativeIsolatedLending.abi)
   );
   const { send, state } = useContractFunction(
@@ -125,9 +125,9 @@ export function useNativeRepayWithdrawTrans(
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    lendingAddress ??
-      addresses.WrapNativeStableLending ??
-      addresses.WrapNativeIsolatedLending,
+    lendingAddress === addresses.IsolatedLending
+      ? addresses.WrapNativeIsolatedLending
+      : addresses.WrapNativeStableLending,
     new Interface(WrapNativeIsolatedLending.abi)
   );
 
@@ -161,7 +161,9 @@ export function useDepositBorrowTrans(
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    lendingAddress ?? addresses.StableLending ?? addresses.IsolatedLending,
+    lendingAddress === addresses.IsolatedLending
+      ? addresses.IsolatedLending
+      : addresses.StableLending,
     new Interface(IsolatedLending.abi)
   );
   const { send, state } = useContractFunction(
@@ -218,7 +220,9 @@ export function useRepayWithdrawTrans(
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    lendingAddress ?? addresses.StableLending ?? addresses.IsolatedLending,
+    lendingAddress === addresses.IsolatedLending
+      ? addresses.IsolatedLending
+      : addresses.StableLending,
     new Interface(IsolatedLending.abi)
   );
 

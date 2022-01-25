@@ -86,7 +86,7 @@ export default function DepositBorrow({
 
   const { sendDepositBorrow, depositBorrowState } = useDepositBorrowTrans(
     position ? position.trancheId : undefined,
-    position ? position.trancheContract : undefined
+    position ? position.trancheContract : undefined,
   );
   const {
     sendDepositBorrow: sendNativeDepositBorrow,

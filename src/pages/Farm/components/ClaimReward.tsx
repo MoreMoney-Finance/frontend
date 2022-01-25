@@ -29,18 +29,14 @@ export default function ClaimReward({
       <Text>Vested Reward</Text>
       <HStack textAlign={'center'}>
         <Avatar size={'sm'} src={getIconsFromTokenAddress(token.address)[0]} />
-        <Text>0 MORE {
-        
-        // stakeMeta.vested.format({})
-        
-        }</Text>
+        <Text>
+          0 MORE{' '}
+          {
+            // stakeMeta.vested.format({})
+          }
+        </Text>
       </HStack>
-      <Button
-        isDisabled={true}
-        type="submit"
-        w={'50%'}
-        onClick={sendClaim}
-      >
+      <Button isDisabled={true} type="submit" w={'50%'} onClick={sendClaim}>
         Claim
       </Button>
       <TransactionErrorDialog state={claimState} title={'Claim Reward'} />

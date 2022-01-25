@@ -333,6 +333,7 @@ export const theme = extendTheme({
   colors: {
     white: 'hsl(0, 0%, 100%)',
     black: 'hsl(0,0%,0%)',
+    accent_color: 'hsla(166, 100%, 46%, 1)',
     brand: {
       bg: 'hsla(227, 12%, 15%, 1)',
       bgOpacity: 'hsla(0, 0%, 0%, 0.2)',

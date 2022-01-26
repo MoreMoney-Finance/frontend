@@ -108,15 +108,15 @@ export default function DepositBorrow({
       sendNativeDepositBorrow(
         token,
         strategyAddress,
-        data!['collateral-deposit'],
-        data!['money-borrow']
+        data!['collateral-deposit'] ?? '0',
+        data!['money-borrow'] ?? '0'
       );
     } else {
       sendDepositBorrow(
         token,
         strategyAddress,
-        data!['collateral-deposit'],
-        data!['money-borrow']
+        data!['collateral-deposit'] ?? '0',
+        data!['money-borrow'] ?? '0'
       );
     }
   }

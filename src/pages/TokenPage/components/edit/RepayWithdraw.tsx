@@ -88,11 +88,11 @@ export default function RepayWithdraw({
   function repayWithdraw() {
     if (isNativeToken) {
       sendNativeRepayWithdraw(
-        data!['collateral-withdraw'],
-        data!['money-repay']
+        data!['collateral-withdraw'] ?? '0',
+        data!['money-repay'] ?? '0'
       );
     } else {
-      sendRepayWithdraw(data!['collateral-withdraw'], data!['money-repay']);
+      sendRepayWithdraw(data!['collateral-withdraw'] ?? '0', data!['money-repay'] ?? '0');
     }
   }
 

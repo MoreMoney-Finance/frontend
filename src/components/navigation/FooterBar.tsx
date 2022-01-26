@@ -13,7 +13,7 @@ const Links = [
   { title: 'Swap MONEY', link: 'https://avax.curve.fi/factory/39' },
   {
     title: 'MORE Pool',
-    link: 'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05'
+    link: 'https://traderjoexyz.com/trade?inputCurrency=AVAX&outputCurrency=0xd9d90f882cddd6063959a9d837b05cb748718a05'
   },
   { title: 'Documentation', link: 'https://moremoney.gitbook.io/docs' }
 ];

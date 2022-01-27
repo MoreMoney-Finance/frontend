@@ -11,7 +11,7 @@ import {
   YieldType,
 } from '../../chain-interaction/contracts';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
-import { parseFloatNoNaN } from '../../utils';
+import { parseFloatCurrencyValue } from '../../utils';
 import { TrancheAction } from './TrancheTable';
 
 export function TrancheRow(
@@ -19,15 +19,7 @@ export function TrancheRow(
     ParsedStratMetaRow & ParsedPositionMetaRow & { action?: TrancheAction }
   >
 ) {
-  const {
-    token,
-    APY,
-    action,
-    borrowablePercent,
-    collateralValue,
-    totalDebt,
-    usdPrice,
-  } = params;
+  const { token, APY, action, borrowablePercent, usdPrice } = params;
 
   // const location = useLocation();
   // const details = location.search?.includes('details=true');
@@ -60,9 +52,9 @@ export function TrancheRow(
   const stratLabel =
     params.yieldType === YieldType.REPAYING ? 'Self-repaying' : 'Compounding';
   const totalPercentage =
-    parseFloatNoNaN(collateralValue.toString()) > 0 && usdPrice > 0
-      ? (100 * parseFloatNoNaN(totalDebt.toString())) /
-        (parseFloatNoNaN(collateralValue.toString()) * usdPrice)
+    parseFloatCurrencyValue(collateral) > 0 && usdPrice > 0
+      ? (100 * parseFloatCurrencyValue(debt)) /
+        (parseFloatCurrencyValue(collateral) * usdPrice)
       : 0;
   const liquidatableZone = borrowablePercent;
   const criticalZone = (90 * borrowablePercent) / 100;

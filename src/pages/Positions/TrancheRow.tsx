@@ -68,7 +68,8 @@ export function TrancheRow(
   const criticalZone = (90 * borrowablePercent) / 100;
   const riskyZone = (80 * borrowablePercent) / 100;
   const healthyZone = (50 * borrowablePercent) / 100;
-  const positionHealthColor = totalDebt.value.lt(parseEther('0.1'))
+
+  const positionHealthColor = debt.value.lt(parseEther('0.1'))
     ? 'accent'
     : totalPercentage > liquidatableZone
       ? 'purple.400'

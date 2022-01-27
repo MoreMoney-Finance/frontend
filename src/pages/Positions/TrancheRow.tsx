@@ -7,9 +7,10 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   useStable,
-  YieldType
+  YieldType,
 } from '../../chain-interaction/contracts';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
+import { parseFloatNoNaN } from '../../utils';
 import { TrancheAction } from './TrancheTable';
 
 export function TrancheRow(
@@ -17,7 +18,15 @@ export function TrancheRow(
     ParsedStratMetaRow & ParsedPositionMetaRow & { action?: TrancheAction }
   >
 ) {
-  const { token, APY, action } = params;
+  const {
+    token,
+    APY,
+    action,
+    borrowablePercent,
+    totalCollateral,
+    totalDebt,
+    usdPrice,
+  } = params;
 
   // const location = useLocation();
   // const details = location.search?.includes('details=true');
@@ -49,6 +58,32 @@ export function TrancheRow(
 
   const stratLabel =
     params.yieldType === YieldType.REPAYING ? 'Self-repaying' : 'Compounding';
+  const totalPercentage =
+    parseFloatNoNaN(totalCollateral.toString()) > 0 && usdPrice > 0
+      ? (100 * parseFloatNoNaN(totalDebt.toString())) /
+        (parseFloatNoNaN(totalCollateral.toString()) * usdPrice)
+      : 0;
+  const liquidatableZone = borrowablePercent;
+  const criticalZone = (90 * borrowablePercent) / 100;
+  const riskyZone = (80 * borrowablePercent) / 100;
+  const healthyZone = (50 * borrowablePercent) / 100;
+  const positionHealthColor =
+    totalPercentage > liquidatableZone
+      ? 'button'
+      : totalPercentage > criticalZone
+        ? 'red'
+        : totalPercentage > riskyZone
+          ? 'orange'
+          : totalPercentage > healthyZone
+            ? 'green'
+            : 'accent';
+  const positionHealth = {
+    accent: 'Safe',
+    green: 'Healthy',
+    orange: 'Risky',
+    red: 'Critical',
+    button: 'Liquidatable',
+  };
 
   return (
     <>
@@ -58,6 +93,17 @@ export function TrancheRow(
         to={`/token/${params.token.address}`}
         display="table-row"
       >
+        <Td>
+          <Text
+            color={
+              positionHealthColor == 'accent'
+                ? 'accent_color'
+                : positionHealthColor
+            }
+          >
+            {positionHealth[positionHealthColor]}
+          </Text>
+        </Td>
         <Td>
           <TokenDescription token={token} />
         </Td>

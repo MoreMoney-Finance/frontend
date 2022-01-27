@@ -22,6 +22,7 @@ export function TrancheTable({
     <Table variant="dashboard" width="auto">
       <Thead>
         <Tr>
+          <Td>Position Health</Td>
           <Td>Asset</Td>
           <Td>Strategy</Td>
           <Td>APY</Td>

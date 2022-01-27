@@ -1,4 +1,5 @@
 import { Button, Td, Text, Tr } from '@chakra-ui/react';
+import { parseEther } from '@ethersproject/units';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import React from 'react';
@@ -67,18 +68,17 @@ export function TrancheRow(
   const criticalZone = (90 * borrowablePercent) / 100;
   const riskyZone = (80 * borrowablePercent) / 100;
   const healthyZone = (50 * borrowablePercent) / 100;
-  const positionHealthColor =
-    totalDebt.value.toNumber() === 0
-      ? 'accent'
-      : totalPercentage > liquidatableZone
-        ? 'purple.400'
-        : totalPercentage > criticalZone
-          ? 'red'
-          : totalPercentage > riskyZone
-            ? 'orange'
-            : totalPercentage > healthyZone
-              ? 'green'
-              : 'accent';
+  const positionHealthColor = totalDebt.value.lt(parseEther('0.1'))
+    ? 'accent'
+    : totalPercentage > liquidatableZone
+      ? 'purple.400'
+      : totalPercentage > criticalZone
+        ? 'red'
+        : totalPercentage > riskyZone
+          ? 'orange'
+          : totalPercentage > healthyZone
+            ? 'green'
+            : 'accent';
   const positionHealth = {
     accent: 'Safe',
     green: 'Healthy',

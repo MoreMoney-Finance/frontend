@@ -321,6 +321,64 @@ const Table = {
         },
       },
     },
+    positions: {
+      table: {
+        width: '100%',
+        borderCollapse: 'separate',
+        borderSpacing: '0 16px',
+      },
+      thead: {
+        tr: {
+          td: {
+            fontFamily: 'Rubik',
+            fontSize: '12px',
+            lineHeight: '14px',
+            color: 'whiteAlpha.400',
+            textTransform: 'uppercase',
+            paddingTop: '20px',
+            paddingBottom: '8px',
+            borderTop: '1px solid',
+          },
+        },
+        _first: {
+          transform: 'translateY(16px)',
+        },
+      },
+      tbody: {
+        /** Because the table uses tr as a link */
+        a: {
+          position: 'relative',
+          _after: {
+            content: '""',
+            position: 'absolute',
+            borderRadius: '10px',
+            boxSizing: 'border-box',
+            border: '1px solid transparent',
+            backgroundClip: 'padding-box, border-box',
+            backgroundOrigin: 'padding-box, border-box',
+            backgroundImage:
+              'linear-gradient(hsla(227, 12%, 15%, 1), hsla(227, 12%, 15%, 1)), linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
+            top: '0',
+            left: '0',
+            bottom: '0',
+            right: '0',
+            zIndex: 'var(--chakra-zIndices-hide)',
+          },
+          td: {
+            fontSize: '18px',
+            lineHeight: '27px',
+            padding: '46px 30px',
+            bg: 'whiteAlpha.30',
+            _first: {
+              borderLeftRadius: '10px',
+            },
+            _last: {
+              borderRightRadius: '10px',
+            },
+          },
+        },
+      },
+    },
   },
 };
 

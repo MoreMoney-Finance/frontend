@@ -115,32 +115,29 @@ export function TrancheRow(
         <Td>
           <TokenDescription token={token} />
         </Td>
-
-        <Td>
-          {stratLabel}
-          <Flex
-            position="absolute"
-            width="600px"
-            top="0"
-            bottom="0"
-            marginTop="50px"
-            zIndex="full"
-            display="flex"
-            alignItems={'center'}
-          >
-            <Text flex={3} variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-              Position Health &nbsp; {totalPercentage.toFixed(2)}%
-            </Text>
-            <Progress
-              width={'100%'}
-              flex={9}
-              hasStripe
-              isAnimated={true}
-              value={totalPercentage}
-              colorScheme={positionHealthColor}
-            />
-          </Flex>
-        </Td>
+        <Flex
+          position="absolute"
+          width="600px"
+          top="0"
+          bottom="0"
+          marginTop="90px"
+          zIndex="full"
+          display="flex"
+          alignItems={'center'}
+        >
+          <Text flex={3} variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
+            Position Health &nbsp; {totalPercentage.toFixed(2)}%
+          </Text>
+          <Progress
+            width={'100%'}
+            flex={9}
+            hasStripe
+            isAnimated={true}
+            value={totalPercentage}
+            colorScheme={positionHealthColor}
+          />
+        </Flex>
+        <Td>{stratLabel}</Td>
 
         <Td>{APY.toFixed(2)}%</Td>
 

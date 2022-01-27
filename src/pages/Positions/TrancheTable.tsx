@@ -19,7 +19,7 @@ export function TrancheTable({
   const allStratMeta = React.useContext(StrategyMetadataContext);
 
   return (
-    <Table variant="dashboard" width="auto">
+    <Table variant="positions" width="auto">
       <Thead>
         <Tr>
           <Td>Asset</Td>

@@ -23,7 +23,7 @@ export function TrancheRow(
     APY,
     action,
     borrowablePercent,
-    totalCollateral,
+    collateralValue,
     totalDebt,
     usdPrice,
   } = params;
@@ -59,9 +59,9 @@ export function TrancheRow(
   const stratLabel =
     params.yieldType === YieldType.REPAYING ? 'Self-repaying' : 'Compounding';
   const totalPercentage =
-    parseFloatNoNaN(totalCollateral.toString()) > 0 && usdPrice > 0
+    parseFloatNoNaN(collateralValue.toString()) > 0 && usdPrice > 0
       ? (100 * parseFloatNoNaN(totalDebt.toString())) /
-        (parseFloatNoNaN(totalCollateral.toString()) * usdPrice)
+        (parseFloatNoNaN(collateralValue.toString()) * usdPrice)
       : 0;
   const liquidatableZone = borrowablePercent;
   const criticalZone = (90 * borrowablePercent) / 100;

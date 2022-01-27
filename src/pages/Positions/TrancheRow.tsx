@@ -68,15 +68,17 @@ export function TrancheRow(
   const riskyZone = (80 * borrowablePercent) / 100;
   const healthyZone = (50 * borrowablePercent) / 100;
   const positionHealthColor =
-    totalPercentage > liquidatableZone
-      ? 'purple.400'
-      : totalPercentage > criticalZone
-        ? 'red'
-        : totalPercentage > riskyZone
-          ? 'orange'
-          : totalPercentage > healthyZone
-            ? 'green'
-            : 'accent';
+    totalDebt.value.toNumber() === 0
+      ? 'accent'
+      : totalPercentage > liquidatableZone
+        ? 'purple.400'
+        : totalPercentage > criticalZone
+          ? 'red'
+          : totalPercentage > riskyZone
+            ? 'orange'
+            : totalPercentage > healthyZone
+              ? 'green'
+              : 'accent';
   const positionHealth = {
     accent: 'Safe',
     green: 'Healthy',

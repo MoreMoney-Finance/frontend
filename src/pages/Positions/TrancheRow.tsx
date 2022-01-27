@@ -69,7 +69,7 @@ export function TrancheRow(
   const healthyZone = (50 * borrowablePercent) / 100;
   const positionHealthColor =
     totalPercentage > liquidatableZone
-      ? 'button'
+      ? 'purple.400'
       : totalPercentage > criticalZone
         ? 'red'
         : totalPercentage > riskyZone
@@ -82,7 +82,7 @@ export function TrancheRow(
     green: 'Healthy',
     orange: 'Risky',
     red: 'Critical',
-    button: 'Liquidatable',
+    ['purple.400']: 'Liquidatable',
   };
 
   return (

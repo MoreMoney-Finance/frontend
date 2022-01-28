@@ -8,7 +8,10 @@ import {
   useContractCalls,
   useEthers,
 } from '@usedapp/core';
-import { formatEther } from '@usedapp/core/node_modules/@ethersproject/units';
+import {
+  formatEther,
+  parseEther,
+} from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber, ethers } from 'ethers';
 import { getAddress, Interface, parseBytes32String } from 'ethers/lib/utils';
 import { useContext } from 'react';
@@ -66,6 +69,8 @@ export type DeploymentAddresses = {
   WrapNativeStableLending: string;
 
   VestingLaunchReward: string;
+
+  CurvePoolSL: string;
 };
 
 export function useAddresses() {
@@ -726,4 +731,9 @@ export function useSpecialRewardsData(account: string) {
 
 function timestamp2Date(tstamp: BigNumber) {
   return new Date(tstamp.toNumber() * 1000);
+}
+
+export function useCurvePoolSLDeposited() {
+  // const address = useAddresses().CurvePoolSL;
+  return parseEther('2240893.705535866887471228');
 }

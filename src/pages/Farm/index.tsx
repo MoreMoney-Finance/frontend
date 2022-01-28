@@ -189,7 +189,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                       color={'white'}
                       variant={'primary'}
                     >
-                      Stake
+                      Get LP Token
                       <ExternalLinkIcon />
                     </Button>
                     <Button
@@ -202,7 +202,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                       variant={'primary'}
                       marginTop={'8px'}
                     >
-                      Get LP Token &nbsp;
+                      Stake LP Token
                       <ExternalLinkIcon />
                     </Button>
                   </Flex>

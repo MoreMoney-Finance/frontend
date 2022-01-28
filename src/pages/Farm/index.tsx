@@ -11,23 +11,24 @@ import {
   Grid,
   GridItem,
   Link,
-  Text,
+  Text
 } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
 import {
   ParsedStakingMetadata,
   useAddresses,
   useParsedStakingMetadata,
-  useSpecialRewardsData,
+  useSpecialRewardsData
 } from '../../chain-interaction/contracts';
 import { useWithdrawLaunchVestingTrans } from '../../chain-interaction/transactions';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { ExternalMetadataContext } from '../../contexts/ExternalMetadataContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import farminfo from '../../contracts/farminfo.json';
+import { formatNumber } from '../../utils';
 import ClaimReward from './components/ClaimReward';
 import DepositForm from './components/DepositForm';
 import WithdrawForm from './components/WithdrawForm';
@@ -176,16 +177,14 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                     </Box>
 
                     <Box>
-                      <Text>
-                        ${BigNumber.from(avaxMorePayload.tvl).toString()}
-                      </Text>
+                      <Text>${formatNumber(avaxMorePayload.tvl)}</Text>
                     </Box>
 
                     <Flex w={'full'} justifyContent={'center'}>
                       {avaxMorePayload.rewardsCoin}
                     </Flex>
 
-                    <Box>{avaxMorePayload.totalApy.toString()} %</Box>
+                    <Box>{formatNumber(avaxMorePayload.totalApy)} %</Box>
 
                     <Box>
                       <Button

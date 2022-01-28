@@ -41,7 +41,7 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
     'IsolatedLendingLiquidation',
     'StableLendingLiquidation',
   ];
-  const blacklist = ['StrategyRegistry', 'StrategyTokenActivation'];
+  const blacklist = ['StrategyRegistry', 'StrategyTokenActivation', 'StrategyViewer'];
   const keys: (keyof DeploymentAddresses)[] = Object.keys(
     addresses
   ) as (keyof DeploymentAddresses)[];

@@ -11,7 +11,7 @@ import {
   Grid,
   GridItem,
   Link,
-  Text
+  Text,
 } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import { ethers } from 'ethers';
@@ -21,7 +21,7 @@ import {
   ParsedStakingMetadata,
   useAddresses,
   useParsedStakingMetadata,
-  useSpecialRewardsData
+  useSpecialRewardsData,
 } from '../../chain-interaction/contracts';
 import { useWithdrawLaunchVestingTrans } from '../../chain-interaction/transactions';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
@@ -153,56 +153,61 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
               width={'full'}
               style={{ boxSizing: 'border-box', ...accordionStyling }}
             >
-              <Link
-                href={
-                  'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm'
-                }
-                color="white"
-                isExternal
-              >
-                <AccordionButton width={'full'} color={'white'}>
-                  <Grid
-                    templateColumns="repeat(6, 1fr)"
-                    gap={2}
-                    w={'full'}
-                    alignContent={'center'}
-                    verticalAlign={'center'}
-                  >
-                    <Flex w={'full'} justifyContent={'center'}>
-                      <Box w={'fit-content'}>MORE-AVAX</Box>
-                    </Flex>
+              <AccordionButton width={'full'} color={'white'}>
+                <Grid
+                  templateColumns="repeat(6, 1fr)"
+                  gap={2}
+                  w={'full'}
+                  alignContent={'center'}
+                  verticalAlign={'center'}
+                >
+                  <Flex w={'full'} justifyContent={'center'}>
+                    <Box w={'fit-content'}>MORE-AVAX</Box>
+                  </Flex>
 
-                    <Box>
-                      <Text>n/a</Text>
-                    </Box>
+                  <Box>
+                    <Text>n/a</Text>
+                  </Box>
 
-                    <Box>
-                      <Text>${formatNumber(avaxMorePayload.tvl)}</Text>
-                    </Box>
+                  <Box>
+                    <Text>${formatNumber(avaxMorePayload.tvl)}</Text>
+                  </Box>
 
-                    <Flex w={'full'} justifyContent={'center'}>
-                      {avaxMorePayload.rewardsCoin}
-                    </Flex>
+                  <Flex w={'full'} justifyContent={'center'}>
+                    {avaxMorePayload.rewardsCoin}
+                  </Flex>
 
-                    <Box>{formatNumber(avaxMorePayload.totalApy)} %</Box>
+                  <Box>{formatNumber(avaxMorePayload.totalApy)} %</Box>
 
-                    <Box>
-                      <Button
-                        as={Link}
-                        href={
-                          'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05'
-                        }
-                        isExternal
-                        color={'white'}
-                        variant={'primary'}
-                      >
-                        Get LP Token &nbsp;
-                        <ExternalLinkIcon />
-                      </Button>
-                    </Box>
-                  </Grid>
-                </AccordionButton>
-              </Link>
+                  <Flex flexDirection={'column'}>
+                    <Button
+                      as={Link}
+                      href={
+                        'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm'
+                      }
+                      isExternal
+                      color={'white'}
+                      variant={'primary'}
+                    >
+                      Stake
+                      <ExternalLinkIcon />
+                    </Button>
+                    <Button
+                      as={Link}
+                      href={
+                        'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05'
+                      }
+                      isExternal
+                      color={'white'}
+                      variant={'primary'}
+                      marginTop={'8px'}
+                    >
+                      Get LP Token &nbsp;
+                      <ExternalLinkIcon />
+                    </Button>
+                  </Flex>
+                </Grid>
+              </AccordionButton>
             </AccordionItem>
           ) : (
             <></>

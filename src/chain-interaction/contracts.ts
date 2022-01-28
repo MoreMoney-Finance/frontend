@@ -8,7 +8,10 @@ import {
   useContractCalls,
   useEthers,
 } from '@usedapp/core';
-import { formatEther } from '@usedapp/core/node_modules/@ethersproject/units';
+import {
+  formatEther,
+  parseEther,
+} from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber, ethers } from 'ethers';
 import { getAddress, Interface, parseBytes32String } from 'ethers/lib/utils';
 import { useContext } from 'react';
@@ -28,6 +31,9 @@ import {
   ExternalMetadataContext,
   YieldMonitorMetadata,
 } from '../contexts/ExternalMetadataContext';
+import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
+
+
 // import earnedRewards from '../constants/earned-rewards.json';
 // import rewardsRewards from '../constants/rewards-rewards.json';
 
@@ -48,6 +54,9 @@ export type DeploymentAddresses = {
   StrategyRegistry: string;
   TrancheIDService: string;
   TraderJoeMasterChefStrategy: string;
+  TraderJoeMasterChef2Strategy: string;
+  YieldYakAVAXStrategy: string;
+  YieldYakStrategy: string;
   PangolinMiniChefStrategy: string;
   AMMYieldConverter: string;
   WrapNativeIsolatedLending: string;
@@ -66,6 +75,9 @@ export type DeploymentAddresses = {
   WrapNativeStableLending: string;
 
   VestingLaunchReward: string;
+
+  CurvePoolSL: string;
+  StrategyViewer: string;
 };
 
 export function useAddresses() {
@@ -246,14 +258,62 @@ export type StrategyMetadata = Record<
   Record<string, ParsedStratMetaRow>
 >;
 
+// export async function queryStratMeta(library: any) {
+//   const wsm = (await new ethers.Contract('0x21c971d78e1a398710d964ed1ac4c80e5940ed25', new Interface(IStrategy.abi), library).viewStrategyMetadata(
+//     '0x2148D1B21Faa7eb251789a51B404fc063cA6AAd6'
+//   ));
+
+//   console.log('wsm', wsm);
+
+//   for (let contract of [
+//     '0xdfa3bcda5f954a1e6cef247bdfa89f15702a7473',
+//     // '0x21c971d78e1a398710d964ed1ac4c80e5940ed25',
+//     // '0x0db20d1643112fa00c4d3ddb58369ad26c1f7c1d',
+//     '0xaa3ea561a656cbe310f2e10981085da2d989f17e',
+//     '0x888fc8d90177a4097e196ef6bbdc7d2e8cffdb17',
+//     '0x10d71115360f9129623096e8108bc6856cf86d3a',
+//   ]) {
+//     const contrac = new ethers.Contract(
+//       contract,
+//       new Interface(IsolatedLending.abi),
+//       library
+//     );
+//     console.log('querying', contract);
+//     const result = await contrac.viewAllStrategyMetadata();
+//     console.log('Returened strat meta', contract, result);
+//   }
+//   return undefined;
+// }
+
 export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const stable = useStable();
   const { chainId } = useEthers();
-  const { legacy, current } = useIsolatedLendingView(
-    'viewAllStrategyMetadata',
-    [],
-    []
-  );
+
+
+  const addresses = useAddresses();
+
+  const token2Strat = {
+    ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']: addresses.YieldYakAVAXStrategy,
+    ['0x60781C2586D68229fde47564546784ab3fACA982']: addresses.YieldYakStrategy,
+    ['0x59414b3089ce2AF0010e7523Dea7E2b35d776ec7']: addresses.YieldYakStrategy,
+    // xJOE ['0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33']: addresses.TraderJoeMasterChef2Strategy
+    ['0x454E67025631C065d3cFAD6d71E6892f74487a15']: addresses.TraderJoeMasterChefStrategy,
+    ['0xa389f9430876455c36478deea9769b7ca4e3ddb1']: addresses.TraderJoeMasterChef2Strategy,
+    ['0xed8cbd9f0ce3c6986b22002f03c6475ceb7a6256']: addresses.TraderJoeMasterChef2Strategy,
+    ['0xd5a37dc5c9a396a03dd1136fc76a1a02b1c88ffa']: addresses.TraderJoeMasterChef2Strategy,
+    ['0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd']: addresses.YieldYakStrategy,
+    ['0xd586e7f844cea2f87f50152665bcbc2c279d8d70']: addresses.YieldYakStrategy
+  };
+
+  const tokens = Object.keys(token2Strat);
+  const strats = Object.values(token2Strat);
+
+  const results = (useContractCall({
+    abi: new Interface(StrategyViewer.abi),
+    address: addresses.StrategyViewer,
+    method: 'viewMetadata',
+    args: [addresses.StableLending, tokens, strats]
+  }) ?? [[]])[0];
 
   const globalDebtCeiling = useGlobalDebtCeiling(
     'globalDebtCeiling',
@@ -289,25 +349,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       : result;
   };
 
-  const legacyParsed: StrategyMetadata = legacy.reduce(reduceFn, {});
-
-  const currentParsed: StrategyMetadata = current.reduce(reduceFn, {});
-
-  // const legacyDebt = Object.values(legacyParsed)
-  //   .flatMap((rows) => Object.values(rows))
-  //   .map((row) => row.totalDebt)
-  //   .reduce((agg, debt) => agg.add(debt));
-
-  // const currentDebt = Object.values(currentParsed)
-  //   .flatMap((rows) => Object.values(rows))
-  //   .map((row) => row.totalDebt)
-  //   .reduce((agg, debt) => agg.add(debt));
-
-  // const legacyMax = new CurrencyValue(stable, globalMoneyAvailable).sub(
-  //   currentDebt
-  // );
-
-  return { ...legacyParsed, ...currentParsed };
+  return results?.reduce(reduceFn, {}) ?? {};
 }
 
 export type ParsedPositionMetaRow = {
@@ -726,4 +768,9 @@ export function useSpecialRewardsData(account: string) {
 
 function timestamp2Date(tstamp: BigNumber) {
   return new Date(tstamp.toNumber() * 1000);
+}
+
+export function useCurvePoolSLDeposited() {
+  // const address = useAddresses().CurvePoolSL;
+  return parseEther('2240893.705535866887471228');
 }

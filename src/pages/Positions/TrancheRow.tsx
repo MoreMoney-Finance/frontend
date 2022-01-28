@@ -1,4 +1,5 @@
 import { Button, Td, Text, Tr } from '@chakra-ui/react';
+import { parseEther } from '@ethersproject/units';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import React from 'react';
@@ -7,9 +8,10 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   useStable,
-  YieldType
+  YieldType,
 } from '../../chain-interaction/contracts';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
+import { parseFloatCurrencyValue } from '../../utils';
 import { TrancheAction } from './TrancheTable';
 
 export function TrancheRow(
@@ -17,7 +19,7 @@ export function TrancheRow(
     ParsedStratMetaRow & ParsedPositionMetaRow & { action?: TrancheAction }
   >
 ) {
-  const { token, APY, action } = params;
+  const { token, APY, action, borrowablePercent, usdPrice } = params;
 
   // const location = useLocation();
   // const details = location.search?.includes('details=true');
@@ -49,6 +51,34 @@ export function TrancheRow(
 
   const stratLabel =
     params.yieldType === YieldType.REPAYING ? 'Self-repaying' : 'Compounding';
+  const totalPercentage =
+    parseFloatCurrencyValue(collateral) > 0 && usdPrice > 0
+      ? (100 * parseFloatCurrencyValue(debt)) /
+        (parseFloatCurrencyValue(collateral) * usdPrice)
+      : 0;
+  const liquidatableZone = borrowablePercent;
+  const criticalZone = (90 * borrowablePercent) / 100;
+  const riskyZone = (80 * borrowablePercent) / 100;
+  const healthyZone = (50 * borrowablePercent) / 100;
+
+  const positionHealthColor = debt.value.lt(parseEther('0.1'))
+    ? 'accent'
+    : totalPercentage > liquidatableZone
+      ? 'purple.400'
+      : totalPercentage > criticalZone
+        ? 'red'
+        : totalPercentage > riskyZone
+          ? 'orange'
+          : totalPercentage > healthyZone
+            ? 'green'
+            : 'accent';
+  const positionHealth = {
+    accent: 'Safe',
+    green: 'Healthy',
+    orange: 'Risky',
+    red: 'Critical',
+    ['purple.400']: 'Liquidatable',
+  };
 
   return (
     <>
@@ -58,6 +88,17 @@ export function TrancheRow(
         to={`/token/${params.token.address}`}
         display="table-row"
       >
+        <Td>
+          <Text
+            color={
+              positionHealthColor == 'accent'
+                ? 'accent_color'
+                : positionHealthColor
+            }
+          >
+            {positionHealth[positionHealthColor]}
+          </Text>
+        </Td>
         <Td>
           <TokenDescription token={token} />
         </Td>

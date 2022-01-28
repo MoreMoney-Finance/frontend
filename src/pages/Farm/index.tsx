@@ -183,7 +183,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                     <Button
                       as={Link}
                       href={
-                        'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm'
+                        'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05'
                       }
                       isExternal
                       color={'white'}
@@ -195,7 +195,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                     <Button
                       as={Link}
                       href={
-                        'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05'
+                        'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm'
                       }
                       isExternal
                       color={'white'}

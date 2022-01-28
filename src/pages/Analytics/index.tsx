@@ -1,5 +1,10 @@
-import { Box, Container, Flex, Grid, GridItem, Text } from '@chakra-ui/react';
-import { CurrencyValue } from '@usedapp/core';
+import { Box, Container, Grid, Text } from '@chakra-ui/react';
+import {
+  CurrencyValue,
+  ERC20Interface,
+  useContractCalls,
+  useEthers,
+} from '@usedapp/core';
 import { BigNumber, ethers } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
@@ -15,23 +20,25 @@ import {
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 import { AnalyticsBox } from './AnalyticsBox';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
+import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
+import { tokenAmount } from '../../chain-interaction/tokens';
 
 export default function Analytics(props: React.PropsWithChildren<unknown>) {
   const allStratMeta = React.useContext(StrategyMetadataContext);
 
   const account = useContext(UserAddressContext);
+  const addresses = useAddresses();
 
   const stakeMeta: ParsedStakingMetadata[] = useParsedStakingMetadata(
-    [useAddresses().CurvePoolRewards],
+    [addresses.CurvePoolRewards],
     account ?? ethers.constants.AddressZero
   ).flat(1);
 
-  const addresses = useAddresses();
   const feeContractNames = [
     'IsolatedLending',
     'StableLending',
     'IsolatedLendingLiquidation',
-    'StableLendingLiquidation'
+    'StableLendingLiquidation',
   ];
   const blacklist = ['StrategyRegistry', 'StrategyTokenActivation'];
   const keys: (keyof DeploymentAddresses)[] = Object.keys(
@@ -78,6 +85,40 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
       new CurrencyValue(stable, BigNumber.from(0))
     );
 
+  const circulatingBlacklist = [
+    addresses.CurvePoolRewards,
+    addresses.VestingLaunchReward,
+    '0xcb2fb8db0e80adf47720d48e1ae9315e7d128808',
+    '0xba8983fdde65354c1330e38d042c7d2f784ca3de',
+    '0xc2Ee73EF5FF77c37dEBa2593EC80e5d4B655735E',
+  ];
+
+  function convert2ContractCall(holder: string) {
+    return {
+      abi: ERC20Interface,
+      address: addresses.MoreToken,
+      method: 'balanceOf',
+      args: [holder],
+    };
+  }
+  const balances = useContractCalls(
+    circulatingBlacklist.map(convert2ContractCall)
+  )
+    .map(
+      (result: any[] | undefined) =>
+        (result ? result[0] : undefined) ?? BigNumber.from(0)
+    )
+    .reduce((agg, curr) => agg.add(curr));
+
+  const { chainId } = useEthers();
+  const circulatingSupply = chainId
+    ? tokenAmount(
+      chainId,
+      addresses.MoreToken,
+      parseEther('1000000000').sub(balances)
+    )?.format({ useFixedPrecision: true, fixedPrecisionDigits: 0 }) ?? ''
+    : '';
+
   return (
     <Box padding={'12'} width={'full'} textAlign={'center'}>
       <Text fontSize={'4xl'}>Moremoney Analytics</Text>
@@ -85,22 +126,33 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
       <br />
       <br />
       <Grid templateColumns="repeat(3, 1fr)" gap={6}>
-        <GridItem rowSpan={2} colSpan={1} height={'100%'}>
+        <Box w="100%" h="200">
           <Container variant={'token'} padding={'35px 20px 20px 20px'}>
-            <Flex
-              w={'full'}
-              h={'full'}
-              direction={'column'}
-              justifyContent={'center'}
-            >
-              <AnalyticsBox
-                title={'Total Value Locked'}
-                subtitle={'Total deposits on MoreMoney'}
-                value={'$' + tvl.format({ suffix: '' })}
-              />
-            </Flex>
+            <AnalyticsBox
+              title={'Total Value Locked'}
+              subtitle={'Total deposits on MoreMoney'}
+              value={'$' + tvl.format({ suffix: '' })}
+            />
           </Container>
-        </GridItem>
+        </Box>
+        <Box w="100%" h="200">
+          <Container variant={'token'} padding={'35px 20px 20px 20px'}>
+            <AnalyticsBox
+              title={'MORE Circulating Supply'}
+              subtitle={'Held in community or liquidity'}
+              value={circulatingSupply}
+            />
+          </Container>
+        </Box>
+        <Box w="100%" h="200">
+          <Container variant={'token'} padding={'35px 20px 20px 20px'}>
+            <AnalyticsBox
+              title={'MONEY Circulating Supply'}
+              subtitle={'Circulating volume of MONEY'}
+              value={new CurrencyValue(stable, supply).format()}
+            />
+          </Container>
+        </Box>
         <Box w="100%" h="200">
           <Container variant={'token'} padding={'35px 20px 20px 20px'}>
             <AnalyticsBox
@@ -125,15 +177,6 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
               title={'Assets supported'}
               subtitle={`${Object.keys(allStratMeta).length} assets supported`}
               value={''}
-            />
-          </Container>
-        </Box>
-        <Box w="100%" h="200">
-          <Container variant={'token'} padding={'35px 20px 20px 20px'}>
-            <AnalyticsBox
-              title={'MONEY circulating supply'}
-              subtitle={'Circulating volume of MONEY'}
-              value={new CurrencyValue(stable, supply).format()}
             />
           </Container>
         </Box>

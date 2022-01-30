@@ -289,31 +289,42 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const stable = useStable();
   const { chainId } = useEthers();
 
-
   const addresses = useAddresses();
 
   const token2Strat = {
     ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']: addresses.YieldYakAVAXStrategy,
     ['0x60781C2586D68229fde47564546784ab3fACA982']: addresses.YieldYakStrategy,
     ['0x59414b3089ce2AF0010e7523Dea7E2b35d776ec7']: addresses.YieldYakStrategy,
-    ['0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33']: addresses.TraderJoeMasterChef2Strategy,
-    ['0x454E67025631C065d3cFAD6d71E6892f74487a15']: addresses.TraderJoeMasterChefStrategy,
-    // ['0xa389f9430876455c36478deea9769b7ca4e3ddb1']: addresses.TraderJoeMasterChef2Strategy,
-    ['0xed8cbd9f0ce3c6986b22002f03c6475ceb7a6256']: addresses.TraderJoeMasterChef2Strategy,
-    ['0xd5a37dc5c9a396a03dd1136fc76a1a02b1c88ffa']: addresses.TraderJoeMasterChef2Strategy,
     ['0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd']: addresses.YieldYakStrategy,
     ['0xd586e7f844cea2f87f50152665bcbc2c279d8d70']: addresses.YieldYakStrategy
   };
 
+  const masterChef2Tokens = [
+    '0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33',
+    '0x454E67025631C065d3cFAD6d71E6892f74487a15',
+    '0xa389f9430876455c36478deea9769b7ca4e3ddb1',
+    '0xed8cbd9f0ce3c6986b22002f03c6475ceb7a6256',
+    '0xd5a37dc5c9a396a03dd1136fc76a1a02b1c88ffa'
+  ];
+
   const tokens = Object.keys(token2Strat);
   const strats = Object.values(token2Strat);
 
-  const results = (useContractCall({
+  const normalResults = (useContractCall({
     abi: new Interface(StrategyViewer.abi),
     address: addresses.StrategyViewer,
     method: 'viewMetadata',
     args: [addresses.StableLending, tokens, strats]
   }) ?? [[]])[0];
+
+  const noHarvestBalanceResults = (useContractCall({
+    abi: new Interface(StrategyViewer.abi),
+    address: addresses.StrategyViewer,
+    method: 'viewMetadataNoHarvestBalance',
+    args: [addresses.StableLending, addresses.OracleRegistry, addresses.Stablecoin, masterChef2Tokens, Array(masterChef2Tokens.length).fill(addresses.TraderJoeMasterChef2Strategy)]
+  }) ?? [[]])[0];
+
+  const results = [...normalResults, ...noHarvestBalanceResults];
 
   const globalDebtCeiling = useGlobalDebtCeiling(
     'globalDebtCeiling',

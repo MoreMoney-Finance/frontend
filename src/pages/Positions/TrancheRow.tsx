@@ -105,7 +105,7 @@ export function TrancheRow(
 
         <Td>{stratLabel}</Td>
 
-        <Td>{(APY ?? 14).toFixed(2)}%</Td>
+        <Td>{APY.toFixed(2)}%</Td>
 
         <Td>{((100 * 100) / params.borrowablePercent).toFixed(0)}%</Td>
 

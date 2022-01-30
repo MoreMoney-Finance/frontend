@@ -296,16 +296,16 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
     ['0x60781C2586D68229fde47564546784ab3fACA982']: addresses.YieldYakStrategy,
     ['0x59414b3089ce2AF0010e7523Dea7E2b35d776ec7']: addresses.YieldYakStrategy,
     ['0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd']: addresses.YieldYakStrategy,
-    ['0xd586e7f844cea2f87f50152665bcbc2c279d8d70']: addresses.YieldYakStrategy
+    ['0xd586e7f844cea2f87f50152665bcbc2c279d8d70']: addresses.YieldYakStrategy,
+    ['0x454E67025631C065d3cFAD6d71E6892f74487a15']: addresses.TraderJoeMasterChefStrategy
   };
 
   const masterChef2Tokens = [
     '0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33',
-    '0x454E67025631C065d3cFAD6d71E6892f74487a15',
     '0xa389f9430876455c36478deea9769b7ca4e3ddb1',
     '0xed8cbd9f0ce3c6986b22002f03c6475ceb7a6256',
     '0xd5a37dc5c9a396a03dd1136fc76a1a02b1c88ffa'
-  ];
+  ].map(getAddress);
 
   const tokens = Object.keys(token2Strat);
   const strats = Object.values(token2Strat);

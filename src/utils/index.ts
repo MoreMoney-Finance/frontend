@@ -14,3 +14,6 @@ export function parseFloatCurrencyValue(input: CurrencyValue) {
   );
   return isNaN(parsed) ? 0 : parsed;
 }
+export function formatNumber(input: number) {
+  return input.toLocaleString('en-US', {});
+}

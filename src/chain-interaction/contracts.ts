@@ -296,9 +296,9 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
     ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']: addresses.YieldYakAVAXStrategy,
     ['0x60781C2586D68229fde47564546784ab3fACA982']: addresses.YieldYakStrategy,
     ['0x59414b3089ce2AF0010e7523Dea7E2b35d776ec7']: addresses.YieldYakStrategy,
-    // xJOE ['0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33']: addresses.TraderJoeMasterChef2Strategy
+    ['0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33']: addresses.TraderJoeMasterChef2Strategy,
     ['0x454E67025631C065d3cFAD6d71E6892f74487a15']: addresses.TraderJoeMasterChefStrategy,
-    ['0xa389f9430876455c36478deea9769b7ca4e3ddb1']: addresses.TraderJoeMasterChef2Strategy,
+    // ['0xa389f9430876455c36478deea9769b7ca4e3ddb1']: addresses.TraderJoeMasterChef2Strategy,
     ['0xed8cbd9f0ce3c6986b22002f03c6475ceb7a6256']: addresses.TraderJoeMasterChef2Strategy,
     ['0xd5a37dc5c9a396a03dd1136fc76a1a02b1c88ffa']: addresses.TraderJoeMasterChef2Strategy,
     ['0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd']: addresses.YieldYakStrategy,
@@ -348,6 +348,27 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
         }
       : result;
   };
+
+  // const xJOE = '0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33';
+  // const ilMetadata = (useContractCall({
+  //   abi: new Interface(IsolatedLending.abi),
+  //   address: addresses.StableLending,
+  //   method: 'viewILMetadata',
+  //   args: [],
+  // }) ?? [undefined])[0];
+
+  // const xJoeData: RawStratMetaRow = {
+  //   debtCeiling: ilMetadata.debtCeiling,
+  //   APF: BigNumber.from(0),
+  //   borrowablePer10k: ilMetadata.borrowablePer10k,
+  //   mintingFee: ilMetadata.mintingFee,
+  //   stabilityFee: BigNumber.from(0),
+  //   strategy: addresses.TraderJoeMasterChef2Strategy,
+  //   strategyName: "Trader Joe MasterChef self-repaying",
+  //   token: xJOE,
+  //   totalCollateral: BigNumber.from('255643660864621744524071'),
+
+  // }
 
   return results?.reduce(reduceFn, {}) ?? {};
 }

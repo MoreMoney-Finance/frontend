@@ -77,6 +77,7 @@
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
         ],
         "pairAddress": "0x2E02539203256c83c7a9F6fA6f8608A32A2b1Ca2",
+        "pid": 49,
         "anchorName": "USDCe"
       },
       "JPL-WETHe-JOE": {
@@ -102,6 +103,7 @@
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
         ],
         "pairAddress": "0x67926d973cD8eE876aD210fAaf7DFfA99E414aCf",
+        "pid": 58,
         "anchorName": "USDCe"
       },
       "JPL-WETHe-USDCe": {
@@ -329,6 +331,7 @@
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
         ],
         "pairAddress": "0x62475f52aDd016A06B398aA3b2C2f2E540d36859",
+        "pid": 54,
         "anchorName": "USDCe"
       }
     },
@@ -752,6 +755,7 @@
           "0xc7198437980c041c805a1edcba50c1ce5db95118"
         ],
         "pairAddress": "0x2E02539203256c83c7a9F6fA6f8608A32A2b1Ca2",
+        "pid": 49,
         "anchorName": "USDCe"
       },
       "JPL-WETHe-JOE": {
@@ -776,6 +780,7 @@
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
         ],
         "pairAddress": "0x67926d973cD8eE876aD210fAaf7DFfA99E414aCf",
+        "pid": 58,
         "anchorName": "USDCe"
       },
       "JPL-WETHe-USDCe": {
@@ -878,6 +883,7 @@
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
         ],
         "pairAddress": "0x62475f52aDd016A06B398aA3b2C2f2E540d36859",
+        "pid": 54,
         "anchorName": "USDCe"
       },
       "JPL-WAVAX-MAXI": {

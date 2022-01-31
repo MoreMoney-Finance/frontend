@@ -66,6 +66,7 @@ export type DeploymentAddresses = {
   LPTFlashLiquidation: string;
 
   MoreToken: string;
+  xMore: string;
 
   StableLending: string;
   StableLendingLiquidation: string;

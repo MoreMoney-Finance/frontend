@@ -25,6 +25,7 @@ import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFe
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
+import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 import {
   YYMetadata,
@@ -511,6 +512,22 @@ export function useIsolatedPositionMetadata(
   return 'StableLending' in addresses
     ? current.reduce(reduceFn(addresses.StableLending), legacyResults)
     : legacyResults;
+}
+
+
+export function xMoreTotalSupply(
+  method: string,
+  args: any[],
+  defaultResult: any
+) {
+  const address = useAddresses().xMore;
+  const abi = new Interface(xMore.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method,
+    args,
+  }) ?? [defaultResult])[0];
 }
 
 export function useGlobalDebtCeiling(

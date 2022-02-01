@@ -20,12 +20,43 @@ import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.jso
 import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
+import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
 import {
   useAddresses,
   useRegisteredOracle,
   useStable,
   useYieldConversionStrategyView,
 } from './contracts';
+
+export function useUnstakeMore() {
+  // TODO: change cprAddress and the ABI to use the correct address
+  const cprAddress = useAddresses().xMore;
+  const cprContract = new Contract(cprAddress, new Interface(xMore.abi));
+  const { send, state } = useContractFunction(cprContract, 'leave');
+
+  return {
+    sendUnstake: (leaveMoreToken: Token, amount: string | number) => {
+      const sAmount = parseUnits(amount.toString(), leaveMoreToken.decimals);
+      return send(sAmount);
+    },
+    unstakeState: state,
+  };
+}
+
+export function useStakeMore() {
+  // TODO: change cprAddress and the ABI to use the correct address
+  const cprAddress = useAddresses().xMore;
+  const cprContract = new Contract(cprAddress, new Interface(xMore.abi));
+  const { send, state } = useContractFunction(cprContract, 'enter');
+
+  return {
+    sendStake: (stakeMoreToken: Token, amount: string | number) => {
+      const sAmount = parseUnits(amount.toString(), stakeMoreToken.decimals);
+      return send(sAmount);
+    },
+    stakeState: state,
+  };
+}
 
 export function useClaimReward() {
   const ilAddress = useAddresses().CurvePoolRewards;

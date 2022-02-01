@@ -5,20 +5,6 @@ import { MoreBalance } from './metadata/MoreBalance';
 import { StakingAPR } from './metadata/StakingAPR';
 
 export default function XMorePage(props: React.PropsWithChildren<unknown>) {
-  /*
-.parent {
-display: grid;
-grid-template-columns: repeat(5, 1fr);
-grid-template-rows: repeat(5, 1fr);
-grid-column-gap: 0px;
-grid-row-gap: 0px;
-}
-
-.div1 { grid-area: 2 / 2 / 3 / 4; }
-.div2 { grid-area: 3 / 2 / 5 / 4; }
-.div3 { grid-area: 2 / 4 / 5 / 6; }
-	*/
-
   return (
     <Box margin={['0px', '0px', '60px 200px 100px 100px']}>
       <Flex flexDirection={'row'}>

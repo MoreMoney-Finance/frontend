@@ -21,7 +21,7 @@ export function MoreBalance(props: React.PropsWithChildren<unknown>) {
   return (
     <GridItem rowSpan={[12, 12, 2]} colSpan={[12, 12, 1]}>
       <Container variant={'token'} padding={'46px'}>
-        <Flex flexDirection={'column'} justifyContent="center">
+        <Flex flexDirection={'column'} justifyContent="center" height={'100%'}>
           <Flex flexDirection={'row'}>
             <img
               src="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Coin-Logo-FINAL.jpg"

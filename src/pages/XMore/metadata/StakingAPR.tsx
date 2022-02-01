@@ -1,4 +1,4 @@
-import { Text, GridItem, Container, Flex, Button } from '@chakra-ui/react';
+import { Container, Flex, GridItem, Text } from '@chakra-ui/react';
 import * as React from 'react';
 
 export function StakingAPR(props: React.PropsWithChildren<unknown>) {
@@ -13,12 +13,7 @@ export function StakingAPR(props: React.PropsWithChildren<unknown>) {
           <Text>Staking APR</Text>
           <Text variant={'bodyLarge'}>23.99%</Text>
         </Flex>
-        <Flex
-          flexDirection={'row'}
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Button>View Stats</Button>
+        <Flex flexDirection={'row'} alignItems="center" justifyContent="end">
           <Text>Yesterday&apos;s APR</Text>
         </Flex>
         {props?.children}

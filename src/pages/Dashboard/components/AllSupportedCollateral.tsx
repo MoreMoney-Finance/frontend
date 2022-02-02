@@ -85,7 +85,6 @@ export function AllSupportedCollateral() {
         balance: meta.balance,
       };
     })
-    // .sort((a, b) => b.balance - a.balance);
     .sort(function (a, b) {
       if (a.token.ticker < b.token.ticker) {
         return -1;
@@ -94,7 +93,8 @@ export function AllSupportedCollateral() {
         return 1;
       }
       return 0;
-    });
+    })
+    .sort((a, b) => b.balance - a.balance);
 
   const columns = React.useMemo<Column<Entity>[]>(
     () => [

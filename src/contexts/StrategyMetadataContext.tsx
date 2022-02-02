@@ -1,9 +1,12 @@
 import React from 'react';
-import { StrategyMetadata, useIsolatedStrategyMetadata } from '../chain-interaction/contracts';
+import {
+  StrategyMetadata,
+  useIsolatedStrategyMetadata,
+} from '../chain-interaction/contracts';
 
-export const StrategyMetadataContext = React.createContext<
-  StrategyMetadata
->({});
+export const StrategyMetadataContext = React.createContext<StrategyMetadata>(
+  {}
+);
 
 export function StrategyMetadataCtxProvider({
   children,

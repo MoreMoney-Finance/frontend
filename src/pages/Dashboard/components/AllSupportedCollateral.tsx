@@ -53,43 +53,47 @@ export function AllSupportedCollateral() {
   const [tableTabFilter, setTableTabFilter] = React.useState<string[]>([]);
   const [searchString, setSearchString] = React.useState('');
 
-  const data = stratMeta
-    .filter((meta) => {
-      if (tableTabFilter.length === 0) {
-        return true;
-      } else if (
-        tableTabFilter.includes(
-          meta.token.ticker.toUpperCase().replaceAll('/', '-')
+  const data = React.useMemo(
+    () =>
+      stratMeta
+        .filter((meta) => {
+          if (tableTabFilter.length === 0) {
+            return true;
+          } else if (
+            tableTabFilter.includes(
+              meta.token.ticker.toUpperCase().replaceAll('/', '-')
+            )
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        })
+        .filter((meta) =>
+          searchString.length > 0
+            ? meta.token.name.toLowerCase().includes(searchString) ||
+              meta.token.ticker.toLowerCase().includes(searchString)
+            : true
         )
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    })
-    .filter((meta) =>
-      searchString.length > 0
-        ? meta.token.name.toLowerCase().includes(searchString) ||
-          meta.token.ticker.toLowerCase().includes(searchString)
-        : true
-    )
-    .map((meta) => {
-      return {
-        ...meta,
-        asset: <TokenDescription token={meta.token} />,
-        apy: Math.round(meta.APY) + '%',
-        MONEYavailable: meta.debtCeiling.sub(meta.totalDebt).format(),
-        minColRatio: `${Math.round(
-          (1 / (meta.borrowablePercent / 100)) * 100
-        )}%`,
-        ltv: `${5 * Math.round(meta.borrowablePercent / 5)}%`,
-        totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
-        liquidationFee:
-          (tokenFees.get(meta.token.address) ?? 'Loading...') + '%',
-        balance: meta.balance,
-      };
-    })
-    .sort((a, b) => b.balance - a.balance);
+        .map((meta) => {
+          return {
+            ...meta,
+            asset: <TokenDescription token={meta.token} />,
+            apy: Math.round(meta.APY) + '%',
+            MONEYavailable: meta.debtCeiling.sub(meta.totalDebt).format(),
+            minColRatio: `${Math.round(
+              (1 / (meta.borrowablePercent / 100)) * 100
+            )}%`,
+            ltv: `${5 * Math.round(meta.borrowablePercent / 5)}%`,
+            totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
+            liquidationFee:
+              (tokenFees.get(meta.token.address) ?? 'Loading...') + '%',
+            balance: meta.balance,
+          };
+        })
+        .sort((a, b) => b.balance - a.balance),
+    [stratMeta]
+  );
 
   const columns = React.useMemo<Column<Entity>[]>(
     () => [

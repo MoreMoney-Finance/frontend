@@ -6,7 +6,6 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Progress,
   Text,
   useDisclosure,
   VStack,
@@ -87,7 +86,7 @@ export default function DepositBorrow({
 
   const { sendDepositBorrow, depositBorrowState } = useDepositBorrowTrans(
     position ? position.trancheId : undefined,
-    position ? position.trancheContract : undefined,
+    position ? position.trancheContract : undefined
   );
   const {
     sendDepositBorrow: sendNativeDepositBorrow,
@@ -222,15 +221,6 @@ export default function DepositBorrow({
   const dangerousPosition = totalPercentage > borrowablePercent * 0.92;
   console.log('customPercentageInput', customPercentageInput);
 
-  const greenZone = (33.33 * borrowablePercent) / 100;
-  const yellowZone = (66.66 * borrowablePercent) / 100;
-  const progressColor =
-    totalPercentage < greenZone
-      ? 'accent'
-      : totalPercentage < yellowZone
-        ? 'yellow'
-        : 'red';
-
   return (
     <>
       <ConfirmPositionModal
@@ -341,20 +331,6 @@ export default function DepositBorrow({
             </InputRightElement>
           </InputGroup>
         </HStack>
-        <br />
-        <Text
-          variant={'bodyExtraSmall'}
-          color={'whiteAlpha.600'}
-          marginTop="20px"
-        >
-          Position Health
-        </Text>
-        <Progress
-          hasStripe
-          isAnimated={true}
-          value={totalPercentage}
-          colorScheme={progressColor}
-        />
         <HStack justifyContent={'space-between'} marginTop={'40px'}>
           <VStack spacing={'2px'}>
             <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>

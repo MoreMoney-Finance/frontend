@@ -10,12 +10,16 @@ const Links = [
   { title: 'Discord', link: 'https://discord.gg/uHwQgNE776' },
   { title: 'Telegram', link: 'https://t.me/moremoneyfi' },
   { title: 'Github', link: 'https://github.com/MoreMoney-Finance' },
-  { title: 'Swap MONEY', link: 'https://avax.curve.fi/factory/39' },
+  { title: 'Documentation', link: 'https://moremoney.gitbook.io/docs' },
   {
-    title: 'MORE Pool',
+    title: 'Trade MORE',
     link: 'https://traderjoexyz.com/trade?inputCurrency=AVAX&outputCurrency=0xd9d90f882cddd6063959a9d837b05cb748718a05',
   },
-  { title: 'Documentation', link: 'https://moremoney.gitbook.io/docs' },
+  { title: 'Trade MONEY', link: 'https://avax.curve.fi/factory/39' },
+  {
+    title: 'Provide MORE-AVAX Liquidity',
+    link: 'https://traderjoexyz.com/pool/AVAX/0xd9D90f882CDdD6063959A9d837B05Cb748718A05#/',
+  },
 ];
 
 export default function FooterBar() {

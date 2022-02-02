@@ -57,11 +57,7 @@ export function AllSupportedCollateral() {
     .filter((meta) => {
       if (tableTabFilter.length === 0) {
         return true;
-      } else if (
-        tableTabFilter.includes(
-          meta.token.ticker.toUpperCase().replaceAll('/', '-')
-        )
-      ) {
+      } else if (tableTabFilter.includes(meta.token.ticker)) {
         return true;
       } else {
         return false;
@@ -89,7 +85,16 @@ export function AllSupportedCollateral() {
         balance: meta.balance,
       };
     })
-    .sort((a, b) => b.balance - a.balance);
+    // .sort((a, b) => b.balance - a.balance);
+    .sort(function (a, b) {
+      if (a.token.ticker < b.token.ticker) {
+        return -1;
+      }
+      if (a.token.ticker > b.token.ticker) {
+        return 1;
+      }
+      return 0;
+    });
 
   const columns = React.useMemo<Column<Entity>[]>(
     () => [

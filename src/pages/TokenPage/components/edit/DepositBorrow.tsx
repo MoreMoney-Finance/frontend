@@ -86,7 +86,7 @@ export default function DepositBorrow({
 
   const { sendDepositBorrow, depositBorrowState } = useDepositBorrowTrans(
     position ? position.trancheId : undefined,
-    position ? position.trancheContract : undefined
+    position ? position.trancheContract : undefined,
   );
   const {
     sendDepositBorrow: sendNativeDepositBorrow,
@@ -220,7 +220,6 @@ export default function DepositBorrow({
 
   const dangerousPosition = totalPercentage > borrowablePercent * 0.92;
   console.log('customPercentageInput', customPercentageInput);
-
   return (
     <>
       <ConfirmPositionModal

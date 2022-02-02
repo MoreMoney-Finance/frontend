@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { CurrencyValue, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
-import { parseEther } from 'ethers/lib/utils';
+import { getAddress, parseEther } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import WarningMessage from '../../../../components/notifications/WarningMessage';
@@ -55,7 +55,7 @@ export default function RepayWithdraw({
   const [data, setData] = useState<{ [x: string]: any }>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const stable = useStable();
-  const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
+  const isNativeToken = getAddress(WNATIVE_ADDRESS[chainId!]) === getAddress(token.address);
   const balanceCtx = useContext(WalletBalancesContext);
 
   const {
@@ -88,11 +88,11 @@ export default function RepayWithdraw({
   function repayWithdraw() {
     if (isNativeToken) {
       sendNativeRepayWithdraw(
-        data!['collateral-withdraw'],
-        data!['money-repay']
+        data!['collateral-withdraw'] ?? '0',
+        data!['money-repay'] ?? '0'
       );
     } else {
-      sendRepayWithdraw(data!['collateral-withdraw'], data!['money-repay']);
+      sendRepayWithdraw(data!['collateral-withdraw'] ?? '0', data!['money-repay'] ?? '0');
     }
   }
 

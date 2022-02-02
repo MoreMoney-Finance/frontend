@@ -1,6 +1,7 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { CurrencyValue, useEtherBalance, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
+import { getAddress } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
@@ -23,7 +24,7 @@ export default function WithdrawForm({
   const { chainId } = useEthers();
   const account = useContext(UserAddressContext);
 
-  const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
+  const isNativeToken = getAddress(WNATIVE_ADDRESS[chainId!]) === getAddress(token.address);
 
   const etherBalance = useEtherBalance(account);
 

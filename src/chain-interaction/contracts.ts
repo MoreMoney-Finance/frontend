@@ -8,7 +8,10 @@ import {
   useContractCalls,
   useEthers,
 } from '@usedapp/core';
-import { formatEther } from '@usedapp/core/node_modules/@ethersproject/units';
+import {
+  formatEther,
+  parseEther,
+} from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber, ethers } from 'ethers';
 import { getAddress, Interface, parseBytes32String } from 'ethers/lib/utils';
 import { useContext } from 'react';
@@ -28,6 +31,9 @@ import {
   ExternalMetadataContext,
   YieldMonitorMetadata,
 } from '../contexts/ExternalMetadataContext';
+import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
+
+
 // import earnedRewards from '../constants/earned-rewards.json';
 // import rewardsRewards from '../constants/rewards-rewards.json';
 
@@ -48,6 +54,10 @@ export type DeploymentAddresses = {
   StrategyRegistry: string;
   TrancheIDService: string;
   TraderJoeMasterChefStrategy: string;
+  TraderJoeMasterChef2Strategy: string;
+  YieldYakAVAXStrategy: string;
+  SimpleHoldingStrategy: string;
+  YieldYakStrategy: string;
   PangolinMiniChefStrategy: string;
   AMMYieldConverter: string;
   WrapNativeIsolatedLending: string;
@@ -56,6 +66,7 @@ export type DeploymentAddresses = {
   LPTFlashLiquidation: string;
 
   MoreToken: string;
+  xMore: string;
 
   StableLending: string;
   StableLendingLiquidation: string;
@@ -66,6 +77,9 @@ export type DeploymentAddresses = {
   WrapNativeStableLending: string;
 
   VestingLaunchReward: string;
+
+  CurvePoolSL: string;
+  StrategyViewer: string;
 };
 
 export function useAddresses() {
@@ -246,14 +260,75 @@ export type StrategyMetadata = Record<
   Record<string, ParsedStratMetaRow>
 >;
 
+// export async function queryStratMeta(library: any) {
+//   const wsm = (await new ethers.Contract('0x21c971d78e1a398710d964ed1ac4c80e5940ed25', new Interface(IStrategy.abi), library).viewStrategyMetadata(
+//     '0x2148D1B21Faa7eb251789a51B404fc063cA6AAd6'
+//   ));
+
+//   console.log('wsm', wsm);
+
+//   for (let contract of [
+//     '0xdfa3bcda5f954a1e6cef247bdfa89f15702a7473',
+//     // '0x21c971d78e1a398710d964ed1ac4c80e5940ed25',
+//     // '0x0db20d1643112fa00c4d3ddb58369ad26c1f7c1d',
+//     '0xaa3ea561a656cbe310f2e10981085da2d989f17e',
+//     '0x888fc8d90177a4097e196ef6bbdc7d2e8cffdb17',
+//     '0x10d71115360f9129623096e8108bc6856cf86d3a',
+//   ]) {
+//     const contrac = new ethers.Contract(
+//       contract,
+//       new Interface(IsolatedLending.abi),
+//       library
+//     );
+//     console.log('querying', contract);
+//     const result = await contrac.viewAllStrategyMetadata();
+//     console.log('Returened strat meta', contract, result);
+//   }
+//   return undefined;
+// }
+
 export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const stable = useStable();
   const { chainId } = useEthers();
-  const { legacy, current } = useIsolatedLendingView(
-    'viewAllStrategyMetadata',
-    [],
-    []
-  );
+
+  const addresses = useAddresses();
+
+  const token2Strat = {
+    ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']: addresses.YieldYakAVAXStrategy,
+    ['0x60781C2586D68229fde47564546784ab3fACA982']: addresses.YieldYakStrategy,
+    ['0x59414b3089ce2AF0010e7523Dea7E2b35d776ec7']: addresses.YieldYakStrategy,
+    ['0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd']: addresses.YieldYakStrategy,
+    ['0xd586e7f844cea2f87f50152665bcbc2c279d8d70']: addresses.YieldYakStrategy,
+    ['0x8729438EB15e2C8B576fCc6AeCdA6A148776C0F5']: addresses.YieldYakStrategy,
+    ['0x454E67025631C065d3cFAD6d71E6892f74487a15']: addresses.TraderJoeMasterChefStrategy,
+    ['0x2148D1B21Faa7eb251789a51B404fc063cA6AAd6']: addresses.SimpleHoldingStrategy
+  };
+
+  const masterChef2Tokens = [
+    '0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33',
+    '0xa389f9430876455c36478deea9769b7ca4e3ddb1',
+    '0xed8cbd9f0ce3c6986b22002f03c6475ceb7a6256',
+    '0xd5a37dc5c9a396a03dd1136fc76a1a02b1c88ffa'
+  ].map(getAddress);
+
+  const tokens = Object.keys(token2Strat);
+  const strats = Object.values(token2Strat);
+
+  const normalResults = (useContractCall({
+    abi: new Interface(StrategyViewer.abi),
+    address: addresses.StrategyViewer,
+    method: 'viewMetadata',
+    args: [addresses.StableLending, tokens, strats]
+  }) ?? [[]])[0];
+
+  const noHarvestBalanceResults = (useContractCall({
+    abi: new Interface(StrategyViewer.abi),
+    address: addresses.StrategyViewer,
+    method: 'viewMetadataNoHarvestBalance',
+    args: [addresses.StableLending, addresses.OracleRegistry, addresses.Stablecoin, masterChef2Tokens, Array(masterChef2Tokens.length).fill(addresses.TraderJoeMasterChef2Strategy)]
+  }) ?? [[]])[0];
+
+  const results = [...normalResults, ...noHarvestBalanceResults];
 
   const globalDebtCeiling = useGlobalDebtCeiling(
     'globalDebtCeiling',
@@ -289,25 +364,28 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       : result;
   };
 
-  const legacyParsed: StrategyMetadata = legacy.reduce(reduceFn, {});
+  // const xJOE = '0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33';
+  // const ilMetadata = (useContractCall({
+  //   abi: new Interface(IsolatedLending.abi),
+  //   address: addresses.StableLending,
+  //   method: 'viewILMetadata',
+  //   args: [],
+  // }) ?? [undefined])[0];
 
-  const currentParsed: StrategyMetadata = current.reduce(reduceFn, {});
+  // const xJoeData: RawStratMetaRow = {
+  //   debtCeiling: ilMetadata.debtCeiling,
+  //   APF: BigNumber.from(0),
+  //   borrowablePer10k: ilMetadata.borrowablePer10k,
+  //   mintingFee: ilMetadata.mintingFee,
+  //   stabilityFee: BigNumber.from(0),
+  //   strategy: addresses.TraderJoeMasterChef2Strategy,
+  //   strategyName: "Trader Joe MasterChef self-repaying",
+  //   token: xJOE,
+  //   totalCollateral: BigNumber.from('255643660864621744524071'),
 
-  // const legacyDebt = Object.values(legacyParsed)
-  //   .flatMap((rows) => Object.values(rows))
-  //   .map((row) => row.totalDebt)
-  //   .reduce((agg, debt) => agg.add(debt));
+  // }
 
-  // const currentDebt = Object.values(currentParsed)
-  //   .flatMap((rows) => Object.values(rows))
-  //   .map((row) => row.totalDebt)
-  //   .reduce((agg, debt) => agg.add(debt));
-
-  // const legacyMax = new CurrencyValue(stable, globalMoneyAvailable).sub(
-  //   currentDebt
-  // );
-
-  return { ...legacyParsed, ...currentParsed };
+  return results?.reduce(reduceFn, {}) ?? {};
 }
 
 export type ParsedPositionMetaRow = {
@@ -726,4 +804,9 @@ export function useSpecialRewardsData(account: string) {
 
 function timestamp2Date(tstamp: BigNumber) {
   return new Date(tstamp.toNumber() * 1000);
+}
+
+export function useCurvePoolSLDeposited() {
+  // const address = useAddresses().CurvePoolSL;
+  return parseEther('2240893.705535866887471228');
 }

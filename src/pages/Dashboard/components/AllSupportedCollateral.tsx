@@ -32,7 +32,7 @@ type Entity = ParsedStratMetaRow & {
 };
 
 export function AllSupportedCollateral() {
-  const hiddenTokens = new Set(['JOE', 'xJOE', 'wsMAXI', 'QI']);
+  const hiddenTokens: Set<string> = new Set([]);
   const stratMeta: ParsedStratMetaRow[] = Object.values(
     React.useContext(StrategyMetadataContext)
   )

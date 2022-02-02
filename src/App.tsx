@@ -126,7 +126,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                       <br />
                       <GlobalDebtCeilingMessage />
                       <LiquidatablePositionsMessage />
-                      <Box paddingBottom={'30px'}>
+                      <Box paddingBottom={'70px'}>
                         {params.children}
                         <Outlet />
                       </Box>

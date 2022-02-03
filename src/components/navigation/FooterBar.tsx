@@ -15,10 +15,22 @@ const Links = [
     title: 'Trade MORE',
     link: 'https://traderjoexyz.com/trade?inputCurrency=AVAX&outputCurrency=0xd9d90f882cddd6063959a9d837b05cb748718a05',
   },
-  { title: 'Trade MONEY', link: 'https://avax.curve.fi/factory/39' },
+  { title: 'Trade MONEY (Curve)', link: 'https://avax.curve.fi/factory/39' },
   {
-    title: 'Provide MORE-AVAX Liquidity',
+    title: 'Trade MONEY (Pangolin)',
+    link: 'https://app.pangolin.exchange/#/swap?inputCurrency=AVAX&outputCurrency=0x0f577433Bf59560Ef2a79c124E9Ff99fCa258948',
+  },
+  {
+    title: 'MORE-AVAX LP',
     link: 'https://traderjoexyz.com/pool/AVAX/0xd9D90f882CDdD6063959A9d837B05Cb748718A05#/',
+  },
+  {
+    title: 'MONEY-AVAX LP',
+    link: 'https://app.pangolin.exchange/#/add/AVAX/0x0f577433Bf59560Ef2a79c124E9Ff99fCa258948',
+  },
+  {
+    title: 'MONEY-Stable LP',
+    link: 'https://avax.curve.fi/factory/39/deposit',
   },
 ];
 

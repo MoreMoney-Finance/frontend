@@ -1,4 +1,4 @@
-import { getAddress } from 'ethers/lib/utils';
+// import { getAddress } from 'ethers/lib/utils';
 import React, { useEffect, useState } from 'react';
 
 export type YYMetadata = Record<
@@ -44,32 +44,30 @@ export function ExternalMetadataCtxProvider({
   children,
 }: React.PropsWithChildren<any>) {
   const [yyMetadata, setYYMeta] = useState<YYMetadata>({});
-  const [yieldMonitor, setYieldMonitor] = useState<
-    Record<string, YieldMonitorMetadata>
-  >({});
+  // const [yieldMonitor, setYieldMonitor] = useState<
+  //   Record<string, YieldMonitorMetadata>
+  // >({});
 
   useEffect(() => {
     const urls = [
       'https://staging-api.yieldyak.com/apys',
-      '/ym/api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
+      // '/ym/api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
     ];
     Promise.all(
-      urls.map((url) =>
-        fetch(url).then((response) => response.json())
-      )
+      urls.map((url) => fetch(url).then((response) => response.json()))
     )
       .then((responses) => {
         setYYMeta(responses[0] as YYMetadata);
         // console.log('from yield monitor', responses[1]);
 
-        const ymData: Record<string, YieldMonitorMetadata> = {};
-        for (const r of responses[1]) {
-          const a = getAddress(r.lpAddress);
-          if (!(a in ymData) || r.totalApy > ymData[a].totalApy) {
-            ymData[a] = r;
-          } 
-        }
-        setYieldMonitor(ymData);
+        // const ymData: Record<string, YieldMonitorMetadata> = {};
+        // for (const r of responses[1]) {
+        //   const a = getAddress(r.lpAddress);
+        //   if (!(a in ymData) || r.totalApy > ymData[a].totalApy) {
+        //     ymData[a] = r;
+        //   }
+        // }
+        // setYieldMonitor(ymData);
       })
       .catch((err) => {
         console.error('Failed to fetch one or more of these URLs:');
@@ -79,7 +77,9 @@ export function ExternalMetadataCtxProvider({
   }, []);
   return (
     <ExternalMetadataContext.Provider
-      value={{ yyMetadata, yieldMonitor } as unknown as ExternalMetadataType}
+      value={
+        { yyMetadata, yieldMonitor: {} } as unknown as ExternalMetadataType
+      }
     >
       {children}
     </ExternalMetadataContext.Provider>

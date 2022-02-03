@@ -24,7 +24,7 @@ export function LiquidatablePositionsCtxProvider({
       ])
   );
   const stable = useStable();
-  const START = new Date(2021, 10, 26).valueOf();
+  const START = new Date(2021, 12, 30).valueOf();
   const updatedPositions = useUpdatedPositions(START);
   console.log('updatedPositions', updatedPositions);
 
@@ -36,6 +36,8 @@ export function LiquidatablePositionsCtxProvider({
     const pos = updatedPositions[index];
     parsedPositions.set(pos.trancheId, pos);
   }
+  // console.log(parsedPositions);
+  // console.log(tokenPrices);
 
   const dollar = new CurrencyValue(stable, parseEther('1'));
 

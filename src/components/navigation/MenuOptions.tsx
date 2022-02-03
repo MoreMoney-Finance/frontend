@@ -1,6 +1,6 @@
-import { HamburgerIcon } from '@chakra-ui/icons';
 import {
   IconButton,
+  Image,
   Menu,
   MenuButton,
   MenuItem,
@@ -8,6 +8,7 @@ import {
   Portal,
 } from '@chakra-ui/react';
 import * as React from 'react';
+import dots from '../../assets/img/horizontal-dots.svg';
 
 const Links = [
   {
@@ -48,7 +49,7 @@ export default function MenuOptions() {
       <MenuButton
         as={IconButton}
         aria-label="Options"
-        icon={<HamburgerIcon />}
+        icon={<Image src={dots} alt="Options" />}
         variant="outline"
       />
       <Portal>

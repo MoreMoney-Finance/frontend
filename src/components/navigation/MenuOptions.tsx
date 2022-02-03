@@ -1,4 +1,12 @@
-import { Box, HStack, Link as LinkComponent } from '@chakra-ui/react';
+import { HamburgerIcon } from '@chakra-ui/icons';
+import {
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Portal,
+} from '@chakra-ui/react';
 import * as React from 'react';
 
 const Links = [
@@ -34,33 +42,29 @@ const Links = [
   },
 ];
 
-export default function FooterBar() {
+export default function MenuOptions() {
   return (
-    <Box
-      py={4}
-      position={'absolute'}
-      bottom={[-20, -10, 0]}
-      right={0}
-      left={[5, 10, 10]}
-    >
-      <HStack
-        spacing={8}
-        alignItems={'center'}
-        justifyContent={'space-between'}
-      >
-        {/* <Text fontSize="12px" lineHeight="21px" color="whiteAlpha.500">
-          Copyright © 2021 iMentus. All Rights Reserved
-        </Text> */}
-        <HStack as={'nav'} spacing={4} display={{ base: 'none', xs: 'flex' }}>
-          {Links.map((link) => (
-            <LinkComponent variant="footer" key={link.title}>
-              <a href={link.link} target={'_blank'} rel="noreferrer">
-                {link.title}
-              </a>
-            </LinkComponent>
+    <Menu>
+      <MenuButton
+        as={IconButton}
+        aria-label="Options"
+        icon={<HamburgerIcon />}
+        variant="outline"
+      />
+      <Portal>
+        <MenuList zIndex="dropdown">
+          {Links.map((link, index) => (
+            <a
+              href={link.link}
+              target={'_blank'}
+              rel="noreferrer"
+              key={'option' + index}
+            >
+              <MenuItem>{link.title}</MenuItem>
+            </a>
           ))}
-        </HStack>
-      </HStack>
-    </Box>
+        </MenuList>
+      </Portal>
+    </Menu>
   );
 }

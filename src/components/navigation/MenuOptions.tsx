@@ -1,11 +1,11 @@
 import {
+  Container,
   IconButton,
   Image,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Portal,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import dots from '../../assets/img/horizontal-dots.svg';
@@ -29,18 +29,6 @@ const Links = [
     title: 'Trade MONEY (Pangolin)',
     link: 'https://app.pangolin.exchange/#/swap?inputCurrency=AVAX&outputCurrency=0x0f577433Bf59560Ef2a79c124E9Ff99fCa258948',
   },
-  {
-    title: 'MORE-AVAX LP',
-    link: 'https://traderjoexyz.com/pool/AVAX/0xd9D90f882CDdD6063959A9d837B05Cb748718A05#/',
-  },
-  {
-    title: 'MONEY-AVAX LP',
-    link: 'https://app.pangolin.exchange/#/add/AVAX/0x0f577433Bf59560Ef2a79c124E9Ff99fCa258948',
-  },
-  {
-    title: 'MONEY-Stable LP',
-    link: 'https://avax.curve.fi/factory/39/deposit',
-  },
 ];
 
 export default function MenuOptions() {
@@ -52,8 +40,8 @@ export default function MenuOptions() {
         icon={<Image src={dots} alt="Options" />}
         variant="outline"
       />
-      <Portal>
-        <MenuList zIndex="dropdown">
+      <MenuList zIndex="dropdown" background={'transparent'} border="none">
+        <Container variant={'token'}>
           {Links.map((link, index) => (
             <a
               href={link.link}
@@ -64,8 +52,8 @@ export default function MenuOptions() {
               <MenuItem>{link.title}</MenuItem>
             </a>
           ))}
-        </MenuList>
-      </Portal>
+        </Container>
+      </MenuList>
     </Menu>
   );
 }

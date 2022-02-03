@@ -41,10 +41,14 @@ export function LiquidatablePositionsCtxProvider({
 
   const dollar = new CurrencyValue(stable, parseEther('1'));
 
-  const liquidatablePositions = Array.from(parsedPositions.values()).filter(
-    (posMeta) =>
-      posMeta.liquidationPrice > tokenPrices[posMeta.token.address] &&
-      posMeta.debt.gt(dollar)
+  const liquidatablePositions = React.useMemo(
+    () =>
+      Array.from(parsedPositions.values()).filter(
+        (posMeta) =>
+          posMeta.liquidationPrice > tokenPrices[posMeta.token.address] &&
+          posMeta.debt.gt(dollar)
+      ),
+    []
   );
 
   return (

@@ -37,14 +37,14 @@ export function PositionData({
   const positionHealthColor = debt.value.lt(parseEther('0.1'))
     ? 'accent'
     : totalPercentage > liquidatableZone
-    ? 'purple.400'
-    : totalPercentage > criticalZone
-    ? 'red'
-    : totalPercentage > riskyZone
-    ? 'orange'
-    : totalPercentage > healthyZone
-    ? 'green'
-    : 'accent';
+      ? 'purple.400'
+      : totalPercentage > criticalZone
+        ? 'red'
+        : totalPercentage > riskyZone
+          ? 'orange'
+          : totalPercentage > healthyZone
+            ? 'green'
+            : 'accent';
   const positionHealth = {
     accent: 'Safe',
     green: 'Healthy',

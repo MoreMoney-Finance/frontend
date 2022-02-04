@@ -6,10 +6,12 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Progress,
   Text,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import { parseEther } from '@ethersproject/units';
 import {
   CurrencyValue,
   useEtherBalance,
@@ -86,7 +88,7 @@ export default function DepositBorrow({
 
   const { sendDepositBorrow, depositBorrowState } = useDepositBorrowTrans(
     position ? position.trancheId : undefined,
-    position ? position.trancheContract : undefined,
+    position ? position.trancheContract : undefined
   );
   const {
     sendDepositBorrow: sendNativeDepositBorrow,
@@ -218,6 +220,30 @@ export default function DepositBorrow({
     justifyContent: 'space-between',
   };
 
+  const liquidatableZone = borrowablePercent;
+  const criticalZone = (90 * borrowablePercent) / 100;
+  const riskyZone = (80 * borrowablePercent) / 100;
+  const healthyZone = (50 * borrowablePercent) / 100;
+
+  const positionHealthColor = position?.debt.value.lt(parseEther('0.1'))
+    ? 'accent'
+    : totalPercentage > liquidatableZone
+      ? 'purple.400'
+      : totalPercentage > criticalZone
+        ? 'red'
+        : totalPercentage > riskyZone
+          ? 'orange'
+          : totalPercentage > healthyZone
+            ? 'green'
+            : 'accent';
+  const positionHealth = {
+    accent: 'Safe',
+    green: 'Healthy',
+    orange: 'Risky',
+    red: 'Critical',
+    ['purple.400']: 'Liquidatable',
+  };
+
   const dangerousPosition = totalPercentage > borrowablePercent * 0.92;
   console.log('customPercentageInput', customPercentageInput);
   return (
@@ -330,6 +356,15 @@ export default function DepositBorrow({
             </InputRightElement>
           </InputGroup>
         </HStack>
+        <br />
+        <br />
+        <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
+          Position Health
+        </Text>
+        <Progress colorScheme={positionHealthColor} value={totalPercentage} />
+        <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
+          {positionHealth[positionHealthColor]}
+        </Text>
         <HStack justifyContent={'space-between'} marginTop={'40px'}>
           <VStack spacing={'2px'}>
             <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>

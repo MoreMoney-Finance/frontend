@@ -1,4 +1,5 @@
 import { Button, Flex, Progress, Td, Text, Tr } from '@chakra-ui/react';
+import { parseEther } from '@ethersproject/units';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import React from 'react';
@@ -10,7 +11,7 @@ import {
   YieldType,
 } from '../../chain-interaction/contracts';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
-import { parseFloatNoNaN } from '../../utils';
+import { parseFloatCurrencyValue } from '../../utils';
 import { TrancheAction } from './TrancheTable';
 
 export function TrancheRow(
@@ -28,10 +29,22 @@ export function TrancheRow(
     usdPrice,
   } = params;
 
+
+  const stable = useStable();
+
+  const collateral =
+    'collateral' in params && params.collateral
+      ? params.collateral
+      : new CurrencyValue(token, BigNumber.from(0));
+  const debt =
+    'debt' in params && params.debt.gt(params.yield)
+      ? params.debt.sub(params.yield)
+      : new CurrencyValue(stable, BigNumber.from(0));
+
   const totalPercentage =
-    parseFloatNoNaN(totalCollateral.toString()) > 0 && usdPrice > 0
-      ? (100 * parseFloatNoNaN(totalDebt.toString())) /
-        (parseFloatNoNaN(totalCollateral.toString()) * usdPrice)
+    parseFloatCurrencyValue(collateral) > 0 && usdPrice > 0
+      ? (100 * parseFloatCurrencyValue(debt)) /
+        (parseFloatCurrencyValue(collateral) * usdPrice)
       : 0;
 
   // Of borrowable
@@ -40,14 +53,16 @@ export function TrancheRow(
   // >50% Health,
   //otherwise Safe -- if the health is worse than 100% --- Liquidatable
 
+
   const liquidatableZone = borrowablePercent;
   const criticalZone = (90 * borrowablePercent) / 100;
   const riskyZone = (80 * borrowablePercent) / 100;
   const healthyZone = (50 * borrowablePercent) / 100;
 
-  const positionHealthColor =
-    totalPercentage > liquidatableZone
-      ? 'button'
+  const positionHealthColor = debt.value.lt(parseEther('0.1'))
+    ? 'accent'
+    : totalPercentage > liquidatableZone
+      ? 'purple.400'
       : totalPercentage > criticalZone
         ? 'red'
         : totalPercentage > riskyZone
@@ -60,8 +75,9 @@ export function TrancheRow(
     green: 'Healthy',
     orange: 'Risky',
     red: 'Critical',
-    button: 'Liquidatable',
+    ['purple.400']: 'Liquidatable',
   };
+
   // const location = useLocation();
   // const details = location.search?.includes('details=true');
 
@@ -69,8 +85,6 @@ export function TrancheRow(
 
   const actionArgs =
     action && action.args ? action.args : () => ({} as Record<string, any>);
-
-  const stable = useStable();
 
   // const walletBalance =
   //   useWalletBalance(token.address) ??
@@ -80,15 +94,6 @@ export function TrancheRow(
   //     significantDigits: 30,
   //   })} (${token.address})`
   // );
-
-  const collateral =
-    'collateral' in params && params.collateral
-      ? params.collateral
-      : new CurrencyValue(token, BigNumber.from(0));
-  const debt =
-    'debt' in params && params.debt.gt(params.yield)
-      ? params.debt.sub(params.yield)
-      : new CurrencyValue(stable, BigNumber.from(0));
 
   const stratLabel =
     params.yieldType === YieldType.REPAYING ? 'Self-repaying' : 'Compounding';

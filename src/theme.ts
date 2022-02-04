@@ -46,10 +46,12 @@ const Link = {
   },
   variants: {
     footer: {
-      lineHeight: '21px',
+      fontSize: '17px',
+      lineHeight: '24px',
       color: 'whiteAlpha.700',
     },
     header: {
+      fontSize: '17px',
       fontWeight: '600',
       _hover: {
         background: 'brand.accent',
@@ -58,6 +60,7 @@ const Link = {
       },
     },
     headerActive: {
+      fontSize: '17px',
       fontWeight: '600',
       background: 'brand.accent',
       WebkitBackgroundClip: 'text',
@@ -411,6 +414,18 @@ export const theme = extendTheme({
         'linear-gradient(to bottom, hsla(166, 100%, 46%, 1), hsla(165, 86%, 34%, 1))',
       gradientBg:
         'linear-gradient(to bottom, hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.03))',
+    },
+    accent_color: 'hsla(166, 100%, 46%, 0.9)',
+    accent: {
+      100: 'accent_color',
+      200: 'hsla(166, 100%, 46%, 0.9)',
+      300: 'hsla(166, 100%, 46%, 0.8)',
+      400: 'hsla(166, 100%, 46%, 0.7)',
+      500: 'hsla(166, 100%, 46%, 0.6)',
+      600: 'hsla(166, 100%, 46%, 0.5)',
+      700: 'hsla(166, 100%, 46%, 0.4)',
+      800: 'hsla(166, 100%, 46%, 0.3)',
+      900: 'hsla(166, 100%, 46%, 0.2)',
     },
     whiteAlpha: {
       30: 'hsla(0, 0%, 100%, 0.03)',

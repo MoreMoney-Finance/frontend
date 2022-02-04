@@ -1,20 +1,22 @@
-import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
+import {
+  CloseIcon, HamburgerIcon
+} from '@chakra-ui/icons';
 import {
   Box,
   Flex,
   HStack,
   IconButton,
   Image,
-  Link as LinkComponent,
-  Stack,
+  Link as LinkComponent, Stack,
   Text,
-  useDisclosure,
+  useDisclosure
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../../assets/logo/logo.png';
 import AccountModal from '../account/AccountModal';
 import { UserAddressComponent } from '../account/UserAddressComponent';
+import MenuOptions from './MenuOptions';
 
 const Links = [
   { title: 'Borrow', link: '/' },
@@ -80,6 +82,7 @@ export default function NavigationBar() {
           >
             <UserAddressComponent handleOpenModal={onOpenAccount} />
             <AccountModal isOpen={isOpenAccount} onClose={onCloseAccount} />
+            <MenuOptions />
           </HStack>
         </Flex>
         {isOpen ? (

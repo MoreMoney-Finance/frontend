@@ -1,3 +1,4 @@
+import { InfoIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -8,23 +9,24 @@ import {
   Td,
   Text,
   Thead,
+  Tooltip,
   Tr,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Column, useTable } from 'react-table';
 import { ParsedStratMetaRow } from '../../../chain-interaction/contracts';
-import { TableTabs } from './TableTabs';
 import { TokenDescription } from '../../../components/tokens/TokenDescription';
 import { LiquidationFeesContext } from '../../../contexts/LiquidationFeesContext';
 import { StrategyMetadataContext } from '../../../contexts/StrategyMetadataContext';
 import { TableSearch } from './TableSearch';
+import { TableTabs } from './TableTabs';
 
 type Entity = ParsedStratMetaRow & {
   asset: any;
   apy: string;
   MONEYavailable: string;
-  minColRatio: string;
+  tvlPeg: string;
   totalBorrowed: string;
   liquidationFee: string;
   balance: number;
@@ -79,6 +81,7 @@ export function AllSupportedCollateral() {
           (1 / (meta.borrowablePercent / 100)) * 100
         )}%`,
         ltv: `${5 * Math.round(meta.borrowablePercent / 5)}%`,
+        tvlPeg: meta.tvlInPeg.format({}),
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
         liquidationFee:
           (tokenFees.get(meta.token.address) ?? 'Loading...') + '%',
@@ -96,30 +99,60 @@ export function AllSupportedCollateral() {
     })
     .sort((a, b) => b.balance - a.balance);
 
+  function tooltip(colName: string, label: string) {
+    return (
+      <Flex>
+        {' '}
+        {colName} &nbsp;
+        <Tooltip hasArrow label={label} bg="gray.300" color="black">
+          <InfoIcon />
+        </Tooltip>
+      </Flex>
+    );
+  }
+
   const columns = React.useMemo<Column<Entity>[]>(
     () => [
       {
-        Header: 'Collateral Asset',
+        Header: tooltip(
+          'Collateral Asset ',
+          'The kinds of collateral you can deposit to borrow MONEY'
+        ),
         accessor: 'asset',
       },
       {
-        Header: 'Collateral APY',
+        Header: tooltip(
+          'APY earned  ',
+          'The yield you earn on your deposited collateral'
+        ),
         accessor: 'apy',
       },
       {
-        Header: 'MONEY available',
+        Header: tooltip(
+          'MONEY available ',
+          'How much in total still can be borrowed against this asset'
+        ),
         accessor: 'MONEYavailable',
       },
       {
-        Header: 'Min ColRatio',
-        accessor: 'minColRatio',
+        Header: tooltip(
+          'TVL ',
+          'Total amount of this asset locked in our protocol, in US dollars'
+        ),
+        accessor: 'tvlPeg',
       },
       {
-        Header: 'Max LTV',
+        Header: tooltip(
+          'Max LTV ',
+          'How much of your deposited value you can extract as MONEY loan'
+        ),
         accessor: 'ltv',
       },
       {
-        Header: 'Liquidation Fee',
+        Header: tooltip(
+          'Liquidation Fee ',
+          'Percentage of loan paid if you get liquidated'
+        ),
         accessor: 'liquidationFee',
       },
     ],

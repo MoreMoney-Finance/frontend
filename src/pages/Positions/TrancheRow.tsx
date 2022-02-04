@@ -24,8 +24,6 @@ export function TrancheRow(
     APY,
     action,
     borrowablePercent,
-    totalCollateral,
-    totalDebt,
     usdPrice,
   } = params;
 

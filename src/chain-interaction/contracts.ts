@@ -199,6 +199,9 @@ function parseStratMeta(
 
     let syntheticDebtCeil = globalMoneyAvailable.add(row.totalDebt);
 
+    const trueOne = parseUnits('1', token.decimals);
+    const valPerOne = trueOne.mul(row.valuePer1e18).div(parseEther('1'));
+
     return {
       debtCeiling: new CurrencyValue(
         stable,
@@ -218,10 +221,7 @@ function parseStratMeta(
         parseFloat(formatEther(row.valuePer1e18)) / 10 ** (18 - token.decimals),
       strategyName: parseBytes32String(row.strategyName),
       tvlInToken,
-      tvlInPeg: new CurrencyValue(
-        stable,
-        row.tvl.mul(row.valuePer1e18).div(parseUnits('1', token.decimals))
-      ),
+      tvlInPeg: new CurrencyValue(stable, row.tvl.mul(valPerOne).div(trueOne)),
       harvestBalance2Tally: new CurrencyValue(stable, row.harvestBalance2Tally),
       yieldType: [YieldType.REPAYING, YieldType.COMPOUNDING, YieldType.NOYIELD][
         row.yieldType
@@ -300,6 +300,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
     ['0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd']: addresses.YieldYakStrategy,
     ['0xd586e7f844cea2f87f50152665bcbc2c279d8d70']: addresses.YieldYakStrategy,
     ['0x8729438EB15e2C8B576fCc6AeCdA6A148776C0F5']: addresses.YieldYakStrategy,
+    ['0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664']: addresses.YieldYakStrategy,
     ['0x454E67025631C065d3cFAD6d71E6892f74487a15']:
       addresses.TraderJoeMasterChefStrategy,
     ['0x2148D1B21Faa7eb251789a51B404fc063cA6AAd6']:

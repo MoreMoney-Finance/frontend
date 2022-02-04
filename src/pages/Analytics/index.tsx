@@ -41,7 +41,11 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
     'IsolatedLendingLiquidation',
     'StableLendingLiquidation',
   ];
-  const blacklist = ['StrategyRegistry', 'StrategyTokenActivation', 'StrategyViewer'];
+  const blacklist = [
+    'StrategyRegistry',
+    'StrategyTokenActivation',
+    'StrategyViewer',
+  ];
   const keys: (keyof DeploymentAddresses)[] = Object.keys(
     addresses
   ) as (keyof DeploymentAddresses)[];
@@ -62,6 +66,9 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
     new CurrencyValue(stable, BigNumber.from(0))
   );
 
+  Object.values(allStratMeta)
+    .flatMap((rows) => Object.values(rows))
+    .map((row) => console.log(row.token.ticker, row.tvlInPeg.format()));
   const tvlNoFarm = Object.values(allStratMeta)
     .flatMap((rows) => Object.values(rows))
     .reduce(

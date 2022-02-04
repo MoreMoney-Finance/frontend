@@ -51,8 +51,11 @@ export default function ClaimReward({
         w={'50%'}
         onClick={sendClaim}
       >
-        {stakeMeta.earned.gt(stakeMeta.rewards.mul(2))
-          ? 'Init vesting'
+        {stakeMeta.earned.gt(stakeMeta.rewards.mul(3))
+          ? `Vest ${stakeMeta.earned.format({
+            fixedPrecisionDigits: 0,
+            useFixedPrecision: true,
+          })}`
           : 'Claim'}
       </Button>
       <TransactionErrorDialog state={claimState} title={'Claim Reward'} />

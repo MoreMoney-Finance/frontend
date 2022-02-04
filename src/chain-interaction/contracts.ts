@@ -412,7 +412,7 @@ export type ParsedPositionMetaRow = {
   trancheContract: string;
 };
 
-type RawPositionMetaRow = {
+export type RawPositionMetaRow = {
   trancheId: BigNumber;
   strategy: string;
   collateral: BigNumber;
@@ -461,7 +461,7 @@ export function calcLiqPriceFromNum(
   }
 }
 
-function parsePositionMeta(
+export function parsePositionMeta(
   row: RawPositionMetaRow,
   stable: Token,
   trancheContract: string

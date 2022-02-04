@@ -5,20 +5,19 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useAddresses } from './chain-interaction/contracts';
-import FooterBar from './components/navigation/FooterBar';
-import GlobalDebtCeilingMessage from './components/notifications/GlobalDebtCeilingMessage';
 import NavigationBar from './components/navigation/NavigationBar';
+import GlobalDebtCeilingMessage from './components/notifications/GlobalDebtCeilingMessage';
+import LiquidatablePositionsMessage from './components/notifications/LiquidatablePositionsMessage';
 import NetworkNotSupported from './components/notifications/NetworkNotSupported';
-import { TransactionToasts } from './components/notifications/TransactionToasts';
 import PhishingAlertComponent from './components/notifications/PhishingAlertComponent';
+import { TransactionToasts } from './components/notifications/TransactionToasts';
+import { ExternalMetadataCtxProvider } from './contexts/ExternalMetadataContext';
+import { LiquidatablePositionsCtxProvider } from './contexts/LiquidatablePositionsContext';
 import { LiquidationFeesCtxProvider } from './contexts/LiquidationFeesContext';
 import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
 import { UserAddressCtxProvider } from './contexts/UserAddressContext';
 import { WalletBalancesCtxProvider } from './contexts/WalletBalancesContext';
-import { ExternalMetadataCtxProvider } from './contexts/ExternalMetadataContext';
 import { theme } from './theme';
-import { LiquidatablePositionsCtxProvider } from './contexts/LiquidatablePositionsContext';
-import LiquidatablePositionsMessage from './components/notifications/LiquidatablePositionsMessage';
 
 declare let window: any;
 
@@ -130,7 +129,6 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                         {params.children}
                         <Outlet />
                       </Box>
-                      <FooterBar />
                     </Box>
                   </LiquidatablePositionsCtxProvider>
                 </StrategyMetadataCtxProvider>

@@ -58,7 +58,7 @@ export function ExternalMetadataCtxProvider({
       });
 
     fetch(
-      '/ym/api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc'
+      'https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/yield-monitor.json'
     )
       .then((response) => response.json())
       .then((response) => {
@@ -78,9 +78,7 @@ export function ExternalMetadataCtxProvider({
   }, []);
   return (
     <ExternalMetadataContext.Provider
-      value={
-        { yyMetadata, yieldMonitor } as unknown as ExternalMetadataType
-      }
+      value={{ yyMetadata, yieldMonitor } as unknown as ExternalMetadataType}
     >
       {children}
     </ExternalMetadataContext.Provider>

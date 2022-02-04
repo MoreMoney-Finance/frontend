@@ -199,6 +199,9 @@ function parseStratMeta(
 
     let syntheticDebtCeil = globalMoneyAvailable.add(row.totalDebt);
 
+    const trueOne = parseUnits('1', token.decimals);
+    const valPerOne = trueOne.mul(row.valuePer1e18).div(parseEther('1'));
+
     return {
       debtCeiling: new CurrencyValue(
         stable,
@@ -218,10 +221,7 @@ function parseStratMeta(
         parseFloat(formatEther(row.valuePer1e18)) / 10 ** (18 - token.decimals),
       strategyName: parseBytes32String(row.strategyName),
       tvlInToken,
-      tvlInPeg: new CurrencyValue(
-        stable,
-        row.tvl.mul(row.valuePer1e18).div(parseUnits('1', token.decimals))
-      ),
+      tvlInPeg: new CurrencyValue(stable, row.tvl.mul(valPerOne).div(trueOne)),
       harvestBalance2Tally: new CurrencyValue(stable, row.harvestBalance2Tally),
       yieldType: [YieldType.REPAYING, YieldType.COMPOUNDING, YieldType.NOYIELD][
         row.yieldType

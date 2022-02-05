@@ -21,13 +21,13 @@ export function PositionData({
     ? position.debt.sub(position.yield)
     : new CurrencyValue(position.debt.currency, BigNumber.from(0));
 
-  const { collateralValue, debt, borrowablePercent } = position;
+  const { collateral, debt, borrowablePercent } = position;
   const { usdPrice } = stratMeta;
 
   const totalPercentage =
-    parseFloatCurrencyValue(collateralValue) > 0 && usdPrice > 0
+    collateral?.value.gt(0) && usdPrice > 0
       ? (100 * parseFloatCurrencyValue(debt)) /
-        (parseFloatCurrencyValue(collateralValue) * usdPrice)
+        (parseFloatCurrencyValue(collateral) * usdPrice)
       : 0;
   const liquidatableZone = borrowablePercent;
   const criticalZone = (90 * borrowablePercent) / 100;
@@ -53,6 +53,7 @@ export function PositionData({
     ['purple.400']: 'Liquidatable',
   };
 
+  // console.log('PositionData', debt, borrowablePercent, totalPercentage);
   return (
     <GridItem colSpan={[2, 3, 4]} rowSpan={[12, 1, 1]} marginTop={'30px'}>
       <Container variant={'token'}>

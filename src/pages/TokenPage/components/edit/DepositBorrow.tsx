@@ -9,14 +9,14 @@ import {
   Progress,
   Text,
   useDisclosure,
-  VStack,
+  VStack
 } from '@chakra-ui/react';
 import { parseEther } from '@ethersproject/units';
 import {
   CurrencyValue,
   useEtherBalance,
   useEthers,
-  useTokenAllowance,
+  useTokenAllowance
 } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
@@ -27,12 +27,12 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   TxStatus,
-  useStable,
+  useStable
 } from '../../../../chain-interaction/contracts';
 import {
   useApproveTrans,
   useDepositBorrowTrans,
-  useNativeDepositBorrowTrans,
+  useNativeDepositBorrowTrans
 } from '../../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../../components/account/EnsureWalletConnected';
 import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
@@ -175,7 +175,7 @@ export default function DepositBorrow({
     totalCollateral > 0 && usdPrice > 0
       ? (100 * totalDebt) / (totalCollateral * usdPrice)
       : 0;
-
+   
   const percentageLabel =
     totalCollateral > 0 && usdPrice > 0
       ? `${totalPercentage.toFixed(0)} %`
@@ -227,13 +227,13 @@ export default function DepositBorrow({
 
   const positionHealthColor = position?.debt.value.lt(parseEther('0.1'))
     ? 'accent'
-    : totalPercentage > liquidatableZone
+    : currentPercentage > liquidatableZone
       ? 'purple.400'
-      : totalPercentage > criticalZone
+      : currentPercentage > criticalZone
         ? 'red'
-        : totalPercentage > riskyZone
+        : currentPercentage > riskyZone
           ? 'orange'
-          : totalPercentage > healthyZone
+          : currentPercentage > healthyZone
             ? 'green'
             : 'accent';
   const positionHealth = {
@@ -243,6 +243,14 @@ export default function DepositBorrow({
     red: 'Critical',
     ['purple.400']: 'Liquidatable',
   };
+
+  // console.log(
+  //   'DepositBorrow',
+  //   position?.debt,
+  //   borrowablePercent,
+  //   totalPercentage,
+  //   currentPercentage
+  // );
 
   const dangerousPosition = totalPercentage > borrowablePercent * 0.92;
   console.log('customPercentageInput', customPercentageInput);

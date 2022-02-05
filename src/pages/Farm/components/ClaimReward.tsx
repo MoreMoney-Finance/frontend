@@ -48,10 +48,10 @@ export default function ClaimReward({
       <Button
         isDisabled={stakeMeta.earned.add(stakeMeta.rewards).isZero()}
         type="submit"
-        w={'50%'}
+        w={'100%'}
         onClick={sendClaim}
       >
-        {stakeMeta.earned.gt(stakeMeta.rewards.mul(3))
+        {stakeMeta.earned.gt(stakeMeta.rewards.mul(2))
           ? `Vest ${stakeMeta.earned.format({
             fixedPrecisionDigits: 0,
             useFixedPrecision: true,

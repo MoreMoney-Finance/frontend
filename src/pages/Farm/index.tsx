@@ -217,7 +217,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                       </Button>
                       <Button
                         as={Link}
-                        href={item.getTokenURL}
+                        href={item.stakeTokenURL}
                         isExternal
                         color={'white'}
                         variant={'primary'}

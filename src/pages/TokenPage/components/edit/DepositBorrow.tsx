@@ -9,14 +9,13 @@ import {
   Progress,
   Text,
   useDisclosure,
-  VStack,
+  VStack
 } from '@chakra-ui/react';
-import { parseEther } from '@ethersproject/units';
 import {
   CurrencyValue,
   useEtherBalance,
   useEthers,
-  useTokenAllowance,
+  useTokenAllowance
 } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
@@ -27,12 +26,12 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   TxStatus,
-  useStable,
+  useStable
 } from '../../../../chain-interaction/contracts';
 import {
   useApproveTrans,
   useDepositBorrowTrans,
-  useNativeDepositBorrowTrans,
+  useNativeDepositBorrowTrans
 } from '../../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../../components/account/EnsureWalletConnected';
 import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';

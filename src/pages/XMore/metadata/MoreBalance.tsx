@@ -28,7 +28,7 @@ export function MoreBalance() {
             width={['100%', '100%', '50%']}
           >
             <Image
-              src="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Coin-Logo-FINAL.jpg"
+              src="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg"
               alt="MoreMoney Logo"
               width="40px"
               height="40px"
@@ -45,7 +45,7 @@ export function MoreBalance() {
             marginLeft={['0px', '0px', '70px']}
           >
             <Image
-              src="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Coin-Logo-FINAL.jpg"
+              src="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg"
               alt="MoreMoney Logo"
               width="40px"
               height="40px"

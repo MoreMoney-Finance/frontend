@@ -14,6 +14,7 @@ import EditPosition from './edit/EditPosition';
 import { PositionData } from './PositionData';
 import StrategyNameAndSwitch from './change-strategy/StrategyNameAndSwitch';
 import StrategyTokenInformation from './StrategyTokenInformation';
+import { parseEther } from '@ethersproject/units';
 
 export function PositionBody({
   position,
@@ -53,7 +54,7 @@ export function PositionBody({
         title={'Migrate Strategy'}
       />
 
-      {position && (
+      {position && position.collateralValue.value.gt(parseEther('0.01')) && (
         <PositionData
           position={position}
           stratMeta={stratMeta[chosenStrategy]}

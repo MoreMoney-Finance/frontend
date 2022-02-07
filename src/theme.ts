@@ -46,10 +46,12 @@ const Link = {
   },
   variants: {
     footer: {
-      lineHeight: '21px',
+      fontSize: '17px',
+      lineHeight: '24px',
       color: 'whiteAlpha.700',
     },
     header: {
+      fontSize: '17px',
       fontWeight: '600',
       _hover: {
         background: 'brand.accent',
@@ -58,6 +60,7 @@ const Link = {
       },
     },
     headerActive: {
+      fontSize: '17px',
       fontWeight: '600',
       background: 'brand.accent',
       WebkitBackgroundClip: 'text',

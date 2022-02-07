@@ -6,10 +6,12 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Progress,
   Text,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import { parseEther } from '@ethersproject/units';
 import {
   CurrencyValue,
   useEtherBalance,
@@ -86,7 +88,7 @@ export default function DepositBorrow({
 
   const { sendDepositBorrow, depositBorrowState } = useDepositBorrowTrans(
     position ? position.trancheId : undefined,
-    position ? position.trancheContract : undefined,
+    position ? position.trancheContract : undefined
   );
   const {
     sendDepositBorrow: sendNativeDepositBorrow,
@@ -218,6 +220,38 @@ export default function DepositBorrow({
     justifyContent: 'space-between',
   };
 
+  const liquidatableZone = borrowablePercent;
+  const criticalZone = (90 * borrowablePercent) / 100;
+  const riskyZone = (80 * borrowablePercent) / 100;
+  const healthyZone = (50 * borrowablePercent) / 100;
+
+  const positionHealthColor = 0.1 > totalDebt
+    ? 'accent'
+    : totalPercentage > liquidatableZone
+      ? 'purple.400'
+      : totalPercentage > criticalZone
+        ? 'red'
+        : totalPercentage > riskyZone
+          ? 'orange'
+          : totalPercentage > healthyZone
+            ? 'green'
+            : 'accent';
+  const positionHealth = {
+    accent: 'Safe',
+    green: 'Healthy',
+    orange: 'Risky',
+    red: 'Critical',
+    ['purple.400']: 'Liquidatable',
+  };
+
+  // console.log(
+  //   'DepositBorrow',
+  //   position?.debt,
+  //   borrowablePercent,
+  //   totalPercentage,
+  //   currentPercentage
+  // );
+
   const dangerousPosition = totalPercentage > borrowablePercent * 0.92;
   console.log('customPercentageInput', customPercentageInput);
   return (
@@ -330,6 +364,7 @@ export default function DepositBorrow({
             </InputRightElement>
           </InputGroup>
         </HStack>
+        <br />
         <HStack justifyContent={'space-between'} marginTop={'40px'}>
           <VStack spacing={'2px'}>
             <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
@@ -341,7 +376,7 @@ export default function DepositBorrow({
           </VStack>
           <VStack spacing={'2px'}>
             <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-              Expected Liquidation Price
+              Liquidation Price
             </Text>
             <Text variant={'bodyMedium'} fontWeight={'500'}>
               ${' '}
@@ -351,6 +386,21 @@ export default function DepositBorrow({
                 totalCollateral
               ).toFixed(2)}
             </Text>
+          </VStack>
+          <VStack spacing="2px">
+            <Text variant="bodyExtraSmall" color="whiteAlpha.600">
+              {positionHealth[positionHealthColor]} Position
+            </Text>
+            <Box height="24px" margin="2px" padding="6px">
+              <Progress
+                colorScheme={positionHealthColor}
+                value={100 * totalPercentage / borrowablePercent}
+                width="100px"
+                height="14px"
+                borderRadius={'10px'}
+                opacity="65%"
+              />
+            </Box>
           </VStack>
           <VStack spacing={'2px'}>
             <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>

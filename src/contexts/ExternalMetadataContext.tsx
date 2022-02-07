@@ -49,37 +49,38 @@ export function ExternalMetadataCtxProvider({
   >({});
 
   useEffect(() => {
-    const urls = [
-      'https://staging-api.yieldyak.com/apys',
-      '/ym/api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc',
-    ];
-    Promise.all(
-      urls.map((url) =>
-        fetch(url).then((response) => response.json())
-      )
-    )
-      .then((responses) => {
-        setYYMeta(responses[0] as YYMetadata);
-        // console.log('from yield monitor', responses[1]);
+    fetch('https://staging-api.yieldyak.com/apys')
+      .then((response) => response.json())
+      .then(setYYMeta)
+      .catch((err) => {
+        console.error('Failed to fetch URL');
+        console.error(err);
+      });
 
+    fetch(
+      '/ym/api/symbol/getFarmsForDex?partner=tj&amp;dexName[]=traderJoeV3&amp;dexName[]=traderjoe&page=1&order=liquidity&orderMethod=desc'
+    )
+      .then((response) => response.json())
+      .then((response) => {
         const ymData: Record<string, YieldMonitorMetadata> = {};
-        for (const r of responses[1]) {
+        for (const r of response) {
           const a = getAddress(r.lpAddress);
           if (!(a in ymData) || r.totalApy > ymData[a].totalApy) {
             ymData[a] = r;
-          } 
+          }
         }
         setYieldMonitor(ymData);
       })
       .catch((err) => {
-        console.error('Failed to fetch one or more of these URLs:');
-        console.log(urls);
+        console.error('Failed to fetch URL');
         console.error(err);
       });
   }, []);
   return (
     <ExternalMetadataContext.Provider
-      value={{ yyMetadata, yieldMonitor } as unknown as ExternalMetadataType}
+      value={
+        { yyMetadata, yieldMonitor } as unknown as ExternalMetadataType
+      }
     >
       {children}
     </ExternalMetadataContext.Provider>

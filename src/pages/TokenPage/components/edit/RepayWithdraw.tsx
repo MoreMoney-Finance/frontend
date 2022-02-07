@@ -10,6 +10,7 @@ import {
   AlertIcon,
   Link,
   useDisclosure,
+  Progress,
   // NumberInput,
   // NumberInputField,
   // InputRightElement,
@@ -55,7 +56,8 @@ export default function RepayWithdraw({
   const [data, setData] = useState<{ [x: string]: any }>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const stable = useStable();
-  const isNativeToken = getAddress(WNATIVE_ADDRESS[chainId!]) === getAddress(token.address);
+  const isNativeToken =
+    getAddress(WNATIVE_ADDRESS[chainId!]) === getAddress(token.address);
   const balanceCtx = useContext(WalletBalancesContext);
 
   const {
@@ -76,7 +78,10 @@ export default function RepayWithdraw({
     sendRepayWithdraw: sendNativeRepayWithdraw,
     repayWithdrawState: sendNativeWithdrawState,
   } = useNativeRepayWithdrawTrans(
-    position && position.trancheId, token, position ? position.trancheContract : undefined);
+    position && position.trancheId,
+    token,
+    position ? position.trancheContract : undefined
+  );
 
   function onRepayWithdraw(data: { [x: string]: any }) {
     // console.log('repay withdraw');
@@ -92,7 +97,10 @@ export default function RepayWithdraw({
         data!['money-repay'] ?? '0'
       );
     } else {
-      sendRepayWithdraw(data!['collateral-withdraw'] ?? '0', data!['money-repay'] ?? '0');
+      sendRepayWithdraw(
+        data!['collateral-withdraw'] ?? '0',
+        data!['money-repay'] ?? '0'
+      );
     }
   }
 
@@ -229,7 +237,29 @@ export default function RepayWithdraw({
 
   const dangerousPosition =
     totalPercentage > borrowablePercent * 0.92 && totalDebt > 0;
+  const liquidatableZone = borrowablePercent;
+  const criticalZone = (90 * borrowablePercent) / 100;
+  const riskyZone = (80 * borrowablePercent) / 100;
+  const healthyZone = (50 * borrowablePercent) / 100;
 
+  const positionHealthColor = 0.1 > totalDebt
+    ? 'accent'
+    : totalPercentage > liquidatableZone
+      ? 'purple.400'
+      : totalPercentage > criticalZone
+        ? 'red'
+        : totalPercentage > riskyZone
+          ? 'orange'
+          : totalPercentage > healthyZone
+            ? 'green'
+            : 'accent';
+  const positionHealth = {
+    accent: 'Safe',
+    green: 'Healthy',
+    orange: 'Risky',
+    red: 'Critical',
+    ['purple.400']: 'Liquidatable',
+  };
   return (
     <>
       <ConfirmPositionModal
@@ -371,6 +401,7 @@ export default function RepayWithdraw({
             </Button>
           </Alert>
         </HStack>
+        <br />
         <HStack justifyContent={'space-between'} marginTop={'24px'}>
           <VStack spacing={'2px'}>
             <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
@@ -382,7 +413,7 @@ export default function RepayWithdraw({
           </VStack>
           <VStack spacing={'2px'}>
             <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-              Expected Liquidation Price
+              Liquidation Price
             </Text>
             <Text variant={'bodyMedium'} fontWeight={'500'}>
               ${' '}
@@ -392,6 +423,21 @@ export default function RepayWithdraw({
                 totalCollateral
               ).toFixed(2)}
             </Text>
+          </VStack>
+          <VStack spacing="2px">
+            <Text variant="bodyExtraSmall" color="whiteAlpha.600">
+              {positionHealth[positionHealthColor]} Position
+            </Text>
+            <Box height="24px" margin="2px" padding="6px">
+              <Progress
+                colorScheme={positionHealthColor}
+                value={100 * totalPercentage / borrowablePercent}
+                width="100px"
+                height="14px"
+                borderRadius={'10px'}
+                opacity="65%"
+              />
+            </Box>
           </VStack>
           <VStack spacing={'2px'}>
             <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>

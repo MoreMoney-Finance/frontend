@@ -1,4 +1,5 @@
-import { Avatar, Button, HStack, VStack, Text } from '@chakra-ui/react';
+import { InfoOutlineIcon } from '@chakra-ui/icons';
+import { Avatar, Button, HStack, VStack, Text, Link } from '@chakra-ui/react';
 import { Token } from '@usedapp/core';
 import * as React from 'react';
 import { ParsedStakingMetadata } from '../../../chain-interaction/contracts';
@@ -40,7 +41,12 @@ export default function ClaimReward({
       justifyContent={'space-between'}
       height={'full'}
     >
-      <Text>Vested Reward</Text>
+      <Text>
+        Vested Reward{' '}
+        <Link href="https://moremoney.gitbook.io/docs/earn-with-moremoney/money3crv#vesting">
+          <InfoOutlineIcon />
+        </Link>
+      </Text>
       <HStack textAlign={'center'}>
         <Avatar size={'sm'} src={getIconsFromTokenAddress(token.address)[0]} />
         <Text>{vested.toFixed(2)} MORE</Text>
@@ -48,11 +54,14 @@ export default function ClaimReward({
       <Button
         isDisabled={stakeMeta.earned.add(stakeMeta.rewards).isZero()}
         type="submit"
-        w={'50%'}
+        w={'100%'}
         onClick={sendClaim}
       >
         {stakeMeta.earned.gt(stakeMeta.rewards.mul(2))
-          ? 'Init vesting'
+          ? `Vest ${stakeMeta.earned.format({
+            fixedPrecisionDigits: 0,
+            useFixedPrecision: true,
+          })}`
           : 'Claim'}
       </Button>
       <TransactionErrorDialog state={claimState} title={'Claim Reward'} />

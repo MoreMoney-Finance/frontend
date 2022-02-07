@@ -3,7 +3,7 @@ import { VStack, Text } from '@chakra-ui/react';
 
 type Props = {
   title: string;
-  value: string;
+  value: any;
 };
 
 export function TitleValue({ title, value }: Props) {

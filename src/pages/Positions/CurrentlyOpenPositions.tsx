@@ -1,4 +1,5 @@
 import { Flex } from '@chakra-ui/react';
+import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -13,7 +14,9 @@ export default function CurrentlyOpenPositions({
   const allPositionMeta: TokenStratPositionMetadata =
     useIsolatedPositionMetadata(account);
 
-  const positions = Object.values(allPositionMeta).flatMap((x) => x);
+  const positions = Object.values(allPositionMeta)
+    .flatMap((x) => x)
+    .filter((pos) => pos.collateralValue.value.gt(parseEther('0.01')));
   return positions.length > 0 ? (
     <Flex justifyContent={'center'}>
       <TrancheTable

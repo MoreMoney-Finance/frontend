@@ -1,8 +1,10 @@
 import { CurrencyValue } from '@usedapp/core';
 import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
-import React from 'react';
+import { BigNumber } from '@usedapp/core/node_modules/ethers';
+import React, { useEffect, useState } from 'react';
 import {
   ParsedPositionMetaRow,
+  parsePositionMeta,
   useStable,
   useUpdatedPositions,
 } from '../chain-interaction/contracts';
@@ -11,6 +13,18 @@ import { StrategyMetadataContext } from './StrategyMetadataContext';
 export const LiquidatablePositionsContext = React.createContext<
   ParsedPositionMetaRow[] | []
 >([]);
+
+type CachedPos = {
+  trancheId: number;
+  strategy: string;
+  collateral: string;
+  debt: number;
+  token: string;
+  collateralValue: number;
+  borrowablePer10k: number;
+  owner: string;
+  trancheContract: string;
+};
 
 export function LiquidatablePositionsCtxProvider({
   children,
@@ -24,19 +38,49 @@ export function LiquidatablePositionsCtxProvider({
       ])
   );
   const stable = useStable();
-  const START = new Date(2021, 10, 26).valueOf();
-  const updatedPositions = useUpdatedPositions(START);
-  console.log('updatedPositions', updatedPositions);
 
-  // liquidationPrice * 1.1
-  //check later if the position is liquidated is V
+  const [cachedPositions, setCachedPosition] = useState<{
+    tstamp: number;
+    positions: Record<string, CachedPos>;
+  }>({
+    tstamp: Date.now(),
+    positions: {},
+  });
+  useEffect(() => {
+    fetch(
+      'https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/updated-positions.json'
+    )
+      .then((response) => response.json())
+      .then(setCachedPosition)
+      .catch((err) => {
+        console.error('Failed to fetch cached positions');
+        console.log(err);
+      });
+  }, []);
+  const parsedCachePositions = Object.values(cachedPositions.positions).map((pos) => ({
+    trancheId: BigNumber.from(pos.trancheId),
+    strategy: pos.strategy,
+    collateral: BigNumber.from(pos.collateral),
+    debt: parseEther(pos.debt.toString()),
+    token: pos.token,
+    collateralValue: parseEther(pos.collateralValue.toString()),
+    borrowablePer10k: BigNumber.from(pos.borrowablePer10k),
+    owner: pos.owner,
+    yield: BigNumber.from(0),
+    trancheContract: pos.trancheContract
+  })).map((pos) => parsePositionMeta(pos, stable, pos.trancheContract));
+
+  const START = cachedPositions.tstamp;
+  const updatedPositions = useUpdatedPositions(START);
+  console.log('parseCachePositions', parsedCachePositions);
+  console.log('updatedPositions', updatedPositions);
+  const jointUpdatedPositions = [...parsedCachePositions, ...updatedPositions];
 
   const parsedPositions = new Map<number, ParsedPositionMetaRow>();
-  for (let index = 0; index < updatedPositions.length; index++) {
-    const pos = updatedPositions[index];
+  for (let index = 0; index < jointUpdatedPositions.length; index++) {
+    const pos = jointUpdatedPositions[index];
     parsedPositions.set(pos.trancheId, pos);
   }
-
   const dollar = new CurrencyValue(stable, parseEther('1'));
 
   const liquidatablePositions = Array.from(parsedPositions.values()).filter(

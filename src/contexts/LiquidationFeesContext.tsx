@@ -18,7 +18,7 @@ export function LiquidationFeesCtxProvider({
   children,
 }: React.PropsWithChildren<any>) {
   const { chainId } = useEthers();
-  const address = useAddresses().IsolatedLendingLiquidation;
+  const address = useAddresses().StableLendingLiquidation;
   const tokenFees = new Map<string, number>();
 
   function convert2ContractCall(aT: [string, Token]) {
@@ -36,7 +36,7 @@ export function LiquidationFeesCtxProvider({
     if (result) {
       const [tokenAddress, ] = tokensInQuestion[index];
       tokenFees.set(getAddress(tokenAddress), result[0].toNumber() / 100);
-      // console.log(`Set Fee for ${token.name}: ${result[0]} (${tokenAddress})`);
+      // console.log(`Set Fee for ${token.name}: ${result[0]} (${tokenAddress}): ${result[0].toNumber()}`);
     } else {
       // const [tokenAddress, token] = tokensInQuestion[index];
       // console.log(`No result fee for ${token.name} at ${tokenAddress}`);

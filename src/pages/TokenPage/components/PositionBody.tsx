@@ -54,7 +54,7 @@ export function PositionBody({
         title={'Migrate Strategy'}
       />
 
-      {position && position.collateral?.value.gt(parseEther('0.01')) && (
+      {position && position.collateralValue.value.gt(parseEther('0.01')) && (
         <PositionData
           position={position}
           stratMeta={stratMeta[chosenStrategy]}

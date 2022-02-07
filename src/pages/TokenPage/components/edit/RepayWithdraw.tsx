@@ -431,7 +431,7 @@ export default function RepayWithdraw({
             <Box height="24px" margin="2px" padding="6px">
               <Progress
                 colorScheme={positionHealthColor}
-                value={totalPercentage}
+                value={100 * totalPercentage / borrowablePercent}
                 width="100px"
                 height="14px"
                 borderRadius={'10px'}

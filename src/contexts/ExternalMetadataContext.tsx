@@ -6,6 +6,16 @@ export type YYMetadata = Record<
   { apr: number; apy: number; lastReinvest: { timestamp: number } }
 >;
 
+export type YieldFarmingData = {
+  asset: string;
+  stake: string;
+  tvl: number;
+  reward: string;
+  apr: number;
+  getTokenURL: string;
+  stakeTokenURL: string;
+};
+
 export type YieldMonitorMetadata = {
   poolNumber: string;
   symbol0Name: string;
@@ -30,12 +40,14 @@ export type YieldMonitorMetadata = {
 };
 
 export type ExternalMetadataType = {
+  yieldFarmingData: YieldFarmingData[];
   yyMetadata: YYMetadata;
   yieldMonitor: Record<string, YieldMonitorMetadata>;
 };
 
 export const ExternalMetadataContext =
   React.createContext<ExternalMetadataType>({
+    yieldFarmingData: [],
     yyMetadata: {},
     yieldMonitor: {},
   });
@@ -43,6 +55,7 @@ export const ExternalMetadataContext =
 export function ExternalMetadataCtxProvider({
   children,
 }: React.PropsWithChildren<any>) {
+  const [yieldFarmingData, setYieldFarmingData] = useState<YieldFarmingData>();
   const [yyMetadata, setYYMeta] = useState<YYMetadata>({});
   const [yieldMonitor, setYieldMonitor] = useState<
     Record<string, YieldMonitorMetadata>
@@ -75,11 +88,25 @@ export function ExternalMetadataCtxProvider({
         console.error('Failed to fetch URL');
         console.error(err);
       });
+
+    fetch(
+      'https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/yield-farming.json'
+    )
+      .then((response) => response.json())
+      .then((response) => setYieldFarmingData(response))
+      .catch((err) => {
+        console.error('Failed to fetch URL');
+        console.error(err);
+      });
   }, []);
   return (
     <ExternalMetadataContext.Provider
       value={
-        { yyMetadata, yieldMonitor } as unknown as ExternalMetadataType
+        {
+          yieldFarmingData,
+          yyMetadata,
+          yieldMonitor,
+        } as unknown as ExternalMetadataType
       }
     >
       {children}

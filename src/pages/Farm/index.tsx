@@ -25,7 +25,10 @@ import {
 } from '../../chain-interaction/contracts';
 import { useWithdrawLaunchVestingTrans } from '../../chain-interaction/transactions';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
-import { ExternalMetadataContext } from '../../contexts/ExternalMetadataContext';
+import {
+  ExternalMetadataContext,
+  YieldFarmingData,
+} from '../../contexts/ExternalMetadataContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import farminfo from '../../contracts/farminfo.json';
 import { formatNumber } from '../../utils';
@@ -42,7 +45,9 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
     account ?? ethers.constants.AddressZero
   ).flat(1);
 
-  const { yieldMonitor } = useContext(ExternalMetadataContext);
+  const { yieldFarmingData, yieldMonitor } = useContext(
+    ExternalMetadataContext
+  );
   const avaxMorePayload = Object.values(yieldMonitor).filter(
     (item) => item.lpAddress === '0xb8361d0e3f3b0fc5e6071f3a3c3271223c49e3d9'
   )[0];
@@ -71,6 +76,23 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
     lineHeight: '27px',
     padding: '16px 30px',
   };
+
+  const externalData: YieldFarmingData[] = avaxMorePayload
+    ? [
+      ...yieldFarmingData,
+      {
+        asset: 'MORE-AVAX',
+        stake: 'n/a',
+        tvl: avaxMorePayload.tvl,
+        reward: avaxMorePayload.rewardsCoin,
+        apr: avaxMorePayload.totalApy,
+        getTokenURL:
+            'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05',
+        stakeTokenURL:
+            'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm',
+      },
+    ]
+    : [];
 
   return (
     <>
@@ -148,67 +170,66 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           ) : (
             <></>
           )}
-          {avaxMorePayload != null ? (
-            <AccordionItem
-              width={'full'}
-              style={{ boxSizing: 'border-box', ...accordionStyling }}
-            >
-              <AccordionButton width={'full'} color={'white'}>
-                <Grid
-                  templateColumns="repeat(6, 1fr)"
-                  gap={2}
-                  w={'full'}
-                  alignContent={'center'}
-                  verticalAlign={'center'}
-                >
-                  <Flex w={'full'} justifyContent={'center'}>
-                    <Box w={'fit-content'}>MORE-AVAX</Box>
-                  </Flex>
+          {externalData.length > 0 ? (
+            externalData.map((item) => (
+              <AccordionItem
+                key={'farm-' + item.asset}
+                width={'full'}
+                style={{ boxSizing: 'border-box', ...accordionStyling }}
+              >
+                <AccordionButton width={'full'} color={'white'}>
+                  <Grid
+                    templateColumns="repeat(6, 1fr)"
+                    gap={2}
+                    w={'full'}
+                    alignContent={'center'}
+                    verticalAlign={'center'}
+                  >
+                    <Flex w={'full'} justifyContent={'center'}>
+                      <Box w={'fit-content'}>{item.asset}</Box>
+                    </Flex>
 
-                  <Box>
-                    <Text>n/a</Text>
-                  </Box>
+                    <Box>
+                      <Text>{item.stake}</Text>
+                    </Box>
 
-                  <Box>
-                    <Text>${formatNumber(avaxMorePayload.tvl)}</Text>
-                  </Box>
+                    <Box>
+                      <Text>{formatNumber(item.tvl)}</Text>
+                    </Box>
 
-                  <Flex w={'full'} justifyContent={'center'}>
-                    {avaxMorePayload.rewardsCoin}
-                  </Flex>
+                    <Flex w={'full'} justifyContent={'center'}>
+                      {item.reward}
+                    </Flex>
 
-                  <Box>{formatNumber(avaxMorePayload.totalApy)} %</Box>
+                    <Box>{formatNumber(item.apr)} %</Box>
 
-                  <Flex flexDirection={'column'}>
-                    <Button
-                      as={Link}
-                      href={
-                        'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05'
-                      }
-                      isExternal
-                      color={'white'}
-                      variant={'primary'}
-                    >
-                      Get LP Token
-                      <ExternalLinkIcon />
-                    </Button>
-                    <Button
-                      as={Link}
-                      href={
-                        'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm'
-                      }
-                      isExternal
-                      color={'white'}
-                      variant={'primary'}
-                      marginTop={'8px'}
-                    >
-                      Stake LP Token
-                      <ExternalLinkIcon />
-                    </Button>
-                  </Flex>
-                </Grid>
-              </AccordionButton>
-            </AccordionItem>
+                    <Flex flexDirection={'column'}>
+                      <Button
+                        as={Link}
+                        href={item.getTokenURL}
+                        isExternal
+                        color={'white'}
+                        variant={'primary'}
+                      >
+                        Get LP Token
+                        <ExternalLinkIcon />
+                      </Button>
+                      <Button
+                        as={Link}
+                        href={item.getTokenURL}
+                        isExternal
+                        color={'white'}
+                        variant={'primary'}
+                        marginTop={'8px'}
+                      >
+                        Stake LP Token
+                        <ExternalLinkIcon />
+                      </Button>
+                    </Flex>
+                  </Grid>
+                </AccordionButton>
+              </AccordionItem>
+            ))
           ) : (
             <></>
           )}

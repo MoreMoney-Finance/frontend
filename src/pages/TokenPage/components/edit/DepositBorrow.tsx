@@ -225,7 +225,7 @@ export default function DepositBorrow({
   const riskyZone = (80 * borrowablePercent) / 100;
   const healthyZone = (50 * borrowablePercent) / 100;
 
-  const positionHealthColor = position?.debt.value.lt(parseEther('0.1'))
+  const positionHealthColor = 0.1 > totalDebt
     ? 'accent'
     : totalPercentage > liquidatableZone
       ? 'purple.400'

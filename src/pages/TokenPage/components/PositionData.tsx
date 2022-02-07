@@ -1,9 +1,14 @@
-import { Container, Flex, GridItem } from '@chakra-ui/react';
+import { Container, Flex, GridItem, Text } from '@chakra-ui/react';
+import { parseEther } from '@ethersproject/units';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import React from 'react';
-import { ParsedPositionMetaRow, ParsedStratMetaRow } from '../../../chain-interaction/contracts';
+import {
+  ParsedPositionMetaRow,
+  ParsedStratMetaRow,
+} from '../../../chain-interaction/contracts';
 import { TitleValue } from '../../../components/data-display/TitleValue';
+import { parseFloatCurrencyValue } from '../../../utils';
 
 export function PositionData({
   position,
@@ -16,6 +21,39 @@ export function PositionData({
     ? position.debt.sub(position.yield)
     : new CurrencyValue(position.debt.currency, BigNumber.from(0));
 
+  const { collateral, debt, borrowablePercent } = position;
+  const { usdPrice } = stratMeta;
+
+  const totalPercentage =
+    collateral?.value.gt(0) && usdPrice > 0
+      ? (100 * parseFloatCurrencyValue(debt)) /
+        (parseFloatCurrencyValue(collateral) * usdPrice)
+      : 0;
+  const liquidatableZone = borrowablePercent;
+  const criticalZone = (90 * borrowablePercent) / 100;
+  const riskyZone = (80 * borrowablePercent) / 100;
+  const healthyZone = (50 * borrowablePercent) / 100;
+
+  const positionHealthColor = debt.value.lt(parseEther('0.1'))
+    ? 'accent'
+    : totalPercentage > liquidatableZone
+      ? 'purple.400'
+      : totalPercentage > criticalZone
+        ? 'red'
+        : totalPercentage > riskyZone
+          ? 'orange'
+          : totalPercentage > healthyZone
+            ? 'green'
+            : 'accent';
+  const positionHealth = {
+    accent: 'Safe',
+    green: 'Healthy',
+    orange: 'Risky',
+    red: 'Critical',
+    ['purple.400']: 'Liquidatable',
+  };
+
+  // console.log('PositionData', debt, borrowablePercent, totalPercentage);
   return (
     <GridItem colSpan={[2, 3, 4]} rowSpan={[12, 1, 1]} marginTop={'30px'}>
       <Container variant={'token'}>
@@ -24,6 +62,20 @@ export function PositionData({
           padding={['20px', '35px', '20px']}
           justifyContent="space-between"
         >
+          <TitleValue
+            title="POSITION HEALTH"
+            value={
+              <Text
+                color={
+                  positionHealthColor == 'accent'
+                    ? 'accent_color'
+                    : positionHealthColor
+                }
+              >
+                {positionHealth[positionHealthColor]}
+              </Text>
+            }
+          />
           <TitleValue
             title="COLLATERAL"
             value={
@@ -41,19 +93,6 @@ export function PositionData({
             })}`}
           />
           <TitleValue title="DEBT" value={effectiveDebt.format()} />
-          <TitleValue
-            title="cRATIO"
-            value={
-              effectiveDebt.isZero()
-                ? '∞'
-                : (
-                  position.collateralValue.value
-                    .mul(10000)
-                    .div(effectiveDebt.value)
-                    .toNumber() / 100
-                ).toFixed(2)
-            }
-          />
           <TitleValue
             title="LIQUIDATION PRICE"
             value={`$ ${position.liquidationPrice.toFixed(2)}`}

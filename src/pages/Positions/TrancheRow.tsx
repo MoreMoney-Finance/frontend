@@ -107,8 +107,6 @@ export function TrancheRow(
 
         <Td>{APY.toFixed(2)}%</Td>
 
-        <Td>{((100 * 100) / params.borrowablePercent).toFixed(0)}%</Td>
-
         <Td>
           {debt.isZero()
             ? '∞'

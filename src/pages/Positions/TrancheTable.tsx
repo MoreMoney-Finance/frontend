@@ -1,8 +1,8 @@
+import { Table, Tbody, Td, Thead, Tr } from '@chakra-ui/react';
 import * as React from 'react';
-import { Table, Thead, Tbody, Td, Tr } from '@chakra-ui/react';
-import { TrancheRow } from './TrancheRow';
 import { ParsedPositionMetaRow } from '../../chain-interaction/contracts';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
+import { TrancheRow } from './TrancheRow';
 
 export type TrancheAction = {
   args?: (pos: ParsedPositionMetaRow) => Record<string, any>;
@@ -26,7 +26,6 @@ export function TrancheTable({
           <Td>Asset</Td>
           <Td>Strategy</Td>
           <Td>APY</Td>
-          <Td>Min. ColRatio</Td>
           <Td>Cur. ColRatio</Td>
           <Td>Liq. price</Td>
           <Td>Collateral</Td>

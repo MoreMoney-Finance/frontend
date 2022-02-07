@@ -77,22 +77,23 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
     padding: '16px 30px',
   };
 
-  const externalData: YieldFarmingData[] = avaxMorePayload
-    ? [
-      ...yieldFarmingData,
-      {
-        asset: 'MORE-AVAX',
-        stake: 'n/a',
-        tvl: avaxMorePayload.tvl,
-        reward: avaxMorePayload.rewardsCoin,
-        apr: avaxMorePayload.totalApy,
-        getTokenURL:
-            'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05',
-        stakeTokenURL:
-            'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm',
-      },
-    ]
-    : [];
+  const externalData: YieldFarmingData[] =
+    avaxMorePayload && yieldFarmingData
+      ? [
+        ...yieldFarmingData,
+        {
+          asset: 'MORE-AVAX',
+          stake: 'n/a',
+          tvl: avaxMorePayload.tvl,
+          reward: avaxMorePayload.rewardsCoin,
+          apr: avaxMorePayload.totalApy,
+          getTokenURL:
+              'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05',
+          stakeTokenURL:
+              'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm',
+        },
+      ]
+      : [];
 
   return (
     <>

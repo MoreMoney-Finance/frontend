@@ -9,14 +9,14 @@ import {
   Progress,
   Text,
   useDisclosure,
-  VStack
+  VStack,
 } from '@chakra-ui/react';
 import { parseEther } from '@ethersproject/units';
 import {
   CurrencyValue,
   useEtherBalance,
   useEthers,
-  useTokenAllowance
+  useTokenAllowance,
 } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
@@ -27,12 +27,12 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   TxStatus,
-  useStable
+  useStable,
 } from '../../../../chain-interaction/contracts';
 import {
   useApproveTrans,
   useDepositBorrowTrans,
-  useNativeDepositBorrowTrans
+  useNativeDepositBorrowTrans,
 } from '../../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../../components/account/EnsureWalletConnected';
 import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
@@ -175,7 +175,7 @@ export default function DepositBorrow({
     totalCollateral > 0 && usdPrice > 0
       ? (100 * totalDebt) / (totalCollateral * usdPrice)
       : 0;
-   
+
   const percentageLabel =
     totalCollateral > 0 && usdPrice > 0
       ? `${totalPercentage.toFixed(0)} %`
@@ -227,13 +227,13 @@ export default function DepositBorrow({
 
   const positionHealthColor = position?.debt.value.lt(parseEther('0.1'))
     ? 'accent'
-    : currentPercentage > liquidatableZone
+    : totalPercentage > liquidatableZone
       ? 'purple.400'
-      : currentPercentage > criticalZone
+      : totalPercentage > criticalZone
         ? 'red'
-        : currentPercentage > riskyZone
+        : totalPercentage > riskyZone
           ? 'orange'
-          : currentPercentage > healthyZone
+          : totalPercentage > healthyZone
             ? 'green'
             : 'accent';
   const positionHealth = {
@@ -365,14 +365,6 @@ export default function DepositBorrow({
           </InputGroup>
         </HStack>
         <br />
-        <br />
-        <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-          Position Health
-        </Text>
-        <Progress colorScheme={positionHealthColor} value={totalPercentage} />
-        <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-          {positionHealth[positionHealthColor]}
-        </Text>
         <HStack justifyContent={'space-between'} marginTop={'40px'}>
           <VStack spacing={'2px'}>
             <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
@@ -384,7 +376,7 @@ export default function DepositBorrow({
           </VStack>
           <VStack spacing={'2px'}>
             <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-              Expected Liquidation Price
+              Liquidation Price
             </Text>
             <Text variant={'bodyMedium'} fontWeight={'500'}>
               ${' '}
@@ -394,6 +386,21 @@ export default function DepositBorrow({
                 totalCollateral
               ).toFixed(2)}
             </Text>
+          </VStack>
+          <VStack spacing="2px">
+            <Text variant="bodyExtraSmall" color="whiteAlpha.600">
+              {positionHealth[positionHealthColor]} Position
+            </Text>
+            <Box height="24px" margin="2px" padding="6px">
+              <Progress
+                colorScheme={positionHealthColor}
+                value={totalPercentage}
+                width="100px"
+                height="14px"
+                borderRadius={'10px'}
+                opacity="65%"
+              />
+            </Box>
           </VStack>
           <VStack spacing={'2px'}>
             <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>

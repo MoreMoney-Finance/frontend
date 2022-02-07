@@ -402,14 +402,6 @@ export default function RepayWithdraw({
           </Alert>
         </HStack>
         <br />
-        <br />
-        <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-          Position Health
-        </Text>
-        <Progress colorScheme={positionHealthColor} value={totalPercentage} />
-        <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-          {positionHealth[positionHealthColor]}
-        </Text>
         <HStack justifyContent={'space-between'} marginTop={'24px'}>
           <VStack spacing={'2px'}>
             <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
@@ -421,7 +413,7 @@ export default function RepayWithdraw({
           </VStack>
           <VStack spacing={'2px'}>
             <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>
-              Expected Liquidation Price
+              Liquidation Price
             </Text>
             <Text variant={'bodyMedium'} fontWeight={'500'}>
               ${' '}
@@ -431,6 +423,21 @@ export default function RepayWithdraw({
                 totalCollateral
               ).toFixed(2)}
             </Text>
+          </VStack>
+          <VStack spacing="2px">
+            <Text variant="bodyExtraSmall" color="whiteAlpha.600">
+              {positionHealth[positionHealthColor]} Position
+            </Text>
+            <Box height="24px" margin="2px" padding="6px">
+              <Progress
+                colorScheme={positionHealthColor}
+                value={totalPercentage}
+                width="100px"
+                height="14px"
+                borderRadius={'10px'}
+                opacity="65%"
+              />
+            </Box>
           </VStack>
           <VStack spacing={'2px'}>
             <Text variant={'bodyExtraSmall'} color={'whiteAlpha.600'}>

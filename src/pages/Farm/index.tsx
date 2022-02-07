@@ -85,7 +85,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           asset: 'MORE-AVAX',
           stake: 'n/a',
           tvl: avaxMorePayload.tvl,
-          reward: avaxMorePayload.rewardsCoin,
+          reward: "MORE + " + avaxMorePayload.rewardsCoin,
           apr: avaxMorePayload.totalApy,
           getTokenURL:
               'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05',

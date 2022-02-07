@@ -195,7 +195,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                     </Box>
 
                     <Box>
-                      <Text>{formatNumber(item.tvl)}</Text>
+                      <Text>$ {formatNumber(item.tvl)}</Text>
                     </Box>
 
                     <Flex w={'full'} justifyContent={'center'}>

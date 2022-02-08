@@ -15,7 +15,13 @@ export function LiquidatableRow(
     ParsedStratMetaRow & ParsedPositionMetaRow & { action?: LiquidatableAction }
   >
 ) {
-  const { token, action, liquidateButton } = params;
+  const {
+    token,
+    action,
+    liquidateButton,
+    positionHealthColor,
+    parsedPositionHealth
+  } = params;
 
   // const location = useLocation();
   // const details = location.search?.includes('details=true');
@@ -43,10 +49,21 @@ export function LiquidatableRow(
   const debt =
     'debt' in params && params.debt.gt(params.yield)
       ? params.debt.sub(params.yield)
-      : new CurrencyValue(stable, BigNumber.from(0));  
+      : new CurrencyValue(stable, BigNumber.from(0));
   return (
     <>
       <Tr key={`${params.trancheId}`}>
+        <Td>
+          <Text
+            color={
+              positionHealthColor == 'accent'
+                ? 'accent_color'
+                : positionHealthColor
+            }
+          >
+            {parsedPositionHealth ?? ""}
+          </Text>
+        </Td>
         <Td>
           <TokenDescription token={token} />
         </Td>

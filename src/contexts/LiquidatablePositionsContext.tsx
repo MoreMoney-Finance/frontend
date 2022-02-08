@@ -8,6 +8,7 @@ import {
   useStable,
   useUpdatedPositions,
 } from '../chain-interaction/contracts';
+import { parseFloatCurrencyValue } from '../utils';
 import { StrategyMetadataContext } from './StrategyMetadataContext';
 
 export const LiquidatablePositionsContext = React.createContext<
@@ -102,10 +103,43 @@ export function LiquidatablePositionsCtxProvider({
         posMeta.debt.gt(dollar)
     )
     .map((posMeta) => {
+      const totalPercentage =
+        parseFloatCurrencyValue(posMeta.collateral!) > 0 &&
+        tokenPrices[posMeta.token.address] > 0
+          ? (100 * parseFloatCurrencyValue(posMeta.debt)) /
+            (parseFloatCurrencyValue(posMeta.collateral!) *
+              tokenPrices[posMeta.token.address])
+          : 0;
+      const liquidatableZone = posMeta.borrowablePercent;
+      const criticalZone = (90 * posMeta.borrowablePercent) / 100;
+      const riskyZone = (80 * posMeta.borrowablePercent) / 100;
+      const healthyZone = (50 * posMeta.borrowablePercent) / 100;
+
+      const positionHealthColor = posMeta.debt.value.lt(parseEther('0.1'))
+        ? 'accent'
+        : totalPercentage > liquidatableZone
+          ? 'purple.400'
+          : totalPercentage > criticalZone
+            ? 'red'
+            : totalPercentage > riskyZone
+              ? 'orange'
+              : totalPercentage > healthyZone
+                ? 'green'
+                : 'accent';
+      const positionHealth = {
+        accent: 'Safe',
+        green: 'Healthy',
+        orange: 'Risky',
+        red: 'Critical',
+        ['purple.400']: 'Liquidatable',
+      };
+
       return {
         ...posMeta,
         liquidateButton:
           posMeta.liquidationPrice > tokenPrices[posMeta.token.address],
+        positionHealthColor: positionHealthColor,
+        parsedPositionHealth: positionHealth[positionHealthColor],
       };
     })
     .filter((posMeta) => !stableTickers.includes(posMeta.token.ticker));

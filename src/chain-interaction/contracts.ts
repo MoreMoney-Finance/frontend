@@ -15,23 +15,23 @@ import {
 import { BigNumber, ethers } from 'ethers';
 import { getAddress, Interface, parseBytes32String } from 'ethers/lib/utils';
 import { useContext } from 'react';
+import {
+  ExternalMetadataContext,
+  YieldMonitorMetadata,
+  YYMetadata,
+} from '../contexts/ExternalMetadataContext';
 import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
-import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
+import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
+import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
+import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
+import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
-import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
-import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
-import {
-  YYMetadata,
-  ExternalMetadataContext,
-  YieldMonitorMetadata,
-} from '../contexts/ExternalMetadataContext';
-import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 
 // import earnedRewards from '../constants/earned-rewards.json';
 // import rewardsRewards from '../constants/rewards-rewards.json';
@@ -412,6 +412,9 @@ export type ParsedPositionMetaRow = {
   liquidationPrice: number;
   trancheContract: string;
   liquidateButton?: boolean;
+  positionHealth?: string;
+  positionHealthColor?: string;
+  parsedPositionHealth?: string;
 };
 
 export type RawPositionMetaRow = {

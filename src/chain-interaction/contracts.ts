@@ -411,6 +411,7 @@ export type ParsedPositionMetaRow = {
   owner: string;
   liquidationPrice: number;
   trancheContract: string;
+  liquidateButton?: boolean;
 };
 
 export type RawPositionMetaRow = {

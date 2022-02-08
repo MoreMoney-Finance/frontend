@@ -15,7 +15,7 @@ export function LiquidatableRow(
     ParsedStratMetaRow & ParsedPositionMetaRow & { action?: LiquidatableAction }
   >
 ) {
-  const { token, action } = params;
+  const { token, action, liquidateButton } = params;
 
   // const location = useLocation();
   // const details = location.search?.includes('details=true');
@@ -43,13 +43,10 @@ export function LiquidatableRow(
   const debt =
     'debt' in params && params.debt.gt(params.yield)
       ? params.debt.sub(params.yield)
-      : new CurrencyValue(stable, BigNumber.from(0));
-
+      : new CurrencyValue(stable, BigNumber.from(0));  
   return (
     <>
-      <Tr
-        key={`${params.trancheId}`}
-      >
+      <Tr key={`${params.trancheId}`}>
         <Td>
           <TokenDescription token={token} />
         </Td>
@@ -96,6 +93,7 @@ export function LiquidatableRow(
                 onClick: () => action.callback!(params),
               }
               : actionArgs(params))}
+            isDisabled={!liquidateButton}
           >
             Liquidate
           </Button>

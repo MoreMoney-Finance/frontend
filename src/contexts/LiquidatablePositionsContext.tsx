@@ -57,18 +57,20 @@ export function LiquidatablePositionsCtxProvider({
         console.log(err);
       });
   }, []);
-  const parsedCachePositions = Object.values(cachedPositions.positions).map((pos) => ({
-    trancheId: BigNumber.from(pos.trancheId),
-    strategy: pos.strategy,
-    collateral: BigNumber.from(pos.collateral),
-    debt: parseEther(pos.debt.toString()),
-    token: pos.token,
-    collateralValue: parseEther(pos.collateralValue.toString()),
-    borrowablePer10k: BigNumber.from(pos.borrowablePer10k),
-    owner: pos.owner,
-    yield: BigNumber.from(0),
-    trancheContract: pos.trancheContract
-  })).map((pos) => parsePositionMeta(pos, stable, pos.trancheContract));
+  const parsedCachePositions = Object.values(cachedPositions.positions)
+    .map((pos) => ({
+      trancheId: BigNumber.from(pos.trancheId),
+      strategy: pos.strategy,
+      collateral: BigNumber.from(pos.collateral),
+      debt: parseEther(pos.debt.toString()),
+      token: pos.token,
+      collateralValue: parseEther(pos.collateralValue.toString()),
+      borrowablePer10k: BigNumber.from(pos.borrowablePer10k),
+      owner: pos.owner,
+      yield: BigNumber.from(0),
+      trancheContract: pos.trancheContract,
+    }))
+    .map((pos) => parsePositionMeta(pos, stable, pos.trancheContract));
 
   const START = cachedPositions.tstamp;
   const updatedPositions = useUpdatedPositions(START);
@@ -83,11 +85,30 @@ export function LiquidatablePositionsCtxProvider({
   }
   const dollar = new CurrencyValue(stable, parseEther('1'));
 
-  const liquidatablePositions = Array.from(parsedPositions.values()).filter(
-    (posMeta) =>
-      posMeta.liquidationPrice > tokenPrices[posMeta.token.address] &&
-      posMeta.debt.gt(dollar)
-  );
+  const stableTickers = [
+    'USDT',
+    'USDC',
+    'DAI',
+    'FRAX',
+    'USDT.e',
+    'USDC.e',
+    'DAI.e',
+  ];
+
+  const liquidatablePositions = Array.from(parsedPositions.values())
+    .filter(
+      (posMeta) =>
+        1.25 * posMeta.liquidationPrice > tokenPrices[posMeta.token.address] &&
+        posMeta.debt.gt(dollar)
+    )
+    .map((posMeta) => {
+      return {
+        ...posMeta,
+        liquidateButton:
+          posMeta.liquidationPrice > tokenPrices[posMeta.token.address],
+      };
+    })
+    .filter((posMeta) => !stableTickers.includes(posMeta.token.ticker));
 
   return (
     <LiquidatablePositionsContext.Provider value={liquidatablePositions}>

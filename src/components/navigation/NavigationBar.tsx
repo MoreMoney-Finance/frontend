@@ -21,7 +21,7 @@ const Links = [
   { title: 'Borrow', link: '/' },
   { title: 'My Positions', link: '/positions' },
   { title: 'Farm', link: '/farm' },
-  { title: 'Liquidation Protected Loans', link: '/loans' },
+  { title: 'XMORE', link: '/xmore' },
   { title: 'Analytics', link: '/analytics' },
 ];
 

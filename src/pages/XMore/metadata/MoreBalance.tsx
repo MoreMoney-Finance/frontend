@@ -45,7 +45,7 @@ export function MoreBalance() {
             marginLeft={['0px', '0px', '70px']}
           >
             <Image
-              src="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg"
+              src="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/xMORE%20logo.png"
               alt="MoreMoney Logo"
               width="40px"
               height="40px"

@@ -20,7 +20,7 @@ export function LiquidatableRow(
     action,
     liquidateButton,
     positionHealthColor,
-    parsedPositionHealth
+    parsedPositionHealth,
   } = params;
 
   // const location = useLocation();
@@ -61,7 +61,7 @@ export function LiquidatableRow(
                 : positionHealthColor
             }
           >
-            {parsedPositionHealth ?? ""}
+            {parsedPositionHealth ?? ''}
           </Text>
         </Td>
         <Td>
@@ -76,11 +76,11 @@ export function LiquidatableRow(
           {debt.isZero()
             ? '∞'
             : (
-              params.collateralValue.value
-                .mul(10000)
-                .div(debt.value)
-                .toNumber() / 100
-            ).toFixed(1)}
+                params.collateralValue.value
+                  .mul(10000)
+                  .div(debt.value)
+                  .toNumber() / 100
+              ).toFixed(1)}
           %
         </Td>
 
@@ -103,17 +103,20 @@ export function LiquidatableRow(
         </Td>
 
         <Td>
-          <Button
-            {...(action?.callback
-              ? {
-                ...actionArgs(params),
-                onClick: () => action.callback!(params),
-              }
-              : actionArgs(params))}
-            isDisabled={!liquidateButton}
-          >
-            Liquidate
-          </Button>
+          {liquidateButton ? (
+            <Button
+              {...(action?.callback
+                ? {
+                    ...actionArgs(params),
+                    onClick: () => action.callback!(params),
+                  }
+                : actionArgs(params))}
+            >
+              Liquidate
+            </Button>
+          ) : (
+            <Text>Not Liquidatable Yet</Text>
+          )}
         </Td>
       </Tr>
     </>

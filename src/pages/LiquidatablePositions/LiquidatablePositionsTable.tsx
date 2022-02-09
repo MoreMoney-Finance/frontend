@@ -23,6 +23,7 @@ export function LiquidatablePositionsTable({
     <Table variant="dashboard" width="auto">
       <Thead>
         <Tr>
+          <Td>Position Health</Td>
           <Td>Asset</Td>
           <Td>Min Col Ratio</Td>
           <Td>Current Col Ratio</Td>
@@ -40,12 +41,7 @@ export function LiquidatablePositionsTable({
           if (posMeta.collateralValue.isZero()) {
             return <></>;
           }
-          return (
-            <LiquidatableRow
-              key={`liquidatableRow${i}`}
-              {...data}
-            />
-          );
+          return <LiquidatableRow key={`liquidatableRow${i}`} {...data} />;
         })}
       </Tbody>
     </Table>

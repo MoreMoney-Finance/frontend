@@ -15,7 +15,13 @@ export function LiquidatableRow(
     ParsedStratMetaRow & ParsedPositionMetaRow & { action?: LiquidatableAction }
   >
 ) {
-  const { token, action } = params;
+  const {
+    token,
+    action,
+    liquidateButton,
+    positionHealthColor,
+    parsedPositionHealth,
+  } = params;
 
   // const location = useLocation();
   // const details = location.search?.includes('details=true');
@@ -44,12 +50,20 @@ export function LiquidatableRow(
     'debt' in params && params.debt.gt(params.yield)
       ? params.debt.sub(params.yield)
       : new CurrencyValue(stable, BigNumber.from(0));
-
   return (
     <>
-      <Tr
-        key={`${params.trancheId}`}
-      >
+      <Tr key={`${params.trancheId}`}>
+        <Td>
+          <Text
+            color={
+              positionHealthColor == 'accent'
+                ? 'accent_color'
+                : positionHealthColor
+            }
+          >
+            {parsedPositionHealth ?? ''}
+          </Text>
+        </Td>
         <Td>
           <TokenDescription token={token} />
         </Td>
@@ -89,16 +103,20 @@ export function LiquidatableRow(
         </Td>
 
         <Td>
-          <Button
-            {...(action?.callback
-              ? {
-                ...actionArgs(params),
-                onClick: () => action.callback!(params),
-              }
-              : actionArgs(params))}
-          >
-            Liquidate
-          </Button>
+          {liquidateButton ? (
+            <Button
+              {...(action?.callback
+                ? {
+                  ...actionArgs(params),
+                  onClick: () => action.callback!(params),
+                }
+                : actionArgs(params))}
+            >
+              Liquidate
+            </Button>
+          ) : (
+            <Text>Not Liquidatable Yet</Text>
+          )}
         </Td>
       </Tr>
     </>

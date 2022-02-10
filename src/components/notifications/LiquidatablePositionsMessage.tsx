@@ -7,9 +7,13 @@ import { LiquidatablePositionsContext } from '../../contexts/LiquidatablePositio
 export default function LiquidatablePositionsMessage() {
   const liquidatablePositions = useContext(LiquidatablePositionsContext);
 
+  const shouldDisplay = liquidatablePositions.find(
+    (position) => position.liquidateButton
+  );
+
   return (
     <>
-      {liquidatablePositions.length > 0 ? (
+      {shouldDisplay ? (
         <Alert
           status="info"
           justifyContent={'center'}

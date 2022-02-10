@@ -8,6 +8,7 @@ import {
   useStable,
   useUpdatedPositions,
 } from '../chain-interaction/contracts';
+import { parseFloatCurrencyValue } from '../utils';
 import { StrategyMetadataContext } from './StrategyMetadataContext';
 
 export const LiquidatablePositionsContext = React.createContext<
@@ -57,18 +58,20 @@ export function LiquidatablePositionsCtxProvider({
         console.log(err);
       });
   }, []);
-  const parsedCachePositions = Object.values(cachedPositions.positions).map((pos) => ({
-    trancheId: BigNumber.from(pos.trancheId),
-    strategy: pos.strategy,
-    collateral: BigNumber.from(pos.collateral),
-    debt: parseEther(pos.debt.toString()),
-    token: pos.token,
-    collateralValue: parseEther(pos.collateralValue.toString()),
-    borrowablePer10k: BigNumber.from(pos.borrowablePer10k),
-    owner: pos.owner,
-    yield: BigNumber.from(0),
-    trancheContract: pos.trancheContract
-  })).map((pos) => parsePositionMeta(pos, stable, pos.trancheContract));
+  const parsedCachePositions = Object.values(cachedPositions.positions)
+    .map((pos) => ({
+      trancheId: BigNumber.from(pos.trancheId),
+      strategy: pos.strategy,
+      collateral: BigNumber.from(pos.collateral),
+      debt: parseEther(pos.debt.toString()),
+      token: pos.token,
+      collateralValue: parseEther(pos.collateralValue.toString()),
+      borrowablePer10k: BigNumber.from(pos.borrowablePer10k),
+      owner: pos.owner,
+      yield: BigNumber.from(0),
+      trancheContract: pos.trancheContract,
+    }))
+    .map((pos) => parsePositionMeta(pos, stable, pos.trancheContract));
 
   const START = cachedPositions.tstamp;
   const updatedPositions = useUpdatedPositions(START);
@@ -83,11 +86,63 @@ export function LiquidatablePositionsCtxProvider({
   }
   const dollar = new CurrencyValue(stable, parseEther('1'));
 
-  const liquidatablePositions = Array.from(parsedPositions.values()).filter(
-    (posMeta) =>
-      posMeta.liquidationPrice > tokenPrices[posMeta.token.address] &&
-      posMeta.debt.gt(dollar)
-  );
+  const stableTickers = [
+    'USDT',
+    'USDC',
+    'DAI',
+    'FRAX',
+    'USDT.e',
+    'USDC.e',
+    'DAI.e',
+  ];
+
+  const liquidatablePositions = Array.from(parsedPositions.values())
+    .filter(
+      (posMeta) =>
+        1.25 * posMeta.liquidationPrice > tokenPrices[posMeta.token.address] &&
+        posMeta.debt.gt(dollar)
+    )
+    .map((posMeta) => {
+      const totalPercentage =
+        parseFloatCurrencyValue(posMeta.collateral!) > 0 &&
+        tokenPrices[posMeta.token.address] > 0
+          ? (100 * parseFloatCurrencyValue(posMeta.debt)) /
+            (parseFloatCurrencyValue(posMeta.collateral!) *
+              tokenPrices[posMeta.token.address])
+          : 0;
+      const liquidatableZone = posMeta.borrowablePercent;
+      const criticalZone = (90 * posMeta.borrowablePercent) / 100;
+      const riskyZone = (80 * posMeta.borrowablePercent) / 100;
+      const healthyZone = (50 * posMeta.borrowablePercent) / 100;
+
+      const positionHealthColor = posMeta.debt.value.lt(parseEther('0.1'))
+        ? 'accent'
+        : totalPercentage > liquidatableZone
+          ? 'purple.400'
+          : totalPercentage > criticalZone
+            ? 'red'
+            : totalPercentage > riskyZone
+              ? 'orange'
+              : totalPercentage > healthyZone
+                ? 'green'
+                : 'accent';
+      const positionHealth = {
+        accent: 'Safe',
+        green: 'Healthy',
+        orange: 'Risky',
+        red: 'Critical',
+        ['purple.400']: 'Liquidatable',
+      };
+
+      return {
+        ...posMeta,
+        liquidateButton:
+          posMeta.liquidationPrice > tokenPrices[posMeta.token.address],
+        positionHealthColor: positionHealthColor,
+        parsedPositionHealth: positionHealth[positionHealthColor],
+      };
+    })
+    .filter((posMeta) => !stableTickers.includes(posMeta.token.ticker));
 
   return (
     <LiquidatablePositionsContext.Provider value={liquidatablePositions}>

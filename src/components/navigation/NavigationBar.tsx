@@ -21,7 +21,8 @@ const Links = [
   { title: 'Borrow', link: '/' },
   { title: 'My Positions', link: '/positions' },
   { title: 'Farm', link: '/farm' },
-  { title: 'XMORE', link: '/xmore' },
+  { title: 'Stake', link: '/xmore' },
+  { title: 'Liquidation Protected Loans', link: '/loans' },
   { title: 'Analytics', link: '/analytics' },
 ];
 
@@ -60,7 +61,7 @@ export default function NavigationBar() {
           </Link>
           <HStack
             as={'nav'}
-            spacing="48px"
+            spacing="38px"
             display={{ base: 'none', md: 'flex' }}
           >
             {Links.map((link) => (

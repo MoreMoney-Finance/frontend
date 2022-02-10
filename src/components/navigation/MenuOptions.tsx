@@ -33,27 +33,29 @@ const Links = [
 
 export default function MenuOptions() {
   return (
-    <Menu>
-      <MenuButton
-        as={IconButton}
-        aria-label="Options"
-        icon={<Image src={dots} alt="Options" />}
-        variant="outline"
-      />
-      <MenuList zIndex="dropdown" background={'transparent'} border="none">
-        <Container variant={'token'}>
-          {Links.map((link, index) => (
-            <a
-              href={link.link}
-              target={'_blank'}
-              rel="noreferrer"
-              key={'option' + index}
-            >
-              <MenuItem>{link.title}</MenuItem>
-            </a>
-          ))}
-        </Container>
-      </MenuList>
-    </Menu>
+    <div>
+      <Menu>
+        <MenuButton
+          as={IconButton}
+          aria-label="Options"
+          icon={<Image src={dots} alt="Options" />}
+          variant="outline"
+        />
+        <MenuList zIndex="dropdown" background={'transparent'} border="none">
+          <Container variant={'token'}>
+            {Links.map((link, index) => (
+              <a
+                href={link.link}
+                target={'_blank'}
+                rel="noreferrer"
+                key={'option' + index}
+              >
+                <MenuItem>{link.title}</MenuItem>
+              </a>
+            ))}
+          </Container>
+        </MenuList>
+      </Menu>
+    </div>
   );
 }

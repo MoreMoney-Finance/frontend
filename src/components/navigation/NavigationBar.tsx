@@ -16,6 +16,7 @@ import logo from '../../assets/logo/logo.png';
 import AccountModal from '../account/AccountModal';
 import { UserAddressComponent } from '../account/UserAddressComponent';
 import MenuOptions from './MenuOptions';
+import { useMediaQuery } from '@chakra-ui/react';
 
 const Links = [
   { title: 'Borrow', link: '/' },
@@ -26,6 +27,7 @@ const Links = [
 ];
 
 export default function NavigationBar() {
+  const [isLargerThan1280] = useMediaQuery('(min-width: 1280px)');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenAccount,
@@ -53,27 +55,15 @@ export default function NavigationBar() {
             <Flex alignItems={'center'}>
               <Image src={logo} alt="Logo" width={['30px', '40px', '50px']} />
               &nbsp;
-              <Text fontSize={['sm', 'md', 'lg']}>
-                <b>moremoney</b>
-              </Text>
+              {isLargerThan1280 ? (
+                <Text fontSize={['sm', 'md', 'lg']}>
+                  <b>moremoney</b>
+                </Text>
+              ) : (
+                ''
+              )}
             </Flex>
           </Link>
-          <HStack
-            as={'nav'}
-            spacing="48px"
-            display={{ base: 'none', md: 'flex' }}
-          >
-            {Links.map((link) => (
-              <LinkComponent
-                variant={
-                  location.pathname === link.link ? 'headerActive' : 'header'
-                }
-                key={link.title}
-              >
-                <Link to={link.link}>{link.title}</Link>
-              </LinkComponent>
-            ))}
-          </HStack>
           <HStack
             flexDirection="row"
             alignItems="center"
@@ -84,6 +74,25 @@ export default function NavigationBar() {
             <MenuOptions />
           </HStack>
         </Flex>
+        <HStack
+          as={'nav'}
+          spacing="48px"
+          display={{ base: 'none', md: 'flex' }}
+          alignContent={'center'}
+          justifyContent="space-evenly"
+          marginTop={'30px'}
+        >
+          {Links.map((link) => (
+            <LinkComponent
+              variant={
+                location.pathname === link.link ? 'headerActive' : 'header'
+              }
+              key={link.title}
+            >
+              <Link to={link.link}>{link.title}</Link>
+            </LinkComponent>
+          ))}
+        </HStack>
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>

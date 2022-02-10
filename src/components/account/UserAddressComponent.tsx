@@ -45,14 +45,14 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
         moreBalance &&
         !moreBalance.isZero() &&
         !walletBalance.isZero() ? (
-          <Text fontSize={['12px', '14px', '14px']} textAlign="center">
-            {walletBalance?.format({ significantDigits: 2 })}{' '}
-            {isMobile ? '/' : <br />}
+            <Text fontSize={['12px', '14px', '14px']} textAlign="center">
+              {walletBalance?.format({ significantDigits: 2 })}{' '}
+              {isMobile ? '/' : <br />}
             &nbsp; {moreBalance?.format({ significantDigits: 2 })}
-          </Text>
-        ) : (
-          <Image src={colorDot} />
-        )}
+            </Text>
+          ) : (
+            <Image src={colorDot} />
+          )}
       </HStack>
       <Button
         variant={'primary'}

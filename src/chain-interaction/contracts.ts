@@ -416,6 +416,7 @@ export type ParsedPositionMetaRow = {
   positionHealth?: string;
   positionHealthColor?: string;
   parsedPositionHealth?: string;
+  positionHealthOrder?: number;
 };
 
 export type RawPositionMetaRow = {
@@ -529,7 +530,6 @@ export function useIsolatedPositionMetadata(
     ? current.reduce(reduceFn(addresses.StableLending), legacyResults)
     : legacyResults;
 }
-
 
 export function xMoreTotalSupply(
   method: string,

@@ -595,17 +595,13 @@ export function useUpdatedPositions(timeStart: number) {
   }
 
   const legacyRows =
-    ('IsolatedLending' in addresses &&
-      (useContractCalls(
-        args(addresses.IsolatedLending)
-      ) as RawPositionMetaRow[][][])) ||
-    [];
+    (useContractCalls(
+      args(addresses.IsolatedLending)
+    ) as RawPositionMetaRow[][][]) || [];
   const currentRows =
-    ('StableLending' in addresses &&
-      (useContractCalls(
-        args(addresses.StableLending)
-      ) as RawPositionMetaRow[][][])) ||
-    [];
+    (useContractCalls(
+      args(addresses.StableLending)
+    ) as RawPositionMetaRow[][][]) || [];
 
   function parseRows(rows: RawPositionMetaRow[][][], trancheContract: string) {
     return rows

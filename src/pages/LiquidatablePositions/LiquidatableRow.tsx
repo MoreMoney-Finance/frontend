@@ -50,6 +50,15 @@ export function LiquidatableRow(
     'debt' in params && params.debt.gt(params.yield)
       ? params.debt.sub(params.yield)
       : new CurrencyValue(stable, BigNumber.from(0));
+
+  console.log(
+    'liquidatable',
+    params.trancheId,
+    params.debt.format(),
+    params.collateral?.toString(),
+    params.collateral?.format(),
+    parsedPositionHealth
+  );
   return (
     <>
       <Tr key={`${params.trancheId}`}>

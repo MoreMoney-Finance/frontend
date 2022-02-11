@@ -142,7 +142,17 @@ export function LiquidatablePositionsCtxProvider({
         parsedPositionHealth: positionHealth[positionHealthColor],
       };
     })
-    .filter((posMeta) => !stableTickers.includes(posMeta.token.ticker));
+    .filter((posMeta) => !stableTickers.includes(posMeta.token.ticker))
+    //sort liquidatable first
+    .sort(function (a, b) {
+      if (a.liquidateButton < b.liquidateButton) {
+        return 1;
+      }
+      if (a.liquidateButton > b.liquidateButton) {
+        return -1;
+      }
+      return 0;
+    });
 
   return (
     <LiquidatablePositionsContext.Provider value={liquidatablePositions}>

@@ -14,7 +14,7 @@ type Props = {
 };
 
 export function UserAddressComponent({ handleOpenModal }: Props) {
-  const [isMobile] = useMediaQuery('(min-width: 768px)');
+  const [isLargerThan1280] = useMediaQuery('(min-width: 1280px)');
   const { activateBrowserWallet, chainId } = useEthers();
   const account = useContext(UserAddressContext);
   const stable = useStable();
@@ -44,11 +44,11 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
         {walletBalance &&
         moreBalance &&
         !moreBalance.isZero() &&
-        !walletBalance.isZero() ? (
+        !walletBalance.isZero() &&
+        isLargerThan1280 ? (
             <Text fontSize={['12px', '14px', '14px']} textAlign="center">
-              {walletBalance?.format({ significantDigits: 2 })}{' '}
-              {isMobile ? '/' : <br />}
-            &nbsp; {moreBalance?.format({ significantDigits: 2 })}
+              {walletBalance?.format({ significantDigits: 2 })} /{' '}
+              {moreBalance?.format({ significantDigits: 2 })}
             </Text>
           ) : (
             <Image src={colorDot} />

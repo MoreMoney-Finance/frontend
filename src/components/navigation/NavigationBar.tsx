@@ -65,6 +65,22 @@ export default function NavigationBar() {
             </Flex>
           </Link>
           <HStack
+            as={'nav'}
+            spacing="48px"
+            display={{ base: 'none', md: 'flex' }}
+          >
+            {Links.map((link) => (
+              <LinkComponent
+                variant={
+                  location.pathname === link.link ? 'headerActive' : 'header'
+                }
+                key={link.title}
+              >
+                <Link to={link.link}>{link.title}</Link>
+              </LinkComponent>
+            ))}
+          </HStack>
+          <HStack
             flexDirection="row"
             alignItems="center"
             justifyContent="center"
@@ -74,25 +90,6 @@ export default function NavigationBar() {
             <MenuOptions />
           </HStack>
         </Flex>
-        <HStack
-          as={'nav'}
-          spacing="48px"
-          display={{ base: 'none', md: 'flex' }}
-          alignContent={'center'}
-          justifyContent="space-evenly"
-          marginTop={'30px'}
-        >
-          {Links.map((link) => (
-            <LinkComponent
-              variant={
-                location.pathname === link.link ? 'headerActive' : 'header'
-              }
-              key={link.title}
-            >
-              <Link to={link.link}>{link.title}</Link>
-            </LinkComponent>
-          ))}
-        </HStack>
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>

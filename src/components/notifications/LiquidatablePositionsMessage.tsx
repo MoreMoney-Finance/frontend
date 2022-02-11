@@ -9,7 +9,7 @@ export default function LiquidatablePositionsMessage() {
 
   const shouldDisplay = liquidatablePositions.find(
     (position) => position.liquidateButton
-  );
+  ) && false;
 
   return (
     <>

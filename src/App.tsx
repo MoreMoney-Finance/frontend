@@ -33,6 +33,10 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
       const { chainId: walletChainId } = await wallet.getNetwork();
       const accounts = await wallet.listAccounts();
 
+      if (chainId === 31337) {
+        activateBrowserWallet();
+      }
+
       if (
         accounts.length > 0 &&
         !requestedSwitch &&

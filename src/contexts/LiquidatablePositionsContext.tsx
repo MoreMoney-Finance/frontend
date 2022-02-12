@@ -103,12 +103,13 @@ export function LiquidatablePositionsCtxProvider({
         posMeta.debt.gt(dollar)
     )
     .map((posMeta) => {
+      const collateralVal =
+        parseFloatCurrencyValue(posMeta.collateral!) *
+        tokenPrices[posMeta.token.address];
       const totalPercentage =
         parseFloatCurrencyValue(posMeta.collateral!) > 0 &&
         tokenPrices[posMeta.token.address] > 0
-          ? (100 * parseFloatCurrencyValue(posMeta.debt)) /
-            (parseFloatCurrencyValue(posMeta.collateral!) *
-              tokenPrices[posMeta.token.address])
+          ? (100 * parseFloatCurrencyValue(posMeta.debt)) / collateralVal
           : 0;
       const liquidatableZone = posMeta.borrowablePercent;
       const criticalZone = (90 * posMeta.borrowablePercent) / 100;
@@ -140,6 +141,10 @@ export function LiquidatablePositionsCtxProvider({
           posMeta.liquidationPrice > tokenPrices[posMeta.token.address],
         positionHealthColor: positionHealthColor,
         parsedPositionHealth: positionHealth[positionHealthColor],
+        collateralValue: new CurrencyValue(
+          stable,
+          parseEther(collateralVal.toFixed(18))
+        ),
       };
     })
     .filter((posMeta) => !stableTickers.includes(posMeta.token.ticker));

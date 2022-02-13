@@ -13,6 +13,7 @@ import PositionsPage from './pages/Positions';
 import LiquidationProtectedLoans from './pages/Loans';
 import Analytics from './pages/Analytics';
 import LiquidatablePositions from './pages/LiquidatablePositions';
+import XMorePage from './pages/XMore';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -42,6 +43,7 @@ ReactDOM.render(
             />
             <Route path="/loans" element={<LiquidationProtectedLoans />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/xmore" element={<XMorePage />} />
           </Route>
         </Routes>
       </BrowserRouter>

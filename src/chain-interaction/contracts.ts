@@ -31,6 +31,7 @@ import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies
 import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
+import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 
 // import earnedRewards from '../constants/earned-rewards.json';
@@ -415,6 +416,7 @@ export type ParsedPositionMetaRow = {
   positionHealth?: string;
   positionHealthColor?: string;
   parsedPositionHealth?: string;
+  positionHealthOrder?: number;
 };
 
 export type RawPositionMetaRow = {
@@ -527,6 +529,21 @@ export function useIsolatedPositionMetadata(
   return 'StableLending' in addresses
     ? current.reduce(reduceFn(addresses.StableLending), legacyResults)
     : legacyResults;
+}
+
+export function xMoreTotalSupply(
+  method: string,
+  args: any[],
+  defaultResult: any
+) {
+  const address = useAddresses().xMore;
+  const abi = new Interface(xMore.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method,
+    args,
+  }) ?? [defaultResult])[0];
 }
 
 export function useGlobalDebtCeiling(

@@ -202,6 +202,21 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
       'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg',
     ]);
   }
+
+  if ('xMore' in addresses) {
+    addressToken[chainIds[chainId]].set(
+      getAddress(addresses['xMore']),
+      new Token(
+        'xMore Token',
+        'xMORE',
+        chainIds[chainId],
+        getAddress(addresses['xMore'])
+      )
+    );
+    addressIcons.set(getAddress(addresses['xMore']), [
+      'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg',
+    ]);
+  }
 }
 
 export const nativeCurrency: Map<ChainId, NativeCurrency> = new Map();

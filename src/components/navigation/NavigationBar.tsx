@@ -23,7 +23,7 @@ const Links = [
   { title: 'My Positions', link: '/positions' },
   { title: 'Farm', link: '/farm' },
   { title: 'Stake', link: '/xmore' },
-  { title: 'Liquidate', link: '/liquidatable-positions' },
+  // { title: 'Liquidate', link: '/liquidatable-positions' },
   { title: 'Analytics', link: '/analytics' },
 ];
 

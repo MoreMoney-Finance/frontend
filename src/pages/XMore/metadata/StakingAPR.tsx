@@ -38,7 +38,9 @@ export function StakingAPR(props: React.PropsWithChildren<unknown>) {
               Approximate APR
             </Text>
             <Spacer />
-            <Text variant={'bodyLarge'}>{xMoreData?.cachedAPR}%</Text>
+            <Text variant={'bodyLarge'}>
+              {xMoreData?.cachedAPR.toFixed(2)}%
+            </Text>
           </Flex>
           <Flex w={'full'} marginTop={'30px'}>
             <Text variant="h200" color={'whiteAlpha.400'}>

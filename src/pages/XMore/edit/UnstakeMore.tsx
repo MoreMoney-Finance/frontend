@@ -50,7 +50,7 @@ export function UnstakeMore(props: React.PropsWithChildren<unknown>) {
             color={'whiteAlpha.600'}
             lineHeight={'14px'}
           >
-            Unstake MORE
+            Unstake xMORE
           </Text>
         </Box>
         <TokenAmountInputField

@@ -47,20 +47,6 @@ export default function CurrentlyOpenPositions({
         const params = { ...posMeta, ...stratMeta[posMeta.strategy] };
         const { token, APY, borrowablePercent, usdPrice } = params;
 
-        // const location = useLocation();
-        // const details = location.search?.includes('details=true');
-
-        // console.log('details', details);
-
-        // const walletBalance =
-        //   useWalletBalance(token.address) ??
-        //   new CurrencyValue(token, BigNumber.from('0'));
-        // console.log(
-        //   `wallet balance for ${token.name}: ${walletBalance.format({
-        //     significantDigits: 30,
-        //   })} (${token.address})`
-        // );
-
         const collateral =
             'collateral' in params && params.collateral
               ? params.collateral

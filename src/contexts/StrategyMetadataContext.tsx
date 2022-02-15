@@ -1,14 +1,21 @@
 import React from 'react';
-import { StrategyMetadata, useIsolatedStrategyMetadata } from '../chain-interaction/contracts';
-
-export const StrategyMetadataContext = React.createContext<
+import {
   StrategyMetadata
->({});
+} from '../chain-interaction/contracts';
+
+export const StrategyMetadataContext = React.createContext<StrategyMetadata>(
+  {}
+);
 
 export function StrategyMetadataCtxProvider({
   children,
 }: React.PropsWithChildren<any>) {
-  const stratMeta = useIsolatedStrategyMetadata();
+  const stratMeta = JSON.parse(localStorage.getItem('stratMeta') ?? '[]');
+  // const stratMeta = useIsolatedStrategyMetadata(stratMetaCached);
+
+  // if (localStorage.getItem('stratMeta') === null) {
+  //   localStorage.setItem('stratMeta', JSON.stringify(stratMeta));
+  // }
 
   return (
     <StrategyMetadataContext.Provider value={stratMeta}>

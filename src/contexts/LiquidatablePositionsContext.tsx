@@ -96,78 +96,82 @@ export function LiquidatablePositionsCtxProvider({
     'DAI.e',
   ];
 
-  const liquidatablePositions = Array.from(parsedPositions.values())
-    .filter(
-      (posMeta) =>
-        1.25 * posMeta.liquidationPrice > tokenPrices[posMeta.token.address] &&
-        posMeta.debt.gt(dollar)
-    )
-    .map((posMeta) => {
-      const collateralVal =
-        parseFloatCurrencyValue(posMeta.collateral!) *
-        tokenPrices[posMeta.token.address];
-      const totalPercentage =
-        parseFloatCurrencyValue(posMeta.collateral!) > 0 &&
-        tokenPrices[posMeta.token.address] > 0
-          ? (100 * parseFloatCurrencyValue(posMeta.debt)) / collateralVal
-          : 0;
-      const liquidatableZone = posMeta.borrowablePercent;
-      const criticalZone = (90 * posMeta.borrowablePercent) / 100;
-      const riskyZone = (80 * posMeta.borrowablePercent) / 100;
-      const healthyZone = (50 * posMeta.borrowablePercent) / 100;
+  const liquidatablePositions = React.useMemo(
+    () =>
+      Array.from(parsedPositions.values())
+        .filter(
+          (posMeta) =>
+            1.25 * posMeta.liquidationPrice >
+              tokenPrices[posMeta.token.address] && posMeta.debt.gt(dollar)
+        )
+        .map((posMeta) => {
+          const collateralVal =
+            parseFloatCurrencyValue(posMeta.collateral!) *
+            tokenPrices[posMeta.token.address];
+          const totalPercentage =
+            parseFloatCurrencyValue(posMeta.collateral!) > 0 &&
+            tokenPrices[posMeta.token.address] > 0
+              ? (100 * parseFloatCurrencyValue(posMeta.debt)) / collateralVal
+              : 0;
+          const liquidatableZone = posMeta.borrowablePercent;
+          const criticalZone = (90 * posMeta.borrowablePercent) / 100;
+          const riskyZone = (80 * posMeta.borrowablePercent) / 100;
+          const healthyZone = (50 * posMeta.borrowablePercent) / 100;
 
-      const positionHealthColor = posMeta.debt.value.lt(parseEther('0.1'))
-        ? 'accent'
-        : totalPercentage > liquidatableZone
-          ? 'purple.400'
-          : totalPercentage > criticalZone
+          const positionHealthColor = posMeta.debt.value.lt(parseEther('0.1'))
+            ? 'accent'
+            : totalPercentage > liquidatableZone
+            ? 'purple.400'
+            : totalPercentage > criticalZone
             ? 'red'
             : totalPercentage > riskyZone
-              ? 'orange'
-              : totalPercentage > healthyZone
-                ? 'green'
-                : 'accent';
+            ? 'orange'
+            : totalPercentage > healthyZone
+            ? 'green'
+            : 'accent';
 
-      const positionHealth = {
-        accent: 'Safe',
-        green: 'Healthy',
-        orange: 'Risky',
-        red: 'Critical',
-        ['purple.400']: 'Liquidatable',
-      };
+          const positionHealth = {
+            accent: 'Safe',
+            green: 'Healthy',
+            orange: 'Risky',
+            red: 'Critical',
+            ['purple.400']: 'Liquidatable',
+          };
 
-      return {
-        ...posMeta,
-        liquidateButton:
-          posMeta.liquidationPrice > tokenPrices[posMeta.token.address],
-        positionHealthColor: positionHealthColor,
-        parsedPositionHealth: positionHealth[positionHealthColor],
-        collateralValue: new CurrencyValue(
-          stable,
-          parseEther(collateralVal.toFixed(18))
-        ),
-      };
-    })
-    .map((posMeta) => {
-      const positionHealthOrder = new Map([
-        ['Safe', 4],
-        ['Healthy', 3],
-        ['Risky', 2],
-        ['Critical', 1],
-        ['Liquidatable', 0],
-      ]);
+          return {
+            ...posMeta,
+            liquidateButton:
+              posMeta.liquidationPrice > tokenPrices[posMeta.token.address],
+            positionHealthColor: positionHealthColor,
+            parsedPositionHealth: positionHealth[positionHealthColor],
+            collateralValue: new CurrencyValue(
+              stable,
+              parseEther(collateralVal.toFixed(18))
+            ),
+          };
+        })
+        .map((posMeta) => {
+          const positionHealthOrder = new Map([
+            ['Safe', 4],
+            ['Healthy', 3],
+            ['Risky', 2],
+            ['Critical', 1],
+            ['Liquidatable', 0],
+          ]);
 
-      return {
-        ...posMeta,
-        positionHealthOrder:
-          positionHealthOrder.get(posMeta.parsedPositionHealth) ?? 4,
-      };
-    })
-    .filter((posMeta) => !stableTickers.includes(posMeta.token.ticker))
-    //sort liquidatable first
-    .sort(function (a, b) {
-      return a.positionHealthOrder - b.positionHealthOrder;
-    });
+          return {
+            ...posMeta,
+            positionHealthOrder:
+              positionHealthOrder.get(posMeta.parsedPositionHealth) ?? 4,
+          };
+        })
+        .filter((posMeta) => !stableTickers.includes(posMeta.token.ticker))
+        //sort liquidatable first
+        .sort(function (a, b) {
+          return a.positionHealthOrder - b.positionHealthOrder;
+        }),
+    [tokenPrices]
+  );
 
   return (
     <LiquidatablePositionsContext.Provider value={liquidatablePositions}>

@@ -287,7 +287,10 @@ export type StrategyMetadata = Record<
 //   return undefined;
 // }
 
-export function useIsolatedStrategyMetadata(): StrategyMetadata {
+export function useIsolatedStrategyMetadata(stratMetaCache: any): StrategyMetadata {
+  if(stratMetaCache.length > 0) {
+    return stratMetaCache;
+  }
   const stable = useStable();
   const { chainId } = useEthers();
 
@@ -339,6 +342,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       ),
     ],
   }) ?? [[]])[0];
+
+  console.log('normalResults', normalResults, noHarvestBalanceResults);
 
   const results = [...normalResults, ...noHarvestBalanceResults];
 

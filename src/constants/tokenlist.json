@@ -25,7 +25,7 @@
       "logoURI": "https://raw.githubusercontent.com/traderjoe-xyz/joe-tokenlists/main/logos/0x7C08413cbf02202a1c13643dB173f2694e0F73f0/logo.png"
     },
     {
-      "address": "0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33",
+      "address": "0x57319d41F71E81F3c65F2a47CA4e001EbAFd4F33",
       "chainId": 31337,
       "symbol": "xJOE",
       "name": "JoeBar",
@@ -33,7 +33,7 @@
       "logoURI": "https://traderjoexyz.com/static/media/Earn.610c93e4.png"
     },
     {
-      "address": "0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33",
+      "address": "0x57319d41F71E81F3c65F2a47CA4e001EbAFd4F33",
       "chainId": 43114,
       "symbol": "xJOE",
       "name": "JoeBar",

@@ -16,16 +16,19 @@ import logo from '../../assets/logo/logo.png';
 import AccountModal from '../account/AccountModal';
 import { UserAddressComponent } from '../account/UserAddressComponent';
 import MenuOptions from './MenuOptions';
+import { useMediaQuery } from '@chakra-ui/react';
 
 const Links = [
   { title: 'Borrow', link: '/' },
   { title: 'My Positions', link: '/positions' },
   { title: 'Farm', link: '/farm' },
-  { title: 'Liquidation Protected Loans', link: '/loans' },
+  { title: 'Stake', link: '/xmore' },
+  // { title: 'Liquidate', link: '/liquidatable-positions' },
   { title: 'Analytics', link: '/analytics' },
 ];
 
 export default function NavigationBar() {
+  const [isLargerThan1280] = useMediaQuery('(min-width: 1280px)');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenAccount,
@@ -53,9 +56,13 @@ export default function NavigationBar() {
             <Flex alignItems={'center'}>
               <Image src={logo} alt="Logo" width={['30px', '40px', '50px']} />
               &nbsp;
-              <Text fontSize={['sm', 'md', 'lg']}>
-                <b>moremoney</b>
-              </Text>
+              {isLargerThan1280 ? (
+                <Text fontSize={['sm', 'md', 'lg']}>
+                  <b>moremoney</b>
+                </Text>
+              ) : (
+                ''
+              )}
             </Flex>
           </Link>
           <HStack

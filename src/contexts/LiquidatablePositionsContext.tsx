@@ -127,6 +127,7 @@ export function LiquidatablePositionsCtxProvider({
               : totalPercentage > healthyZone
                 ? 'green'
                 : 'accent';
+
       const positionHealth = {
         accent: 'Safe',
         green: 'Healthy',
@@ -147,7 +148,26 @@ export function LiquidatablePositionsCtxProvider({
         ),
       };
     })
-    .filter((posMeta) => !stableTickers.includes(posMeta.token.ticker));
+    .map((posMeta) => {
+      const positionHealthOrder = new Map([
+        ['Safe', 4],
+        ['Healthy', 3],
+        ['Risky', 2],
+        ['Critical', 1],
+        ['Liquidatable', 0],
+      ]);
+
+      return {
+        ...posMeta,
+        positionHealthOrder:
+          positionHealthOrder.get(posMeta.parsedPositionHealth) ?? 4,
+      };
+    })
+    .filter((posMeta) => !stableTickers.includes(posMeta.token.ticker))
+    //sort liquidatable first
+    .sort(function (a, b) {
+      return a.positionHealthOrder - b.positionHealthOrder;
+    });
 
   return (
     <LiquidatablePositionsContext.Provider value={liquidatablePositions}>

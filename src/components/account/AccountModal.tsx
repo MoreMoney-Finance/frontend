@@ -16,12 +16,17 @@ import {
 import { ExternalLinkIcon, CopyIcon } from '@chakra-ui/icons';
 import {
   ChainId,
+  CurrencyValue,
   getExplorerAddressLink,
   shortenAddress,
   useEthers,
 } from '@usedapp/core';
 import { useContext } from 'react';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
+import { BigNumber } from 'ethers';
+import { useStable, useAddresses } from '../../chain-interaction/contracts';
+import { getTokenFromAddress } from '../../chain-interaction/tokens';
+import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
 
 type Props = {
   isOpen: any;
@@ -33,6 +38,18 @@ export default function AccountModal({ isOpen, onClose }: Props) {
   const account = useContext(UserAddressContext);
   const { chainId } = useEthers();
   const _chainId = chainId === ChainId.Hardhat ? ChainId.Avalanche : chainId;
+  const stable = useStable();
+  const balanceCtx = React.useContext(WalletBalancesContext);
+  const moreToken = getTokenFromAddress(chainId, useAddresses().MoreToken);
+
+  const walletBalance =
+    balanceCtx.get(stable.address) ||
+    new CurrencyValue(stable, BigNumber.from('0'));
+
+  const moreBalance =
+    balanceCtx.get(moreToken.address) ||
+    new CurrencyValue(moreToken, BigNumber.from('0'));
+
   const explorerLink = account
     ? getExplorerAddressLink(account, _chainId!)
     : '';
@@ -100,6 +117,10 @@ export default function AccountModal({ isOpen, onClose }: Props) {
                   {account && `${shortenAddress(account)}`}
                 </Text>
               </Flex>
+              <Text ml="2">
+                {walletBalance?.format({ significantDigits: 2 })} /{' '}
+                {moreBalance?.format({ significantDigits: 2 })}
+              </Text>
               <Flex alignContent="center" m={3}>
                 <Button
                   variant="link"

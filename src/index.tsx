@@ -13,6 +13,8 @@ import PositionsPage from './pages/Positions';
 import LiquidationProtectedLoans from './pages/Loans';
 import Analytics from './pages/Analytics';
 import LiquidatablePositions from './pages/LiquidatablePositions';
+import XMorePage from './pages/XMore';
+import { LiquidatablePositionsCtxProvider } from './contexts/LiquidatablePositionsContext';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -38,10 +40,15 @@ ReactDOM.render(
             <Route path="/positions" element={<PositionsPage />} />
             <Route
               path="/liquidatable-positions"
-              element={<LiquidatablePositions />}
+              element={
+                <LiquidatablePositionsCtxProvider>
+                  <LiquidatablePositions />
+                </LiquidatablePositionsCtxProvider>
+              }
             />
             <Route path="/loans" element={<LiquidationProtectedLoans />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/xmore" element={<XMorePage />} />
           </Route>
         </Routes>
       </BrowserRouter>

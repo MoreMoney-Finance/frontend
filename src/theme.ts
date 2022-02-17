@@ -179,6 +179,12 @@ const Text = {
       lineHeight: '27px',
       fontWeight: 500,
     },
+    bodyHuge: {
+      fontFamily: 'Poppins',
+      fontSize: '22px',
+      lineHeight: '27px',
+      fontWeight: 500,
+    },
     bodyExtraLarge: {
       fontFamily: 'Poppins',
       fontSize: '48px',

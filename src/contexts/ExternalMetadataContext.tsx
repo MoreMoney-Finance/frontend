@@ -6,6 +6,14 @@ export type YYMetadata = Record<
   { apr: number; apy: number; lastReinvest: { timestamp: number } }
 >;
 
+export type xMoreMetadata = {
+  timestamp: number;
+  totalSupply: number;
+  moreBalance: number;
+  cachedAPR: number;
+  currentRatio: number;
+};
+
 export type YieldFarmingData = {
   asset: string;
   stake: string;
@@ -43,6 +51,7 @@ export type ExternalMetadataType = {
   yieldFarmingData: YieldFarmingData[];
   yyMetadata: YYMetadata;
   yieldMonitor: Record<string, YieldMonitorMetadata>;
+  xMoreData: xMoreMetadata;
 };
 
 export const ExternalMetadataContext =
@@ -50,11 +59,15 @@ export const ExternalMetadataContext =
     yieldFarmingData: [],
     yyMetadata: {},
     yieldMonitor: {},
+    xMoreData: {} as xMoreMetadata,
   });
 
 export function ExternalMetadataCtxProvider({
   children,
 }: React.PropsWithChildren<any>) {
+  const [xMoreData, setXMoreData] = useState<xMoreMetadata>(
+    {} as xMoreMetadata
+  );
   const [yieldFarmingData, setYieldFarmingData] = useState<YieldFarmingData>();
   const [yyMetadata, setYYMeta] = useState<YYMetadata>({});
   const [yieldMonitor, setYieldMonitor] = useState<
@@ -88,12 +101,21 @@ export function ExternalMetadataCtxProvider({
         console.error('Failed to fetch URL');
         console.error(err);
       });
-
     fetch(
       'https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/yield-farming.json'
     )
       .then((response) => response.json())
       .then((response) => setYieldFarmingData(response))
+      .catch((err) => {
+        console.error('Failed to fetch URL');
+        console.error(err);
+      });
+
+    fetch(
+      'https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/xmore-data.json'
+    )
+      .then((response) => response.json())
+      .then((response) => setXMoreData(response))
       .catch((err) => {
         console.error('Failed to fetch URL');
         console.error(err);
@@ -106,6 +128,7 @@ export function ExternalMetadataCtxProvider({
           yieldFarmingData,
           yyMetadata,
           yieldMonitor,
+          xMoreData,
         } as unknown as ExternalMetadataType
       }
     >

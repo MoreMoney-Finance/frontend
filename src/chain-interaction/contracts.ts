@@ -14,7 +14,7 @@ import {
 } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber, ethers } from 'ethers';
 import { getAddress, Interface, parseBytes32String } from 'ethers/lib/utils';
-import { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   ExternalMetadataContext,
   YieldMonitorMetadata,
@@ -288,8 +288,19 @@ export type StrategyMetadata = Record<
 // }
 
 export function useIsolatedStrategyMetadata(): StrategyMetadata {
+  const [stratMeta, setStratMeta] = useState<StrategyMetadata>({});
   const stable = useStable();
-  const { chainId } = useEthers();
+  const { chainId, library } = useEthers();
+
+  const globalDebtCeiling = useGlobalDebtCeiling(
+    'globalDebtCeiling',
+    [],
+    BigNumber.from(0)
+  );
+  const totalSupply = useTotalSupply('totalSupply', [], BigNumber.from(0));
+
+  const balancesCtx = useContext(WalletBalancesContext);
+  const { yyMetadata, yieldMonitor } = useContext(ExternalMetadataContext);
 
   const addresses = useAddresses();
 
@@ -318,86 +329,62 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const tokens = Object.keys(token2Strat);
   const strats = Object.values(token2Strat);
 
-  const normalResults = (useContractCall({
-    abi: new Interface(StrategyViewer.abi),
-    address: addresses.StrategyViewer,
-    method: 'viewMetadata',
-    args: [addresses.StableLending, tokens, strats],
-  }) ?? [[]])[0];
+  React.useEffect(() => {
+    async function getData() {
+      const stratViewer = new ethers.Contract(
+        addresses.StrategyViewer,
+        new Interface(StrategyViewer.abi),
+        library
+      );
 
-  const noHarvestBalanceResults = (useContractCall({
-    abi: new Interface(StrategyViewer.abi),
-    address: addresses.StrategyViewer,
-    method: 'viewMetadataNoHarvestBalance',
-    args: [
-      addresses.StableLending,
-      addresses.OracleRegistry,
-      addresses.Stablecoin,
-      masterChef2Tokens,
-      Array(masterChef2Tokens.length).fill(
-        addresses.TraderJoeMasterChef2Strategy
-      ),
-    ],
-  }) ?? [[]])[0];
+      const normalResults = await stratViewer.viewMetadata(
+        addresses.StableLending,
+        tokens,
+        strats
+      );
+      const noHarvestBalanceResults =
+        await stratViewer.viewMetadataNoHarvestBalance(
+          addresses.StableLending,
+          addresses.OracleRegistry,
+          addresses.Stablecoin,
+          masterChef2Tokens,
+          Array(masterChef2Tokens.length).fill(
+            addresses.TraderJoeMasterChef2Strategy
+          )
+        );
 
-  const results = [...normalResults, ...noHarvestBalanceResults];
+      const results = [...normalResults, ...noHarvestBalanceResults];
 
-  const globalDebtCeiling = useGlobalDebtCeiling(
-    'globalDebtCeiling',
-    [],
-    BigNumber.from(0)
-  );
-  const totalSupply = useTotalSupply('totalSupply', [], BigNumber.from(0));
+      const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
 
-  const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
+      const reduceFn = (result: StrategyMetadata, row: RawStratMetaRow) => {
+        const parsedRow = parseStratMeta(
+          chainId!,
+          row,
+          stable,
+          balancesCtx,
+          yyMetadata,
+          globalMoneyAvailable,
+          yieldMonitor
+        );
 
-  const balancesCtx = useContext(WalletBalancesContext);
-  const { yyMetadata, yieldMonitor } = useContext(ExternalMetadataContext);
+        return parsedRow
+          ? {
+              ...result,
+              [parsedRow.token.address]: {
+                [parsedRow.strategyAddress]: parsedRow,
+                ...(result[parsedRow.token.address] || {}),
+              },
+            }
+          : result;
+      };
 
-  const reduceFn = (result: StrategyMetadata, row: RawStratMetaRow) => {
-    const parsedRow = parseStratMeta(
-      chainId!,
-      row,
-      stable,
-      balancesCtx,
-      yyMetadata,
-      globalMoneyAvailable,
-      yieldMonitor
-    );
+      setStratMeta(results?.reduce(reduceFn, {}) ?? {});
+    }
+    getData();
+  }, [ethers]);
 
-    return parsedRow
-      ? {
-          ...result,
-          [parsedRow.token.address]: {
-            [parsedRow.strategyAddress]: parsedRow,
-            ...(result[parsedRow.token.address] || {}),
-          },
-        }
-      : result;
-  };
-
-  // const xJOE = '0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33';
-  // const ilMetadata = (useContractCall({
-  //   abi: new Interface(IsolatedLending.abi),
-  //   address: addresses.StableLending,
-  //   method: 'viewILMetadata',
-  //   args: [],
-  // }) ?? [undefined])[0];
-
-  // const xJoeData: RawStratMetaRow = {
-  //   debtCeiling: ilMetadata.debtCeiling,
-  //   APF: BigNumber.from(0),
-  //   borrowablePer10k: ilMetadata.borrowablePer10k,
-  //   mintingFee: ilMetadata.mintingFee,
-  //   stabilityFee: BigNumber.from(0),
-  //   strategy: addresses.TraderJoeMasterChef2Strategy,
-  //   strategyName: "Trader Joe MasterChef self-repaying",
-  //   token: xJOE,
-  //   totalCollateral: BigNumber.from('255643660864621744524071'),
-
-  // }
-
-  return results?.reduce(reduceFn, {}) ?? {};
+  return stratMeta;
 }
 
 export type ParsedPositionMetaRow = {

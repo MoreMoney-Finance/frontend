@@ -12,7 +12,6 @@ import NetworkNotSupported from './components/notifications/NetworkNotSupported'
 import PhishingAlertComponent from './components/notifications/PhishingAlertComponent';
 import { TransactionToasts } from './components/notifications/TransactionToasts';
 import { ExternalMetadataCtxProvider } from './contexts/ExternalMetadataContext';
-import { LiquidatablePositionsCtxProvider } from './contexts/LiquidatablePositionsContext';
 import { LiquidationFeesCtxProvider } from './contexts/LiquidationFeesContext';
 import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
 import { UserAddressCtxProvider } from './contexts/UserAddressContext';
@@ -92,49 +91,49 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
             <ExternalMetadataCtxProvider>
               {addresses ? (
                 <StrategyMetadataCtxProvider>
-                  <LiquidatablePositionsCtxProvider>
-                    <PhishingAlertComponent />
+                  {/* <LiquidatablePositionsCtxProvider> */}
+                  <PhishingAlertComponent />
+                  <Box
+                    maxWidth="1280px"
+                    margin="0 auto"
+                    px={4}
+                    minHeight={'100vh'}
+                  >
                     <Box
-                      maxWidth="1280px"
-                      margin="0 auto"
-                      px={4}
-                      minHeight={'100vh'}
-                    >
-                      <Box
-                        position="absolute"
-                        left="0"
-                        opacity="0.3"
-                        width={['0px', '0px', '500px']}
-                        height="300px"
-                        top="300px"
-                        filter="blur(200px)"
-                        pointerEvents="none"
-                        bgGradient="radial(farthest-side, hsla(0, 100%, 64%, 1), hsla(0, 100%, 64%, 0))"
-                        zIndex="var(--chakra-zIndices-docked)"
-                      />
-                      <Box
-                        position="absolute"
-                        width={['0px', '0px', '350px']}
-                        height="230px"
-                        filter="blur(200px)"
-                        opacity="0.3"
-                        right="100px"
-                        bottom="200px"
-                        pointerEvents="none"
-                        bgGradient="radial(farthest-side, hsla(169, 100%, 46%, 1), hsla(169, 100%, 46%, 0))"
-                        zIndex="var(--chakra-zIndices-base)"
-                      />
-                      <TransactionToasts />
-                      <NavigationBar />
-                      <br />
-                      <GlobalDebtCeilingMessage />
-                      <LiquidatablePositionsMessage />
-                      <Box paddingBottom={'70px'}>
-                        {params.children}
-                        <Outlet />
-                      </Box>
+                      position="absolute"
+                      left="0"
+                      opacity="0.3"
+                      width={['0px', '0px', '500px']}
+                      height="300px"
+                      top="300px"
+                      filter="blur(200px)"
+                      pointerEvents="none"
+                      bgGradient="radial(farthest-side, hsla(0, 100%, 64%, 1), hsla(0, 100%, 64%, 0))"
+                      zIndex="var(--chakra-zIndices-docked)"
+                    />
+                    <Box
+                      position="absolute"
+                      width={['0px', '0px', '350px']}
+                      height="230px"
+                      filter="blur(200px)"
+                      opacity="0.3"
+                      right="100px"
+                      bottom="200px"
+                      pointerEvents="none"
+                      bgGradient="radial(farthest-side, hsla(169, 100%, 46%, 1), hsla(169, 100%, 46%, 0))"
+                      zIndex="var(--chakra-zIndices-base)"
+                    />
+                    <TransactionToasts />
+                    <NavigationBar />
+                    <br />
+                    <GlobalDebtCeilingMessage />
+                    <LiquidatablePositionsMessage />
+                    <Box paddingBottom={'70px'}>
+                      {params.children}
+                      <Outlet />
                     </Box>
-                  </LiquidatablePositionsCtxProvider>
+                  </Box>
+                  {/* </LiquidatablePositionsCtxProvider> */}
                 </StrategyMetadataCtxProvider>
               ) : (
                 <NetworkNotSupported />

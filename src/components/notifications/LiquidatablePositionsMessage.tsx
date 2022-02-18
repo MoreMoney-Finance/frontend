@@ -7,9 +7,8 @@ import { LiquidatablePositionsContext } from '../../contexts/LiquidatablePositio
 export default function LiquidatablePositionsMessage() {
   const liquidatablePositions = useContext(LiquidatablePositionsContext);
 
-  const shouldDisplay = liquidatablePositions.find(
-    (position) => position.liquidateButton
-  ) && false;
+  const shouldDisplay =
+    liquidatablePositions.find((position) => position.liquidateButton) && false;
 
   return (
     <>

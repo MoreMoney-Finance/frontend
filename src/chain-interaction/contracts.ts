@@ -22,6 +22,7 @@ import {
 } from '../contexts/ExternalMetadataContext';
 import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
+import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
@@ -31,7 +32,6 @@ import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies
 import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
-import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 
 // import earnedRewards from '../constants/earned-rewards.json';
@@ -290,7 +290,7 @@ export type StrategyMetadata = Record<
 export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const [stratMeta, setStratMeta] = useState<StrategyMetadata>({});
   const stable = useStable();
-  const { chainId, library } = useEthers();
+  const { chainId } = useEthers();
 
   const globalDebtCeiling = useGlobalDebtCeiling(
     'globalDebtCeiling',
@@ -328,13 +328,18 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
   const tokens = Object.keys(token2Strat);
   const strats = Object.values(token2Strat);
+  const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
 
   React.useEffect(() => {
     async function getData() {
+      const provider = new ethers.providers.JsonRpcProvider(
+        'https://api.avax.network/ext/bc/C/rpc'
+      );
+
       const stratViewer = new ethers.Contract(
         addresses.StrategyViewer,
         new Interface(StrategyViewer.abi),
-        library
+        provider
       );
 
       const normalResults = await stratViewer.viewMetadata(
@@ -355,11 +360,9 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
       const results = [...normalResults, ...noHarvestBalanceResults];
 
-      const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
-
       const reduceFn = (result: StrategyMetadata, row: RawStratMetaRow) => {
         const parsedRow = parseStratMeta(
-          chainId!,
+          chainId ?? 31337,
           row,
           stable,
           balancesCtx,
@@ -382,7 +385,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       setStratMeta(results?.reduce(reduceFn, {}) ?? {});
     }
     getData();
-  }, [ethers]);
+  }, [chainId]);
 
   return stratMeta;
 }

@@ -362,7 +362,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
       const reduceFn = (result: StrategyMetadata, row: RawStratMetaRow) => {
         const parsedRow = parseStratMeta(
-          chainId ?? 31337,
+          chainId ?? 43114,
           row,
           stable,
           balancesCtx,

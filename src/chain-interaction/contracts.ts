@@ -384,8 +384,26 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
       setStratMeta(results?.reduce(reduceFn, {}) ?? {});
     }
-    getData();
-  }, [chainId]);
+    if (
+      chainId &&
+      stable &&
+      balancesCtx &&
+      yyMetadata &&
+      globalMoneyAvailable != 0 &&
+      yieldMonitor &&
+      Object.values(stratMeta).length === 0
+    ) {
+      getData();
+    }
+  }, [
+    chainId,
+    stable,
+    balancesCtx,
+    yyMetadata,
+    globalMoneyAvailable,
+    yieldMonitor,
+    stratMeta,
+  ]);
 
   return stratMeta;
 }

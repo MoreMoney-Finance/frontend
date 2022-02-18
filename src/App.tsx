@@ -7,7 +7,6 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useAddresses } from './chain-interaction/contracts';
 import NavigationBar from './components/navigation/NavigationBar';
 import GlobalDebtCeilingMessage from './components/notifications/GlobalDebtCeilingMessage';
-import LiquidatablePositionsMessage from './components/notifications/LiquidatablePositionsMessage';
 import NetworkNotSupported from './components/notifications/NetworkNotSupported';
 import PhishingAlertComponent from './components/notifications/PhishingAlertComponent';
 import { TransactionToasts } from './components/notifications/TransactionToasts';
@@ -90,8 +89,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
           <LiquidationFeesCtxProvider>
             <ExternalMetadataCtxProvider>
               {addresses ? (
-                <StrategyMetadataCtxProvider>
-                  {/* <LiquidatablePositionsCtxProvider> */}
+                <>
                   <PhishingAlertComponent />
                   <Box
                     maxWidth="1280px"
@@ -123,18 +121,19 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                       bgGradient="radial(farthest-side, hsla(169, 100%, 46%, 1), hsla(169, 100%, 46%, 0))"
                       zIndex="var(--chakra-zIndices-base)"
                     />
-                    <TransactionToasts />
-                    <NavigationBar />
-                    <br />
-                    <GlobalDebtCeilingMessage />
-                    <LiquidatablePositionsMessage />
-                    <Box paddingBottom={'70px'}>
-                      {params.children}
-                      <Outlet />
-                    </Box>
+                    <StrategyMetadataCtxProvider>
+                      <TransactionToasts />
+                      <NavigationBar />
+                      <br />
+                      <GlobalDebtCeilingMessage />
+                      {/* <LiquidatablePositionsMessage /> */}
+                      <Box paddingBottom={'70px'}>
+                        {params.children}
+                        <Outlet />
+                      </Box>
+                    </StrategyMetadataCtxProvider>
                   </Box>
-                  {/* </LiquidatablePositionsCtxProvider> */}
-                </StrategyMetadataCtxProvider>
+                </>
               ) : (
                 <NetworkNotSupported />
               )}

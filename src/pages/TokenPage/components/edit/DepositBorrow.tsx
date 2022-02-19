@@ -60,11 +60,12 @@ export default function DepositBorrow({
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
 
-  const allowance = new CurrencyValue(
-    token,
-    useTokenAllowance(token.address, account, strategyAddress) ??
-      BigNumber.from('0')
-  );
+  const allowance = token.address && account && strategyAddress && 
+    new CurrencyValue(
+      token,
+      useTokenAllowance(token.address, account, strategyAddress) ??
+        BigNumber.from('0')
+    );
   const etherBalance = useEtherBalance(account);
 
   const nativeTokenBalance = etherBalance
@@ -431,14 +432,15 @@ export default function DepositBorrow({
         />
 
         <Box marginTop={'10px'}>
-          {allowance.gt(walletBalance) === false && isNativeToken === false ? (
+          {allowance && !allowance.gt(walletBalance) && !isNativeToken ? (
             <EnsureWalletConnected>
               <Button
                 variant={'submit-primary'}
                 onClick={() => sendApprove(strategyAddress)}
                 isLoading={
-                  approveState.status == TxStatus.SUCCESS &&
-                  allowance.gt(walletBalance) === false
+                  approveState.status !== TxStatus.SUCCESS &&
+                  allowance &&
+                  !allowance.gt(walletBalance)
                 }
               >
                 Approve {token.name}{' '}

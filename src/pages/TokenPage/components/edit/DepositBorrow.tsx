@@ -439,7 +439,7 @@ export default function DepositBorrow({
                 variant={'submit-primary'}
                 onClick={() => sendApprove(strategyAddress)}
                 isLoading={
-                  approveState.status !== TxStatus.SUCCESS &&
+                  approveState.status === TxStatus.MINING &&
                   allowance &&
                   !allowance.gt(walletBalance)
                 }

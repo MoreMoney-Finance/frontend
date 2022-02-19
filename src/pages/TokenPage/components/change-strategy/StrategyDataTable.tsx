@@ -1,31 +1,31 @@
 import * as React from 'react';
-import { ParsedStratMetaRow, YieldType } from '../../../../chain-interaction/contracts';
-import { Table, Tbody, Tr, Th, Td, Button } from '@chakra-ui/react';
-import {
-  useAMMHarvest,
-  useHarvestPartially,
-  useTallyHarvestBalance,
-  // useTallyHarvestBalance,
-} from '../../../../chain-interaction/transactions';
+import { ParsedStratMetaRow } from '../../../../chain-interaction/contracts';
+import { Table, Tbody, Tr, Th, Td } from '@chakra-ui/react';
+// import {
+//   useAMMHarvest,
+//   useHarvestPartially,
+//   useTallyHarvestBalance,
+//   // useTallyHarvestBalance,
+// } from '../../../../chain-interaction/transactions';
 import { getExplorerAddressLink } from '@usedapp/core';
-import { EnsureWalletConnected } from '../../../../components/account/EnsureWalletConnected';
+// import { EnsureWalletConnected } from '../../../../components/account/EnsureWalletConnected';
 import { useLocation } from 'react-router-dom';
-import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
+// import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
 
 export function StrategyDataTable(row: ParsedStratMetaRow) {
   const location = useLocation();
   const details = location.search?.toString().includes('details=true');
 
-  const { sendTallyHarvestBalance } = useTallyHarvestBalance(
-    row.strategyAddress
-  );
-  const { sendAMMHarvest, AMMHarvestState } = useAMMHarvest(
-    row.strategyAddress
-  );
+  // const { sendTallyHarvestBalance } = useTallyHarvestBalance(
+  //   row.strategyAddress
+  // );
+  // const { sendAMMHarvest, AMMHarvestState } = useAMMHarvest(
+  //   row.strategyAddress
+  // );
 
-  const { sendHarvestPartially, harvestPartiallyState } = useHarvestPartially(
-    row.strategyAddress
-  );
+  // const { sendHarvestPartially, harvestPartiallyState } = useHarvestPartially(
+  //   row.strategyAddress
+  // );
 
   const balance2Tally = row.harvestBalance2Tally;
 
@@ -38,11 +38,11 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
 
   return (
     <>
-      <TransactionErrorDialog
+      {/* <TransactionErrorDialog
         state={harvestPartiallyState}
         title={'Harvest Partially'}
       />
-      <TransactionErrorDialog state={AMMHarvestState} title={'AMM Harvest'} />
+      <TransactionErrorDialog state={AMMHarvestState} title={'AMM Harvest'} /> */}
 
       <Table variant="simple" width="auto">
         <Tbody>
@@ -87,7 +87,7 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
               </Tr>
               <Tr>
                 <Th>Harvest Balance To tally</Th>
-                <Td>
+                {/* <Td>
                   {balance2Tally.isZero() ? (
                     balance2Tally.format()
                   ) : (
@@ -99,14 +99,14 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
                       Tally {balance2Tally.format}{' '}
                     </Button>
                   )}
-                </Td>
+                </Td> */}
               </Tr>
             </>
           ) : undefined}
           <Tr>
             <Th>Harvest</Th>
             <Td>
-              <EnsureWalletConnected>
+              {/* <EnsureWalletConnected>
                 <Button
                   size="sm"
                   onClick={() => {
@@ -119,7 +119,7 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
                 >
                   Harvest
                 </Button>
-              </EnsureWalletConnected>
+              </EnsureWalletConnected> */}
             </Td>
           </Tr>
           {details ? (

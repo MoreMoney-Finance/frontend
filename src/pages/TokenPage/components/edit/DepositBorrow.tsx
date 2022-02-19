@@ -59,13 +59,14 @@ export default function DepositBorrow({
   const stable = useStable();
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
-
-  const allowHr = new CurrencyValue(
+  
+  const allowResult = useTokenAllowance(token.address, account, strategyAddress);
+  const allowCV = new CurrencyValue(
     token,
-    useTokenAllowance(token.address, account, strategyAddress) ??
+    allowResult ??
       BigNumber.from('0')
   ); 
-  const allowance = token.address && account && strategyAddress && allowHr;
+  const allowance = token.address && account && strategyAddress && allowCV;
 
   const etherBalance = useEtherBalance(account);
 

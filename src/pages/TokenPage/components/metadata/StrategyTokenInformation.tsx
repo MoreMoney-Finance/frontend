@@ -1,5 +1,5 @@
 import {
-  Button,
+  // Button,
   Container,
   Flex,
   GridItem,
@@ -7,21 +7,21 @@ import {
   Spacer,
   Text,
 } from '@chakra-ui/react';
-import { CurrencyValue } from '@usedapp/core';
-import { BigNumber } from 'ethers';
+// import { CurrencyValue } from '@usedapp/core';
+// import { BigNumber } from 'ethers';
 import * as React from 'react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
-  useStable,
-  useEstimatedHarvestable,
-  YieldType,
+  // useStable,
+  // useEstimatedHarvestable,
+  // YieldType,
 } from '../../../../chain-interaction/contracts';
-import {
-  useAMMHarvest,
-  useHarvestPartially,
-} from '../../../../chain-interaction/transactions';
-import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
+// import {
+//   useAMMHarvest,
+//   useHarvestPartially,
+// } from '../../../../chain-interaction/transactions';
+// import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
 import { LiquidationFeesContext } from '../../../../contexts/LiquidationFeesContext';
 import lines from '../../../assets/img/lines.svg';
 
@@ -31,34 +31,33 @@ export default function StrategyTokenInformation({
   position?: ParsedPositionMetaRow;
   stratMeta: ParsedStratMetaRow;
 }>) {
-
   const calcCRatio = () => {
     return `${Math.round((1 / (stratMeta.borrowablePercent / 100)) * 100)}%`;
   };
 
-  const { sendAMMHarvest, AMMHarvestState } = useAMMHarvest(
-    stratMeta.strategyAddress
-  );
+  // const { sendAMMHarvest, AMMHarvestState } = useAMMHarvest(
+  //   stratMeta.strategyAddress
+  // );
 
   const tokenFees = React.useContext(LiquidationFeesContext);
 
-  const { sendHarvestPartially, harvestPartiallyState } = useHarvestPartially(
-    stratMeta.strategyAddress
-  );
+  // const { sendHarvestPartially, harvestPartiallyState } = useHarvestPartially(
+  //   stratMeta.strategyAddress
+  // );
 
-  const stable = useStable();
-  const estimatedHarvestable: BigNumber | undefined = useEstimatedHarvestable(
-    stratMeta.strategyAddress,
-    stratMeta.token.address
-  );
-  const harvestLabel = estimatedHarvestable
-    ? ` $ ${new CurrencyValue(stable, estimatedHarvestable).format({
-      fixedPrecisionDigits: 0,
-      useFixedPrecision: true,
-      suffix: '',
-      prefix: '',
-    })}`
-    : '';
+  // const stable = useStable();
+  // const estimatedHarvestable: BigNumber | undefined = useEstimatedHarvestable(
+  //   stratMeta.strategyAddress,
+  //   stratMeta.token.address
+  // );
+  // const harvestLabel = estimatedHarvestable
+  //   ? ` $ ${new CurrencyValue(stable, estimatedHarvestable).format({
+  //     fixedPrecisionDigits: 0,
+  //     useFixedPrecision: true,
+  //     suffix: '',
+  //     prefix: '',
+  //   })}`
+  //   : '';
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 2]}>
       <Container variant={'token'} position="relative">
@@ -70,11 +69,11 @@ export default function StrategyTokenInformation({
           pointerEvents="none"
           zIndex={0}
         />
-        <TransactionErrorDialog state={AMMHarvestState} title={'AMM Harvest'} />
+        {/* <TransactionErrorDialog state={AMMHarvestState} title={'AMM Harvest'} />
         <TransactionErrorDialog
           state={harvestPartiallyState}
           title={'Source harvest'}
-        />
+        /> */}
         <Flex
           flexDirection={'column'}
           justifyContent={'center'}
@@ -127,7 +126,7 @@ export default function StrategyTokenInformation({
               </Text>
             </Flex> */}
 
-          {stratMeta.yieldType !== YieldType.COMPOUNDING ? (
+          {/* {stratMeta.yieldType !== YieldType.COMPOUNDING ? (
             <Flex w={'full'} marginTop={'30px'}>
               <Text variant="h200" color={'whiteAlpha.400'}>
                 Harvestable
@@ -149,7 +148,7 @@ export default function StrategyTokenInformation({
                 <Text variant="bodySmall">{`Harvest${harvestLabel}`}</Text>
               </Button>
             </Flex>
-          ) : undefined}
+          ) : undefined} */}
         </Flex>
       </Container>
     </GridItem>

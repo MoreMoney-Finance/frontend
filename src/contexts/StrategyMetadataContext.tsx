@@ -1,9 +1,13 @@
+import { Progress } from '@chakra-ui/react';
 import React from 'react';
-import { StrategyMetadata, useIsolatedStrategyMetadata } from '../chain-interaction/contracts';
+import {
+  StrategyMetadata,
+  useIsolatedStrategyMetadata,
+} from '../chain-interaction/contracts';
 
-export const StrategyMetadataContext = React.createContext<
-  StrategyMetadata
->({});
+export const StrategyMetadataContext = React.createContext<StrategyMetadata>(
+  {}
+);
 
 export function StrategyMetadataCtxProvider({
   children,
@@ -12,7 +16,7 @@ export function StrategyMetadataCtxProvider({
 
   return (
     <StrategyMetadataContext.Provider value={stratMeta}>
-      {children}
+      {Object.values(stratMeta).length > 0 ? children : <Progress isIndeterminate/>}
     </StrategyMetadataContext.Provider>
   );
 }

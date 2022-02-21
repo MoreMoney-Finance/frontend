@@ -201,7 +201,7 @@ export default function RepayWithdraw({
 
   const repayingMoreThanBalance =
     !isNaN(parseFloat(repayInput)) &&
-    parseEther(repayInput || '0').gt(walletBalance.value);
+    (parseEther(repayInput) ?? parseEther('0')).gt(walletBalance.value);
 
   const repayWithdrawButtonDisabled =
     (parseFloatNoNaN(collateralInput) === 0 &&

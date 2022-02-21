@@ -483,7 +483,13 @@ export function parsePositionMeta(
 ): ParsedPositionMetaRow {
   const debt = new CurrencyValue(stable, row.debt);
   const posYield = new CurrencyValue(stable, row.yield);
-  const collateral = tokenAmount(stable.chainId, row.token, row.collateral);
+  const collateral =
+    tokenAmount(stable.chainId, row.token, row.collateral) ??
+    new CurrencyValue(
+      new Token('', '', stable.chainId, row.token),
+      row.collateral
+    );
+
   const borrowablePercent = row.borrowablePer10k.toNumber() / 100;
 
   return {
@@ -520,7 +526,7 @@ export function useIsolatedPositionMetadata(
   function reduceFn(trancheContract: string) {
     return (result: TokenStratPositionMetadata, row: RawPositionMetaRow) => {
       const parsedRow = parsePositionMeta(row, stable, trancheContract);
-      const tokenAddress = parsedRow.token.address;
+      const tokenAddress = parsedRow.token?.address;
       const list = result[tokenAddress] || [];
       return {
         ...result,

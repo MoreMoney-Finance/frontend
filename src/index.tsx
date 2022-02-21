@@ -1,20 +1,20 @@
 import { ColorModeScript } from '@chakra-ui/react';
+import { ChainId, DAppProvider } from '@usedapp/core';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { App } from './App';
+import { LiquidatablePositionsCtxProvider } from './contexts/LiquidatablePositionsContext';
+import Analytics from './pages/Analytics';
+import Dashboard from './pages/Dashboard';
+import FarmPage from './pages/Farm';
+import LiquidatablePositions from './pages/LiquidatablePositions';
+import LiquidationProtectedLoans from './pages/Loans';
+import PositionsPage from './pages/Positions';
+import TokenPage from './pages/TokenPage';
+import XMorePage from './pages/XMore';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
-import { ChainId, DAppProvider } from '@usedapp/core';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Dashboard from './pages/Dashboard';
-import TokenPage from './pages/TokenPage';
-import FarmPage from './pages/Farm';
-import PositionsPage from './pages/Positions';
-import LiquidationProtectedLoans from './pages/Loans';
-import Analytics from './pages/Analytics';
-import LiquidatablePositions from './pages/LiquidatablePositions';
-import XMorePage from './pages/XMore';
-import { LiquidatablePositionsCtxProvider } from './contexts/LiquidatablePositionsContext';
 
 ReactDOM.render(
   <React.StrictMode>

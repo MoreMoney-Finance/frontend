@@ -199,9 +199,9 @@ export default function RepayWithdraw({
   const farmInfoIdx = (chainId?.toString() ?? '43114') as keyof typeof farminfo;
   const curveLink = `https://avax.curve.fi/factory/${farminfo[farmInfoIdx].curvePoolIdx}/`;
 
+  const repayInputEther = parseEther(repayInput) ?? parseEther('0');
   const repayingMoreThanBalance =
-    !isNaN(parseFloat(repayInput)) &&
-    (parseEther(repayInput) ?? parseEther('0')).gt(walletBalance.value);
+    !isNaN(parseFloat(repayInput)) && repayInputEther.gt(walletBalance.value);
 
   const repayWithdrawButtonDisabled =
     (parseFloatNoNaN(collateralInput) === 0 &&
@@ -242,17 +242,18 @@ export default function RepayWithdraw({
   const riskyZone = (80 * borrowablePercent) / 100;
   const healthyZone = (50 * borrowablePercent) / 100;
 
-  const positionHealthColor = 0.1 > totalDebt
-    ? 'accent'
-    : totalPercentage > liquidatableZone
-      ? 'purple.400'
-      : totalPercentage > criticalZone
-        ? 'red'
-        : totalPercentage > riskyZone
-          ? 'orange'
-          : totalPercentage > healthyZone
-            ? 'green'
-            : 'accent';
+  const positionHealthColor =
+    0.1 > totalDebt
+      ? 'accent'
+      : totalPercentage > liquidatableZone
+        ? 'purple.400'
+        : totalPercentage > criticalZone
+          ? 'red'
+          : totalPercentage > riskyZone
+            ? 'orange'
+            : totalPercentage > healthyZone
+              ? 'green'
+              : 'accent';
   const positionHealth = {
     accent: 'Safe',
     green: 'Healthy',
@@ -431,7 +432,7 @@ export default function RepayWithdraw({
             <Box height="24px" margin="2px" padding="6px">
               <Progress
                 colorScheme={positionHealthColor}
-                value={100 * totalPercentage / borrowablePercent}
+                value={(100 * totalPercentage) / borrowablePercent}
                 width="100px"
                 height="14px"
                 borderRadius={'10px'}

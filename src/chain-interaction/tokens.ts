@@ -108,6 +108,10 @@ liquidationParams.set('0x60781C2586D68229fde47564546784ab3fACA982', {
   router: exchangeRouters.PGL,
   liqType: LiquidationType.Direct,
 });
+liquidationParams.set('0x59414b3089ce2AF0010e7523Dea7E2b35d776ec7', {
+  router: exchangeRouters.PGL,
+  liqType: LiquidationType.Direct,
+});
 
 for (const [chainId, lpTokensPerChain] of Object.entries(lptokens) as [
   string,

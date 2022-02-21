@@ -97,18 +97,19 @@ export function LiquidatablePositionsCtxProvider({
   ];
 
   const liquidatablePositions = Array.from(parsedPositions.values())
-    .filter(
-      (posMeta) =>
-        1.25 * posMeta.liquidationPrice > tokenPrices[posMeta.token.address] &&
+    .filter((posMeta) => {
+      return (
+        1.25 * posMeta.liquidationPrice > tokenPrices[posMeta.token?.address] &&
         posMeta.debt.gt(dollar)
-    )
+      );
+    })
     .map((posMeta) => {
       const collateralVal =
         parseFloatCurrencyValue(posMeta.collateral!) *
-        tokenPrices[posMeta.token.address];
+        tokenPrices[posMeta.token?.address];
       const totalPercentage =
         parseFloatCurrencyValue(posMeta.collateral!) > 0 &&
-        tokenPrices[posMeta.token.address] > 0
+        tokenPrices[posMeta.token?.address] > 0
           ? (100 * parseFloatCurrencyValue(posMeta.debt)) / collateralVal
           : 0;
       const liquidatableZone = posMeta.borrowablePercent;
@@ -139,7 +140,7 @@ export function LiquidatablePositionsCtxProvider({
       return {
         ...posMeta,
         liquidateButton:
-          posMeta.liquidationPrice > tokenPrices[posMeta.token.address],
+          posMeta.liquidationPrice > tokenPrices[posMeta.token?.address],
         positionHealthColor: positionHealthColor,
         parsedPositionHealth: positionHealth[positionHealthColor],
         collateralValue: new CurrencyValue(
@@ -163,7 +164,7 @@ export function LiquidatablePositionsCtxProvider({
           positionHealthOrder.get(posMeta.parsedPositionHealth) ?? 4,
       };
     })
-    .filter((posMeta) => !stableTickers.includes(posMeta.token.ticker))
+    .filter((posMeta) => !stableTickers.includes(posMeta.token?.ticker))
     //sort liquidatable first
     .sort(function (a, b) {
       return a.positionHealthOrder - b.positionHealthOrder;

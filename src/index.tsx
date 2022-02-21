@@ -15,6 +15,7 @@ import Analytics from './pages/Analytics';
 import LiquidatablePositions from './pages/LiquidatablePositions';
 import XMorePage from './pages/XMore';
 import { LiquidatablePositionsCtxProvider } from './contexts/LiquidatablePositionsContext';
+import { ErrorBoundary } from './pages/ErrorPage/ErrorBoundary';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -35,7 +36,14 @@ ReactDOM.render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<Dashboard />} />
-            <Route path="/token/:tokenAddress" element={<TokenPage />} />
+            <Route
+              path="/token/:tokenAddress"
+              element={
+                <ErrorBoundary>
+                  <TokenPage />
+                </ErrorBoundary>
+              }
+            />
             <Route path="/farm" element={<FarmPage />} />
             <Route path="/positions" element={<PositionsPage />} />
             <Route

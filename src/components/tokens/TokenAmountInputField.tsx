@@ -53,12 +53,16 @@ export function TokenAmountInputField(props: {
             required: '',
           })}
           placeholder={placeholder}
-          type="text"
-          inputMode="decimal"
+          type="number"
+          inputMode="numeric"
+          step="any"
           autoComplete="off"
           autoCorrect="off"
           defaultValue={0}
-          pattern="^[0-9]*[.,]?([0-9]?)*$"
+          minLength="1"
+          maxLength="79"
+          spellCheck="false"
+          pattern="^[0-9][.,]?[0-9]$"
           border={'none'}
           h={'44px'}
         />

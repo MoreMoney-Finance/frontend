@@ -194,11 +194,11 @@ export default function RepayWithdraw({
   // ]);
 
   const farmInfoIdx = (chainId?.toString() ?? '43114') as keyof typeof farminfo;
-  const curveLink = `https://avax.curve.fi/factory/${farminfo[farmInfoIdx].curvePoolIdx}/`;
+  const curveLink = `https://avax.curve.fi/factory/${farminfo[farmInfoIdx].curvePoolIdx}/`;  
 
   const repayingMoreThanBalance =
     !isNaN(parseFloat(repayInput)) &&
-    parseEther(repayInput.replaceAll(',', '.')).gt(walletBalance.value);
+    parseEther(repayInput || '0').gt(walletBalance.value);
 
   const repayWithdrawButtonDisabled =
     (parseFloatNoNaN(collateralInput) === 0 &&

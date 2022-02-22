@@ -53,7 +53,7 @@ export function TokenAmountInputField(props: {
             required: '',
           })}
           placeholder={placeholder}
-          type="number"
+          type="text"
           inputMode="numeric"
           step="any"
           autoComplete="off"

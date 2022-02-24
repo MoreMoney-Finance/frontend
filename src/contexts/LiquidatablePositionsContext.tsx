@@ -6,7 +6,6 @@ import {
   ParsedPositionMetaRow,
   parsePositionMeta,
   useStable,
-  useUpdatedMetadataLiquidatablePositions,
   useUpdatedPositions,
 } from '../chain-interaction/contracts';
 import { parseFloatCurrencyValue } from '../utils';
@@ -79,23 +78,11 @@ export function LiquidatablePositionsCtxProvider({
   console.log('parseCachePositions', parsedCachePositions);
   console.log('updatedPositions', updatedPositions);
   const jointUpdatedPositions = [...parsedCachePositions, ...updatedPositions];
-  const updatedMetadata =
-    useUpdatedMetadataLiquidatablePositions(parsedCachePositions);
-  const updatedPositionMetadata = updatedMetadata
-    .map((x) => (x && x[0] != undefined ? x[0] : []))
-    .map((pos) => {
-      return parsePositionMeta(pos, stable, pos.trancheContract);
-    });
-
-  const updatedDataMap = updatedPositionMetadata.reduce((acc, x) => {
-    acc[x.trancheId] = x;
-    return acc;
-  }, {} as Record<string, ParsedPositionMetaRow>);
 
   const parsedPositions = new Map<number, ParsedPositionMetaRow>();
   for (let index = 0; index < jointUpdatedPositions.length; index++) {
     const pos = jointUpdatedPositions[index];
-    parsedPositions.set(pos.trancheId, updatedDataMap[pos.trancheId] ?? pos);
+    parsedPositions.set(pos.trancheId, pos);
   }
   const dollar = new CurrencyValue(stable, parseEther('1'));
 

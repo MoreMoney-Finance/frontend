@@ -9,13 +9,14 @@ import {
   Progress,
   Text,
   useDisclosure,
-  VStack
+  VStack,
 } from '@chakra-ui/react';
+import { parseEther } from '@ethersproject/units';
 import {
   CurrencyValue,
   useEtherBalance,
   useEthers,
-  useTokenAllowance
+  useTokenAllowance,
 } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
@@ -26,12 +27,13 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   TxStatus,
-  useStable
+  useAddresses,
+  useStable,
 } from '../../../../chain-interaction/contracts';
 import {
   useApproveTrans,
   useDepositBorrowTrans,
-  useNativeDepositBorrowTrans
+  useNativeDepositBorrowTrans,
 } from '../../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../../components/account/EnsureWalletConnected';
 import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
@@ -53,19 +55,20 @@ export default function DepositBorrow({
 }>) {
   const { token, strategyAddress, borrowablePercent, usdPrice } = stratMeta;
   const { chainId } = useEthers();
+  const addresses = useAddresses();
   const [data, setData] = useState<{ [x: string]: any }>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const account = useContext(UserAddressContext);
   const stable = useStable();
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
-  
-  const allowResult = useTokenAllowance(token.address, account, strategyAddress);
-  const allowCV = new CurrencyValue(
-    token,
-    allowResult ??
-      BigNumber.from('0')
-  ); 
+
+  const allowResult = useTokenAllowance(
+    token.address,
+    account,
+    strategyAddress
+  );
+  const allowCV = new CurrencyValue(token, allowResult ?? BigNumber.from('0'));
   const allowance = token.address && account && strategyAddress && allowCV;
 
   const etherBalance = useEtherBalance(account);
@@ -88,9 +91,16 @@ export default function DepositBorrow({
     watch,
   } = useForm();
 
+  //checking if collateralValue is too low
+  const isDustPosition = position?.collateralValue.value.lt(
+    parseEther('0.01')
+  );
+
   const { sendDepositBorrow, depositBorrowState } = useDepositBorrowTrans(
     position ? position.trancheId : undefined,
-    position ? position.trancheContract : undefined
+    isDustPosition 
+      ? addresses.StableLending
+      : position?.trancheContract
   );
   const {
     sendDepositBorrow: sendNativeDepositBorrow,
@@ -227,17 +237,18 @@ export default function DepositBorrow({
   const riskyZone = (80 * borrowablePercent) / 100;
   const healthyZone = (50 * borrowablePercent) / 100;
 
-  const positionHealthColor = 0.1 > totalDebt
-    ? 'accent'
-    : totalPercentage > liquidatableZone
-      ? 'purple.400'
-      : totalPercentage > criticalZone
-        ? 'red'
-        : totalPercentage > riskyZone
-          ? 'orange'
-          : totalPercentage > healthyZone
-            ? 'green'
-            : 'accent';
+  const positionHealthColor =
+    0.1 > totalDebt
+      ? 'accent'
+      : totalPercentage > liquidatableZone
+        ? 'purple.400'
+        : totalPercentage > criticalZone
+          ? 'red'
+          : totalPercentage > riskyZone
+            ? 'orange'
+            : totalPercentage > healthyZone
+              ? 'green'
+              : 'accent';
   const positionHealth = {
     accent: 'Safe',
     green: 'Healthy',
@@ -396,7 +407,7 @@ export default function DepositBorrow({
             <Box height="24px" margin="2px" padding="6px">
               <Progress
                 colorScheme={positionHealthColor}
-                value={100 * totalPercentage / borrowablePercent}
+                value={(100 * totalPercentage) / borrowablePercent}
                 width="100px"
                 height="14px"
                 borderRadius={'10px'}

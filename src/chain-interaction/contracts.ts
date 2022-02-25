@@ -24,6 +24,7 @@ import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
+import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
@@ -649,6 +650,28 @@ export function useUpdatedPositions(timeStart: number) {
       parseRows(currentRows, addresses.StableLending)) ||
       []),
   ];
+}
+
+export function useUpdatedMetadataLiquidatablePositions(
+  positions?: ParsedPositionMetaRow[]
+) {
+  const abi = {
+    [useAddresses().IsolatedLending]: new Interface(IsolatedLending.abi),
+    [useAddresses().StableLending]: new Interface(StableLending.abi),
+  };
+
+  const positionCalls: ContractCall[] = positions!.map((pos) => {
+    return {
+      abi: abi[pos.trancheContract],
+      address: pos.trancheContract,
+      method: 'viewPositionMetadata',
+      args: [pos.trancheId],
+    };
+  });
+
+  const updatedData = useContractCalls(positionCalls);
+
+  return updatedData.filter((x) => x !== undefined);
 }
 
 export function useRegisteredOracle(tokenAddress?: string) {

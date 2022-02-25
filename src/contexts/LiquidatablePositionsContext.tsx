@@ -1,3 +1,4 @@
+import { Progress } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
 import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber } from '@usedapp/core/node_modules/ethers';
@@ -95,7 +96,11 @@ export function LiquidatablePositionsCtxProvider({
   const parsedPositions = new Map<number, ParsedPositionMetaRow>();
   for (let index = 0; index < jointUpdatedPositions.length; index++) {
     const pos = jointUpdatedPositions[index];
-    parsedPositions.set(pos.trancheId, updatedDataMap[pos.trancheId] ?? pos);
+    const posUpdatedData = {
+      ...updatedDataMap[pos.trancheId],
+      trancheContract: pos.trancheContract,
+    };
+    parsedPositions.set(pos.trancheId, posUpdatedData);
   }
   const dollar = new CurrencyValue(stable, parseEther('1'));
 
@@ -185,7 +190,11 @@ export function LiquidatablePositionsCtxProvider({
 
   return (
     <LiquidatablePositionsContext.Provider value={liquidatablePositions}>
-      {children}
+      {Object.values(updatedDataMap).length === 0 ? (
+        children
+      ) : (
+        <Progress isIndeterminate />
+      )}
     </LiquidatablePositionsContext.Provider>
   );
 }

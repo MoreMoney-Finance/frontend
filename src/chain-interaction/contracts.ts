@@ -670,22 +670,8 @@ export function useUpdatedMetadataLiquidatablePositions(
   });
 
   const updatedData = useContractCalls(positionCalls);
-  const positionsTrancheContractMap: Record<number, string> = positions!.reduce(
-    (map: Record<number, string>, pos) => {
-      map[pos.trancheId] = pos.trancheContract;
-      return map;
-    },
-    {}
-  );
 
-  return updatedData
-    .filter((x) => x !== undefined)
-    .map((pos: any) => {
-      return {
-        ...pos,
-        trancheContract: positionsTrancheContractMap[pos.trancheId],
-      };
-    });
+  return updatedData.filter((x) => x !== undefined);
 }
 
 export function useRegisteredOracle(tokenAddress?: string) {

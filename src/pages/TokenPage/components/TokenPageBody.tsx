@@ -21,6 +21,7 @@ export function TokenPageBody({
     useIsolatedPositionMetadata(account);
   const positionMeta: ParsedPositionMetaRow[] =
     (tokenAddress ? allPositionMeta[tokenAddress] : [])
+      .filter((pos) => pos)
       .filter((pos) => pos.collateralValue.value.gt(parseEther('0.01')))
       .filter((pos) => pos.strategy in stratMeta[pos.token.address]) ?? [];
 

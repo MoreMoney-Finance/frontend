@@ -19,11 +19,13 @@ export function TokenPageBody({
 }>) {
   const allPositionMeta: TokenStratPositionMetadata =
     useIsolatedPositionMetadata(account);
-  const positionMeta: ParsedPositionMetaRow[] =
-    (tokenAddress ? allPositionMeta[tokenAddress] : [])
+  const positionMeta1: ParsedPositionMetaRow[] =
+    (tokenAddress && allPositionMeta && allPositionMeta[tokenAddress]) || [];
+  const positionMeta =
+    positionMeta1
       .filter((pos) => pos)
       .filter((pos) => pos.collateralValue.value.gt(parseEther('0.01')))
-      .filter((pos) => pos.strategy in stratMeta[pos.token.address]) ?? [];
+      .filter((pos) => pos.strategy in stratMeta) ?? [];
 
   return positionMeta.length === 0 ? (
     <PositionBody stratMeta={stratMeta} />

@@ -1,3 +1,4 @@
+import { Progress } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
 import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber } from '@usedapp/core/node_modules/ethers';
@@ -6,6 +7,7 @@ import {
   ParsedPositionMetaRow,
   parsePositionMeta,
   useStable,
+  useUpdatedMetadataLiquidatablePositions,
   useUpdatedPositions,
 } from '../chain-interaction/contracts';
 import { parseFloatCurrencyValue } from '../utils';
@@ -78,11 +80,27 @@ export function LiquidatablePositionsCtxProvider({
   console.log('parseCachePositions', parsedCachePositions);
   console.log('updatedPositions', updatedPositions);
   const jointUpdatedPositions = [...parsedCachePositions, ...updatedPositions];
+  const updatedMetadata =
+    useUpdatedMetadataLiquidatablePositions(parsedCachePositions);
+  const updatedPositionMetadata = updatedMetadata
+    .map((x) => (x && x[0] != undefined ? x[0] : []))
+    .map((pos) => {
+      return parsePositionMeta(pos, stable, pos.trancheContract);
+    });
+
+  const updatedDataMap = updatedPositionMetadata.reduce((acc, x) => {
+    acc[x.trancheId] = x;
+    return acc;
+  }, {} as Record<string, ParsedPositionMetaRow>);
 
   const parsedPositions = new Map<number, ParsedPositionMetaRow>();
   for (let index = 0; index < jointUpdatedPositions.length; index++) {
     const pos = jointUpdatedPositions[index];
-    parsedPositions.set(pos.trancheId, pos);
+    const posUpdatedData = {
+      ...updatedDataMap[pos.trancheId],
+      trancheContract: pos.trancheContract,
+    };
+    parsedPositions.set(pos.trancheId, posUpdatedData);
   }
   const dollar = new CurrencyValue(stable, parseEther('1'));
 
@@ -172,7 +190,11 @@ export function LiquidatablePositionsCtxProvider({
 
   return (
     <LiquidatablePositionsContext.Provider value={liquidatablePositions}>
-      {children}
+      {Object.values(updatedDataMap).length === 0 ? (
+        children
+      ) : (
+        <Progress isIndeterminate />
+      )}
     </LiquidatablePositionsContext.Provider>
   );
 }

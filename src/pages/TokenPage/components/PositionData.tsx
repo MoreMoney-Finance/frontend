@@ -82,7 +82,7 @@ export function PositionData({
               position.collateral?.format({
                 significantDigits: Infinity,
               }) ??
-              new CurrencyValue(stratMeta.token, BigNumber.from('0')).format()
+              new CurrencyValue(position.token, BigNumber.from('0')).format()
             }
           />
           <TitleValue

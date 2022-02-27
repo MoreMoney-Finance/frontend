@@ -331,9 +331,9 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   ].map(getAddress);
 
   const tokens = Object.keys(token2Strat);
-  tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
+  // tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
   const strats = Object.values(token2Strat);
-  strats.push(addresses.LiquidYieldStrategy);
+  // strats.push(addresses.LiquidYieldStrategy);
   const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
 
   React.useEffect(() => {

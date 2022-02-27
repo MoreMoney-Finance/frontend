@@ -82,6 +82,8 @@ export type DeploymentAddresses = {
 
   CurvePoolSL: string;
   StrategyViewer: string;
+
+  LiquidYieldStrategy: string;
 };
 
 export function useAddresses() {
@@ -310,6 +312,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const addresses = useAddresses();
 
   const token2Strat = {
+    ['0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE']: addresses.LiquidYieldStrategy,
     ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']:
       addresses.YieldYakAVAXStrategy,
     ['0x60781C2586D68229fde47564546784ab3fACA982']: addresses.YieldYakStrategy,
@@ -332,7 +335,9 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   ].map(getAddress);
 
   const tokens = Object.keys(token2Strat);
+  tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
   const strats = Object.values(token2Strat);
+  strats.push(addresses.LiquidYieldStrategy);
   const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
 
   tokens.push('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');

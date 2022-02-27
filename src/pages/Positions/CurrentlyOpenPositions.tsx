@@ -33,11 +33,11 @@ export default function CurrentlyOpenPositions({
   const allPositionMeta: TokenStratPositionMetadata =
     useIsolatedPositionMetadata(account);
 
+  const allStratMeta = React.useContext(StrategyMetadataContext);
   const positions = Object.values(allPositionMeta)
     .flatMap((x) => x)
-    .filter((pos) => pos.collateralValue.value.gt(parseEther('0.01')));
-
-  const allStratMeta = React.useContext(StrategyMetadataContext);
+    .filter((pos) => pos.collateralValue.value.gt(parseEther('0.01')))
+    .filter((pos) => pos.strategy in allStratMeta[pos.token.address]);
   const stable = useStable();
 
   const rows: TrancheData[] =

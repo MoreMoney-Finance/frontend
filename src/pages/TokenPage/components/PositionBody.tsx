@@ -17,12 +17,19 @@ import StrategyTokenInformation from './StrategyTokenInformation';
 import { parseEther } from '@ethersproject/units';
 
 export function PositionBody({
-  position,
+  position: inputPos,
   stratMeta,
 }: React.PropsWithChildren<{
   position?: ParsedPositionMetaRow;
   stratMeta: Record<string, ParsedStratMetaRow>;
 }>) {
+  const position =
+    inputPos &&
+    inputPos.collateralValue.value.gt(parseEther('0.01')) &&
+    inputPos.strategy in stratMeta
+      ? inputPos
+      : undefined;
+
   const [chosenStrategy, setChosenStrategy] = React.useState<string>(
     position?.strategy ?? Object.keys(stratMeta)[0]
   );

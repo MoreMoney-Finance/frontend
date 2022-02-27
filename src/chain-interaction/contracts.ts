@@ -334,8 +334,6 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
   tokens.push('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');
   strats.push(addresses.sJoeStrategy);
-  tokens.push('0x57319d41F71E81F3c65F2a47CA4e001EbAFd4F33');
-  strats.push(addresses.sJoeStrategy);
 
   React.useEffect(() => {
     async function getData() {

@@ -179,7 +179,8 @@ function parseStratMeta(
   balancesCtx: Map<string, CurrencyValue>,
   yyMetadata: YYMetadata,
   globalMoneyAvailable: BigNumber,
-  yieldMonitor: Record<string, YieldMonitorMetadata>
+  yieldMonitor: Record<string, YieldMonitorMetadata>,
+  additionalYield: Record<string, Record<string, number>>
 ): ParsedStratMetaRow | undefined {
   const token = getTokenFromAddress(chainId, row.token);
   if (token) {
@@ -198,7 +199,9 @@ function parseStratMeta(
         ? yyMetadata[underlyingAddress].apy * 0.9
         : token.address in yieldMonitor
         ? yieldMonitor[token.address].totalApy
-        : convertAPF2APY(row.APF);
+        : token.address in additionalYield && strategyAddress in additionalYield[token.address]
+        ? additionalYield[token.address][strategyAddress]
+        : 0;
 
     let syntheticDebtCeil = globalMoneyAvailable.add(row.totalDebt);
 
@@ -302,7 +305,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const totalSupply = useTotalSupply('totalSupply', [], BigNumber.from(0));
 
   const balancesCtx = useContext(WalletBalancesContext);
-  const { yyMetadata, yieldMonitor } = useContext(ExternalMetadataContext);
+  const { yyMetadata, yieldMonitor, additionalYieldData } = useContext(ExternalMetadataContext);
 
   const addresses = useAddresses();
 
@@ -373,7 +376,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
           balancesCtx,
           yyMetadata,
           globalMoneyAvailable,
-          yieldMonitor
+          yieldMonitor,
+          additionalYieldData
         );
 
         return parsedRow

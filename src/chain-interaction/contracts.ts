@@ -76,6 +76,7 @@ export type DeploymentAddresses = {
   wsMAXIStableLiquidation: string;
   xJoeStableLiquidation: string;
   WrapNativeStableLending: string;
+  sJoeStrategy: string;
 
   VestingLaunchReward: string;
 
@@ -180,7 +181,8 @@ function parseStratMeta(
   balancesCtx: Map<string, CurrencyValue>,
   yyMetadata: YYMetadata,
   globalMoneyAvailable: BigNumber,
-  yieldMonitor: Record<string, YieldMonitorMetadata>
+  yieldMonitor: Record<string, YieldMonitorMetadata>,
+  additionalYield: Record<string, Record<string, number>>
 ): ParsedStratMetaRow | undefined {
   const token = getTokenFromAddress(chainId, row.token);
   if (token) {
@@ -199,7 +201,9 @@ function parseStratMeta(
         ? yyMetadata[underlyingAddress].apy * 0.9
         : token.address in yieldMonitor
         ? yieldMonitor[token.address].totalApy
-        : convertAPF2APY(row.APF);
+        : token.address in additionalYield && strategyAddress in additionalYield[token.address]
+        ? additionalYield[token.address][strategyAddress]
+        : 0;
 
     let syntheticDebtCeil = globalMoneyAvailable.add(row.totalDebt);
 
@@ -303,7 +307,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const totalSupply = useTotalSupply('totalSupply', [], BigNumber.from(0));
 
   const balancesCtx = useContext(WalletBalancesContext);
-  const { yyMetadata, yieldMonitor } = useContext(ExternalMetadataContext);
+  const { yyMetadata, yieldMonitor, additionalYieldData } = useContext(ExternalMetadataContext);
 
   const addresses = useAddresses();
 
@@ -335,6 +339,9 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const strats = Object.values(token2Strat);
   strats.push(addresses.LiquidYieldStrategy);
   const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
+
+  tokens.push('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');
+  strats.push(addresses.sJoeStrategy);
 
   React.useEffect(() => {
     async function getData() {
@@ -374,7 +381,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
           balancesCtx,
           yyMetadata,
           globalMoneyAvailable,
-          yieldMonitor
+          yieldMonitor,
+          additionalYieldData
         );
 
         return parsedRow

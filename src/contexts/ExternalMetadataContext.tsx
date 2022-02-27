@@ -52,6 +52,7 @@ export type ExternalMetadataType = {
   yyMetadata: YYMetadata;
   yieldMonitor: Record<string, YieldMonitorMetadata>;
   xMoreData: xMoreMetadata;
+  additionalYieldData: Record<string, Record<string, number>>;
 };
 
 export const ExternalMetadataContext =
@@ -60,6 +61,7 @@ export const ExternalMetadataContext =
     yyMetadata: {},
     yieldMonitor: {},
     xMoreData: {} as xMoreMetadata,
+    additionalYieldData: {},
   });
 
 export function ExternalMetadataCtxProvider({
@@ -72,6 +74,10 @@ export function ExternalMetadataCtxProvider({
   const [yyMetadata, setYYMeta] = useState<YYMetadata>({});
   const [yieldMonitor, setYieldMonitor] = useState<
     Record<string, YieldMonitorMetadata>
+  >({});
+
+  const [additionalYieldData, setAdditionalYieldData] = useState<
+    Record<string, Record<string, number>>
   >({});
 
   useEffect(() => {
@@ -120,6 +126,15 @@ export function ExternalMetadataCtxProvider({
         console.error('Failed to fetch URL');
         console.error(err);
       });
+    fetch(
+      'https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/additional-yield.json'
+    )
+      .then((response) => response.json())
+      .then((response) => setAdditionalYieldData(response))
+      .catch((err) => {
+        console.error('Failed to fetch URL');
+        console.error(err);
+      });
   }, []);
   return (
     <ExternalMetadataContext.Provider
@@ -129,6 +144,7 @@ export function ExternalMetadataCtxProvider({
           yyMetadata,
           yieldMonitor,
           xMoreData,
+          additionalYieldData,
         } as unknown as ExternalMetadataType
       }
     >

@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom';
 import { Column, useTable } from 'react-table';
 import { ParsedStratMetaRow } from '../../../chain-interaction/contracts';
 import { TokenDescription } from '../../../components/tokens/TokenDescription';
+import { hiddenStrategies } from '../../../constants/hidden-strategies';
 import { LiquidationFeesContext } from '../../../contexts/LiquidationFeesContext';
 import { StrategyMetadataContext } from '../../../contexts/StrategyMetadataContext';
 import { TableSearch } from './TableSearch';
@@ -42,15 +43,27 @@ export function AllSupportedCollateral() {
       (stratRows: Record<string, ParsedStratMetaRow>) =>
         !hiddenTokens.has(Object.values(stratRows)[0].token.ticker)
     )
-    .map((x) =>
-      Object.values(x).reduce((aggStrat, nextStrat) => ({
-        ...aggStrat,
-        APY: aggStrat.APY > nextStrat.APY ? aggStrat.APY : nextStrat.APY,
-        debtCeiling: aggStrat.debtCeiling.add(nextStrat.debtCeiling),
-        totalDebt: aggStrat.totalDebt.add(nextStrat.totalDebt),
-        tvlInPeg: aggStrat.tvlInPeg.add(nextStrat.tvlInPeg),
-      }))
-    );
+    .map((x: Record<string, ParsedStratMetaRow>) => {
+      const tokenAddress = x[Object.keys(x)[0]].token.address;
+      const options = Object.values(x);
+      const optionsFiltered = Object.values(x).filter(
+        (y) =>
+          hiddenStrategies[tokenAddress] &&
+          !hiddenStrategies[tokenAddress].includes(y.strategyAddress)
+      );
+
+      return (
+        hiddenStrategies[tokenAddress] ? optionsFiltered : options
+      ).reduce((aggStrat, nextStrat) => {
+        return {
+          ...aggStrat,
+          APY: aggStrat.APY > nextStrat.APY ? aggStrat.APY : nextStrat.APY,
+          debtCeiling: aggStrat.debtCeiling.add(nextStrat.debtCeiling),
+          totalDebt: aggStrat.totalDebt.add(nextStrat.totalDebt),
+          tvlInPeg: aggStrat.tvlInPeg.add(nextStrat.tvlInPeg),
+        };
+      });
+    });
 
   const tokenFees = React.useContext(LiquidationFeesContext);
   const [tableTabFilter, setTableTabFilter] = React.useState<string[]>([]);
@@ -77,12 +90,14 @@ export function AllSupportedCollateral() {
         ...meta,
         asset: <TokenDescription token={meta.token} />,
         apy: Math.round(meta.APY) + '%',
-        MONEYavailable: meta.debtCeiling.sub(meta.totalDebt).format({ suffix: ''}),
+        MONEYavailable: meta.debtCeiling
+          .sub(meta.totalDebt)
+          .format({ suffix: '' }),
         minColRatio: `${Math.round(
           (1 / (meta.borrowablePercent / 100)) * 100
         )}%`,
         ltv: `${5 * Math.round(meta.borrowablePercent / 5)}%`,
-        tvlPeg: `$ ${meta.tvlInPeg.format({ suffix: ''})}`,
+        tvlPeg: `$ ${meta.tvlInPeg.format({ suffix: '' })}`,
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
         liquidationFee:
           (tokenFees.get(meta.token.address) ?? 'Loading...') + '%',

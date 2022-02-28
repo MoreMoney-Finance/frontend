@@ -190,7 +190,7 @@ export function LiquidatablePositionsCtxProvider({
 
   return (
     <LiquidatablePositionsContext.Provider value={liquidatablePositions}>
-      {Object.values(updatedDataMap).length === 0 ? (
+      {Object.values(updatedDataMap).length > 0 ? (
         children
       ) : (
         <Progress isIndeterminate />

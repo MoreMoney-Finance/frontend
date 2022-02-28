@@ -24,6 +24,7 @@ import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
+import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
@@ -75,11 +76,14 @@ export type DeploymentAddresses = {
   wsMAXIStableLiquidation: string;
   xJoeStableLiquidation: string;
   WrapNativeStableLending: string;
+  sJoeStrategy: string;
 
   VestingLaunchReward: string;
 
   CurvePoolSL: string;
   StrategyViewer: string;
+
+  LiquidYieldStrategy: string;
 };
 
 export function useAddresses() {
@@ -177,7 +181,8 @@ function parseStratMeta(
   balancesCtx: Map<string, CurrencyValue>,
   yyMetadata: YYMetadata,
   globalMoneyAvailable: BigNumber,
-  yieldMonitor: Record<string, YieldMonitorMetadata>
+  yieldMonitor: Record<string, YieldMonitorMetadata>,
+  additionalYield: Record<string, Record<string, number>>
 ): ParsedStratMetaRow | undefined {
   const token = getTokenFromAddress(chainId, row.token);
   if (token) {
@@ -196,7 +201,9 @@ function parseStratMeta(
         ? yyMetadata[underlyingAddress].apy * 0.9
         : token.address in yieldMonitor
         ? yieldMonitor[token.address].totalApy
-        : convertAPF2APY(row.APF);
+        : token.address in additionalYield && strategyAddress in additionalYield[token.address]
+        ? additionalYield[token.address][strategyAddress]
+        : 0;
 
     let syntheticDebtCeil = globalMoneyAvailable.add(row.totalDebt);
 
@@ -300,11 +307,12 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const totalSupply = useTotalSupply('totalSupply', [], BigNumber.from(0));
 
   const balancesCtx = useContext(WalletBalancesContext);
-  const { yyMetadata, yieldMonitor } = useContext(ExternalMetadataContext);
+  const { yyMetadata, yieldMonitor, additionalYieldData } = useContext(ExternalMetadataContext);
 
   const addresses = useAddresses();
 
   const token2Strat = {
+    ['0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE']: addresses.LiquidYieldStrategy,
     ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']:
       addresses.YieldYakAVAXStrategy,
     ['0x60781C2586D68229fde47564546784ab3fACA982']: addresses.YieldYakStrategy,
@@ -327,8 +335,13 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   ].map(getAddress);
 
   const tokens = Object.keys(token2Strat);
+  // tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
   const strats = Object.values(token2Strat);
+  // strats.push(addresses.LiquidYieldStrategy);
   const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
+
+  tokens.push('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');
+  strats.push(addresses.sJoeStrategy);
 
   React.useEffect(() => {
     async function getData() {
@@ -368,7 +381,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
           balancesCtx,
           yyMetadata,
           globalMoneyAvailable,
-          yieldMonitor
+          yieldMonitor,
+          additionalYieldData
         );
 
         return parsedRow
@@ -649,6 +663,28 @@ export function useUpdatedPositions(timeStart: number) {
       parseRows(currentRows, addresses.StableLending)) ||
       []),
   ];
+}
+
+export function useUpdatedMetadataLiquidatablePositions(
+  positions?: ParsedPositionMetaRow[]
+) {
+  const abi = {
+    [useAddresses().IsolatedLending]: new Interface(IsolatedLending.abi),
+    [useAddresses().StableLending]: new Interface(StableLending.abi),
+  };
+
+  const positionCalls: ContractCall[] = positions!.map((pos) => {
+    return {
+      abi: abi[pos.trancheContract],
+      address: pos.trancheContract,
+      method: 'viewPositionMetadata',
+      args: [pos.trancheId],
+    };
+  });
+
+  const updatedData = useContractCalls(positionCalls);
+
+  return updatedData.filter((x) => x !== undefined);
 }
 
 export function useRegisteredOracle(tokenAddress?: string) {

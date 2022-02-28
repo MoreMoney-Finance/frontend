@@ -48,6 +48,7 @@ export function AllSupportedCollateral() {
         APY: aggStrat.APY > nextStrat.APY ? aggStrat.APY : nextStrat.APY,
         debtCeiling: aggStrat.debtCeiling.add(nextStrat.debtCeiling),
         totalDebt: aggStrat.totalDebt.add(nextStrat.totalDebt),
+        tvlInPeg: aggStrat.tvlInPeg.add(nextStrat.tvlInPeg),
       }))
     );
 

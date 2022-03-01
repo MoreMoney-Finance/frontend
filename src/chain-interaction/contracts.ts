@@ -197,7 +197,11 @@ function parseStratMeta(
       : strategyAddress;
 
     const APY =
-      underlyingAddress in yyMetadata
+      strategyAddress === addresses[chainId].LiquidYieldStrategy
+      ? token.address === '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
+      ? yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'].totalApy * 0.65 / 0.5
+      : yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'].totalApy * 0.3 / 0.5 + 8
+      : underlyingAddress in yyMetadata
         ? yyMetadata[underlyingAddress].apy * 0.9
         : token.address in yieldMonitor
         ? yieldMonitor[token.address].totalApy

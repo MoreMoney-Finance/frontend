@@ -1,26 +1,16 @@
-import { getExplorerAddressLink, useEthers } from '@usedapp/core';
+import { Container } from '@chakra-ui/react';
 import * as React from 'react';
-import { useAddresses } from '../../chain-interaction/contracts';
+import AllAddresses from './components/AllAddresses';
+import AllOpenPositions from './components/AllOpenPositions';
 
 export default function AdminPage(props: React.PropsWithChildren<unknown>) {
-  const addresses = useAddresses();
-  const { chainId } = useEthers();
   return (
-    <div>
-      <ul>
-        {Object.entries(addresses).map(([key, value]) => (
-          <li key={key}>
-            <a
-              href={getExplorerAddressLink(value, chainId!)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {key}
-            </a>
-          </li>
-        ))}
-      </ul>
-      {props.children}
-    </div>
+    <>
+      <Container>
+        <AllAddresses />
+        <AllOpenPositions />
+        {props.children}
+      </Container>
+    </>
   );
 }

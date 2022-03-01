@@ -1,4 +1,5 @@
 import { Grid } from '@chakra-ui/react';
+import { parseEther } from '@ethersproject/units';
 import * as React from 'react';
 import { useContext } from 'react';
 import {
@@ -9,12 +10,11 @@ import {
 import { useMigrateStrategy } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
-import CollateralAPY from './metadata/CollateralAPY';
-import EditPosition from './edit/EditPosition';
-import { PositionData } from './PositionData';
 import StrategyNameAndSwitch from './change-strategy/StrategyNameAndSwitch';
+import EditPosition from './edit/EditPosition';
+import CollateralAPY from './metadata/CollateralAPY';
+import { PositionData } from './PositionData';
 import StrategyTokenInformation from './StrategyTokenInformation';
-import { parseEther } from '@ethersproject/units';
 
 export function PositionBody({
   position: inputPos,
@@ -89,6 +89,7 @@ export function PositionBody({
 
         <CollateralAPY stratMetaData={stratMeta[chosenStrategy]} />
         <StrategyNameAndSwitch
+          position={position}
           chooseStrategy={chooseStrategy}
           stratMeta={stratMeta}
           chosenStrategy={chosenStrategy}

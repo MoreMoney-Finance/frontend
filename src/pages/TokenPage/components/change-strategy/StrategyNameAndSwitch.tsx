@@ -1,16 +1,20 @@
 import { Container, Flex, GridItem, Text } from '@chakra-ui/react';
 import * as React from 'react';
 import {
+  ParsedPositionMetaRow,
   ParsedStratMetaRow,
   YieldType,
 } from '../../../../chain-interaction/contracts';
+import { hiddenStrategies } from '../../../../constants/hidden-strategies';
 import ChangeStrategyModal from './ChangeStrategyModal';
 
 export default function StrategyNameAndSwitch({
+  position,
   chooseStrategy,
   stratMeta,
   chosenStrategy,
 }: {
+  position?: ParsedPositionMetaRow;
   chooseStrategy: (strategyToChoose: string) => void;
   stratMeta: Record<string, ParsedStratMetaRow>;
   chosenStrategy: string;
@@ -20,7 +24,22 @@ export default function StrategyNameAndSwitch({
       ? 'Self-repaying loan'
       : 'Compound collateral';
 
-  const multipleOptions = Object.values(stratMeta).length > 1;
+  const options = Object.values(stratMeta).filter((strat) => {
+    //if there's a position opened with the hiddenStrategy then show it anyway
+    if (
+      position &&
+      hiddenStrategies[strat.token.address].includes(position.strategy)
+    ) {
+      return strat;
+    } else if (
+      !hiddenStrategies[strat.token.address] &&
+      !hiddenStrategies[strat.token.address].includes(strat.strategyAddress)
+    ) {
+      return strat;
+    }
+  });
+  
+  const multipleOptions = options.length > 0;
   const textVariant = multipleOptions ? 'bodySmall' : 'bodyLarge';
 
   return (

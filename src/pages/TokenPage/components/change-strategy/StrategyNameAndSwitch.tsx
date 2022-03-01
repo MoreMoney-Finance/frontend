@@ -33,7 +33,7 @@ export default function StrategyNameAndSwitch({
       return strat;
     } else if (
       !hiddenStrategies[strat.token.address] &&
-      !hiddenStrategies[strat.token.address].includes(strat.strategyAddress)
+      !hiddenStrategies[strat.token.address]?.includes(strat.strategyAddress)
     ) {
       return strat;
     }

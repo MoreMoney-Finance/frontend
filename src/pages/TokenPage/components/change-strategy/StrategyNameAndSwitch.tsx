@@ -28,12 +28,12 @@ export default function StrategyNameAndSwitch({
     //if there's a position opened with the hiddenStrategy then show it anyway
     if (
       position &&
-      hiddenStrategies[strat.token.address].includes(position.strategy)
+      hiddenStrategies[strat.token.address]?.includes(position.strategy)
     ) {
       return strat;
     } else if (
       !hiddenStrategies[strat.token.address] &&
-      !hiddenStrategies[strat.token.address].includes(strat.strategyAddress)
+      !hiddenStrategies[strat.token.address]?.includes(strat.strategyAddress)
     ) {
       return strat;
     }

@@ -1,54 +1,23 @@
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  Box,
-  AccordionIcon,
-  AccordionPanel,
-} from '@chakra-ui/react';
-import { useEthers, getExplorerAddressLink } from '@usedapp/core';
+import { parseEther } from '@ethersproject/units';
 import * as React from 'react';
-import { useAddresses } from '../../../chain-interaction/contracts';
+import { useUpdatedPositions } from '../../../chain-interaction/contracts';
+import { PositionsTable } from './AllOpenPositions/components/PositionsTable';
 
 export default function AllOpenPositions(
   props: React.PropsWithChildren<unknown>
 ) {
-  const addresses = useAddresses();
-  const { chainId } = useEthers();
-
+  const updatedPositions = useUpdatedPositions(1646182247947).filter(
+    (position) => {
+      return position?.collateralValue.value.gt(parseEther('0.01'));
+    }
+  );
+  console.log('updatedPositions', updatedPositions);
   return (
     <>
-      <Accordion allowMultiple>
-        <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box flex="1" textAlign="left">
-                Addresses.json
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
-          <AccordionPanel>
-            <div>
-              <ul>
-                {Object.entries(addresses).map(([key, value]) => (
-                  <li key={key}>
-                    <a
-                      href={getExplorerAddressLink(value, chainId!)}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {key}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-              {props.children}
-            </div>
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
-      {props.children}
+      <div>
+        <PositionsTable positions={updatedPositions} />
+        {props.children}
+      </div>
     </>
   );
 }

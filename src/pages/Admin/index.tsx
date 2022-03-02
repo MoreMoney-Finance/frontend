@@ -11,9 +11,9 @@ export default function AdminPage(props: React.PropsWithChildren<unknown>) {
     <>
       <Container>
         <AllAddresses />
-        {details ? <AllOpenPositions /> : ''}
         {props.children}
       </Container>
+      {details ? <AllOpenPositions /> : ''}
     </>
   );
 }

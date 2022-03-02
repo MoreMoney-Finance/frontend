@@ -15,8 +15,6 @@ export default function AllOpenPositions(
 ) {
   const addresses = useAddresses();
   const { chainId } = useEthers();
-  // const location = useLocation();
-  // const details = location.search?.includes('details=true');
 
   return (
     <>

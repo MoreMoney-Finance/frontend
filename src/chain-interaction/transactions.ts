@@ -224,7 +224,7 @@ export function useDepositBorrowTrans(
           cAmount,
           bAmount,
           account
-      );
+        );
     },
     depositBorrowState: state,
   };

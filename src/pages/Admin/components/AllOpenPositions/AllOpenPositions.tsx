@@ -1,7 +1,7 @@
 import { parseEther } from '@ethersproject/units';
 import * as React from 'react';
-import { useUpdatedPositions } from '../../../chain-interaction/contracts';
-import { PositionsTable } from './AllOpenPositions/components/PositionsTable';
+import { useUpdatedPositions } from '../../../../chain-interaction/contracts';
+import { PositionsTable } from './components/PositionsTable';
 
 export default function AllOpenPositions(
   props: React.PropsWithChildren<unknown>
@@ -11,7 +11,6 @@ export default function AllOpenPositions(
       return position?.collateralValue.value.gt(parseEther('0.01'));
     }
   );
-  console.log('updatedPositions', updatedPositions);
   return (
     <>
       <div>

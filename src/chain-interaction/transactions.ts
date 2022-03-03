@@ -11,6 +11,7 @@ import { BigNumber, ethers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
+import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import CurvePoolRewards from '../contracts/artifacts/contracts/rewards/CurvePoolRewards.sol/CurvePoolRewards.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
@@ -302,6 +303,24 @@ export function useConvertReward2Stable(contractAddress: string) {
     sendConvertReward2Stable: (rewardAmount: BigNumber, targetBid: BigNumber) =>
       send(rewardAmount, targetBid),
     convertReward2StableState: state,
+  };
+}
+
+export function useUpdateOraclePrice() {
+  const addresses = useAddresses();
+  const inAmount = parseEther('1');
+  const stable = useStable();
+
+  const strategy = new Contract(
+    addresses.OracleRegistry,
+    new Interface(OracleRegistry.abi)
+  );
+  const { send, state } = useContractFunction(strategy, 'getAmountInPeg');
+
+  return {
+    sendUpdateOraclePrice: (tokenAddress: string) =>
+      send(tokenAddress, inAmount, stable.address),
+    updateOraclePriceState: state,
   };
 }
 

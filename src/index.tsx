@@ -51,6 +51,7 @@ ReactDOM.render(
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/xmore" element={<XMorePage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/admin/:positions" element={<AdminPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

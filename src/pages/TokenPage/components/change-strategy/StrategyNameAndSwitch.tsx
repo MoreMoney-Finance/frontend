@@ -25,21 +25,27 @@ export default function StrategyNameAndSwitch({
       : 'Compound collateral';
 
   const options = Object.values(stratMeta).filter((strat) => {
-    //if there's a position opened with the hiddenStrategy then show it anyway
-    if (
-      position &&
-      hiddenStrategies[strat.token.address]?.includes(position.strategy)
-    ) {
-      return strat;
-    } else if (
-      !hiddenStrategies[strat.token.address] &&
-      !hiddenStrategies[strat.token.address]?.includes(strat.strategyAddress)
-    ) {
-      return strat;
+    //if we have hidden strategies for this token
+    if (hiddenStrategies[strat.token.address]) {
+      //if the strategy is hidden
+      if (
+        hiddenStrategies[strat.token.address].includes(strat.strategyAddress)
+      ) {
+        //if the strategy that is hidden has a position opened for that
+        if (position?.strategy === strat.strategyAddress) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      return true;
     }
   });
-  
-  const multipleOptions = options.length > 0;
+
+  const multipleOptions = options.length > 1;
   const textVariant = multipleOptions ? 'bodySmall' : 'bodyLarge';
 
   return (

@@ -81,11 +81,11 @@ export function PositionsRow(
         {debt.isZero()
           ? '∞'
           : (
-              params.collateralValue.value
-                .mul(10000)
-                .div(debt.value)
-                .toNumber() / 100
-            ).toFixed(1)}
+            params.collateralValue.value
+              .mul(10000)
+              .div(debt.value)
+              .toNumber() / 100
+          ).toFixed(1)}
         %
       </Td>
 
@@ -112,9 +112,9 @@ export function PositionsRow(
           <Button
             {...(action?.callback
               ? {
-                  ...actionArgs(params),
-                  onClick: () => action.callback!(params),
-                }
+                ...actionArgs(params),
+                onClick: () => action.callback!(params),
+              }
               : actionArgs(params))}
           >
             Liquidate

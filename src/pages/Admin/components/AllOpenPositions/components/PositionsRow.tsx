@@ -9,6 +9,7 @@ import {
   useStable,
 } from '../../../../../chain-interaction/contracts';
 import { TokenDescription } from '../../../../../components/tokens/TokenDescription';
+import CopyClipboard from '../../CopyClipboard/CopyClipboard';
 import { LiquidatableAction } from './PositionsTable';
 
 export function PositionsRow(
@@ -67,6 +68,12 @@ export function PositionsRow(
       <Td>
         <TokenDescription token={token} />
       </Td>
+      <Td>
+        <CopyClipboard
+          value={params.trancheId.toString()}
+          label={params.trancheId.toString()}
+        />
+      </Td>
 
       <Td>{((1 / (params.borrowablePercent / 100)) * 100).toFixed(2) + '%'}</Td>
 
@@ -74,11 +81,11 @@ export function PositionsRow(
         {debt.isZero()
           ? '∞'
           : (
-            params.collateralValue.value
-              .mul(10000)
-              .div(debt.value)
-              .toNumber() / 100
-          ).toFixed(1)}
+              params.collateralValue.value
+                .mul(10000)
+                .div(debt.value)
+                .toNumber() / 100
+            ).toFixed(1)}
         %
       </Td>
 
@@ -105,9 +112,9 @@ export function PositionsRow(
           <Button
             {...(action?.callback
               ? {
-                ...actionArgs(params),
-                onClick: () => action.callback!(params),
-              }
+                  ...actionArgs(params),
+                  onClick: () => action.callback!(params),
+                }
               : actionArgs(params))}
           >
             Liquidate

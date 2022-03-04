@@ -25,6 +25,7 @@ export function PositionsTable({
         <Tr>
           <Td>View</Td>
           <Td>Asset</Td>
+          <Td>Tranche Id</Td>
           <Td>Min Col Ratio</Td>
           <Td>Current Col Ratio</Td>
           <Td>Liquidation price</Td>

@@ -4,6 +4,7 @@ import { TokenDescription } from '../../../../components/tokens/TokenDescription
 import { StrategyMetadataContext } from '../../../../contexts/StrategyMetadataContext';
 import CopyClipboard from '../CopyClipboard/CopyClipboard';
 import UpdatePriceOracle from './components/UpdatePriceOracle';
+import WithdrawFees from './components/WithdrawFees';
 
 export default function AllContracts(props: React.PropsWithChildren<unknown>) {
   const stratMeta = React.useContext(StrategyMetadataContext);
@@ -35,7 +36,7 @@ export default function AllContracts(props: React.PropsWithChildren<unknown>) {
                     <p>{strat.strategyName}</p>
                   </td>
                   <td>
-                    <Button>Withdraw Fees</Button>
+                    <WithdrawFees stratMeta={strat} />
                   </td>
                   <td>
                     <UpdatePriceOracle token={strat.token} />

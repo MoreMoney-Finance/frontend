@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom';
 import { Column, useTable } from 'react-table';
 import { ParsedStratMetaRow } from '../../../chain-interaction/contracts';
 import { TokenDescription } from '../../../components/tokens/TokenDescription';
+import { denyTokenList } from '../../../constants/deny-token-list';
 import { hiddenStrategies } from '../../../constants/hidden-strategies';
 import { LiquidationFeesContext } from '../../../contexts/LiquidationFeesContext';
 import { StrategyMetadataContext } from '../../../contexts/StrategyMetadataContext';
@@ -104,6 +105,7 @@ export function AllSupportedCollateral() {
         balance: meta.balance,
       };
     })
+    .filter((meta) => !denyTokenList.includes(meta.token.address))
     .sort(function (a, b) {
       if (a.token.ticker < b.token.ticker) {
         return -1;

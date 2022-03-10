@@ -113,7 +113,9 @@ export function AllSupportedCollateral() {
       }
       return 0;
     })
-    .sort((a, b) => b.balance - a.balance);
+    .sort((a, b) => b.balance - a.balance)
+    //remove wbtc
+    .filter((meta) => meta.token.ticker !== 'WAVAX/WBTCe');
 
   function tooltip(colName: string, label: string) {
     return (

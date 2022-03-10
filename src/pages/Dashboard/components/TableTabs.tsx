@@ -1,6 +1,7 @@
 import { Box, Tab, TabList, Tabs } from '@chakra-ui/react';
 import * as React from 'react';
 import { ParsedStratMetaRow } from '../../../chain-interaction/contracts';
+import { deprecatedTokenList } from '../../../constants/deprecated-token-list';
 
 export function TableTabs({
   setTableTabFilter,
@@ -27,6 +28,10 @@ export function TableTabs({
     .filter((meta) => !meta.token.ticker.includes('/'))
     .map((meta) => meta.token.ticker);
 
+  const deprecatedTickers = stratMeta
+    .filter((meta) => deprecatedTokenList.includes(meta.token.address))
+    .map((meta) => meta.token.ticker);
+
   return (
     <Box>
       <Tabs
@@ -40,6 +45,8 @@ export function TableTabs({
             setTableTabFilter(singleAssetTickers);
           } else if (index === 2) {
             setTableTabFilter(lpTickers);
+          } else if (index === 3) {
+            setTableTabFilter(deprecatedTickers);
           }
         }}
       >
@@ -48,6 +55,7 @@ export function TableTabs({
           {/* <Tab>Stablecoins</Tab> */}
           <Tab>Single Asset</Tab>
           <Tab>LP Tokens</Tab>
+          <Tab>Deprecated</Tab>
         </TabList>
       </Tabs>
     </Box>

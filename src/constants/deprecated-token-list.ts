@@ -1,4 +1,4 @@
-export const denyTokenList: string[] = [
+export const deprecatedTokenList: string[] = [
   '0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664',
   '0xd586E7F844cEa2F87f50152665BCbc2C279D8d70',
   '0x57319d41F71E81F3c65F2a47CA4e001EbAFd4F33',

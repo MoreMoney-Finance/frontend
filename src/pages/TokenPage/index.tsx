@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { ParsedStratMetaRow } from '../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../chain-interaction/tokens';
 import { BackButton } from '../../components/navigation/BackButton';
+import DeprecatedTokenMessage from '../../components/notifications/DeprecatedTokenMessage';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
@@ -41,6 +42,7 @@ export default function TokenPage(props: React.PropsWithChildren<unknown>) {
         bgGradient="radial(farthest-side, hsla(169, 100%, 46%, 1), hsla(169, 100%, 46%, 0))"
         zIndex="var(--chakra-zIndices-base)"
       />
+      <DeprecatedTokenMessage />
       <HStack spacing={'20px'}>
         <BackButton />
         {token ? (

@@ -54,7 +54,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   )[0];
 
   const avaxMoneyPayload = Object.values(yieldMonitor).filter(
-    (item) => item.lpAddress === '0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9'
+    (item) => item.lpAddress === '0x66D12e1cb13EAbAB21f1Fb6628B1Ef33C6dED5a7'
   )[0];
 
   const { balance, vested } = useSpecialRewardsData(

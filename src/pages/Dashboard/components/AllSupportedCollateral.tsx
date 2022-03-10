@@ -58,7 +58,7 @@ export function AllSupportedCollateral() {
         return {
           ...aggStrat,
           APY: aggStrat.APY > nextStrat.APY ? aggStrat.APY : nextStrat.APY,
-          debtCeiling: aggStrat.debtCeiling.add(nextStrat.debtCeiling),
+          debtCeiling: aggStrat.debtCeiling,
           totalDebt: aggStrat.totalDebt.add(nextStrat.totalDebt),
           tvlInPeg: aggStrat.tvlInPeg.add(nextStrat.tvlInPeg),
         };
@@ -90,9 +90,9 @@ export function AllSupportedCollateral() {
         ...meta,
         asset: <TokenDescription token={meta.token} />,
         apy: Math.round(meta.APY) + '%',
-        MONEYavailable: meta.debtCeiling
-          .sub(meta.totalDebt)
-          .format({ suffix: '' }),
+        MONEYavailable: meta.debtCeiling.gt(meta.totalDebt)
+          ? meta.debtCeiling.sub(meta.totalDebt).format({ suffix: '' })
+          : '0',
         minColRatio: `${Math.round(
           (1 / (meta.borrowablePercent / 100)) * 100
         )}%`,

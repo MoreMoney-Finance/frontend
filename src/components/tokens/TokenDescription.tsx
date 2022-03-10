@@ -5,6 +5,7 @@ import {
   getAuxIconFromTokenAddress,
   getIconsFromTokenAddress,
 } from '../../chain-interaction/tokens';
+import { deprecatedTokenList } from '../../constants/deprecated-token-list';
 
 export function TokenDescription({
   token,
@@ -17,6 +18,7 @@ export function TokenDescription({
 }) {
   const targetSize = iconSize ?? 'xs';
   const auxIcon = getAuxIconFromTokenAddress(token?.address ?? '');
+  const isDeprecated = deprecatedTokenList.includes(token?.address ?? '');
 
   return token ? (
     <HStack spacing="1">
@@ -34,6 +36,7 @@ export function TokenDescription({
         &nbsp;
         <Text size={textSize} isTruncated>
           {token.ticker}
+          {isDeprecated ? <>(deprecated)</> : ''}
         </Text>
         &nbsp;
         {auxIcon ? (

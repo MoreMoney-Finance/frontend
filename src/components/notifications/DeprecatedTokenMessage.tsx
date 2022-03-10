@@ -18,7 +18,10 @@ export default function DeprecatedTokenMessage() {
             borderRadius={'full'}
           >
             <AlertIcon />
-            <b>This token has been deprecated, you can repay, but not borrow against it.</b>
+            <b>
+              This token has been deprecated, you can repay, but not borrow
+              against it.
+            </b>
           </Alert>
           <br />
         </>

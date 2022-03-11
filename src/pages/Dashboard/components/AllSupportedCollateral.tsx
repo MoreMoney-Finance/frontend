@@ -113,7 +113,7 @@ export function AllSupportedCollateral() {
       }
       return 0;
     })
-    .sort((a, b) => b.balance - a.balance)
+    .sort((a, b) => b.balance - a.balance);
 
   function tooltip(colName: string, label: string) {
     return (

@@ -223,10 +223,7 @@ export function useDepositBorrowTrans(
           strategyAddress,
           cAmount,
           bAmount,
-          account,
-          {
-            gasLimit: 1400000,
-          }
+          account
         );
     },
     depositBorrowState: state,

@@ -53,8 +53,9 @@ export default function RepayWithdraw({
   const [data, setData] = useState<{ [x: string]: any }>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const stable = useStable();
-  const isNativeToken =
-    getAddress(WNATIVE_ADDRESS[chainId!]) === getAddress(token.address);
+  const isNativeToken = chainId
+    ? getAddress(WNATIVE_ADDRESS[chainId!]) === getAddress(token.address)
+    : false;
   const balanceCtx = useContext(WalletBalancesContext);
 
   const {
@@ -194,7 +195,7 @@ export default function RepayWithdraw({
   // ]);
 
   const farmInfoIdx = (chainId?.toString() ?? '43114') as keyof typeof farminfo;
-  const curveLink = `https://avax.curve.fi/factory/${farminfo[farmInfoIdx].curvePoolIdx}/`;  
+  const curveLink = `https://avax.curve.fi/factory/${farminfo[farmInfoIdx].curvePoolIdx}/`;
 
   const repayingMoreThanBalance =
     !isNaN(parseFloat(repayInput)) &&

@@ -197,7 +197,11 @@ function parseStratMeta(
       : strategyAddress;
 
     const APY =
-      underlyingAddress in yyMetadata
+      strategyAddress === addresses[chainId].LiquidYieldStrategy
+      ? token.address === '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
+      ? yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'].totalApy * 0.65 * 0.8 / 0.5 
+      : yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'].totalApy * 0.3 * 0.8 / 0.5 + 8
+      : underlyingAddress in yyMetadata
         ? yyMetadata[underlyingAddress].apy * 0.9
         : token.address in yieldMonitor
         ? yieldMonitor[token.address].totalApy
@@ -335,9 +339,9 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   ].map(getAddress);
 
   const tokens = Object.keys(token2Strat);
-  // tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
+  tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
   const strats = Object.values(token2Strat);
-  // strats.push(addresses.LiquidYieldStrategy);
+  strats.push(addresses.LiquidYieldStrategy);
   const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
 
   tokens.push('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');

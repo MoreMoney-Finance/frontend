@@ -96,7 +96,7 @@ const chainIds: Record<string, ChainId> = {
 
 const exchangeIcons: Record<string, string> = {
   JPL: 'https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd/logo.png',
-  PGL: 'https://github.com/marginswap/token-list/raw/main/logo/png.png',
+  PGL: 'https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x60781C2586D68229fde47564546784ab3fACA982/logo.png',
 };
 
 const exchangeRouters: Record<string, string> = {

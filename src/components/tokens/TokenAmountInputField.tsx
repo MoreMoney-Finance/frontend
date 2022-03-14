@@ -1,15 +1,10 @@
-import * as React from 'react';
 import {
-  Button,
-  InputRightElement,
-  Input,
-  InputGroup,
-  FormControl,
-  FormErrorMessage,
-  Text,
+  Button, FormControl,
+  FormErrorMessage, Input,
+  InputGroup, InputRightElement, Text
 } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
-import { parseFloatCurrencyValue } from '../../utils';
+import * as React from 'react';
 
 export function TokenAmountInputField(props: {
   name: string;
@@ -78,10 +73,17 @@ export function TokenAmountInputField(props: {
               borderRadius={'3px'}
               isDisabled={isDisabled}
               onClick={() =>
-                setValueForm(name, parseFloatCurrencyValue(max).toString(), {
-                  shouldDirty: true,
-                  shouldTouch: true,
-                })
+                setValueForm(
+                  name,
+                  max.format({
+                    significantDigits: Infinity,
+                    prefix: '',
+                    suffix: '',
+                    thousandSeparator: '',
+                    decimalSeparator: '.',
+                  }),
+                  { shouldDirty: true, shouldTouch: true }
+                )
               }
             >
               <Text

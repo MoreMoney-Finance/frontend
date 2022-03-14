@@ -11,10 +11,13 @@ import { BigNumber, ethers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
+import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import CurvePoolRewards from '../contracts/artifacts/contracts/rewards/CurvePoolRewards.sol/CurvePoolRewards.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
+import YieldYakStrategy from '../contracts/artifacts/contracts/strategies/YieldYakStrategy.sol/YieldYakStrategy.json';
+import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
 import DirectFlashLiquidation from '../contracts/artifacts/contracts/liquidation/DirectFlashLiquidation.sol/DirectFlashLiquidation.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
 import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
@@ -27,6 +30,31 @@ import {
   useStable,
   useYieldConversionStrategyView,
 } from './contracts';
+
+export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
+  const contractsABI: Record<string, any> = {
+    [useAddresses().YieldYakStrategy]: new Interface(YieldYakStrategy.abi),
+    [useAddresses().StableLending]: new Interface(StableLending.abi),
+    [useAddresses().IsolatedLending]: new Interface(IsolatedLending.abi),
+  };
+  const isYY = useAddresses().YieldYakStrategy === strategyAddress;
+
+  const feesContract = new Contract(
+    strategyAddress,
+    contractsABI[strategyAddress] ?? new Interface(StableLending.abi)
+  );
+  const { send, state } = useContractFunction(feesContract, 'withdrawFees');
+
+  return {
+    sendWithdrawFees:
+      contractsABI[strategyAddress] === undefined
+        ? null
+        : isYY
+          ? () => send(tokenAddress)
+          : () => send(),
+    withdrawState: state,
+  };
+}
 
 export function useUnstakeMore() {
   // TODO: change cprAddress and the ABI to use the correct address
@@ -299,6 +327,24 @@ export function useConvertReward2Stable(contractAddress: string) {
     sendConvertReward2Stable: (rewardAmount: BigNumber, targetBid: BigNumber) =>
       send(rewardAmount, targetBid),
     convertReward2StableState: state,
+  };
+}
+
+export function useUpdateOraclePrice() {
+  const addresses = useAddresses();
+  const inAmount = parseEther('1');
+  const stable = useStable();
+
+  const strategy = new Contract(
+    addresses.OracleRegistry,
+    new Interface(OracleRegistry.abi)
+  );
+  const { send, state } = useContractFunction(strategy, 'getAmountInPeg');
+
+  return {
+    sendUpdateOraclePrice: (tokenAddress: string) =>
+      send(tokenAddress, inAmount, stable.address),
+    updateOraclePriceState: state,
   };
 }
 

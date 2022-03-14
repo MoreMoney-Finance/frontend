@@ -16,7 +16,7 @@ import {
   // useStable,
   // useEstimatedHarvestable,
   // YieldType,
-} from '../../../chain-interaction/contracts';
+} from '../../../chain-interaction/views/contracts';
 // import {
 //   useAMMHarvest,
 //   useHarvestPartially,

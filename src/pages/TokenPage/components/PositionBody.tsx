@@ -6,7 +6,7 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   useStable,
-} from '../../../chain-interaction/contracts';
+} from '../../../chain-interaction/views/contracts';
 import { useMigrateStrategy } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';

@@ -23,7 +23,7 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   useStable,
-} from '../../../../chain-interaction/contracts';
+} from '../../../../chain-interaction/views/contracts';
 import {
   useNativeRepayWithdrawTrans,
   useRepayWithdrawTrans,

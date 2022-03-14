@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
 import colorDot from '../../assets/img/color_dot.svg';
-import { useAddresses, useStable } from '../../chain-interaction/contracts';
+import { useAddresses, useStable } from '../../chain-interaction/views/contracts';
 import { getTokenFromAddress } from '../../chain-interaction/tokens';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';

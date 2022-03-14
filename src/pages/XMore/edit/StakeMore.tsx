@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { TxStatus, useAddresses } from '../../../chain-interaction/contracts';
+import { TxStatus, useAddresses } from '../../../chain-interaction/views/contracts';
 import { getTokenFromAddress } from '../../../chain-interaction/tokens';
 import {
   useApproveTrans,

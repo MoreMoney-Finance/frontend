@@ -26,7 +26,7 @@ import {
   useRegisteredOracle,
   useStable,
   useYieldConversionStrategyView,
-} from './contracts';
+} from './views/contracts';
 
 export function useUnstakeMore() {
   // TODO: change cprAddress and the ABI to use the correct address

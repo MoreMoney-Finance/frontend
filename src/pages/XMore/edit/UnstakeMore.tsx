@@ -2,7 +2,7 @@ import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import { useAddresses } from '../../../chain-interaction/contracts';
+import { useAddresses } from '../../../chain-interaction/views/contracts';
 import { getTokenFromAddress } from '../../../chain-interaction/tokens';
 import {
   useUnstakeMore

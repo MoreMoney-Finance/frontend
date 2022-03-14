@@ -9,7 +9,7 @@ import {
   useStable,
   useUpdatedMetadataLiquidatablePositions,
   useUpdatedPositions,
-} from '../chain-interaction/contracts';
+} from '../chain-interaction/views/contracts';
 import { parseFloatCurrencyValue } from '../utils';
 import { StrategyMetadataContext } from './StrategyMetadataContext';
 

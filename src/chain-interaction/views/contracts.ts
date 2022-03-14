@@ -19,21 +19,21 @@ import {
   ExternalMetadataContext,
   YieldMonitorMetadata,
   YYMetadata,
-} from '../contexts/ExternalMetadataContext';
-import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
-import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
-import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
-import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
-import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
-import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
-import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
-import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
-import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
-import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
-import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
-import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
-import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
-import { getTokenFromAddress, tokenAmount } from './tokens';
+} from '../../contexts/ExternalMetadataContext';
+import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
+import ERC20 from '../../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
+import xMore from '../../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
+import IsolatedLending from '../../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
+import StableLending from '../../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
+import OracleRegistry from '../../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
+import VestingLaunchReward from '../../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
+import VestingStakingRewards from '../../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
+import Stablecoin from '../../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
+import YieldConversionStrategy from '../../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
+import StrategyViewer from '../../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
+import IFeeReporter from '../../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
+import IStrategy from '../../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
+import { getTokenFromAddress, tokenAmount } from '../tokens';
 
 // import earnedRewards from '../constants/earned-rewards.json';
 // import rewardsRewards from '../constants/rewards-rewards.json';
@@ -42,7 +42,7 @@ import { getTokenFromAddress, tokenAmount } from './tokens';
 export const addresses: Record<
   string,
   DeploymentAddresses
-> = require('../contracts/addresses.json');
+> = require('../../contracts/addresses.json');
 
 export type DeploymentAddresses = {
   Fund: string;

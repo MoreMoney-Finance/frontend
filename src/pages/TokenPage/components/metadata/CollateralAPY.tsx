@@ -1,6 +1,6 @@
 import { Container, Flex, GridItem, Text } from '@chakra-ui/react';
 import * as React from 'react';
-import { ParsedStratMetaRow } from '../../../../chain-interaction/contracts';
+import { ParsedStratMetaRow } from '../../../../chain-interaction/views/contracts';
 
 export default function CollateralAPY({
   stratMetaData,

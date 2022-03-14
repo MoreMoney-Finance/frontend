@@ -10,7 +10,7 @@ import { getAddress, Interface, parseUnits } from 'ethers/lib/utils';
 import tokenlist from '../constants/tokenlist.json';
 import deployAddresses from '../contracts/addresses.json';
 import lptokens from '../contracts/lptokens.json';
-import { ParsedPositionMetaRow, useAddresses, useStable } from './contracts';
+import { ParsedPositionMetaRow, useAddresses, useStable } from './views/contracts';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 
 const addressToken: Record<ChainId, Map<string, Token>> = Object.fromEntries(

@@ -2,7 +2,7 @@ import { Container, Flex, GridItem, Image, Text } from '@chakra-ui/react';
 import { CurrencyValue, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
-import { useAddresses } from '../../../chain-interaction/contracts';
+import { useAddresses } from '../../../chain-interaction/views/contracts';
 import { getTokenFromAddress } from '../../../chain-interaction/tokens';
 import { useWalletBalance } from '../../../contexts/WalletBalancesContext';
 

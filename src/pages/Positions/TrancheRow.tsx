@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
-} from '../../chain-interaction/contracts';
+} from '../../chain-interaction/views/contracts';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { TrancheData } from './CurrentlyOpenPositions';
 import { TrancheAction } from './TrancheTable';

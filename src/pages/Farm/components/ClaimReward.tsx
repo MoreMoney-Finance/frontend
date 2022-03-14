@@ -2,7 +2,7 @@ import { InfoOutlineIcon } from '@chakra-ui/icons';
 import { Avatar, Button, HStack, VStack, Text, Link } from '@chakra-ui/react';
 import { Token } from '@usedapp/core';
 import * as React from 'react';
-import { ParsedStakingMetadata } from '../../../chain-interaction/contracts';
+import { ParsedStakingMetadata } from '../../../chain-interaction/views/contracts';
 import { getIconsFromTokenAddress } from '../../../chain-interaction/tokens';
 import { useClaimReward } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';

@@ -5,7 +5,7 @@ import * as React from 'react';
 import {
   useGlobalDebtCeiling,
   useTotalSupply,
-} from '../../chain-interaction/contracts';
+} from '../../chain-interaction/views/contracts';
 
 export default function GlobalDebtCeilingMessage() {
   const globalDebtCeiling = useGlobalDebtCeiling(

@@ -13,7 +13,7 @@ import {
   ParsedStakingMetadata,
   useAddresses,
   TxStatus,
-} from '../../../chain-interaction/contracts';
+} from '../../../chain-interaction/views/contracts';
 import {
   useApproveTrans,
   useStake,

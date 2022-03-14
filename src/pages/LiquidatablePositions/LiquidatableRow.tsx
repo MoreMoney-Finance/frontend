@@ -6,7 +6,7 @@ import {
   ParsedStratMetaRow,
   ParsedPositionMetaRow,
   useStable,
-} from '../../chain-interaction/contracts';
+} from '../../chain-interaction/views/contracts';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { LiquidatableAction } from './LiquidatablePositionsTable';
 

@@ -6,7 +6,7 @@ import React from 'react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
-} from '../../../chain-interaction/contracts';
+} from '../../../chain-interaction/views/contracts';
 import { TitleValue } from '../../../components/data-display/TitleValue';
 import { parseFloatCurrencyValue } from '../../../utils';
 

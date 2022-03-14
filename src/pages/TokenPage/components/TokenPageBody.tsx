@@ -5,7 +5,7 @@ import {
   ParsedStratMetaRow,
   TokenStratPositionMetadata,
   useIsolatedPositionMetadata,
-} from '../../../chain-interaction/contracts';
+} from '../../../chain-interaction/views/contracts';
 import { PositionBody } from './PositionBody';
 
 export function TokenPageBody({

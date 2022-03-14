@@ -8,7 +8,7 @@ import {
   useIsolatedPositionMetadata,
   useStable,
   YieldType,
-} from '../../chain-interaction/contracts';
+} from '../../chain-interaction/views/contracts';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 import { parseFloatCurrencyValue } from '../../utils';
 import { TrancheCard } from './TrancheCard';

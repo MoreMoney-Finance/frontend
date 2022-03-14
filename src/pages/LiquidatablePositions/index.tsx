@@ -3,7 +3,7 @@ import { useEthers } from '@usedapp/core';
 import { getAddress } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useContext } from 'react';
-import { useAddresses } from '../../chain-interaction/contracts';
+import { useAddresses } from '../../chain-interaction/views/contracts';
 import {
   getLiquidationParams,
   LiquidationType,

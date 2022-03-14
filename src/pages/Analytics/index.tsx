@@ -17,7 +17,7 @@ import {
   useParsedStakingMetadata,
   useStable,
   useTotalSupply,
-} from '../../chain-interaction/contracts';
+} from '../../chain-interaction/views/contracts';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 import { AnalyticsBox } from './AnalyticsBox';
 import { UserAddressContext } from '../../contexts/UserAddressContext';

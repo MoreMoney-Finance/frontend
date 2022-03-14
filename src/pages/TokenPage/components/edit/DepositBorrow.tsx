@@ -27,7 +27,7 @@ import {
   ParsedStratMetaRow,
   TxStatus,
   useStable
-} from '../../../../chain-interaction/contracts';
+} from '../../../../chain-interaction/views/contracts';
 import {
   useApproveTrans,
   useDepositBorrowTrans,

@@ -4,7 +4,7 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   YieldType,
-} from '../../../../chain-interaction/contracts';
+} from '../../../../chain-interaction/views/contracts';
 import { hiddenStrategies } from '../../../../constants/hidden-strategies';
 import ChangeStrategyModal from './ChangeStrategyModal';
 

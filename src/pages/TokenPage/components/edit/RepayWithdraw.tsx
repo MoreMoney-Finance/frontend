@@ -38,7 +38,7 @@ import {
   WalletBalancesContext,
 } from '../../../../contexts/WalletBalancesContext';
 import farminfo from '../../../../contracts/farminfo.json';
-import { parseFloatNoNaN } from '../../../../utils';
+import { parseFloatCurrencyValue, parseFloatNoNaN } from '../../../../utils';
 import { ConfirmPositionModal } from './ConfirmPositionModal';
 
 export default function RepayWithdraw({
@@ -119,29 +119,13 @@ export default function RepayWithdraw({
 
   const extantCollateral =
     position && position.collateral
-      ? parseFloatNoNaN(
-        position.collateral.format({
-          significantDigits: Infinity,
-          prefix: '',
-          suffix: '',
-          decimalSeparator: '.',
-          thousandSeparator: '',
-        })
-      )
+      ? parseFloatCurrencyValue(position.collateral)
       : 0;
   const totalCollateral = extantCollateral - parseFloatNoNaN(collateralInput);
 
   const extantDebt =
     position && position.debt && position.debt.gt(position.yield)
-      ? parseFloatNoNaN(
-        position.debt.sub(position.yield).format({
-          significantDigits: Infinity,
-          prefix: '',
-          suffix: '',
-          decimalSeparator: '.',
-          thousandSeparator: '',
-        })
-      )
+      ? parseFloatCurrencyValue(position.debt.sub(position.yield))
       : 0;
   const totalDebt = extantDebt - parseFloatNoNaN(repayInput);
 

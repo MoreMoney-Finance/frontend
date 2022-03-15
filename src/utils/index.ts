@@ -5,11 +5,12 @@ export function parseFloatNoNaN(input: string) {
   return isNaN(parsed) ? 0 : parsed;
 }
 export function parseFloatCurrencyValue(input: CurrencyValue) {
-  const parsed = parseFloat(
+  const parsed = parseFloatNoNaN(
     input.format({
+      significantDigits: Infinity,
       suffix: '',
       thousandSeparator: '',
-      significantDigits: Infinity,
+      decimalSeparator: '.',
     })
   );
   return isNaN(parsed) ? 0 : parsed;

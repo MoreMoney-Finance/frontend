@@ -34,6 +34,7 @@ import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
+import { parseFloatCurrencyValue } from '../utils';
 
 // import earnedRewards from '../constants/earned-rewards.json';
 // import rewardsRewards from '../constants/rewards-rewards.json';
@@ -248,14 +249,7 @@ function parseStratMeta(
       yieldType: [YieldType.REPAYING, YieldType.COMPOUNDING, YieldType.NOYIELD][
         row.yieldType
       ],
-      balance: parseFloat(
-        balance.format({
-          significantDigits: Infinity,
-          thousandSeparator: '',
-          decimalSeparator: '.',
-          suffix: '',
-        })
-      ),
+      balance: parseFloatCurrencyValue(balance),
     };
   }
 }
@@ -475,22 +469,8 @@ export function calcLiquidationPrice(
   debt: CurrencyValue,
   collateral: CurrencyValue
 ) {
-  const debtNum = parseFloat(
-    debt.format({
-      significantDigits: Infinity,
-      suffix: '',
-      thousandSeparator: '',
-      decimalSeparator: '.',
-    })
-  );
-  const colNum = parseFloat(
-    collateral.format({
-      significantDigits: Infinity,
-      suffix: '',
-      thousandSeparator: '',
-      decimalSeparator: '.',
-    })
-  );
+  const debtNum = parseFloatCurrencyValue(debt);
+  const colNum = parseFloatCurrencyValue(collateral);
 
   return calcLiqPriceFromNum(borrowablePercent, debtNum, colNum);
 }

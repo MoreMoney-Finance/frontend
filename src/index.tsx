@@ -8,6 +8,7 @@ import { LiquidatablePositionsCtxProvider } from './contexts/LiquidatablePositio
 import AdminPage from './pages/Admin';
 import Analytics from './pages/Analytics';
 import Dashboard from './pages/Dashboard';
+import { ErrorBoundary } from './pages/ErrorBoundary/ErrorBoundary';
 import FarmPage from './pages/Farm';
 import LiquidatablePositions from './pages/LiquidatablePositions';
 import LiquidationProtectedLoans from './pages/Loans';
@@ -36,7 +37,14 @@ ReactDOM.render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<Dashboard />} />
-            <Route path="/token/:tokenAddress" element={<TokenPage />} />
+            <Route
+              path="/token/:tokenAddress"
+              element={
+                <ErrorBoundary>
+                  <TokenPage />
+                </ErrorBoundary>
+              }
+            />
             <Route path="/farm" element={<FarmPage />} />
             <Route path="/positions" element={<PositionsPage />} />
             <Route

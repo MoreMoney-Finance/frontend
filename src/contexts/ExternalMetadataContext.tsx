@@ -1,3 +1,4 @@
+import { Progress } from '@chakra-ui/react';
 import { getAddress } from 'ethers/lib/utils';
 import React, { useEffect, useState } from 'react';
 
@@ -12,6 +13,24 @@ export type xMoreMetadata = {
   moreBalance: number;
   cachedAPR: number;
   currentRatio: number;
+};
+
+export type CachedStrategyMetadata = {
+  debtCeiling: string;
+  totalDebt: string;
+  stabilityFee: string;
+  mintingFee: string;
+  strategy: string;
+  token: string;
+  APF: string;
+  totalCollateral: string;
+  borrowablePer10k: string;
+  valuePer1e18: string;
+  strategyName: string;
+  tvl: string;
+  harvestBalance2Tally: string;
+  yieldType: number;
+  underlyingStrategy: string;
 };
 
 export type YieldFarmingData = {
@@ -53,6 +72,7 @@ export type ExternalMetadataType = {
   yieldMonitor: Record<string, YieldMonitorMetadata>;
   xMoreData: xMoreMetadata;
   additionalYieldData: Record<string, Record<string, number>>;
+  strategyMetadataCached: CachedStrategyMetadata[];
 };
 
 export const ExternalMetadataContext =
@@ -62,6 +82,7 @@ export const ExternalMetadataContext =
     yieldMonitor: {},
     xMoreData: {} as xMoreMetadata,
     additionalYieldData: {},
+    strategyMetadataCached: {} as CachedStrategyMetadata[],
   });
 
 export function ExternalMetadataCtxProvider({
@@ -70,6 +91,8 @@ export function ExternalMetadataCtxProvider({
   const [xMoreData, setXMoreData] = useState<xMoreMetadata>(
     {} as xMoreMetadata
   );
+  const [strategyMetadataCached, setStrategyMetadataCached] =
+    useState<CachedStrategyMetadata>();
   const [yieldFarmingData, setYieldFarmingData] = useState<YieldFarmingData>();
   const [yyMetadata, setYYMeta] = useState<YYMetadata>({});
   const [yieldMonitor, setYieldMonitor] = useState<
@@ -116,6 +139,15 @@ export function ExternalMetadataCtxProvider({
         console.error('Failed to fetch URL');
         console.error(err);
       });
+    fetch(
+      'https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/strategy-metadata.json'
+    )
+      .then((response) => response.json())
+      .then((response) => setStrategyMetadataCached(response))
+      .catch((err) => {
+        console.error('Failed to fetch URL');
+        console.error(err);
+      });
 
     fetch(
       'https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/xmore-data.json'
@@ -145,10 +177,11 @@ export function ExternalMetadataCtxProvider({
           yieldMonitor,
           xMoreData,
           additionalYieldData,
+          strategyMetadataCached,
         } as unknown as ExternalMetadataType
       }
     >
-      {children}
+      {strategyMetadataCached ? children : <Progress />}
     </ExternalMetadataContext.Provider>
   );
 }

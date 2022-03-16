@@ -410,7 +410,6 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
       console.log('noHarvestBalanceResults', noHarvestBalanceResults);
       const results = [...normalResults, ...noHarvestBalanceResults];
-      window.alert('setStratMeta Blockchain');
       setStratMeta(results?.reduce(reduceFn, {}) ?? {});
     }
     if (

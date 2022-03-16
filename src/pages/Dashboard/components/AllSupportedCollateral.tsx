@@ -4,6 +4,8 @@ import {
   Button,
   Container,
   Flex,
+  Skeleton,
+  Stack,
   Table,
   Tbody,
   Td,
@@ -36,6 +38,7 @@ type Entity = ParsedStratMetaRow & {
 
 export function AllSupportedCollateral() {
   const hiddenTokens: Set<string> = new Set([]);
+
   const stratMeta: ParsedStratMetaRow[] = Object.values(
     React.useContext(StrategyMetadataContext)
   )
@@ -51,9 +54,10 @@ export function AllSupportedCollateral() {
           hiddenStrategies[tokenAddress] &&
           !hiddenStrategies[tokenAddress].includes(y.strategyAddress)
       );
-
       return (
-        hiddenStrategies[tokenAddress] ? optionsFiltered : options
+        hiddenStrategies[tokenAddress] && optionsFiltered.length > 0
+          ? optionsFiltered
+          : options
       ).reduce((aggStrat, nextStrat) => {
         return {
           ...aggStrat,
@@ -209,6 +213,7 @@ export function AllSupportedCollateral() {
             <TableSearch setSearchString={setSearchString} />
           </Flex>
         </Box>
+
         <Flex
           p={[0, 4, 4]}
           display={['flex', 'flex', 'flex', 'none', 'none']}
@@ -298,6 +303,17 @@ export function AllSupportedCollateral() {
             })}
           </Tbody>
         </Table>
+        {rows.length === 0 ? (
+          <Stack>
+            {['60px', '60px', '60px', '60px', '60px', '60px'].map(
+              (obj, index) => (
+                <Skeleton key={'skeleton' + index} height={obj} />
+              )
+            )}
+          </Stack>
+        ) : (
+          <></>
+        )}
       </Box>
     </>
   );

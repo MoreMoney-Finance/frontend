@@ -309,10 +309,39 @@ export type StrategyMetadata = Record<
 // }
 
 export function useIsolatedStrategyMetadata(): StrategyMetadata {
-  const [stratMeta, setStratMeta] = useState<StrategyMetadata>({});
+  const {
+    yyMetadata,
+    yieldMonitor,
+    additionalYieldData,
+    strategyMetadataCached,
+  } = useContext(ExternalMetadataContext);
   const stable = useStable();
   const { chainId } = useEthers();
 
+  const reduceFn = (result: StrategyMetadata, row: RawStratMetaRow) => {
+    const parsedRow = parseStratMeta(
+      chainId ?? 43114,
+      row,
+      stable,
+      balancesCtx,
+      yyMetadata,
+      globalMoneyAvailable,
+      yieldMonitor,
+      additionalYieldData
+    );
+
+    return parsedRow
+      ? {
+          ...result,
+          [parsedRow.token.address]: {
+            [parsedRow.strategyAddress]: parsedRow,
+            ...(result[parsedRow.token.address] || {}),
+          },
+        }
+      : result;
+  };
+
+  const [stratMeta, setStratMeta] = useState<StrategyMetadata>({});
   const globalDebtCeiling = useGlobalDebtCeiling(
     'globalDebtCeiling',
     [],
@@ -321,9 +350,6 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const totalSupply = useTotalSupply('totalSupply', [], BigNumber.from(0));
 
   const balancesCtx = useContext(WalletBalancesContext);
-  const { yyMetadata, yieldMonitor, additionalYieldData } = useContext(
-    ExternalMetadataContext
-  );
 
   const addresses = useAddresses();
 
@@ -388,31 +414,9 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
           )
         );
 
+      console.log('noHarvestBalanceResults', noHarvestBalanceResults);
       const results = [...normalResults, ...noHarvestBalanceResults];
-
-      const reduceFn = (result: StrategyMetadata, row: RawStratMetaRow) => {
-        const parsedRow = parseStratMeta(
-          chainId ?? 43114,
-          row,
-          stable,
-          balancesCtx,
-          yyMetadata,
-          globalMoneyAvailable,
-          yieldMonitor,
-          additionalYieldData
-        );
-
-        return parsedRow
-          ? {
-              ...result,
-              [parsedRow.token.address]: {
-                [parsedRow.strategyAddress]: parsedRow,
-                ...(result[parsedRow.token.address] || {}),
-              },
-            }
-          : result;
-      };
-
+      window.alert('setStratMeta Blockchain');
       setStratMeta(results?.reduce(reduceFn, {}) ?? {});
     }
     if (
@@ -420,10 +424,31 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       stable &&
       balancesCtx &&
       yyMetadata &&
+      strategyMetadataCached && 
       globalMoneyAvailable != 0 &&
       yieldMonitor &&
       Object.values(stratMeta).length === 0
     ) {
+      const parsedCached: RawStratMetaRow[] = strategyMetadataCached?.map(
+        (row) => {
+          return {
+            ...row,
+            debtCeiling: BigNumber.from(row.debtCeiling),
+            totalDebt: BigNumber.from(row.totalDebt),
+            stabilityFee: BigNumber.from(row.stabilityFee),
+            mintingFee: BigNumber.from(row.mintingFee),
+            APF: BigNumber.from(row.APF),
+            totalCollateral: BigNumber.from(row.totalCollateral),
+            borrowablePer10k: BigNumber.from(row.borrowablePer10k),
+            valuePer1e18: BigNumber.from(row.valuePer1e18),
+            tvl: BigNumber.from(row.tvl),
+            harvestBalance2Tally: BigNumber.from(row.harvestBalance2Tally),
+          };
+        }
+      );
+      const results = parsedCached ? parsedCached?.reduce(reduceFn, {}) : {};
+      setStratMeta(results);
+
       getData();
     }
   }, [
@@ -432,6 +457,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
     balancesCtx,
     yyMetadata,
     globalMoneyAvailable,
+    strategyMetadataCached,
     yieldMonitor,
     stratMeta,
   ]);

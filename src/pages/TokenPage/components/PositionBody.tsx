@@ -60,13 +60,29 @@ export function PositionBody({
         state={migrateStrategyState}
         title={'Migrate Strategy'}
       />
+      <Grid
+        templateColumns={[
+          'repeat(1, 1fr)',
+          'repeat(1, 1fr)',
+          '520px 240px 240px',
+        ]}
+        templateRows={[
+          'repeat(1, 1fr)',
+          'repeat(1, 1fr)',
+          'auto',
+        ]}
+        w={'full'}
+        gap={'20px'}
+        marginTop={'30px'}
+      >
+        {position && position.collateralValue.value.gt(parseEther('0.01')) && (
+          <PositionData
+            position={position}
+            stratMeta={stratMeta[chosenStrategy]}
+          />
+        )}
+      </Grid>
 
-      {position && position.collateralValue.value.gt(parseEther('0.01')) && (
-        <PositionData
-          position={position}
-          stratMeta={stratMeta[chosenStrategy]}
-        />
-      )}
       <Grid
         templateColumns={[
           'repeat(1, 1fr)',

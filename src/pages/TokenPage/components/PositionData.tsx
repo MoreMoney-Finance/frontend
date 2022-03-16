@@ -55,7 +55,7 @@ export function PositionData({
 
   // console.log('PositionData', debt, borrowablePercent, totalPercentage);
   return (
-    <GridItem colSpan={[2, 3, 4]} rowSpan={[12, 1, 1]} marginTop={'30px'}>
+    <GridItem colSpan={[2, 3, 3]} rowSpan={[12, 1, 1]}>
       <Container variant={'token'}>
         <Flex
           flexDirection={['column', 'column', 'row']}

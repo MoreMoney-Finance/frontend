@@ -1,12 +1,12 @@
 import { InfoOutlineIcon } from '@chakra-ui/icons';
-import { Avatar, Button, HStack, VStack, Text, Link } from '@chakra-ui/react';
+import { Avatar, Button, HStack, Link, Text, VStack } from '@chakra-ui/react';
 import { Token } from '@usedapp/core';
 import * as React from 'react';
 import { ParsedStakingMetadata } from '../../../chain-interaction/contracts';
 import { getIconsFromTokenAddress } from '../../../chain-interaction/tokens';
 import { useClaimReward } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
-import { parseFloatNoNaN } from '../../../utils';
+import { parseFloatCurrencyValue } from '../../../utils';
 
 export default function ClaimReward({
   token,
@@ -23,14 +23,7 @@ export default function ClaimReward({
   const timeDelta = (Date.now() - stakeMeta.vestingStart.getTime()) / 1000;
 
   const vested =
-    (parseFloatNoNaN(
-      stakeMeta.rewards.format({
-        suffix: '',
-        thousandSeparator: '',
-        decimalSeparator: '.',
-      })
-    ) *
-      timeDelta) /
+    (parseFloatCurrencyValue(stakeMeta.rewards) * timeDelta) /
     (60 * 24 * 60 * 60);
 
   return (

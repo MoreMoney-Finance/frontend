@@ -85,6 +85,7 @@ export type DeploymentAddresses = {
   StrategyViewer: string;
 
   LiquidYieldStrategy: string;
+  MultiTraderJoeMasterChef3Strategy: string;
 };
 
 export function useAddresses() {

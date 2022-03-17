@@ -337,6 +337,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       addresses.TraderJoeMasterChefStrategy,
     ['0x2148D1B21Faa7eb251789a51B404fc063cA6AAd6']:
       addresses.SimpleHoldingStrategy,
+    ['0xcdfd91eea657cc2701117fe9711c9a4f61feed23']:
+      addresses.MultiTraderJoeMasterChef3Strategy,
   };
 
   const masterChef2Tokens = [

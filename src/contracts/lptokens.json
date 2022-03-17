@@ -390,9 +390,8 @@
       "JPL-WAVAX-PTP": {
         "addresses": [
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
-          "0xcdfd91eea657cc2701117fe9711c9a4f61feed23"
+          "0x22d4002028f537599bE9f666d1c4Fa138522f9c8"
         ],
-        "pairAddress": "0xcdfd91eea657cc2701117fe9711c9a4f61feed23",
         "anchorName": "WAVAX"
       },
       "JPL-USDCe-PTP": {}
@@ -1122,9 +1121,8 @@
       "JPL-WAVAX-PTP": {
         "addresses": [
           "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
-          "0xcdfd91eea657cc2701117fe9711c9a4f61feed23"
+          "0x22d4002028f537599bE9f666d1c4Fa138522f9c8"
         ],
-        "pairAddress": "0xcdfd91eea657cc2701117fe9711c9a4f61feed23",
         "anchorName": "WAVAX"
       },
       "JPL-USDCe-JPL-WAVAX-PTP": {

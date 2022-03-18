@@ -387,12 +387,13 @@
         ],
         "anchorName": "WETHe"
       },
-      "JPL-WAVAX-PTP": {
+      "JPL-PTP-WAVAX": {
         "addresses": [
-          "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
-          "0x22d4002028f537599bE9f666d1c4Fa138522f9c8"
+          "0x22d4002028f537599bE9f666d1c4Fa138522f9c8",
+          "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
         ],
-        "anchorName": "WAVAX"
+        "pairAddress": "0xcdfd91eea657cc2701117fe9711c9a4f61feed23",
+        "anchorName": "PTP"
       },
       "JPL-USDCe-PTP": {}
     },
@@ -1118,12 +1119,13 @@
         ],
         "anchorName": "USDCe"
       },
-      "JPL-WAVAX-PTP": {
+      "JPL-PTP-WAVAX": {
         "addresses": [
-          "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
-          "0x22d4002028f537599bE9f666d1c4Fa138522f9c8"
+          "0x22d4002028f537599bE9f666d1c4Fa138522f9c8",
+          "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
         ],
-        "anchorName": "WAVAX"
+        "pairAddress": "0xcdfd91eea657cc2701117fe9711c9a4f61feed23",
+        "anchorName": "PTP"
       },
       "JPL-USDCe-JPL-WAVAX-PTP": {
         "addresses": []

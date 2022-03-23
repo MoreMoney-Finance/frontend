@@ -85,6 +85,7 @@ export type DeploymentAddresses = {
   StrategyViewer: string;
 
   LiquidYieldStrategy: string;
+  MultiTraderJoeMasterChef3Strategy: string;
 };
 
 export function useAddresses() {
@@ -336,6 +337,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       addresses.TraderJoeMasterChefStrategy,
     ['0x2148D1B21Faa7eb251789a51B404fc063cA6AAd6']:
       addresses.SimpleHoldingStrategy,
+    ['0xCDFD91eEa657cc2701117fe9711C9a4F61FEED23']:
+      addresses.MultiTraderJoeMasterChef3Strategy,
   };
 
   const masterChef2Tokens = [

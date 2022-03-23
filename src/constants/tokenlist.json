@@ -10,6 +10,22 @@
   "tokens": [
     {
       "chainId": 43114,
+      "address": "0x22d4002028f537599bE9f666d1c4Fa138522f9c8",
+      "decimals": 18,
+      "name": "Platypus",
+      "symbol": "PTP",
+      "logoURI": "https://raw.githubusercontent.com/traderjoe-xyz/joe-tokenlists/main/logos/0x22d4002028f537599bE9f666d1c4Fa138522f9c8/logo.png"
+    },
+    {
+      "chainId": 31337,
+      "address": "0x22d4002028f537599bE9f666d1c4Fa138522f9c8",
+      "decimals": 18,
+      "name": "Platypus",
+      "symbol": "PTP",
+      "logoURI": "https://raw.githubusercontent.com/traderjoe-xyz/joe-tokenlists/main/logos/0x22d4002028f537599bE9f666d1c4Fa138522f9c8/logo.png"
+    },
+    {
+      "chainId": 43114,
       "address": "0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE",
       "decimals": 18,
       "name": "Staked AVAX",

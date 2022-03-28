@@ -6,7 +6,8 @@ import { PositionsTable } from './components/PositionsTable';
 export default function AllOpenPositions(
   props: React.PropsWithChildren<unknown>
 ) {
-  const updatedPositions = useUpdatedPositions(1646182247947).filter(
+  
+  const updatedPositions = useUpdatedPositions(Date.now()).filter(
     (position) => {
       return position?.collateralValue.value.gt(parseEther('0.01'));
     }

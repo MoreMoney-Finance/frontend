@@ -12,7 +12,9 @@ export default function ChangeStrategyButton({
     <>
       <Button
         onClick={() => {
-          chooseStrategy();
+          if (false) {
+            chooseStrategy();
+          }
           onClose();
         }}
       >

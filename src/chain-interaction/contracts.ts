@@ -556,8 +556,8 @@ export function useIsolatedPositionMetadata(
       : {};
   return 'StableLending' in addresses
     ? current
-        .reduce(reduceFn(addresses.StableLending), legacyResults)
         .filter((pos: any) => pos.trancheId != 60200000002)
+        .reduce(reduceFn(addresses.StableLending), legacyResults)
     : legacyResults;
 }
 

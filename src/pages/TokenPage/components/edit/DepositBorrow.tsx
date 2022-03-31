@@ -18,6 +18,7 @@ import {
   useTokenAllowance,
 } from '@usedapp/core';
 import { BigNumber } from 'ethers';
+import { getAddress } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -194,6 +195,13 @@ export default function DepositBorrow({
     !position &&
     (isNativeToken ? nativeTokenBalance.isZero() : walletBalance.isZero());
 
+  const isJoeToken =
+    getAddress(token.address) ===
+    getAddress('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');
+
+  const depositBorrowButtonDisabledForJoe =
+    parseFloatNoNaN(collateralInput) > 0 && isJoeToken;
+
   const depositBorrowButtonDisabled =
     (parseFloatNoNaN(collateralInput) === 0 &&
       parseFloatNoNaN(borrowInput) === 0) ||
@@ -241,6 +249,7 @@ export default function DepositBorrow({
 
   const dangerousPosition = totalPercentage > borrowablePercent * 0.92;
   console.log('customPercentageInput', customPercentageInput);
+
   return (
     <>
       <ConfirmPositionModal
@@ -267,13 +276,18 @@ export default function DepositBorrow({
       <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
         <Flex flexDirection={'column'} justify={'start'}>
           <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-            <Text
-              variant={'bodyExtraSmall'}
-              color={'whiteAlpha.600'}
-              lineHeight={'14px'}
+            <WarningMessage
+              message="JOE deposits currently disabled."
+              isOpen={depositBorrowButtonDisabledForJoe}
             >
-              Deposit Collateral
-            </Text>
+              <Text
+                variant={'bodyExtraSmall'}
+                color={'whiteAlpha.600'}
+                lineHeight={'14px'}
+              >
+                Deposit Collateral
+              </Text>
+            </WarningMessage>
           </Box>
           <HStack {...inputStyle}>
             <TokenDescription token={stratMeta.token} />
@@ -440,7 +454,9 @@ export default function DepositBorrow({
               }
               type="submit"
               isLoading={isSubmittingDepForm}
-              isDisabled={depositBorrowButtonDisabled}
+              isDisabled={
+                depositBorrowButtonDisabled || depositBorrowButtonDisabledForJoe
+              }
             >
               Deposit & Borrow
             </Button>

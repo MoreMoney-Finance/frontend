@@ -199,6 +199,13 @@ export default function RepayWithdraw({
     justifyContent: 'space-between',
   };
 
+  const isJoeToken =
+    getAddress(token.address) ===
+    getAddress('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');
+
+  const repayWithdrawButtonDisabledForJoe =
+    parseFloatNoNaN(collateralInput) > 0 && isJoeToken;
+
   const showWarning =
     (!(
       parseFloatNoNaN(collateralInput) === 0 &&
@@ -210,7 +217,9 @@ export default function RepayWithdraw({
 
   const warningMsgText = repayingMoreThanBalance
     ? 'Input more than wallet balance: buy more MONEY'
-    : 'Repay more to keep position cRatio healthy';
+    : repayWithdrawButtonDisabledForJoe
+      ? 'JOE withdraw currently disabled'
+      : 'Repay more to keep position cRatio healthy';
 
   const residualDebt =
     position && position.debt.gt(position.yield)
@@ -299,13 +308,18 @@ export default function RepayWithdraw({
         </Flex>
         <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
           <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-            <Text
-              variant={'bodyExtraSmall'}
-              color={'whiteAlpha.600'}
-              lineHeight={'14px'}
+            <WarningMessage
+              message={warningMsgText}
+              isOpen={repayWithdrawButtonDisabledForJoe}
             >
-              Withdraw Collateral
-            </Text>
+              <Text
+                variant={'bodyExtraSmall'}
+                color={'whiteAlpha.600'}
+                lineHeight={'14px'}
+              >
+                Withdraw Collateral
+              </Text>
+            </WarningMessage>
           </Box>
           <HStack {...inputStyle}>
             <TokenDescription token={stratMeta.token} />
@@ -456,7 +470,9 @@ export default function RepayWithdraw({
           marginTop={'10px'}
           type="submit"
           isLoading={isSubmittingRepayForm}
-          isDisabled={repayWithdrawButtonDisabled}
+          isDisabled={
+            repayWithdrawButtonDisabled || repayWithdrawButtonDisabledForJoe
+          }
         >
           <Text variant={'bodyMedium'} fontWeight={'600'}>
             Repay & Withdraw

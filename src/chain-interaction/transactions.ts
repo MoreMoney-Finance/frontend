@@ -24,6 +24,7 @@ import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNati
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
+import VeMore from '../contracts/artifacts/contracts/governance/VeMore.sol/VeMore.json';
 import {
   useAddresses,
   useRegisteredOracle,
@@ -50,9 +51,24 @@ export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
       contractsABI[strategyAddress] === undefined
         ? null
         : isYY
-          ? () => send(tokenAddress)
-          : () => send(),
+        ? () => send(tokenAddress)
+        : () => send(),
     withdrawState: state,
+  };
+}
+
+export function useStakeMoreForVeMore() {
+  // TODO: change cprAddress and the ABI to use the correct address
+  const cprAddress = '0x47fA6c1E410C4Caef0B09e0FD78bbE84fccBD851';
+  const cprContract = new Contract(cprAddress, new Interface(VeMore.abi));
+  const { send, state } = useContractFunction(cprContract, 'deposit');
+
+  return {
+    sendStake: (stakeToken: Token, amount: string | number) => {
+      const sAmount = parseUnits(amount.toString(), stakeToken.decimals);
+      return send(sAmount);
+    },
+    stakeState: state,
   };
 }
 
@@ -204,11 +220,11 @@ export function useNativeRepayWithdrawTrans(
     ) =>
       account && trancheId && collateralToken
         ? send(
-          trancheId,
-          parseUnits(collateralAmount.toString(), collateralToken.decimals),
-          parseEther(repayAmount.toString()),
-          account
-        )
+            trancheId,
+            parseUnits(collateralAmount.toString(), collateralToken.decimals),
+            parseEther(repayAmount.toString()),
+            account
+          )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
   };
@@ -247,12 +263,12 @@ export function useDepositBorrowTrans(
       return trancheId
         ? send(trancheId, cAmount, bAmount, account)
         : send(
-          collateralToken.address,
-          strategyAddress,
-          cAmount,
-          bAmount,
-          account
-        );
+            collateralToken.address,
+            strategyAddress,
+            cAmount,
+            bAmount,
+            account
+          );
     },
     depositBorrowState: state,
   };
@@ -296,11 +312,11 @@ export function useRepayWithdrawTrans(
     ) =>
       account && trancheId && collateralToken
         ? send(
-          trancheId,
-          parseUnits(collateralAmount.toString(), collateralToken.decimals),
-          parseEther(repayAmount.toString()),
-          account
-        )
+            trancheId,
+            parseUnits(collateralAmount.toString(), collateralToken.decimals),
+            parseEther(repayAmount.toString()),
+            account
+          )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
   };

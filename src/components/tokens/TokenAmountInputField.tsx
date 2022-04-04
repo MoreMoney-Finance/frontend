@@ -1,14 +1,10 @@
-import * as React from 'react';
 import {
-  Button,
-  InputRightElement,
-  Input,
-  InputGroup,
-  FormControl,
-  FormErrorMessage,
-  Text,
+  Button, FormControl,
+  FormErrorMessage, Input,
+  InputGroup, InputRightElement, Text
 } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
+import * as React from 'react';
 
 export function TokenAmountInputField(props: {
   name: string;
@@ -53,7 +49,7 @@ export function TokenAmountInputField(props: {
             required: '',
           })}
           placeholder={placeholder}
-          type="text"
+          type="number"
           inputMode="numeric"
           step="any"
           autoComplete="off"

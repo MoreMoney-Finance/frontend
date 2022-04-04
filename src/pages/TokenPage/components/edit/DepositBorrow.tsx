@@ -9,15 +9,16 @@ import {
   Progress,
   Text,
   useDisclosure,
-  VStack
+  VStack,
 } from '@chakra-ui/react';
 import {
   CurrencyValue,
   useEtherBalance,
   useEthers,
-  useTokenAllowance
+  useTokenAllowance,
 } from '@usedapp/core';
 import { BigNumber } from 'ethers';
+import { getAddress } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -26,12 +27,12 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   TxStatus,
-  useStable
+  useStable,
 } from '../../../../chain-interaction/contracts';
 import {
   useApproveTrans,
   useDepositBorrowTrans,
-  useNativeDepositBorrowTrans
+  useNativeDepositBorrowTrans,
 } from '../../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../../components/account/EnsureWalletConnected';
 import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
@@ -41,7 +42,7 @@ import { TokenDescription } from '../../../../components/tokens/TokenDescription
 import { WNATIVE_ADDRESS } from '../../../../constants/addresses';
 import { UserAddressContext } from '../../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../../contexts/WalletBalancesContext';
-import { parseFloatNoNaN } from '../../../../utils';
+import { parseFloatCurrencyValue, parseFloatNoNaN } from '../../../../utils';
 import { ConfirmPositionModal } from './ConfirmPositionModal';
 
 export default function DepositBorrow({
@@ -59,13 +60,13 @@ export default function DepositBorrow({
   const stable = useStable();
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
-  
-  const allowResult = useTokenAllowance(token.address, account, strategyAddress);
-  const allowCV = new CurrencyValue(
-    token,
-    allowResult ??
-      BigNumber.from('0')
-  ); 
+
+  const allowResult = useTokenAllowance(
+    token.address,
+    account,
+    strategyAddress
+  );
+  const allowCV = new CurrencyValue(token, allowResult ?? BigNumber.from('0'));
   const allowance = token.address && account && strategyAddress && allowCV;
 
   const etherBalance = useEtherBalance(account);
@@ -133,29 +134,13 @@ export default function DepositBorrow({
 
   const extantCollateral =
     position && position.collateral
-      ? parseFloatNoNaN(
-        position.collateral.format({
-          significantDigits: Infinity,
-          prefix: '',
-          suffix: '',
-          decimalSeparator: '.',
-          thousandSeparator: '',
-        })
-      )
+      ? parseFloatCurrencyValue(position.collateral)
       : 0;
   const totalCollateral = parseFloatNoNaN(collateralInput) + extantCollateral;
 
   const extantDebt =
     position && position.debt && position.debt.gt(position.yield)
-      ? parseFloatNoNaN(
-        position.debt.sub(position.yield).format({
-          significantDigits: Infinity,
-          prefix: '',
-          suffix: '',
-          decimalSeparator: '.',
-          thousandSeparator: '',
-        })
-      )
+      ? parseFloatCurrencyValue(position.debt.sub(position.yield))
       : 0;
   const totalDebt = parseFloatNoNaN(borrowInput) + extantDebt;
 
@@ -210,6 +195,13 @@ export default function DepositBorrow({
     !position &&
     (isNativeToken ? nativeTokenBalance.isZero() : walletBalance.isZero());
 
+  const isJoeToken =
+    getAddress(token.address) ===
+    getAddress('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');
+
+  const depositBorrowButtonDisabledForJoe =
+    parseFloatNoNaN(collateralInput) > 0 && isJoeToken;
+
   const depositBorrowButtonDisabled =
     (parseFloatNoNaN(collateralInput) === 0 &&
       parseFloatNoNaN(borrowInput) === 0) ||
@@ -227,17 +219,18 @@ export default function DepositBorrow({
   const riskyZone = (80 * borrowablePercent) / 100;
   const healthyZone = (50 * borrowablePercent) / 100;
 
-  const positionHealthColor = 0.1 > totalDebt
-    ? 'accent'
-    : totalPercentage > liquidatableZone
-      ? 'purple.400'
-      : totalPercentage > criticalZone
-        ? 'red'
-        : totalPercentage > riskyZone
-          ? 'orange'
-          : totalPercentage > healthyZone
-            ? 'green'
-            : 'accent';
+  const positionHealthColor =
+    0.1 > totalDebt
+      ? 'accent'
+      : totalPercentage > liquidatableZone
+        ? 'purple.400'
+        : totalPercentage > criticalZone
+          ? 'red'
+          : totalPercentage > riskyZone
+            ? 'orange'
+            : totalPercentage > healthyZone
+              ? 'green'
+              : 'accent';
   const positionHealth = {
     accent: 'Safe',
     green: 'Healthy',
@@ -256,6 +249,7 @@ export default function DepositBorrow({
 
   const dangerousPosition = totalPercentage > borrowablePercent * 0.92;
   console.log('customPercentageInput', customPercentageInput);
+
   return (
     <>
       <ConfirmPositionModal
@@ -282,13 +276,18 @@ export default function DepositBorrow({
       <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
         <Flex flexDirection={'column'} justify={'start'}>
           <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-            <Text
-              variant={'bodyExtraSmall'}
-              color={'whiteAlpha.600'}
-              lineHeight={'14px'}
+            <WarningMessage
+              message="JOE deposits currently disabled."
+              isOpen={depositBorrowButtonDisabledForJoe}
             >
-              Deposit Collateral
-            </Text>
+              <Text
+                variant={'bodyExtraSmall'}
+                color={'whiteAlpha.600'}
+                lineHeight={'14px'}
+              >
+                Deposit Collateral
+              </Text>
+            </WarningMessage>
           </Box>
           <HStack {...inputStyle}>
             <TokenDescription token={stratMeta.token} />
@@ -396,7 +395,7 @@ export default function DepositBorrow({
             <Box height="24px" margin="2px" padding="6px">
               <Progress
                 colorScheme={positionHealthColor}
-                value={100 * totalPercentage / borrowablePercent}
+                value={(100 * totalPercentage) / borrowablePercent}
                 width="100px"
                 height="14px"
                 borderRadius={'10px'}
@@ -455,7 +454,9 @@ export default function DepositBorrow({
               }
               type="submit"
               isLoading={isSubmittingDepForm}
-              isDisabled={depositBorrowButtonDisabled}
+              isDisabled={
+                depositBorrowButtonDisabled || depositBorrowButtonDisabledForJoe
+              }
             >
               Deposit & Borrow
             </Button>

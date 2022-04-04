@@ -386,6 +386,14 @@
           "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab"
         ],
         "anchorName": "WETHe"
+      },
+      "JPL-WAVAX-PTP": {
+        "addresses": [
+          "0x22d4002028f537599bE9f666d1c4Fa138522f9c8",
+          "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
+        ],
+        "anchorName": "WAVAX",
+        "pairAddress": "0xCDFD91eEa657cc2701117fe9711C9a4F61FEED23"
       }
     },
     "PGL": {
@@ -1109,6 +1117,14 @@
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
         ],
         "anchorName": "USDCe"
+      },
+      "JPL-WAVAX-PTP": {
+        "addresses": [
+          "0x22d4002028f537599bE9f666d1c4Fa138522f9c8",
+          "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
+        ],
+        "anchorName": "WAVAX",
+        "pairAddress": "0xCDFD91eEa657cc2701117fe9711C9a4F61FEED23"
       }
     },
     "PGL": {

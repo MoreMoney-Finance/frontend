@@ -51,8 +51,8 @@ export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
       contractsABI[strategyAddress] === undefined
         ? null
         : isYY
-        ? () => send(tokenAddress)
-        : () => send(),
+          ? () => send(tokenAddress)
+          : () => send(),
     withdrawState: state,
   };
 }
@@ -220,11 +220,11 @@ export function useNativeRepayWithdrawTrans(
     ) =>
       account && trancheId && collateralToken
         ? send(
-            trancheId,
-            parseUnits(collateralAmount.toString(), collateralToken.decimals),
-            parseEther(repayAmount.toString()),
-            account
-          )
+          trancheId,
+          parseUnits(collateralAmount.toString(), collateralToken.decimals),
+          parseEther(repayAmount.toString()),
+          account
+        )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
   };
@@ -263,12 +263,12 @@ export function useDepositBorrowTrans(
       return trancheId
         ? send(trancheId, cAmount, bAmount, account)
         : send(
-            collateralToken.address,
-            strategyAddress,
-            cAmount,
-            bAmount,
-            account
-          );
+          collateralToken.address,
+          strategyAddress,
+          cAmount,
+          bAmount,
+          account
+        );
     },
     depositBorrowState: state,
   };
@@ -312,11 +312,11 @@ export function useRepayWithdrawTrans(
     ) =>
       account && trancheId && collateralToken
         ? send(
-            trancheId,
-            parseUnits(collateralAmount.toString(), collateralToken.decimals),
-            parseEther(repayAmount.toString()),
-            account
-          )
+          trancheId,
+          parseUnits(collateralAmount.toString(), collateralToken.decimals),
+          parseEther(repayAmount.toString()),
+          account
+        )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
   };

@@ -13,6 +13,7 @@ import FarmPage from './pages/Farm';
 import LiquidatablePositions from './pages/LiquidatablePositions';
 import LiquidationProtectedLoans from './pages/Loans';
 import PositionsPage from './pages/Positions';
+import StakePage from './pages/Stake';
 import TokenPage from './pages/TokenPage';
 import XMorePage from './pages/XMore';
 import reportWebVitals from './reportWebVitals';
@@ -57,6 +58,7 @@ ReactDOM.render(
             />
             <Route path="/loans" element={<LiquidationProtectedLoans />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/stake" element={<StakePage />} />
             <Route path="/xmore" element={<XMorePage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/admin/:positions" element={<AdminPage />} />

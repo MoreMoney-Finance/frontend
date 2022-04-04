@@ -5,6 +5,7 @@ import {
   useContractCalls,
   useEthers,
 } from '@usedapp/core';
+import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber, ethers } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
@@ -13,16 +14,14 @@ import {
   ParsedStakingMetadata,
   useAddresses,
   useAllFeesEver,
-  useCurvePoolSLDeposited,
   useParsedStakingMetadata,
   useStable,
   useTotalSupply,
 } from '../../chain-interaction/contracts';
-import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
-import { AnalyticsBox } from './AnalyticsBox';
-import { UserAddressContext } from '../../contexts/UserAddressContext';
-import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { tokenAmount } from '../../chain-interaction/tokens';
+import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
+import { UserAddressContext } from '../../contexts/UserAddressContext';
+import { AnalyticsBox } from './AnalyticsBox';
 
 export default function Analytics(props: React.PropsWithChildren<unknown>) {
   const allStratMeta = React.useContext(StrategyMetadataContext);
@@ -80,9 +79,8 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
 
   const supply = useTotalSupply('totalSupply', [], ['']);
 
-  const curvePoolSL = useCurvePoolSLDeposited();
   const colRatio = !tvl.isZero()
-    ? tvlNoFarm.value.mul(10000).div(supply.sub(curvePoolSL)).toNumber() / 100
+    ? tvlNoFarm.value.mul(10000).div(supply.sub(0)).toNumber() / 100
     : 0;
 
   const fees = useAllFeesEver(contracts);

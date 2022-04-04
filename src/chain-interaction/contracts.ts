@@ -886,5 +886,5 @@ function timestamp2Date(tstamp: BigNumber) {
 
 export function useCurvePoolSLDeposited() {
   // const address = useAddresses().CurvePoolSL;
-  return parseEther('2240893.705535866887471228');
+  return 0;
 }

@@ -333,8 +333,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
     ['0xd586e7f844cea2f87f50152665bcbc2c279d8d70']: addresses.YieldYakStrategy,
     ['0x8729438EB15e2C8B576fCc6AeCdA6A148776C0F5']: addresses.YieldYakStrategy,
     ['0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664']: addresses.YieldYakStrategy,
-    ['0xa389f9430876455c36478deea9769b7ca4e3ddb1']: addresses.YieldYakStrategy,
-    ['0xed8cbd9f0ce3c6986b22002f03c6475ceb7a6256']: addresses.YieldYakStrategy,
+    ['0xA389f9430876455C36478DeEa9769B7Ca4E3DDB1']: addresses.YieldYakStrategy,
+    ['0xeD8CBD9F0cE3C6986b22002F03c6475CEb7a6256']: addresses.YieldYakStrategy,
     ['0x454E67025631C065d3cFAD6d71E6892f74487a15']:
       addresses.TraderJoeMasterChefStrategy,
     ['0x2148D1B21Faa7eb251789a51B404fc063cA6AAd6']:

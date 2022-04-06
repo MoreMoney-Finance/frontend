@@ -25,8 +25,13 @@ export default function StrategyNameAndSwitch({
       : 'Compound collateral';
 
   const options = Object.values(stratMeta).filter((strat) => {
-    //if we have hidden strategies for this token
-    if (hiddenStrategies[strat.token.address]) {
+    if (position && position.trancheId == 60200000002) {
+      if (position.strategy === strat.strategyAddress) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (hiddenStrategies[strat.token.address]) {
       //if the strategy is hidden
       if (
         hiddenStrategies[strat.token.address].includes(strat.strategyAddress)

@@ -10,7 +10,9 @@ import {
 import { useMigrateStrategy } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
-import StrategyNameAndSwitch from './change-strategy/StrategyNameAndSwitch';
+import StrategyNameAndSwitch, {
+  stratFilter,
+} from './change-strategy/StrategyNameAndSwitch';
 import EditPosition from './edit/EditPosition';
 import CollateralAPY from './metadata/CollateralAPY';
 import { PositionData } from './PositionData';
@@ -29,6 +31,12 @@ export function PositionBody({
     inputPos.strategy in stratMeta
       ? inputPos
       : undefined;
+
+  stratMeta = Object.fromEntries(
+    Object.entries(stratMeta).filter(([, strat]) =>
+      stratFilter(strat, position)
+    )
+  );
 
   const [chosenStrategy, setChosenStrategy] = React.useState<string>(
     position?.strategy ?? Object.keys(stratMeta)[0]
@@ -66,11 +74,7 @@ export function PositionBody({
           'repeat(1, 1fr)',
           '520px 240px 240px',
         ]}
-        templateRows={[
-          'repeat(1, 1fr)',
-          'repeat(1, 1fr)',
-          'auto',
-        ]}
+        templateRows={['repeat(1, 1fr)', 'repeat(1, 1fr)', 'auto']}
         w={'full'}
         gap={'20px'}
         marginTop={'30px'}

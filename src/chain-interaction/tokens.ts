@@ -211,6 +211,21 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
     ]);
   }
 
+  if ('VeMore' in addresses) {
+    addressToken[chainIds[chainId]].set(
+      getAddress(addresses['VeMore']),
+      new Token(
+        'VeMore Token',
+        'veMore',
+        chainIds[chainId],
+        getAddress(addresses['VeMore'])
+      )
+    );
+    addressIcons.set(getAddress(addresses['VeMore']), [
+      'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg',
+    ]);
+  }
+
   if ('xMore' in addresses) {
     addressToken[chainIds[chainId]].set(
       getAddress(addresses['xMore']),

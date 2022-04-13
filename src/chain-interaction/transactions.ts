@@ -57,9 +57,25 @@ export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   };
 }
 
+export function useUnstakeVeMoreForMore() {
+  const addresses = useAddresses();
+  const cprAddress = addresses.VeMore;
+  const cprContract = new Contract(cprAddress, new Interface(VeMore.abi));
+  const { send, state } = useContractFunction(cprContract, 'withdraw');
+
+  return {
+    sendUnstake: (unstakeToken: Token, amount: string | number) => {
+      const sAmount = parseUnits(amount.toString(), unstakeToken.decimals);
+      return send(sAmount);
+    },
+    unstakeState: state,
+  };
+}
+
 export function useStakeMoreForVeMore() {
   // TODO: change cprAddress and the ABI to use the correct address
-  const cprAddress = '0x47fA6c1E410C4Caef0B09e0FD78bbE84fccBD851';
+  const addresses = useAddresses();
+  const cprAddress = addresses.VeMore;
   const cprContract = new Contract(cprAddress, new Interface(VeMore.abi));
   const { send, state } = useContractFunction(cprContract, 'deposit');
 

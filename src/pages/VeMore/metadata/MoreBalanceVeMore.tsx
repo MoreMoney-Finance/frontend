@@ -9,14 +9,14 @@ import { useWalletBalance } from '../../../contexts/WalletBalancesContext';
 export function MoreBalanceVeMore() {
   const { chainId } = useEthers();
   const moreToken = getTokenFromAddress(chainId, useAddresses().MoreToken);
-  const xMoreToken = getTokenFromAddress(chainId, useAddresses().xMore);
+  const veMoreToken = getTokenFromAddress(chainId, useAddresses().VeMore);
 
   const moreBalance =
     useWalletBalance(moreToken.address) ??
     new CurrencyValue(moreToken, BigNumber.from('0'));
-  const xMoreBalance =
-    useWalletBalance(xMoreToken.address) ??
-    new CurrencyValue(xMoreToken, BigNumber.from('0'));
+  const veMoreBalance =
+    useWalletBalance(veMoreToken.address) ??
+    new CurrencyValue(veMoreToken, BigNumber.from('0'));
 
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 2]}>
@@ -52,7 +52,7 @@ export function MoreBalanceVeMore() {
               borderRadius="100%"
             />
             <Flex direction={'column'} padding="16px" justifyContent={'center'}>
-              <Text variant="bodyHuge">{xMoreBalance.format()}</Text>
+              <Text variant="bodyHuge">{veMoreBalance.format()}</Text>
             </Flex>
           </Flex>
         </Flex>

@@ -6,7 +6,8 @@ export default function StakeBox({
   children,
   title,
   img,
-}: React.PropsWithChildren<{ title: string; img: string }>) {
+  link,
+}: React.PropsWithChildren<{ title: string; img: string; link: string }>) {
   const navigate = useNavigate();
   return (
     <Flex flexDirection={'column'} padding={'36px'}>
@@ -18,7 +19,7 @@ export default function StakeBox({
           </Flex>
         </Box>
         <Spacer />
-        <Button onClick={() => navigate('/xmore')}>Earn {title}</Button>
+        <Button onClick={() => navigate(link)}>Earn {title}</Button>
       </Flex>
       <Flex marginTop={'26px'} padding="16px">
         <Box width={'100%'}>

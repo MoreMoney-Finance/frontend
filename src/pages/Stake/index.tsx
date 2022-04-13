@@ -18,6 +18,7 @@ export default function StakePage({
             <StakeBox
               img="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/xMORE%20logo.png"
               title={'xMore'}
+              link="/xmore"
             />
           </Container>
         </Box>
@@ -26,6 +27,7 @@ export default function StakePage({
             <StakeBox
               img="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg"
               title="veMore"
+              link="/vemore"
             />
           </Container>
         </Box>

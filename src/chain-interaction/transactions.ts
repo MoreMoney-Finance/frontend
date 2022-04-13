@@ -1,7 +1,7 @@
 import { Interface } from '@ethersproject/abi';
 import { Contract } from '@ethersproject/contracts';
 import IERC20 from '@openzeppelin/contracts/build/contracts/IERC20.json';
-import { useContractFunction } from '@usedapp/core';
+import { useContractCall, useContractFunction } from '@usedapp/core';
 import { Token } from '@usedapp/core/dist/esm/src/model';
 import {
   parseEther,
@@ -55,6 +55,17 @@ export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
           : () => send(),
     withdrawState: state,
   };
+}
+
+export function useGetStakedMoreVeMore(account: string) {
+  const address = useAddresses().VeMore;
+  const abi = new Interface(VeMore.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method: 'getStakedMore',
+    args: [account],
+  }) ?? [0])[0];
 }
 
 export function useUnstakeVeMoreForMore() {

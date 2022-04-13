@@ -1,21 +1,31 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
-import { useEthers } from '@usedapp/core';
+import { CurrencyValue, useEthers } from '@usedapp/core';
+import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { useAddresses } from '../../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../../chain-interaction/tokens';
-import { useUnstakeVeMoreForMore } from '../../../chain-interaction/transactions';
+import {
+  useGetStakedMoreVeMore,
+  useUnstakeVeMoreForMore,
+} from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';
-import { WalletBalancesContext } from '../../../contexts/WalletBalancesContext';
+import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { parseFloatNoNaN } from '../../../utils';
 
 export function UnstakeMoreVeMore(props: React.PropsWithChildren<unknown>) {
-  const balanceCtx = React.useContext(WalletBalancesContext);
-  const veMoreToken = useAddresses().VeMore;
   const { chainId } = useEthers();
+  const veMoreToken = getTokenFromAddress(chainId, useAddresses().VeMore);
+  const account = React.useContext(UserAddressContext);
+  const veMoreStaked = useGetStakedMoreVeMore(account!);
 
-  const token = getTokenFromAddress(chainId, veMoreToken);
+  const veMoreBalance = new CurrencyValue(
+    veMoreToken,
+    BigNumber.from(veMoreStaked)
+  );
+
+  const token = getTokenFromAddress(chainId, veMoreToken.address);
 
   const { sendUnstake, unstakeState } = useUnstakeVeMoreForMore();
 
@@ -34,7 +44,7 @@ export function UnstakeMoreVeMore(props: React.PropsWithChildren<unknown>) {
     sendUnstake(token, data['veMore-unstake']);
   }
 
-  const stakeMoreDisabled = balanceCtx.get(veMoreToken)?.isZero();
+  const stakeMoreDisabled = veMoreBalance.isZero();
   const unstakeMoreButtonDisabled = parseFloatNoNaN(veMoreUnstakeInput) === 0;
 
   return (
@@ -51,7 +61,7 @@ export function UnstakeMoreVeMore(props: React.PropsWithChildren<unknown>) {
         </Box>
         <TokenAmountInputField
           name="veMore-unstake"
-          max={balanceCtx.get(veMoreToken)}
+          max={veMoreBalance}
           isDisabled={stakeMoreDisabled}
           placeholder={'veMore to unstake'}
           registerForm={registerDepForm}

@@ -4,19 +4,25 @@ import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useAddresses } from '../../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../../chain-interaction/tokens';
+import { useGetStakedMoreVeMore } from '../../../chain-interaction/transactions';
+import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../contexts/WalletBalancesContext';
 
 export function MoreBalanceVeMore() {
   const { chainId } = useEthers();
+  const account = React.useContext(UserAddressContext);
   const moreToken = getTokenFromAddress(chainId, useAddresses().MoreToken);
   const veMoreToken = getTokenFromAddress(chainId, useAddresses().VeMore);
 
   const moreBalance =
     useWalletBalance(moreToken.address) ??
     new CurrencyValue(moreToken, BigNumber.from('0'));
-  const veMoreBalance =
-    useWalletBalance(veMoreToken.address) ??
-    new CurrencyValue(veMoreToken, BigNumber.from('0'));
+  const veMoreStaked = useGetStakedMoreVeMore(account!);
+
+  const veMoreBalance = new CurrencyValue(
+    veMoreToken,
+    BigNumber.from(veMoreStaked)
+  );
 
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 2]}>

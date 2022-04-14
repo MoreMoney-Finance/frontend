@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useAddresses } from '../../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../../chain-interaction/tokens';
-import { useGetStakedMoreVeMore } from '../../../chain-interaction/transactions';
+import { useBalanceOfVeMore } from '../../../chain-interaction/transactions';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../contexts/WalletBalancesContext';
 
@@ -17,11 +17,11 @@ export function MoreBalanceVeMore() {
   const moreBalance =
     useWalletBalance(moreToken.address) ??
     new CurrencyValue(moreToken, BigNumber.from('0'));
-  const veMoreStaked = useGetStakedMoreVeMore(account!);
+  const veMoreBalanceOf = useBalanceOfVeMore(account!);
 
   const veMoreBalance = new CurrencyValue(
     veMoreToken,
-    BigNumber.from(veMoreStaked)
+    BigNumber.from(veMoreBalanceOf)
   );
 
   return (

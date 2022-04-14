@@ -57,6 +57,17 @@ export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   };
 }
 
+export function useBalanceOfVeMore(account: string) {
+  const address = useAddresses().VeMore;
+  const abi = new Interface(VeMore.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method: 'balanceOf',
+    args: [account],
+  }) ?? [0])[0];
+}
+
 export function useGetStakedMoreVeMore(account: string) {
   const address = useAddresses().VeMore;
   const abi = new Interface(VeMore.abi);
@@ -66,6 +77,31 @@ export function useGetStakedMoreVeMore(account: string) {
     method: 'getStakedMore',
     args: [account],
   }) ?? [0])[0];
+}
+
+export function useClaimableVeMore(account: string) {
+  const address = useAddresses().VeMore;
+  const abi = new Interface(VeMore.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method: 'claimable',
+    args: [account],
+  }) ?? [0])[0];
+}
+
+export function useClaimVeMore() {
+  const addresses = useAddresses();
+  const cprAddress = addresses.VeMore;
+  const cprContract = new Contract(cprAddress, new Interface(VeMore.abi));
+  const { send, state } = useContractFunction(cprContract, 'claim');
+
+  return {
+    sendClaim: () => {
+      return send();
+    },
+    claimState: state,
+  };
 }
 
 export function useUnstakeVeMoreForMore() {

@@ -8,6 +8,7 @@ import {
   Tabs,
 } from '@chakra-ui/react';
 import * as React from 'react';
+import ClaimVeMore from './ClaimVeMore';
 import { StakeMoreVeMore } from './StakeMoreVeMore';
 import { UnstakeMoreVeMore } from './UnstakeMoreVeMore';
 
@@ -19,6 +20,7 @@ export function EditMoreVeMore(props: React.PropsWithChildren<unknown>) {
           <TabList>
             <Tab>Stake MORE</Tab>
             <Tab>Unstake</Tab>
+            <Tab>Claim</Tab>
           </TabList>
           <TabPanels>
             <TabPanel>
@@ -26,6 +28,9 @@ export function EditMoreVeMore(props: React.PropsWithChildren<unknown>) {
             </TabPanel>
             <TabPanel>
               <UnstakeMoreVeMore />
+            </TabPanel>
+            <TabPanel>
+              <ClaimVeMore />
             </TabPanel>
           </TabPanels>
         </Tabs>

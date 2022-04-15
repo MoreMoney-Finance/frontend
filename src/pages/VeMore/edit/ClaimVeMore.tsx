@@ -34,6 +34,8 @@ export default function ClaimVeMore({
 
   const { sendClaim, claimState } = useClaimVeMore();
 
+  const disabledButton = BigNumber.from(claimableVeMore).isZero();
+
   return (
     <>
       <TransactionErrorDialog state={claimState} title="Claim VeMORE" />
@@ -61,14 +63,19 @@ export default function ClaimVeMore({
           marginLeft={['0px', '0px', '70px']}
         >
           <Text fontSize={'md'} color={'gray.400'} marginBottom="12px">
-            veMore Balance
+            Claimable
           </Text>
           <Flex direction={'column'} justifyContent={'flex-start'}>
             <Text variant="bodyHuge">{claimableVeMoreBalance.format()}</Text>
           </Flex>
         </Flex>
       </Flex>
-      <Button variant={'submit-primary'} type="submit" onClick={sendClaim}>
+      <Button
+        variant={disabledButton ? 'submit' : 'submit-primary'}
+        type="submit"
+        onClick={sendClaim}
+        disabled={disabledButton}
+      >
         Claim
       </Button>
       {children}

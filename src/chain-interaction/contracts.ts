@@ -22,7 +22,6 @@ import {
 } from '../contexts/ExternalMetadataContext';
 import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
-import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
@@ -35,6 +34,8 @@ import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFe
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 import { parseFloatCurrencyValue } from '../utils';
+import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
+// import VeMore from '../contracts/artifacts/contracts/governance/VeMore.sol/VeMore.json';
 
 // import earnedRewards from '../constants/earned-rewards.json';
 // import rewardsRewards from '../constants/rewards-rewards.json';
@@ -587,6 +588,35 @@ export function useGlobalDebtCeiling(
 ) {
   const address = useAddresses().Stablecoin;
   const abi = new Interface(Stablecoin.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method,
+    args,
+  }) ?? [defaultResult])[0];
+}
+
+export function useBalanceOfToken(
+  address: string,
+  args: any[],
+  defaultResult: any
+) {
+  const abi = new Interface(ERC20.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method: 'balanceOf',
+    args,
+  }) ?? [defaultResult])[0];
+}
+
+export function useTotalSupplyToken(
+  address: string,
+  method: string,
+  args: any[],
+  defaultResult: any
+) {
+  const abi = new Interface(ERC20.abi);
   return (useContractCall({
     abi,
     address,

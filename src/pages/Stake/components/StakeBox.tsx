@@ -7,7 +7,17 @@ export default function StakeBox({
   title,
   img,
   link,
-}: React.PropsWithChildren<{ title: string; img: string; link: string }>) {
+  totalStaked,
+  yourStake,
+  totalSupply,
+}: React.PropsWithChildren<{
+  title: string;
+  img: string;
+  link: string;
+  totalStaked: string;
+  yourStake: string;
+  totalSupply: string;
+}>) {
   const navigate = useNavigate();
   return (
     <Flex flexDirection={'column'} padding={'36px'}>
@@ -21,44 +31,52 @@ export default function StakeBox({
         <Spacer />
         <Button onClick={() => navigate(link)}>Earn {title}</Button>
       </Flex>
-      <Flex marginTop={'26px'} padding="16px">
-        <Box width={'100%'}>
-          <Flex flexDirection={'column'}>
+      <Flex
+        flexDirection={['column', 'column', 'row', 'row']}
+        marginTop={'26px'}
+        padding="16px"
+      >
+        <Box>
+          <Flex flexDirection={'column'} justify="center" alignItems={'center'}>
             <Text fontSize={'md'} color={'gray.400'}>
-              {'Total Staked (USD)'}
+              {'Total Staked'}
             </Text>
-            <Text fontSize={'sm'}>$109,876,779</Text>
+            <Text fontSize={'sm'}>{totalStaked}</Text>
           </Flex>
         </Box>
         <Spacer />
-        <Box width={'50%'}>
-          <Flex flexDirection={'column'}>
+        <Box>
+          <Flex flexDirection={'column'} justify="center" alignItems={'center'}>
             <Text fontSize={'md'} color={'gray.400'}>
-              {'Your Stake (USD)'}
+              {'Your Stake'}
             </Text>
-            <Text fontSize={'sm'}>$109</Text>
+            <Text fontSize={'sm'}>{yourStake}</Text>
+          </Flex>
+        </Box>
+        <Spacer />
+        <Box>
+          <Flex flexDirection={'column'} justify="center" alignItems={'center'}>
+            <Text fontSize={'md'} color={'gray.400'}>
+              {'Total Supply'}
+            </Text>
+            <Text fontSize={'sm'}>{totalSupply}</Text>
           </Flex>
         </Box>
       </Flex>
-      <Flex padding="16px">
-        <Box width={'100%'}>
-          <Flex flexDirection={'column'}>
-            <Text fontSize={'md'} color={'gray.400'}>
-              {'APR (7D)'}
-            </Text>
-            <Text fontSize={'sm'}>26%</Text>
-          </Flex>
-        </Box>
-        {/* <Spacer /> */}
-        <Box width={'50%'}>
+      {/* <Flex padding="16px" justify={'center'}> */}
+      {/* <Box width={'100%'}> */}
+
+      {/* </Box> */}
+      {/* <Spacer /> */}
+      {/* <Box width={'50%'}>
           <Flex flexDirection={'column'}>
             <Text fontSize={'md'} color={'gray.400'}>
               {'Deposit Fee'}
             </Text>
             <Text fontSize={'sm'}>1.00%</Text>
           </Flex>
-        </Box>
-      </Flex>
+        </Box> */}
+      {/* </Flex> */}
       {children}
     </Flex>
   );

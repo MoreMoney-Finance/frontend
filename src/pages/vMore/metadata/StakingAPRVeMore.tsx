@@ -33,7 +33,7 @@ export function StakingAPRVeMore(props: React.PropsWithChildren<unknown>) {
           h={'full'}
           padding={'30px 80px 40px 40px'}
         >
-          <Flex w={'full'}>
+          {/* <Flex w={'full'}>
             <Text variant="h200" color={'whiteAlpha.400'}>
               Approximate APR
             </Text>
@@ -41,7 +41,7 @@ export function StakingAPRVeMore(props: React.PropsWithChildren<unknown>) {
             <Text variant={'bodyLarge'}>
               {xMoreData?.cachedAPR?.toFixed(2)}%
             </Text>
-          </Flex>
+          </Flex> */}
           <Flex w={'full'} marginTop={'30px'}>
             <Text variant="h200" color={'whiteAlpha.400'}>
               Total Supply

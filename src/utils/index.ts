@@ -19,6 +19,6 @@ export function formatNumber(input: number) {
   if (input) {
     return input.toLocaleString('en-US', {});
   } else {
-    return 0;
+    return (0).toLocaleString('en-US', {});
   }
 }

@@ -26,8 +26,8 @@ export default function StakePage({
           <Container variant={'token'}>
             <StakeBox
               img="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg"
-              title="veMore"
-              link="/vemore"
+              title="vMore"
+              link="/vmore"
             />
           </Container>
         </Box>

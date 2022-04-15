@@ -15,7 +15,7 @@ import LiquidationProtectedLoans from './pages/Loans';
 import PositionsPage from './pages/Positions';
 import StakePage from './pages/Stake';
 import TokenPage from './pages/TokenPage';
-import VeMorePage from './pages/VeMore';
+import VeMorePage from './pages/vMore';
 import XMorePage from './pages/XMore';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
@@ -61,7 +61,7 @@ ReactDOM.render(
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/stake" element={<StakePage />} />
             <Route path="/xmore" element={<XMorePage />} />
-            <Route path="/vemore" element={<VeMorePage />} />
+            <Route path="/vmore" element={<VeMorePage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/admin/:positions" element={<AdminPage />} />
           </Route>

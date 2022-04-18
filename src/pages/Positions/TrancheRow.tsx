@@ -1,4 +1,4 @@
-import { Td, Text, Tr } from '@chakra-ui/react';
+import { Button, Td, Text, Tr } from '@chakra-ui/react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -52,6 +52,10 @@ export function TrancheRow(
         <Td>{row.collateral}</Td>
 
         <Td>{row.debt}</Td>
+
+        <Td>
+          <Button>Migrate</Button>
+        </Td>
       </Tr>
     </>
   );

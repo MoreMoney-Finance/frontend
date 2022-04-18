@@ -85,6 +85,15 @@ export function TrancheCard({
           </Box>
         </Flex>
 
+        <Flex flexDirection={'row'} justifyContent={'space-between'} p={'4'}>
+          <Box fontFamily={'Rubik'} color={'whiteAlpha.400'}>
+            Migrate
+          </Box>
+          <Box>
+            <Button>Migrate</Button>
+          </Box>
+        </Flex>
+
         <Button as={Link} to={`/token/${token.address}`} w={'full'}>
           View
         </Button>

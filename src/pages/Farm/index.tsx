@@ -80,19 +80,19 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const externalData: YieldFarmingData[] =
     avaxMorePayload && yieldFarmingData
       ? [
-        ...yieldFarmingData,
-        {
-          asset: 'MORE-AVAX',
-          stake: 'n/a',
-          tvl: avaxMorePayload.tvl,
-          reward: "MORE + " + avaxMorePayload.rewardsCoin,
-          apr: avaxMorePayload.totalApy,
-          getTokenURL:
+          ...yieldFarmingData,
+          {
+            asset: 'MORE-AVAX',
+            stake: 'n/a',
+            tvl: avaxMorePayload.tvl,
+            reward: 'MORE + ' + avaxMorePayload.rewardsCoin,
+            apr: avaxMorePayload.totalApy,
+            getTokenURL:
               'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05',
-          stakeTokenURL:
+            stakeTokenURL:
               'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm',
-        },
-      ]
+          },
+        ]
       : [];
 
   return (
@@ -128,46 +128,69 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           defaultIndex={0}
         >
           {!balance.isZero() ? (
-            <AccordionItem
-              width={'full'}
-              style={{ boxSizing: 'border-box', ...accordionStyling }}
-            >
-              <AccordionButton width={'full'}>
-                <Grid
-                  templateColumns="repeat(6, 1fr)"
-                  gap={2}
-                  w={'full'}
-                  alignContent={'center'}
-                  verticalAlign={'center'}
-                >
-                  <Flex w={'full'} justifyContent={'center'}>
-                    <Box w={'fit-content'}>Special Launch Rewards</Box>
-                  </Flex>
-                  <Box>
-                    <Text>n/a</Text>
-                  </Box>
-                  <Box>
-                    <Text>$ {stakeMeta[0].tvl.format({ suffix: '' })}</Text>
-                  </Box>
-                  <Flex w={'full'} justifyContent={'center'}>
-                    {balance.format()}
-                  </Flex>
-                  <Box>n/a</Box>
-                  <Box>
-                    <Button
-                      color={'white'}
-                      variant={'primary'}
-                      onClick={() => {
-                        console.log(`Claiming vested`, vested.format());
-                        sendSpecialWithdraw(vested.value);
-                      }}
-                    >
-                      {vested.format({ suffix: '' })} Vested
-                    </Button>
-                  </Box>
-                </Grid>
-              </AccordionButton>
-            </AccordionItem>
+            <>
+              <Flex
+                p={[0, 4, 4]}
+                display={['flex', 'flex', 'flex', 'none', 'none']}
+                flexDirection={'column'}
+              >
+                {/* <FarmCard key={`farmRow${i}`} token={row.token} row={{
+  stakingToken: Token;
+  rewardsToken: Token;
+  totalSupply: CurrencyValue;
+  tvl: CurrencyValue;
+  aprPercent: number;
+  vestingCliff: Date;
+  periodFinish: Date;
+  stakedBalance: CurrencyValue;
+  vestingStart: Date;
+  earned: CurrencyValue;
+  vested: CurrencyValue;
+  rewards: CurrencyValue;
+  totalRewards: CurrencyValue;
+                }} /> */}
+              </Flex>
+              <AccordionItem
+                width={'full'}
+                style={{ boxSizing: 'border-box', ...accordionStyling }}
+              >
+                <AccordionButton width={'full'}>
+                  <Grid
+                    templateColumns="repeat(6, 1fr)"
+                    gap={2}
+                    w={'full'}
+                    alignContent={'center'}
+                    verticalAlign={'center'}
+                  >
+                    <Flex w={'full'} justifyContent={'center'}>
+                      <Box w={'fit-content'}>Special Launch Rewards</Box>
+                    </Flex>
+                    <Box>
+                      <Text>n/a</Text>
+                    </Box>
+                    <Box>
+                      <Text>$ {stakeMeta[0].tvl.format({ suffix: '' })}</Text>
+                    </Box>
+                    <Flex w={'full'} justifyContent={'center'}>
+                      {balance.format()}
+                    </Flex>
+                    <Box>n/a</Box>
+                    <Box>
+                      <Button
+                        color={'white'}
+                        variant={'primary'}
+                        onClick={() => {
+                          console.log(`Claiming vested`, vested.format());
+                          sendSpecialWithdraw(vested.value);
+                        }}
+                      >
+                        {vested.format({ suffix: '' })} Vested
+                      </Button>
+                    </Box>
+                  </Grid>
+                </AccordionButton>
+              </AccordionItem>
+            </>
           ) : (
             <></>
           )}

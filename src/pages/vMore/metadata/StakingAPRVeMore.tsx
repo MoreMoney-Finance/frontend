@@ -6,14 +6,20 @@ import {
   Spacer,
   Text,
 } from '@chakra-ui/react';
+import { formatEther } from '@ethersproject/units';
 import * as React from 'react';
 import lines from '../../../assets/img/lines.svg';
-import { ExternalMetadataContext } from '../../../contexts/ExternalMetadataContext';
+import {
+  useAddresses,
+  useTotalSupplyToken,
+} from '../../../chain-interaction/contracts';
 import { formatNumber } from '../../../utils';
 
 export function StakingAPRVeMore(props: React.PropsWithChildren<unknown>) {
-  const { xMoreData } = React.useContext(ExternalMetadataContext);
-
+  const addresses = useAddresses();
+  const totalSupplyStakedVMore = formatEther(
+    useTotalSupplyToken(addresses.VeMore, 'totalSupply', [], 0)
+  );
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
       <Container variant={'token'} padding={'30px'}>
@@ -48,16 +54,7 @@ export function StakingAPRVeMore(props: React.PropsWithChildren<unknown>) {
             </Text>
             <Spacer />
             <Text variant={'bodyLarge'}>
-              {formatNumber(xMoreData?.totalSupply)}
-            </Text>
-          </Flex>
-          <Flex w={'full'} marginTop={'30px'}>
-            <Text variant="h200" color={'whiteAlpha.400'}>
-              MORE / xMORE
-            </Text>
-            <Spacer />
-            <Text variant={'bodyLarge'}>
-              {formatNumber(xMoreData?.currentRatio)}
+              {formatNumber(parseFloat(totalSupplyStakedVMore))}
             </Text>
           </Flex>
         </Flex>

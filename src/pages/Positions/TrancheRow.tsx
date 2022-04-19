@@ -5,6 +5,8 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
 } from '../../chain-interaction/contracts';
+import { useMigratePosition } from '../../chain-interaction/transactions';
+import { TransactionErrorDialog } from '../../components/notifications/TransactionErrorDialog';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { TrancheData } from './CurrentlyOpenPositions';
 import { TrancheAction } from './TrancheTable';
@@ -16,8 +18,15 @@ export function TrancheRow(
   >
 ) {
   const { row } = params;
+  const { sendMigrate, migrateState } = useMigratePosition();
+
+  const migrateClick = () => {
+    sendMigrate(row.trancheId, '0x0000000000000000000000000000000000000000');
+  };
+
   return (
     <>
+      <TransactionErrorDialog state={migrateState} title="Migrate" />
       <Tr
         key={`${params.trancheId}`}
         as={Link}
@@ -54,7 +63,15 @@ export function TrancheRow(
         <Td>{row.debt}</Td>
 
         <Td>
-          <Button>Migrate</Button>
+          <Button
+            onClick={(e) => {
+              migrateClick();
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
+            Migrate
+          </Button>
         </Td>
       </Tr>
     </>

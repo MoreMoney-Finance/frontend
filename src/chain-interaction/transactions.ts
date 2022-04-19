@@ -24,12 +24,27 @@ import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNati
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
+import Migrate from '../contracts/artifacts/contracts/Migrate.sol/Migrate.json';
 import {
   useAddresses,
   useRegisteredOracle,
   useStable,
   useYieldConversionStrategyView,
 } from './contracts';
+
+export function useMigratePosition() {
+  // TODO: change cprAddress and the ABI to use the correct address
+  const cprAddress = useAddresses().Migrate;
+  const cprContract = new Contract(cprAddress, new Interface(Migrate.abi));
+  const { send, state } = useContractFunction(cprContract, 'migratePosition');
+
+  return {
+    sendMigrate: (trancheId: number, strategy: string) => {
+      return send(trancheId, strategy);
+    },
+    migrateState: state,
+  };
+}
 
 export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   const contractsABI: Record<string, any> = {

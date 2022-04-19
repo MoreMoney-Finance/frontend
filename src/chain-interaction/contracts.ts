@@ -86,6 +86,7 @@ export type DeploymentAddresses = {
 
   LiquidYieldStrategy: string;
   MultiTraderJoeMasterChef3Strategy: string;
+  Migrate: string;
 };
 
 export function useAddresses() {

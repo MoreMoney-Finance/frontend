@@ -119,7 +119,11 @@ for (const [chainId, lpTokensPerChain] of Object.entries(lptokens) as [
 ][]) {
   for (const [exchange, records] of Object.entries(lpTokensPerChain)) {
     for (const [longTicker, record] of Object.entries(records)) {
-      if ('pairAddress' in record && record.pairAddress && longTicker !== 'JPL-WAVAX-WBTCe') {
+      if (
+        'pairAddress' in record &&
+        record.pairAddress &&
+        longTicker !== 'JPL-WAVAX-WBTCe'
+      ) {
         const ticker = longTicker.split('-').slice(1).join('/');
         addressToken[chainIds[chainId]].set(
           getAddress(record.pairAddress),

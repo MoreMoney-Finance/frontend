@@ -24,6 +24,7 @@ import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNati
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
+import xMoney from '../contracts/artifacts/contracts/governance/xMoney.sol/xMoney.json';
 import {
   useAddresses,
   useRegisteredOracle,
@@ -50,8 +51,8 @@ export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
       contractsABI[strategyAddress] === undefined
         ? null
         : isYY
-          ? () => send(tokenAddress)
-          : () => send(),
+        ? () => send(tokenAddress)
+        : () => send(),
     withdrawState: state,
   };
 }
@@ -102,6 +103,34 @@ export function useClaimReward() {
       return send();
     },
     claimState: state,
+  };
+}
+
+export function useStakeXMoney() {
+  const cprAddress = useAddresses().xMoney;
+  const cprContract = new Contract(cprAddress, new Interface(xMoney.abi));
+  const { send, state } = useContractFunction(cprContract, 'deposit');
+
+  return {
+    sendDepositXMoney: (stakeToken: Token, amount: string | number) => {
+      const sAmount = parseUnits(amount.toString(), stakeToken.decimals);
+      return send(sAmount);
+    },
+    depositState: state,
+  };
+}
+
+export function useWithdrawXMoney() {
+  const cprAddress = useAddresses().xMoney;
+  const cprContract = new Contract(cprAddress, new Interface(xMoney.abi));
+  const { send, state } = useContractFunction(cprContract, 'withdraw');
+
+  return {
+    sendWithdrawXMoney: (withdrawToken: Token, amount: string | number) => {
+      const wAmount = parseUnits(amount.toString(), withdrawToken.decimals);
+      return send(wAmount);
+    },
+    withdrawState: state,
   };
 }
 
@@ -204,11 +233,11 @@ export function useNativeRepayWithdrawTrans(
     ) =>
       account && trancheId && collateralToken
         ? send(
-          trancheId,
-          parseUnits(collateralAmount.toString(), collateralToken.decimals),
-          parseEther(repayAmount.toString()),
-          account
-        )
+            trancheId,
+            parseUnits(collateralAmount.toString(), collateralToken.decimals),
+            parseEther(repayAmount.toString()),
+            account
+          )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
   };
@@ -247,12 +276,12 @@ export function useDepositBorrowTrans(
       return trancheId
         ? send(trancheId, cAmount, bAmount, account)
         : send(
-          collateralToken.address,
-          strategyAddress,
-          cAmount,
-          bAmount,
-          account
-        );
+            collateralToken.address,
+            strategyAddress,
+            cAmount,
+            bAmount,
+            account
+          );
     },
     depositBorrowState: state,
   };
@@ -296,11 +325,11 @@ export function useRepayWithdrawTrans(
     ) =>
       account && trancheId && collateralToken
         ? send(
-          trancheId,
-          parseUnits(collateralAmount.toString(), collateralToken.decimals),
-          parseEther(repayAmount.toString()),
-          account
-        )
+            trancheId,
+            parseUnits(collateralAmount.toString(), collateralToken.decimals),
+            parseEther(repayAmount.toString()),
+            account
+          )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
   };

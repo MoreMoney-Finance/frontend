@@ -1,6 +1,8 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import {
   CurrencyValue,
+  Token,
+  TransactionStatus,
   useEtherBalance,
   useEthers,
   useTokenAllowance,
@@ -9,15 +11,8 @@ import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  ParsedStakingMetadata,
-  useAddresses,
-  TxStatus,
-} from '../../../chain-interaction/contracts';
-import {
-  useApproveTrans,
-  useStake,
-} from '../../../chain-interaction/transactions';
+import { TxStatus } from '../../../chain-interaction/contracts';
+import { useApproveTrans } from '../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../components/account/EnsureWalletConnected';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';
@@ -27,12 +22,18 @@ import { useWalletBalance } from '../../../contexts/WalletBalancesContext';
 import { parseFloatNoNaN } from '../../../utils';
 
 export default function DepositForm({
-  stakeMeta,
+  token,
+  stakingAddress,
+  sendStake,
+  stakeState,
 }: React.PropsWithChildren<{
-  stakeMeta: ParsedStakingMetadata;
+  token: Token;
+  stakingAddress: string;
+  sendStake: (token: Token, amount: string | number) => Promise<void>;
+  stakeState: TransactionStatus;
 }>) {
-  const token = stakeMeta.stakingToken;
-  const stakingAddress = useAddresses().CurvePoolRewards;
+  // const token = stakeMeta.stakingToken;
+  // const stakingAddress = useAddresses().CurvePoolRewards;
   const { chainId } = useEthers();
   const account = useContext(UserAddressContext);
 
@@ -55,7 +56,7 @@ export default function DepositForm({
 
   const { approveState, sendApprove } = useApproveTrans(token.address);
 
-  const { sendStake, stakeState } = useStake();
+  // const { sendStake, stakeState } = useStake();
 
   const {
     handleSubmit: handleSubmitDepForm,

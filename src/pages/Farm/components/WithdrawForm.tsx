@@ -1,12 +1,16 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
-import { CurrencyValue, useEtherBalance, useEthers } from '@usedapp/core';
+import {
+  CurrencyValue,
+  Token,
+  TransactionStatus,
+  useEtherBalance,
+  useEthers,
+} from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { ParsedStakingMetadata } from '../../../chain-interaction/contracts';
-import { useWithdraw } from '../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../components/account/EnsureWalletConnected';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';
@@ -15,16 +19,23 @@ import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { parseFloatNoNaN } from '../../../utils';
 
 export default function WithdrawForm({
-  stakeMeta,
+  token,
+  stakedBalance,
+  sendWithdraw,
+  withdrawState,
 }: React.PropsWithChildren<{
-  stakeMeta: ParsedStakingMetadata;
+  token: Token;
+  stakedBalance: CurrencyValue;
+  sendWithdraw: (token: Token, amount: string | number) => Promise<void>;
+  withdrawState: TransactionStatus;
 }>) {
-  const token = stakeMeta.stakingToken;
+  // const token = stakeMeta.stakingToken;
 
   const { chainId } = useEthers();
   const account = useContext(UserAddressContext);
 
-  const isNativeToken = getAddress(WNATIVE_ADDRESS[chainId!]) === getAddress(token.address);
+  const isNativeToken =
+    getAddress(WNATIVE_ADDRESS[chainId!]) === getAddress(token.address);
 
   const etherBalance = useEtherBalance(account);
 
@@ -33,9 +44,9 @@ export default function WithdrawForm({
     : new CurrencyValue(token, BigNumber.from('0'));
 
   const walletBalance =
-    stakeMeta.stakedBalance ?? new CurrencyValue(token, BigNumber.from('0'));
+    stakedBalance ?? new CurrencyValue(token, BigNumber.from('0'));
 
-  const { sendWithdraw, withdrawState } = useWithdraw();
+  // const { sendWithdraw, withdrawState } = useWithdraw();
 
   const {
     handleSubmit: handleSubmitDepForm,

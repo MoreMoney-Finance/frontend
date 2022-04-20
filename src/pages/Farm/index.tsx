@@ -13,8 +13,8 @@ import {
   Link,
   Text,
 } from '@chakra-ui/react';
-import { useEthers } from '@usedapp/core';
-import { ethers } from 'ethers';
+import { CurrencyValue, useEthers } from '@usedapp/core';
+import { BigNumber, ethers } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
 import {
@@ -22,8 +22,15 @@ import {
   useAddresses,
   useParsedStakingMetadata,
   useSpecialRewardsData,
+  useStable,
 } from '../../chain-interaction/contracts';
-import { useWithdrawLaunchVestingTrans } from '../../chain-interaction/transactions';
+import {
+  useStake,
+  useStakeXMoney,
+  useWithdraw,
+  useWithdrawLaunchVestingTrans,
+  useWithdrawXMoney,
+} from '../../chain-interaction/transactions';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import {
   ExternalMetadataContext,
@@ -80,21 +87,31 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const externalData: YieldFarmingData[] =
     avaxMorePayload && yieldFarmingData
       ? [
-        ...yieldFarmingData,
-        {
-          asset: 'MORE-AVAX',
-          stake: 'n/a',
-          tvl: avaxMorePayload.tvl,
-          reward: "MORE + " + avaxMorePayload.rewardsCoin,
-          apr: avaxMorePayload.totalApy,
-          getTokenURL:
+          ...yieldFarmingData,
+          {
+            asset: 'MORE-AVAX',
+            stake: 'n/a',
+            tvl: avaxMorePayload.tvl,
+            reward: 'MORE + ' + avaxMorePayload.rewardsCoin,
+            apr: avaxMorePayload.totalApy,
+            getTokenURL:
               'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05',
-          stakeTokenURL:
+            stakeTokenURL:
               'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm',
-        },
-      ]
+          },
+        ]
       : [];
 
+  const stakingAddress = useAddresses().CurvePoolRewards;
+  const xMoneyAddress = useAddresses().xMoney;
+  const { sendStake, stakeState } = useStake();
+  const { sendWithdraw, withdrawState } = useWithdraw();
+
+  const { sendDepositXMoney, depositState } = useStakeXMoney();
+  const { sendWithdrawXMoney, withdrawState: withdrawXMoneyState } =
+    useWithdrawXMoney();
+
+  const stable = useStable();
   return (
     <>
       <Box padding={'12'} width={'full'}>
@@ -236,6 +253,9 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           )}
           {stakeMeta.map((item, index) => {
             const { totalRewards } = item;
+
+            const token = item.stakingToken;
+
             return (
               <div key={'item' + index}>
                 <AccordionItem
@@ -293,7 +313,12 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                           padding={'16px'}
                           position="relative"
                         >
-                          <DepositForm stakeMeta={item} />
+                          <DepositForm
+                            token={token}
+                            stakingAddress={stakingAddress}
+                            sendStake={sendStake}
+                            stakeState={stakeState}
+                          />
                         </Container>
                       </GridItem>
                       <GridItem w="100%" colSpan={5}>
@@ -302,7 +327,12 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                           padding={'16px'}
                           position="relative"
                         >
-                          <WithdrawForm stakeMeta={item} />
+                          <WithdrawForm
+                            token={token}
+                            stakedBalance={item.stakedBalance}
+                            sendWithdraw={sendWithdraw}
+                            withdrawState={withdrawState}
+                          />
                         </Container>
                       </GridItem>
                       <GridItem colSpan={3} w="110%">
@@ -323,6 +353,70 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
               </div>
             );
           })}
+          <AccordionItem
+            width={'full'}
+            style={{ boxSizing: 'border-box', ...accordionStyling }}
+          >
+            <AccordionButton width={'full'}>
+              <Grid
+                templateColumns="repeat(6, 1fr)"
+                gap={2}
+                w={'full'}
+                alignContent={'center'}
+                verticalAlign={'center'}
+              >
+                <Flex w={'full'} justifyContent={'center'}>
+                  <Box w={'fit-content'}>
+                    <Text>XMONEY</Text>
+                  </Box>
+                </Flex>
+                <Box>
+                  <Text>staked balance</Text>
+                </Box>
+                <Box>
+                  <Text>tvl</Text>
+                </Box>
+                <Flex w={'full'} justifyContent={'center'}>
+                  total rewards
+                </Flex>
+                <Box>aprPercent %</Box>
+              </Grid>
+            </AccordionButton>
+            <AccordionPanel mt="16px">
+              <Grid templateColumns="repeat(10, 1fr)" gap={6}>
+                <GridItem w="100%" colSpan={5}>
+                  <Container
+                    variant={'token'}
+                    padding={'16px'}
+                    position="relative"
+                  >
+                    <DepositForm
+                      token={stable}
+                      stakingAddress={xMoneyAddress}
+                      sendStake={sendDepositXMoney}
+                      stakeState={depositState}
+                    />
+                  </Container>
+                </GridItem>
+                <GridItem w="100%" colSpan={5}>
+                  <Container
+                    variant={'token'}
+                    padding={'16px'}
+                    position="relative"
+                  >
+                    <WithdrawForm
+                      token={stable}
+                      stakedBalance={
+                        new CurrencyValue(stable, BigNumber.from(0))
+                      }
+                      sendWithdraw={sendWithdrawXMoney}
+                      withdrawState={withdrawXMoneyState}
+                    />
+                  </Container>
+                </GridItem>
+              </Grid>
+            </AccordionPanel>
+          </AccordionItem>
         </Accordion>
         {params.children}
       </Box>

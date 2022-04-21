@@ -196,6 +196,22 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
     );
   }
 
+  if ('xMoney' in addresses) {
+    addressToken[chainIds[chainId]].set(
+      getAddress(addresses.xMoney),
+      new Token(
+        'XMoney',
+        'xMONEY',
+        chainIds[chainId],
+        getAddress(addresses.xMoney),
+        18
+      )
+    );
+    addressIcons.set(getAddress(addresses.xMoney), [
+      'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Coin-Logo-FINAL.jpg',
+    ]);
+  }
+
   if ('MoreToken' in addresses) {
     addressToken[chainIds[chainId]].set(
       getAddress(addresses['MoreToken']),

@@ -565,6 +565,17 @@ export function useIsolatedPositionMetadata(
     : legacyResults;
 }
 
+export function xMoneyTotalSupply(defaultResult: any) {
+  const address = useAddresses().xMore;
+  const abi = new Interface(xMore.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method: 'totalSupply',
+    args: [],
+  }) ?? [defaultResult])[0];
+}
+
 export function xMoreTotalSupply(
   method: string,
   args: any[],

@@ -13,6 +13,7 @@ import {
   Link,
   Text,
 } from '@chakra-ui/react';
+import { formatEther } from '@ethersproject/units';
 import { CurrencyValue, useEthers } from '@usedapp/core';
 import { BigNumber, ethers } from 'ethers';
 import * as React from 'react';
@@ -23,6 +24,7 @@ import {
   useParsedStakingMetadata,
   useSpecialRewardsData,
   useStable,
+  xMoneyTotalSupply,
 } from '../../chain-interaction/contracts';
 import {
   useStake,
@@ -37,6 +39,7 @@ import {
   YieldFarmingData,
 } from '../../contexts/ExternalMetadataContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
+import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
 import farminfo from '../../contracts/farminfo.json';
 import { formatNumber } from '../../utils';
 import ClaimReward from './components/ClaimReward';
@@ -87,21 +90,22 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const externalData: YieldFarmingData[] =
     avaxMorePayload && yieldFarmingData
       ? [
-          ...yieldFarmingData,
-          {
-            asset: 'MORE-AVAX',
-            stake: 'n/a',
-            tvl: avaxMorePayload.tvl,
-            reward: 'MORE + ' + avaxMorePayload.rewardsCoin,
-            apr: avaxMorePayload.totalApy,
-            getTokenURL:
+        ...yieldFarmingData,
+        {
+          asset: 'MORE-AVAX',
+          stake: 'n/a',
+          tvl: avaxMorePayload.tvl,
+          reward: 'MORE + ' + avaxMorePayload.rewardsCoin,
+          apr: avaxMorePayload.totalApy,
+          getTokenURL:
               'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05',
-            stakeTokenURL:
+          stakeTokenURL:
               'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm',
-          },
-        ]
+        },
+      ]
       : [];
 
+  const balanceCtx = React.useContext(WalletBalancesContext);
   const stakingAddress = useAddresses().CurvePoolRewards;
   const xMoneyAddress = useAddresses().xMoney;
   const { sendStake, stakeState } = useStake();
@@ -112,6 +116,12 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
     useWithdrawXMoney();
 
   const stable = useStable();
+  const xMoneyBalance =
+    balanceCtx.get(xMoneyAddress) ??
+    new CurrencyValue(stable, BigNumber.from('0'));
+
+  const xMoneyTVL = formatEther(xMoneyTotalSupply(BigNumber.from('0')));
+
   return (
     <>
       <Box padding={'12'} width={'full'}>
@@ -354,6 +364,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
             );
           })}
           <AccordionItem
+            key={'xmoney-accordion'}
             width={'full'}
             style={{ boxSizing: 'border-box', ...accordionStyling }}
           >
@@ -371,15 +382,15 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                   </Box>
                 </Flex>
                 <Box>
-                  <Text>staked balance</Text>
+                  <Text>{xMoneyBalance.format({})}</Text>
                 </Box>
                 <Box>
-                  <Text>tvl</Text>
+                  <Text>$ {formatNumber(parseFloat(xMoneyTVL))}</Text>
                 </Box>
                 <Flex w={'full'} justifyContent={'center'}>
-                  total rewards
+                  n/a
                 </Flex>
-                <Box>aprPercent %</Box>
+                <Box>n/a%</Box>
               </Grid>
             </AccordionButton>
             <AccordionPanel mt="16px">
@@ -406,9 +417,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                   >
                     <WithdrawForm
                       token={stable}
-                      stakedBalance={
-                        new CurrencyValue(stable, BigNumber.from(0))
-                      }
+                      stakedBalance={xMoneyBalance}
                       sendWithdraw={sendWithdrawXMoney}
                       withdrawState={withdrawXMoneyState}
                     />

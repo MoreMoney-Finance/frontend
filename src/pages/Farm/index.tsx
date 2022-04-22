@@ -1,8 +1,6 @@
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import {
   Accordion,
-  AccordionButton,
-  AccordionItem,
   AccordionPanel,
   Box,
   Button,
@@ -35,6 +33,7 @@ import { formatNumber } from '../../utils';
 import ClaimReward from './components/ClaimReward';
 import DepositForm from './components/DepositForm';
 import WithdrawForm from './components/WithdrawForm';
+import FarmItem from './FarmItem';
 
 export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const { chainId } = useEthers();
@@ -62,37 +61,22 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
     `https://avax.curve.fi/factory/${farminfo[farmInfoIdx].curvePoolIdx}/deposit`,
   ];
 
-  const accordionStyling = {
-    content: '""',
-    borderRadius: '10px',
-    marginTop: '10px',
-    border: '1px solid transparent',
-    backgroundClip: 'padding-box, border-box',
-    backgroundOrigin: 'padding-box, border-box',
-    backgroundImage:
-      'linear-gradient(hsla(227, 12%, 15%, 1), hsla(227, 12%, 15%, 1)), linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
-    zIndex: 'var(--chakra-zIndices-hide)',
-    fontSize: '18px',
-    lineHeight: '27px',
-    padding: '16px 30px',
-  };
-
   const externalData: YieldFarmingData[] =
     avaxMorePayload && yieldFarmingData
       ? [
-          ...yieldFarmingData,
-          {
-            asset: 'MORE-AVAX',
-            stake: 'n/a',
-            tvl: avaxMorePayload.tvl,
-            reward: 'MORE + ' + avaxMorePayload.rewardsCoin,
-            apr: avaxMorePayload.totalApy,
-            getTokenURL:
+        ...yieldFarmingData,
+        {
+          asset: 'MORE-AVAX',
+          stake: 'n/a',
+          tvl: avaxMorePayload.tvl,
+          reward: 'MORE + ' + avaxMorePayload.rewardsCoin,
+          apr: avaxMorePayload.totalApy,
+          getTokenURL:
               'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05',
-            stakeTokenURL:
+          stakeTokenURL:
               'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm',
-          },
-        ]
+        },
+      ]
       : [];
 
   return (
@@ -112,6 +96,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           padding={'0px 45px'}
           alignContent={'center'}
           verticalAlign={'center'}
+          display={['none', 'none', 'none', 'grid']}
         >
           <Text textAlign={'center'}>Asset</Text>
           <Text textAlign={'center'}>Stake</Text>
@@ -128,131 +113,64 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           defaultIndex={0}
         >
           {!balance.isZero() ? (
-            <>
-              <Flex
-                p={[0, 4, 4]}
-                display={['flex', 'flex', 'flex', 'none', 'none']}
-                flexDirection={'column'}
-              >
-                {/* <FarmCard key={`farmRow${i}`} token={row.token} row={{
-  stakingToken: Token;
-  rewardsToken: Token;
-  totalSupply: CurrencyValue;
-  tvl: CurrencyValue;
-  aprPercent: number;
-  vestingCliff: Date;
-  periodFinish: Date;
-  stakedBalance: CurrencyValue;
-  vestingStart: Date;
-  earned: CurrencyValue;
-  vested: CurrencyValue;
-  rewards: CurrencyValue;
-  totalRewards: CurrencyValue;
-                }} /> */}
-              </Flex>
-              <AccordionItem
-                width={'full'}
-                style={{ boxSizing: 'border-box', ...accordionStyling }}
-              >
-                <AccordionButton width={'full'}>
-                  <Grid
-                    templateColumns="repeat(6, 1fr)"
-                    gap={2}
-                    w={'full'}
-                    alignContent={'center'}
-                    verticalAlign={'center'}
-                  >
-                    <Flex w={'full'} justifyContent={'center'}>
-                      <Box w={'fit-content'}>Special Launch Rewards</Box>
-                    </Flex>
-                    <Box>
-                      <Text>n/a</Text>
-                    </Box>
-                    <Box>
-                      <Text>$ {stakeMeta[0].tvl.format({ suffix: '' })}</Text>
-                    </Box>
-                    <Flex w={'full'} justifyContent={'center'}>
-                      {balance.format()}
-                    </Flex>
-                    <Box>n/a</Box>
-                    <Box>
-                      <Button
-                        color={'white'}
-                        variant={'primary'}
-                        onClick={() => {
-                          console.log(`Claiming vested`, vested.format());
-                          sendSpecialWithdraw(vested.value);
-                        }}
-                      >
-                        {vested.format({ suffix: '' })} Vested
-                      </Button>
-                    </Box>
-                  </Grid>
-                </AccordionButton>
-              </AccordionItem>
-            </>
+            <FarmItem
+              key={'farmRow'}
+              asset="Special Launch Rewards"
+              stake={'n/a'}
+              tvl={`$ ${stakeMeta[0].tvl.format({ suffix: '' })}`}
+              reward={`${balance.format()}`}
+              apr={'n/a'}
+              acquire={
+                <Button
+                  color={'white'}
+                  variant={'primary'}
+                  onClick={() => {
+                    console.log(`Claiming vested`, vested.format());
+                    sendSpecialWithdraw(vested.value);
+                  }}
+                >
+                  {vested.format({ suffix: '' })} Vested
+                </Button>
+              }
+            />
           ) : (
             <></>
           )}
           {externalData.length > 0 ? (
             externalData.map((item) => (
-              <AccordionItem
-                key={'farm-' + item.asset}
-                width={'full'}
-                style={{ boxSizing: 'border-box', ...accordionStyling }}
-              >
-                <AccordionButton width={'full'} color={'white'}>
-                  <Grid
-                    templateColumns="repeat(6, 1fr)"
-                    gap={2}
-                    w={'full'}
-                    alignContent={'center'}
-                    verticalAlign={'center'}
-                  >
-                    <Flex w={'full'} justifyContent={'center'}>
-                      <Box w={'fit-content'}>{item.asset}</Box>
-                    </Flex>
-
-                    <Box>
-                      <Text>{item.stake}</Text>
-                    </Box>
-
-                    <Box>
-                      <Text>$ {formatNumber(item.tvl)}</Text>
-                    </Box>
-
-                    <Flex w={'full'} justifyContent={'center'}>
-                      {item.reward}
-                    </Flex>
-
-                    <Box>{formatNumber(item.apr)} %</Box>
-
-                    <Flex flexDirection={'column'}>
-                      <Button
-                        as={Link}
-                        href={item.getTokenURL}
-                        isExternal
-                        color={'white'}
-                        variant={'primary'}
-                      >
-                        Get LP Token
-                        <ExternalLinkIcon />
-                      </Button>
-                      <Button
-                        as={Link}
-                        href={item.stakeTokenURL}
-                        isExternal
-                        color={'white'}
-                        variant={'primary'}
-                        marginTop={'8px'}
-                      >
-                        Stake LP Token
-                        <ExternalLinkIcon />
-                      </Button>
-                    </Flex>
-                  </Grid>
-                </AccordionButton>
-              </AccordionItem>
+              <FarmItem
+                key={'farmRow' + item.asset}
+                asset={item.asset}
+                stake={item.stake}
+                tvl={`$ ${formatNumber(item.tvl)}`}
+                reward={`${item.reward}`}
+                apr={`${formatNumber(item.apr)} %`}
+                acquire={
+                  <Flex flexDirection={'column'}>
+                    <Button
+                      as={Link}
+                      href={item.getTokenURL}
+                      isExternal
+                      color={'white'}
+                      variant={'primary'}
+                    >
+                      Get LP Token
+                      <ExternalLinkIcon />
+                    </Button>
+                    <Button
+                      as={Link}
+                      href={item.stakeTokenURL}
+                      isExternal
+                      color={'white'}
+                      variant={'primary'}
+                      marginTop={'8px'}
+                    >
+                      Stake LP Token
+                      <ExternalLinkIcon />
+                    </Button>
+                  </Flex>
+                }
+              />
             ))
           ) : (
             <></>
@@ -260,57 +178,51 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           {stakeMeta.map((item, index) => {
             const { totalRewards } = item;
             return (
-              <div key={'item' + index}>
-                <AccordionItem
-                  width={'full'}
-                  style={{ boxSizing: 'border-box', ...accordionStyling }}
-                >
-                  <AccordionButton width={'full'}>
+              <FarmItem
+                key={'farmRowStakeMeta' + index}
+                asset={<TokenDescription token={item.stakingToken} />}
+                stake={`${item.stakedBalance.format({ suffix: '' })}`}
+                tvl={`$ ${item.tvl.format({ suffix: '' })}`}
+                reward={
+                  totalRewards.isZero() ? (
+                    <Box w={'fit-content'}>
+                      <TokenDescription token={item.rewardsToken} />
+                    </Box>
+                  ) : (
+                    totalRewards.format()
+                  )
+                }
+                apr={`${item.aprPercent.toFixed(1)} %`}
+                acquire={
+                  <Button
+                    as={Link}
+                    href={getLPTokenLinks[index]}
+                    isExternal
+                    color={'white'}
+                    variant={'primary'}
+                  >
+                    Get LP Token &nbsp;
+                    <ExternalLinkIcon />
+                  </Button>
+                }
+                content={
+                  <AccordionPanel mt={'16px'} width="full">
                     <Grid
-                      templateColumns="repeat(6, 1fr)"
-                      gap={2}
-                      w={'full'}
-                      alignContent={'center'}
-                      verticalAlign={'center'}
+                      templateColumns={[
+                        'repeat(1, 1fr)',
+                        'repeat(1, 1fr)',
+                        'repeat(1, 1fr)',
+                        'repeat(13, 1fr)',
+                      ]}
+                      templateRows={[
+                        'repeat(3, 1fr)',
+                        'repeat(3, 1fr)',
+                        'repeat(3, 1fr)',
+                        '1fr',
+                      ]}
+                      gap={6}
                     >
-                      <Flex w={'full'} justifyContent={'center'}>
-                        <Box w={'fit-content'}>
-                          <TokenDescription token={item.stakingToken} />
-                        </Box>
-                      </Flex>
-                      <Box>
-                        <Text>{item.stakedBalance.format({ suffix: '' })}</Text>
-                      </Box>
-                      <Box>
-                        <Text>$ {item.tvl.format({ suffix: '' })}</Text>
-                      </Box>
-                      <Flex w={'full'} justifyContent={'center'}>
-                        {totalRewards.isZero() ? (
-                          <Box w={'fit-content'}>
-                            <TokenDescription token={item.rewardsToken} />
-                          </Box>
-                        ) : (
-                          totalRewards.format()
-                        )}
-                      </Flex>
-                      <Box>{item.aprPercent.toFixed(1)} %</Box>
-                      <Box>
-                        <Button
-                          as={Link}
-                          href={getLPTokenLinks[index]}
-                          isExternal
-                          color={'white'}
-                          variant={'primary'}
-                        >
-                          Get LP Token &nbsp;
-                          <ExternalLinkIcon />
-                        </Button>
-                      </Box>
-                    </Grid>
-                  </AccordionButton>
-                  <AccordionPanel mt="16px">
-                    <Grid templateColumns="repeat(13, 1fr)" gap={6}>
-                      <GridItem w="100%" colSpan={5}>
+                      <GridItem width={'100%'} colSpan={5} rowSpan={1}>
                         <Container
                           variant={'token'}
                           padding={'16px'}
@@ -319,7 +231,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                           <DepositForm stakeMeta={item} />
                         </Container>
                       </GridItem>
-                      <GridItem w="100%" colSpan={5}>
+                      <GridItem width={'100%'} colSpan={5} rowSpan={1}>
                         <Container
                           variant={'token'}
                           padding={'16px'}
@@ -328,7 +240,11 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                           <WithdrawForm stakeMeta={item} />
                         </Container>
                       </GridItem>
-                      <GridItem colSpan={3} w="110%">
+                      <GridItem
+                        width={'100%'}
+                        colSpan={[5, 5, 5, 3]}
+                        rowSpan={1}
+                      >
                         <Container
                           variant={'token'}
                           padding={'16px'}
@@ -342,8 +258,8 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                       </GridItem>
                     </Grid>
                   </AccordionPanel>
-                </AccordionItem>
-              </div>
+                }
+              />
             );
           })}
         </Accordion>

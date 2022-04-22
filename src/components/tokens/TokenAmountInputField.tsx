@@ -1,7 +1,11 @@
 import {
-  Button, FormControl,
-  FormErrorMessage, Input,
-  InputGroup, InputRightElement, Text
+  Button,
+  FormControl,
+  FormErrorMessage,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Text,
 } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
 import * as React from 'react';

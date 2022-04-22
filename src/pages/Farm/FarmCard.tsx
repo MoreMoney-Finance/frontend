@@ -1,15 +1,31 @@
-import { Box, Button, Container, Flex, Text } from '@chakra-ui/react';
-import { Token } from '@usedapp/core';
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  Box,
+  Container,
+  Flex,
+  Text,
+} from '@chakra-ui/react';
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ParsedStakingMetadata } from '../../chain-interaction/contracts';
 
 export function FarmCard({
-  token,
-  row,
+  asset,
+  stake,
+  tvl,
+  reward,
+  apr,
+  acquire,
+  content,
 }: {
-  token: Token;
-  row: ParsedStakingMetadata;
+  asset: any;
+  stake: string;
+  tvl: string;
+  reward: any;
+  apr: string;
+  acquire: any;
+  content?: any;
 }) {
   return (
     <>
@@ -19,7 +35,7 @@ export function FarmCard({
             Asset
           </Box>
           <Box>
-            <Text>{}</Text>
+            <Text>{asset}</Text>
           </Box>
         </Flex>
 
@@ -28,7 +44,7 @@ export function FarmCard({
             Stake
           </Box>
           <Box>
-            <Text>{}</Text>
+            <Text>{stake}</Text>
           </Box>
         </Flex>
 
@@ -37,7 +53,7 @@ export function FarmCard({
             TVL
           </Box>
           <Box>
-            <Text>{}</Text>
+            <Text>{tvl}</Text>
           </Box>
         </Flex>
 
@@ -45,9 +61,7 @@ export function FarmCard({
           <Box fontFamily={'Rubik'} color={'whiteAlpha.400'}>
             Reward
           </Box>
-          <Box>
-            <Text>{}</Text>
-          </Box>
+          <Box>{reward}</Box>
         </Flex>
 
         <Flex flexDirection={'row'} justifyContent={'space-between'} p={'4'}>
@@ -55,7 +69,7 @@ export function FarmCard({
             APR
           </Box>
           <Box>
-            <Text>{}</Text>
+            <Text>{apr}</Text>
           </Box>
         </Flex>
 
@@ -63,14 +77,30 @@ export function FarmCard({
           <Box fontFamily={'Rubik'} color={'whiteAlpha.400'}>
             Acquire
           </Box>
-          <Box>
-            <Text>{}</Text>
-          </Box>
+          <Box>{acquire}</Box>
         </Flex>
 
-        <Button as={Link} to={`/token/${token.address}`} w={'full'}>
-          View
-        </Button>
+        {content ? (
+          <Accordion
+            allowToggle
+            allowMultiple
+            width={'full'}
+            variant={'farm'}
+            defaultIndex={0}
+          >
+            <AccordionItem width={'full'}>
+              <AccordionButton width={'full'}>
+                <Box flex="1" textAlign="left">
+                  Actions
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+              {content}
+            </AccordionItem>
+          </Accordion>
+        ) : (
+          ''
+        )}
       </Container>
     </>
   );

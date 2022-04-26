@@ -24,7 +24,10 @@ import {
 import { useContext } from 'react';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { BigNumber } from 'ethers';
-import { useStable, useAddresses } from '../../chain-interaction/contracts';
+import {
+  useStable,
+  useAddresses,
+} from '../../chain-interaction/views/contracts';
 import { getTokenFromAddress } from '../../chain-interaction/tokens';
 import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
 

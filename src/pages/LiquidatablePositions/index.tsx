@@ -3,7 +3,7 @@ import { useEthers } from '@usedapp/core';
 import { getAddress } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useContext } from 'react';
-import { useAddresses } from '../../chain-interaction/contracts';
+import { useAddresses } from '../../chain-interaction/views/contracts';
 import {
   getLiquidationParams,
   LiquidationType,
@@ -88,9 +88,7 @@ export default function LiquidatablePositions() {
             positions={liquidatablePositions}
             action={{
               callback: (pos) => {
-                const { liqType, router } = getLiquidationParams(
-                  pos
-                );
+                const { liqType, router } = getLiquidationParams(pos);
                 console.log('liquidating', pos, liqType, router);
                 console.log(lending2Liquidation);
                 if (getAddress(pos.token.address) in token2Liquidation) {

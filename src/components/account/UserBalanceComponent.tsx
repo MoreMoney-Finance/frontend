@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IconButton, IconButtonProps, Text } from '@chakra-ui/react';
-import { useStable } from '../../chain-interaction/contracts';
+import { useStable } from '../../chain-interaction/views/contracts';
 import { BigNumber } from 'ethers';
 import { CurrencyValue } from '@usedapp/core';
 import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';

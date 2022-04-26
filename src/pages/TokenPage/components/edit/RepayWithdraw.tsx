@@ -19,11 +19,9 @@ import * as React from 'react';
 import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
-  calcLiqPriceFromNum,
-  ParsedPositionMetaRow,
   ParsedStratMetaRow,
   useStable,
-} from '../../../../chain-interaction/contracts';
+} from '../../../../chain-interaction/views/contracts';
 import {
   useNativeRepayWithdrawTrans,
   useRepayWithdrawTrans,
@@ -40,6 +38,8 @@ import {
 import farminfo from '../../../../contracts/farminfo.json';
 import { parseFloatCurrencyValue, parseFloatNoNaN } from '../../../../utils';
 import { ConfirmPositionModal } from './ConfirmPositionModal';
+import { ParsedPositionMetaRow } from '../../../../chain-interaction/views/positions';
+import { calcLiqPriceFromNum } from '../../../../chain-interaction/views/strategies';
 
 export default function RepayWithdraw({
   position,

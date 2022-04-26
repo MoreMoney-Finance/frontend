@@ -11,12 +11,11 @@ import {
 // import { BigNumber } from 'ethers';
 import * as React from 'react';
 import {
-  ParsedPositionMetaRow,
   ParsedStratMetaRow,
   // useStable,
   // useEstimatedHarvestable,
   // YieldType,
-} from '../../../chain-interaction/contracts';
+} from '../../../chain-interaction/views/contracts';
 // import {
 //   useAMMHarvest,
 //   useHarvestPartially,
@@ -24,6 +23,7 @@ import {
 // import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { LiquidationFeesContext } from '../../../contexts/LiquidationFeesContext';
 import lines from '../../../assets/img/lines.svg';
+import { ParsedPositionMetaRow } from '../../../chain-interaction/views/positions';
 
 export default function StrategyTokenInformation({
   stratMeta,

@@ -9,9 +9,10 @@ import {
 import { getAddress, Interface, parseUnits } from 'ethers/lib/utils';
 import tokenlist from '../constants/tokenlist.json';
 import deployAddresses from '../contracts/addresses.json';
-import lptokens from '../contracts/lptokens.json';
-import { ParsedPositionMetaRow, useAddresses, useStable } from './contracts';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
+import lptokens from '../contracts/lptokens.json';
+import { useAddresses, useStable } from './views/contracts';
+import { ParsedPositionMetaRow } from './views/positions';
 
 const addressToken: Record<ChainId, Map<string, Token>> = Object.fromEntries(
   Object.values(ChainId).map((key) => [key, new Map()])

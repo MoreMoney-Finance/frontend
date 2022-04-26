@@ -1,11 +1,11 @@
 import { parseEther } from '@ethersproject/units';
 import * as React from 'react';
+import { ParsedStratMetaRow } from '../../../chain-interaction/views/contracts';
 import {
-  ParsedPositionMetaRow,
-  ParsedStratMetaRow,
   TokenStratPositionMetadata,
   useIsolatedPositionMetadata,
-} from '../../../chain-interaction/contracts';
+  ParsedPositionMetaRow,
+} from '../../../chain-interaction/views/positions';
 import { PositionBody } from './PositionBody';
 
 export function TokenPageBody({

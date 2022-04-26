@@ -1,6 +1,6 @@
 import { Table, Tbody, Td, Thead, Tr } from '@chakra-ui/react';
 import * as React from 'react';
-import { ParsedPositionMetaRow } from '../../chain-interaction/contracts';
+import { ParsedPositionMetaRow } from '../../chain-interaction/views/positions';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 import { LiquidatableRow } from './LiquidatableRow';
 

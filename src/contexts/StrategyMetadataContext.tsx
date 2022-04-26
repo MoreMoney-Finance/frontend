@@ -3,7 +3,7 @@ import React from 'react';
 import {
   StrategyMetadata,
   useIsolatedStrategyMetadata,
-} from '../chain-interaction/contracts';
+} from '../chain-interaction/views/contracts';
 
 export const StrategyMetadataContext = React.createContext<StrategyMetadata>(
   {}
@@ -16,7 +16,11 @@ export function StrategyMetadataCtxProvider({
 
   return (
     <StrategyMetadataContext.Provider value={stratMeta}>
-      {Object.values(stratMeta).length > 0 ? children : <Progress isIndeterminate/>}
+      {Object.values(stratMeta).length > 0 ? (
+        children
+      ) : (
+        <Progress isIndeterminate />
+      )}
     </StrategyMetadataContext.Provider>
   );
 }

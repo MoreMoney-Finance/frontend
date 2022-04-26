@@ -2,17 +2,13 @@ import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import { useAddresses } from '../../../chain-interaction/contracts';
+import { useAddresses } from '../../../chain-interaction/views/contracts';
 import { getTokenFromAddress } from '../../../chain-interaction/tokens';
-import {
-  useUnstakeMore
-} from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';
-import {
-  WalletBalancesContext
-} from '../../../contexts/WalletBalancesContext';
+import { WalletBalancesContext } from '../../../contexts/WalletBalancesContext';
 import { parseFloatNoNaN } from '../../../utils';
+import { useUnstakeMore } from '../../../chain-interaction/views/staking';
 
 export function UnstakeMore(props: React.PropsWithChildren<unknown>) {
   const balanceCtx = React.useContext(WalletBalancesContext);

@@ -15,7 +15,7 @@ import {
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Column, useTable } from 'react-table';
-import { ParsedStratMetaRow } from '../../../chain-interaction/contracts';
+import { ParsedStratMetaRow } from '../../../chain-interaction/views/contracts';
 import { TokenDescription } from '../../../components/tokens/TokenDescription';
 import { hiddenStrategies } from '../../../constants/hidden-strategies';
 import { LiquidationFeesContext } from '../../../contexts/LiquidationFeesContext';

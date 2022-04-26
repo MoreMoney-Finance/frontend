@@ -23,12 +23,10 @@ import * as React from 'react';
 import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
-  calcLiqPriceFromNum,
-  ParsedPositionMetaRow,
   ParsedStratMetaRow,
   TxStatus,
   useStable,
-} from '../../../../chain-interaction/contracts';
+} from '../../../../chain-interaction/views/contracts';
 import {
   useApproveTrans,
   useDepositBorrowTrans,
@@ -44,6 +42,8 @@ import { UserAddressContext } from '../../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../../contexts/WalletBalancesContext';
 import { parseFloatCurrencyValue, parseFloatNoNaN } from '../../../../utils';
 import { ConfirmPositionModal } from './ConfirmPositionModal';
+import { ParsedPositionMetaRow } from '../../../../chain-interaction/views/positions';
+import { calcLiqPriceFromNum } from '../../../../chain-interaction/views/strategies';
 
 export default function DepositBorrow({
   position,

@@ -4,12 +4,12 @@ import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { TxStatus, useAddresses } from '../../../chain-interaction/contracts';
-import { getTokenFromAddress } from '../../../chain-interaction/tokens';
 import {
-  useApproveTrans,
-  useStakeMore,
-} from '../../../chain-interaction/transactions';
+  TxStatus,
+  useAddresses,
+} from '../../../chain-interaction/views/contracts';
+import { getTokenFromAddress } from '../../../chain-interaction/tokens';
+import { useApproveTrans } from '../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../components/account/EnsureWalletConnected';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';
@@ -19,6 +19,7 @@ import {
   WalletBalancesContext,
 } from '../../../contexts/WalletBalancesContext';
 import { parseFloatNoNaN } from '../../../utils';
+import { useStakeMore } from '../../../chain-interaction/views/staking';
 
 export function StakeMore(props: React.PropsWithChildren<unknown>) {
   const xMoreContract = useAddresses().xMore;

@@ -3,7 +3,7 @@ import { useEthers } from '@usedapp/core';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { ParsedStratMetaRow } from '../../chain-interaction/contracts';
+import { ParsedStratMetaRow } from '../../chain-interaction/views/contracts';
 import { getTokenFromAddress } from '../../chain-interaction/tokens';
 import { BackButton } from '../../components/navigation/BackButton';
 import DeprecatedTokenMessage from '../../components/notifications/DeprecatedTokenMessage';

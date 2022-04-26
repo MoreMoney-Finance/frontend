@@ -20,7 +20,7 @@ import {
   useAddresses,
   useParsedStakingMetadata,
   useSpecialRewardsData,
-} from '../../chain-interaction/contracts';
+} from '../../chain-interaction/views/contracts';
 import { useWithdrawLaunchVestingTrans } from '../../chain-interaction/transactions';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import {

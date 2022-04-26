@@ -13,11 +13,8 @@ import {
   ParsedStakingMetadata,
   useAddresses,
   TxStatus,
-} from '../../../chain-interaction/contracts';
-import {
-  useApproveTrans,
-  useStake,
-} from '../../../chain-interaction/transactions';
+} from '../../../chain-interaction/views/contracts';
+import { useApproveTrans } from '../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../components/account/EnsureWalletConnected';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';
@@ -25,6 +22,7 @@ import { WNATIVE_ADDRESS } from '../../../constants/addresses';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../contexts/WalletBalancesContext';
 import { parseFloatNoNaN } from '../../../utils';
+import { useStake } from '../../../chain-interaction/views/staking';
 
 export default function DepositForm({
   stakeMeta,

@@ -4,9 +4,9 @@ import { BigNumber } from 'ethers';
 import React from 'react';
 import {
   ParsedStratMetaRow,
-  ParsedPositionMetaRow,
   useStable,
-} from '../../chain-interaction/contracts';
+} from '../../chain-interaction/views/contracts';
+import { ParsedPositionMetaRow } from '../../chain-interaction/views/positions';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { LiquidatableAction } from './LiquidatablePositionsTable';
 

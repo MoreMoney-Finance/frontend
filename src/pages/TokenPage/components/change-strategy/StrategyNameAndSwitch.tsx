@@ -1,10 +1,10 @@
 import { Container, Flex, GridItem, Text } from '@chakra-ui/react';
 import * as React from 'react';
 import {
-  ParsedPositionMetaRow,
   ParsedStratMetaRow,
   YieldType,
-} from '../../../../chain-interaction/contracts';
+} from '../../../../chain-interaction/views/contracts';
+import { ParsedPositionMetaRow } from '../../../../chain-interaction/views/positions';
 import { hiddenStrategies } from '../../../../constants/hidden-strategies';
 import ChangeStrategyModal from './ChangeStrategyModal';
 

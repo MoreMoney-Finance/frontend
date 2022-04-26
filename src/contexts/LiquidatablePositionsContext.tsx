@@ -3,13 +3,13 @@ import { CurrencyValue } from '@usedapp/core';
 import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber } from '@usedapp/core/node_modules/ethers';
 import React, { useEffect, useState } from 'react';
+import { useStable } from '../chain-interaction/views/contracts';
 import {
   ParsedPositionMetaRow,
-  parsePositionMeta,
-  useStable,
   useUpdatedMetadataLiquidatablePositions,
   useUpdatedPositions,
-} from '../chain-interaction/contracts';
+} from '../chain-interaction/views/positions';
+import { parsePositionMeta } from '../chain-interaction/views/strategies';
 import { parseFloatCurrencyValue } from '../utils';
 import { StrategyMetadataContext } from './StrategyMetadataContext';
 

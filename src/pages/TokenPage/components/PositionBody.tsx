@@ -3,10 +3,9 @@ import { parseEther } from '@ethersproject/units';
 import * as React from 'react';
 import { useContext } from 'react';
 import {
-  ParsedPositionMetaRow,
   ParsedStratMetaRow,
   useStable,
-} from '../../../chain-interaction/contracts';
+} from '../../../chain-interaction/views/contracts';
 import { useMigrateStrategy } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
@@ -17,6 +16,7 @@ import EditPosition from './edit/EditPosition';
 import CollateralAPY from './metadata/CollateralAPY';
 import { PositionData } from './PositionData';
 import StrategyTokenInformation from './StrategyTokenInformation';
+import { ParsedPositionMetaRow } from '../../../chain-interaction/views/positions';
 
 export function PositionBody({
   position: inputPos,

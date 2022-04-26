@@ -11,25 +11,23 @@ import { BigNumber, ethers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
-import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
-import CurvePoolRewards from '../contracts/artifacts/contracts/rewards/CurvePoolRewards.sol/CurvePoolRewards.json';
+import DirectFlashLiquidation from '../contracts/artifacts/contracts/liquidation/DirectFlashLiquidation.sol/DirectFlashLiquidation.json';
+import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
+import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
+import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import YieldYakStrategy from '../contracts/artifacts/contracts/strategies/YieldYakStrategy.sol/YieldYakStrategy.json';
-import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
-import DirectFlashLiquidation from '../contracts/artifacts/contracts/liquidation/DirectFlashLiquidation.sol/DirectFlashLiquidation.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
 import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
-import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
-import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
 import {
   useAddresses,
   useRegisteredOracle,
   useStable,
   useYieldConversionStrategyView,
-} from './contracts';
+} from './views/contracts';
 
 export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   const contractsABI: Record<string, any> = {
@@ -52,89 +50,6 @@ export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
         : isYY
           ? () => send(tokenAddress)
           : () => send(),
-    withdrawState: state,
-  };
-}
-
-export function useUnstakeMore() {
-  // TODO: change cprAddress and the ABI to use the correct address
-  const cprAddress = useAddresses().xMore;
-  const cprContract = new Contract(cprAddress, new Interface(xMore.abi));
-  const { send, state } = useContractFunction(cprContract, 'leave');
-
-  return {
-    sendUnstake: (leaveMoreToken: Token, amount: string | number) => {
-      const sAmount = parseUnits(amount.toString(), leaveMoreToken.decimals);
-      return send(sAmount);
-    },
-    unstakeState: state,
-  };
-}
-
-export function useStakeMore() {
-  // TODO: change cprAddress and the ABI to use the correct address
-  const cprAddress = useAddresses().xMore;
-  const cprContract = new Contract(cprAddress, new Interface(xMore.abi));
-  const { send, state } = useContractFunction(cprContract, 'enter');
-
-  return {
-    sendStake: (stakeMoreToken: Token, amount: string | number) => {
-      const sAmount = parseUnits(amount.toString(), stakeMoreToken.decimals);
-      return send(sAmount);
-    },
-    stakeState: state,
-  };
-}
-
-export function useClaimReward() {
-  const ilAddress = useAddresses().CurvePoolRewards;
-  const ilContract = new Contract(
-    ilAddress,
-    new Interface(CurvePoolRewards.abi)
-  );
-  const { send, state } = useContractFunction(
-    ilContract,
-    'withdrawVestedReward'
-  );
-
-  return {
-    sendClaim: () => {
-      return send();
-    },
-    claimState: state,
-  };
-}
-
-export function useStake() {
-  const cprAddress = useAddresses().CurvePoolRewards;
-  const cprContract = new Contract(
-    cprAddress,
-    new Interface(CurvePoolRewards.abi)
-  );
-  const { send, state } = useContractFunction(cprContract, 'stake');
-
-  return {
-    sendStake: (stakeToken: Token, amount: string | number) => {
-      const sAmount = parseUnits(amount.toString(), stakeToken.decimals);
-      return send(sAmount);
-    },
-    stakeState: state,
-  };
-}
-
-export function useWithdraw() {
-  const cprAddress = useAddresses().CurvePoolRewards;
-  const cprContract = new Contract(
-    cprAddress,
-    new Interface(CurvePoolRewards.abi)
-  );
-  const { send, state } = useContractFunction(cprContract, 'withdraw');
-
-  return {
-    sendWithdraw: (withdrawToken: Token, amount: string | number) => {
-      const wAmount = parseUnits(amount.toString(), withdrawToken.decimals);
-      return send(wAmount);
-    },
     withdrawState: state,
   };
 }

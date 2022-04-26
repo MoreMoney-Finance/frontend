@@ -11,6 +11,7 @@
     "DirectFlashLiquidation": "0x4F6348543aD4311eAC349ED10B4b98b3EBA3038b",
     "DirectFlashStableLiquidation": "0x9F0714b64886289Be1569fb202E0D9a4c63A439D",
     "EquivalentScaledOracle": "0x8B7F12D8ba9BC81DAdDE3bf6e97B020AB2a8B82D",
+    "InterestRateController": "0xdc7D0F73aBED8230a1157Ef4fF4449A5b4ac7750",
     "IsolatedLending": "0xDc5CCAAA928De5D318605A76eEDE50f205Aa6D93",
     "IsolatedLendingLiquidation": "0x9A641E87c60472D90F9A7e2e60e006bE66408B6F",
     "LPTFlashLiquidation": "0x1a7C7c40c3E76AB44D5a9C552f223102526cedDD",

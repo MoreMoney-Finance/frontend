@@ -33,6 +33,7 @@ import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies
 import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
+import InterestRateController from '../contracts/artifacts/contracts/InterestRateController.sol/InterestRateController.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 import { parseFloatCurrencyValue } from '../utils';
 
@@ -86,6 +87,7 @@ export type DeploymentAddresses = {
 
   LiquidYieldStrategy: string;
   MultiTraderJoeMasterChef3Strategy: string;
+  InterestRateController: string;
 };
 
 export function useAddresses() {
@@ -253,6 +255,19 @@ function parseStratMeta(
       balance: parseFloatCurrencyValue(balance),
     };
   }
+}
+
+export function useInterestRate(defaultResult: any) {
+  const addresses = useAddresses();
+  const abi = new Interface(InterestRateController.abi);
+  return (
+    (useContractCall({
+      abi,
+      address: addresses.InterestRateController,
+      method: 'currentRatePer10k',
+      args: [],
+    }) ?? [defaultResult])[0] / 100
+  );
 }
 
 const COMPOUNDING = 52;

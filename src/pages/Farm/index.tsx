@@ -15,13 +15,13 @@ import { useEthers } from '@usedapp/core';
 import { ethers } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
+import { useAddresses } from '../../chain-interaction/views/contracts';
 import {
   ParsedStakingMetadata,
-  useAddresses,
   useParsedStakingMetadata,
   useSpecialRewardsData,
-} from '../../chain-interaction/views/contracts';
-import { useWithdrawLaunchVestingTrans } from '../../chain-interaction/transactions';
+  useWithdrawLaunchVestingTrans,
+} from '../../chain-interaction/views/staking';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import {
   ExternalMetadataContext,

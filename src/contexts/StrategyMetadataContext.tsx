@@ -3,7 +3,7 @@ import React from 'react';
 import {
   StrategyMetadata,
   useIsolatedStrategyMetadata,
-} from '../chain-interaction/views/contracts';
+} from '../chain-interaction/views/strategies';
 
 export const StrategyMetadataContext = React.createContext<StrategyMetadata>(
   {}

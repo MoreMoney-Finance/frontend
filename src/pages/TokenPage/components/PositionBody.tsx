@@ -2,10 +2,7 @@ import { Grid } from '@chakra-ui/react';
 import { parseEther } from '@ethersproject/units';
 import * as React from 'react';
 import { useContext } from 'react';
-import {
-  ParsedStratMetaRow,
-  useStable,
-} from '../../../chain-interaction/views/contracts';
+import { useStable } from '../../../chain-interaction/views/contracts';
 import { useMigrateStrategy } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
@@ -17,6 +14,7 @@ import CollateralAPY from './metadata/CollateralAPY';
 import { PositionData } from './PositionData';
 import StrategyTokenInformation from './StrategyTokenInformation';
 import { ParsedPositionMetaRow } from '../../../chain-interaction/views/positions';
+import { ParsedStratMetaRow } from '../../../chain-interaction/views/strategies';
 
 export function PositionBody({
   position: inputPos,

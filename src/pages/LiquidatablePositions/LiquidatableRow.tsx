@@ -2,11 +2,9 @@ import { Button, Td, Text, Tr } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import React from 'react';
-import {
-  ParsedStratMetaRow,
-  useStable,
-} from '../../chain-interaction/views/contracts';
+import { useStable } from '../../chain-interaction/views/contracts';
 import { ParsedPositionMetaRow } from '../../chain-interaction/views/positions';
+import { ParsedStratMetaRow } from '../../chain-interaction/views/strategies';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { LiquidatableAction } from './LiquidatablePositionsTable';
 

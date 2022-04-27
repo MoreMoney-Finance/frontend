@@ -10,11 +10,9 @@ import * as React from 'react';
 import { useContext } from 'react';
 import {
   DeploymentAddresses,
-  ParsedStakingMetadata,
   useAddresses,
   useAllFeesEver,
   useCurvePoolSLDeposited,
-  useParsedStakingMetadata,
   useStable,
   useTotalSupply,
 } from '../../chain-interaction/views/contracts';
@@ -23,6 +21,10 @@ import { AnalyticsBox } from './AnalyticsBox';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { tokenAmount } from '../../chain-interaction/tokens';
+import {
+  ParsedStakingMetadata,
+  useParsedStakingMetadata,
+} from '../../chain-interaction/views/staking';
 
 export default function Analytics(props: React.PropsWithChildren<unknown>) {
   const allStratMeta = React.useContext(StrategyMetadataContext);

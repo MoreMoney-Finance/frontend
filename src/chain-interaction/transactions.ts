@@ -14,7 +14,6 @@ import { UserAddressContext } from '../contexts/UserAddressContext';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import DirectFlashLiquidation from '../contracts/artifacts/contracts/liquidation/DirectFlashLiquidation.sol/DirectFlashLiquidation.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
-import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
@@ -380,15 +379,4 @@ export function useLiquidationTrans(contractAddress: string) {
     sendLiquidation: send,
     liquidationState: state,
   };
-}
-
-export function useWithdrawLaunchVestingTrans() {
-  const addresses = useAddresses();
-  return useContractFunction(
-    new Contract(
-      addresses.VestingLaunchReward,
-      new Interface(VestingLaunchReward.abi)
-    ),
-    'burn'
-  );
 }

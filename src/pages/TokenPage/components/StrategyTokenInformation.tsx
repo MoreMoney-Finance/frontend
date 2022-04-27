@@ -10,12 +10,10 @@ import {
 // import { CurrencyValue } from '@usedapp/core';
 // import { BigNumber } from 'ethers';
 import * as React from 'react';
-import {
-  ParsedStratMetaRow,
-  // useStable,
-  // useEstimatedHarvestable,
-  // YieldType,
-} from '../../../chain-interaction/views/contracts';
+import // useStable,
+// useEstimatedHarvestable,
+// YieldType,
+'../../../chain-interaction/views/contracts';
 // import {
 //   useAMMHarvest,
 //   useHarvestPartially,
@@ -24,6 +22,7 @@ import {
 import { LiquidationFeesContext } from '../../../contexts/LiquidationFeesContext';
 import lines from '../../../assets/img/lines.svg';
 import { ParsedPositionMetaRow } from '../../../chain-interaction/views/positions';
+import { ParsedStratMetaRow } from '../../../chain-interaction/views/strategies';
 
 export default function StrategyTokenInformation({
   stratMeta,

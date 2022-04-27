@@ -10,7 +10,6 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import {
-  ParsedStakingMetadata,
   useAddresses,
   TxStatus,
 } from '../../../chain-interaction/views/contracts';
@@ -22,7 +21,10 @@ import { WNATIVE_ADDRESS } from '../../../constants/addresses';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../contexts/WalletBalancesContext';
 import { parseFloatNoNaN } from '../../../utils';
-import { useStake } from '../../../chain-interaction/views/staking';
+import {
+  ParsedStakingMetadata,
+  useStake,
+} from '../../../chain-interaction/views/staking';
 
 export default function DepositForm({
   stakeMeta,

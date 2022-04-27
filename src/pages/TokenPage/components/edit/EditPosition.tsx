@@ -8,8 +8,8 @@ import {
   Tabs,
 } from '@chakra-ui/react';
 import * as React from 'react';
-import { ParsedStratMetaRow } from '../../../../chain-interaction/views/contracts';
 import { ParsedPositionMetaRow } from '../../../../chain-interaction/views/positions';
+import { ParsedStratMetaRow } from '../../../../chain-interaction/views/strategies';
 import DepositBorrow from './DepositBorrow';
 import RepayWithdraw from './RepayWithdraw';
 

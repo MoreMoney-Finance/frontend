@@ -1,8 +1,8 @@
 import { Td, Text, Tr } from '@chakra-ui/react';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ParsedStratMetaRow } from '../../chain-interaction/views/contracts';
 import { ParsedPositionMetaRow } from '../../chain-interaction/views/positions';
+import { ParsedStratMetaRow } from '../../chain-interaction/views/strategies';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { TrancheData } from './CurrentlyOpenPositions';
 import { TrancheAction } from './TrancheTable';

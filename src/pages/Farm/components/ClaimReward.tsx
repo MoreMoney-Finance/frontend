@@ -11,8 +11,10 @@ import {
 import { Token } from '@usedapp/core';
 import * as React from 'react';
 import { getIconsFromTokenAddress } from '../../../chain-interaction/tokens';
-import { ParsedStakingMetadata } from '../../../chain-interaction/views/contracts';
-import { useClaimReward } from '../../../chain-interaction/views/staking';
+import {
+  ParsedStakingMetadata,
+  useClaimReward,
+} from '../../../chain-interaction/views/staking';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { parseFloatCurrencyValue } from '../../../utils';
 

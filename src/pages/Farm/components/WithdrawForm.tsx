@@ -5,8 +5,10 @@ import { getAddress } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { ParsedStakingMetadata } from '../../../chain-interaction/views/contracts';
-import { useWithdraw } from '../../../chain-interaction/views/staking';
+import {
+  ParsedStakingMetadata,
+  useWithdraw,
+} from '../../../chain-interaction/views/staking';
 import { EnsureWalletConnected } from '../../../components/account/EnsureWalletConnected';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';

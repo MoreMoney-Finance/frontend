@@ -3,8 +3,8 @@ import { parseEther } from '@ethersproject/units';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import React from 'react';
-import { ParsedStratMetaRow } from '../../../chain-interaction/views/contracts';
 import { ParsedPositionMetaRow } from '../../../chain-interaction/views/positions';
+import { ParsedStratMetaRow } from '../../../chain-interaction/views/strategies';
 import { TitleValue } from '../../../components/data-display/TitleValue';
 import { parseFloatCurrencyValue } from '../../../utils';
 

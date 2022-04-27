@@ -8,9 +8,9 @@ import {
   getLiquidationParams,
   LiquidationType,
 } from '../../chain-interaction/tokens';
-import { useLiquidationTrans } from '../../chain-interaction/transactions';
 import { LiquidatablePositionsContext } from '../../contexts/LiquidatablePositionsContext';
 import { LiquidatablePositionsTable } from './LiquidatablePositionsTable';
+import { useLiquidationTrans } from '../../chain-interaction/views/positions';
 
 export default function LiquidatablePositions() {
   const addresses = useAddresses();

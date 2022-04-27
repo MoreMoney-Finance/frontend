@@ -1,12 +1,14 @@
 import { Button, VStack } from '@chakra-ui/react';
 import React, { useContext } from 'react';
-import { useMigrateStrategy } from '../../../../chain-interaction/transactions';
 import {
   TxStatus,
   useStable,
 } from '../../../../chain-interaction/views/contracts';
 import { ParsedPositionMetaRow } from '../../../../chain-interaction/views/positions';
-import { ParsedStratMetaRow } from '../../../../chain-interaction/views/strategies';
+import {
+  ParsedStratMetaRow,
+  useMigrateStrategy,
+} from '../../../../chain-interaction/views/strategies';
 import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
 import { UserAddressContext } from '../../../../contexts/UserAddressContext';
 import { StrategyDataTable } from './StrategyDataTable';

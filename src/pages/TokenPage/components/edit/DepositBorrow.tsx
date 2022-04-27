@@ -24,13 +24,9 @@ import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   TxStatus,
+  useApproveTrans,
   useStable,
 } from '../../../../chain-interaction/views/contracts';
-import {
-  useApproveTrans,
-  useDepositBorrowTrans,
-  useNativeDepositBorrowTrans,
-} from '../../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../../components/account/EnsureWalletConnected';
 import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
 import WarningMessage from '../../../../components/notifications/WarningMessage';
@@ -45,6 +41,8 @@ import { ParsedPositionMetaRow } from '../../../../chain-interaction/views/posit
 import {
   calcLiqPriceFromNum,
   ParsedStratMetaRow,
+  useDepositBorrowTrans,
+  useNativeDepositBorrowTrans,
 } from '../../../../chain-interaction/views/strategies';
 
 export default function DepositBorrow({

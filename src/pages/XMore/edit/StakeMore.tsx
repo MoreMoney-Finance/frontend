@@ -7,9 +7,9 @@ import { useForm } from 'react-hook-form';
 import {
   TxStatus,
   useAddresses,
+  useApproveTrans,
 } from '../../../chain-interaction/views/contracts';
 import { getTokenFromAddress } from '../../../chain-interaction/tokens';
-import { useApproveTrans } from '../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../components/account/EnsureWalletConnected';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';

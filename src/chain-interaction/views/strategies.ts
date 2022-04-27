@@ -1,26 +1,38 @@
-import { parseUnits, parseEther, formatEther } from '@ethersproject/units';
-import { ChainId, CurrencyValue, Token, useEthers } from '@usedapp/core';
+import { Contract } from '@ethersproject/contracts';
+import { formatEther, parseEther, parseUnits } from '@ethersproject/units';
+import {
+  ChainId,
+  CurrencyValue,
+  Token,
+  useContractFunction,
+  useEthers,
+} from '@usedapp/core';
 import { BigNumber, ethers } from 'ethers';
 import { getAddress, Interface, parseBytes32String } from 'ethers/lib/utils';
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {
-  YYMetadata,
-  YieldMonitorMetadata,
   ExternalMetadataContext,
+  YieldMonitorMetadata,
+  YYMetadata,
 } from '../../contexts/ExternalMetadataContext';
 import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
+import StrategyViewer from '../../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import { parseFloatCurrencyValue } from '../../utils';
+import { UserAddressContext } from '../../contexts/UserAddressContext';
+import IsolatedLending from '../../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
+import YieldConversionStrategy from '../../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
+import Strategy from '../../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
+import WrapNativeIsolatedLending from '../../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
 import { getTokenFromAddress, tokenAmount } from '../tokens';
 import {
-  YieldType,
   addresses,
   useAddresses,
   useGlobalDebtCeiling,
   useStable,
   useTotalSupply,
+  YieldType,
 } from './contracts';
 import { ParsedPositionMetaRow, RawPositionMetaRow } from './positions';
-import StrategyViewer from '../../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 
 type RawStratMetaRow = {
   debtCeiling: BigNumber;
@@ -217,12 +229,12 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
         return parsedRow
           ? {
-              ...result,
-              [parsedRow.token.address]: {
-                [parsedRow.strategyAddress]: parsedRow,
-                ...(result[parsedRow.token.address] || {}),
-              },
-            }
+            ...result,
+            [parsedRow.token.address]: {
+              [parsedRow.strategyAddress]: parsedRow,
+              ...(result[parsedRow.token.address] || {}),
+            },
+          }
           : result;
       };
 
@@ -278,24 +290,24 @@ function parseStratMeta(
       strategyAddress === addresses[chainId].LiquidYieldStrategy
         ? token.address === '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
           ? (yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-              .totalApy *
+            .totalApy *
               0.65 *
               0.8) /
             0.5
           : (yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-              .totalApy *
+            .totalApy *
               0.3 *
               0.8) /
               0.5 +
             8
         : underlyingAddress in yyMetadata
-        ? yyMetadata[underlyingAddress].apy * 0.9
-        : token.address in yieldMonitor
-        ? yieldMonitor[token.address].totalApy
-        : token.address in additionalYield &&
+          ? yyMetadata[underlyingAddress].apy * 0.9
+          : token.address in yieldMonitor
+            ? yieldMonitor[token.address].totalApy
+            : token.address in additionalYield &&
           strategyAddress in additionalYield[token.address]
-        ? additionalYield[token.address][strategyAddress]
-        : 0;
+              ? additionalYield[token.address][strategyAddress]
+              : 0;
 
     const syntheticDebtCeil = globalMoneyAvailable.add(row.totalDebt);
 
@@ -361,5 +373,223 @@ export function parsePositionMeta(
     liquidationPrice: debt.gt(posYield)
       ? calcLiquidationPrice(borrowablePercent, debt.sub(posYield), collateral!)
       : 0,
+  };
+}
+
+export function useTallyHarvestBalance(strategyAddress: string) {
+  const strategy = new Contract(strategyAddress, new Interface(Strategy.abi));
+  const { send, state } = useContractFunction(strategy, 'tallyHarvestBalance');
+
+  return {
+    sendTallyHarvestBalance: (tokenAddress: string) => send(tokenAddress),
+    tallyHarvestState: state,
+  };
+}
+
+export function useConvertReward2Stable(contractAddress: string) {
+  const strategy = new Contract(
+    contractAddress,
+    new Interface(YieldConversionStrategy.abi)
+  );
+  const { send, state } = useContractFunction(strategy, 'convertReward2Stable');
+
+  return {
+    sendConvertReward2Stable: (rewardAmount: BigNumber, targetBid: BigNumber) =>
+      send(rewardAmount, targetBid),
+    convertReward2StableState: state,
+  };
+}
+
+export function useHarvestPartially(strategyAddress: string) {
+  const strategy = new Contract(
+    strategyAddress,
+    new Interface(YieldConversionStrategy.abi)
+  );
+  const { send, state } = useContractFunction(strategy, 'harvestPartially');
+  return {
+    sendHarvestPartially: (tokenAddress: string) => send(tokenAddress),
+    harvestPartiallyState: state,
+  };
+}
+
+export function useMigrateStrategy(
+  lendingContractAddress: string | undefined | null
+) {
+  const addresses = useAddresses();
+  const lendingAddress =
+    lendingContractAddress ??
+    addresses.StableLending ??
+    addresses.IsolatedLending;
+
+  const strategy = new Contract(
+    lendingAddress,
+    new Interface(IsolatedLending.abi)
+  );
+  const { send, state } = useContractFunction(strategy, 'migrateStrategy');
+
+  return {
+    sendMigrateStrategy: (
+      trancheId: number,
+      targetStrategy: string,
+      stable: Token,
+      account: string
+    ) => send(trancheId, targetStrategy, stable.address, account),
+    migrateStrategyState: state,
+  };
+}
+
+export function useNativeDepositBorrowTrans(
+  trancheId: number | null | undefined,
+  lendingAddress: string | undefined | null
+) {
+  const addresses = useAddresses();
+  const lendingContract = new Contract(
+    lendingAddress === addresses.IsolatedLending
+      ? addresses.WrapNativeIsolatedLending
+      : addresses.WrapNativeStableLending,
+    new Interface(WrapNativeIsolatedLending.abi)
+  );
+  const { send, state } = useContractFunction(
+    lendingContract,
+    trancheId ? 'depositAndBorrow' : 'mintDepositAndBorrow'
+  );
+  const account = useContext(UserAddressContext);
+
+  return {
+    sendDepositBorrow: (
+      collateralToken: Token,
+      strategyAddress: string,
+      collateralAmount: string | number,
+      borrowAmount: string | number
+    ) => {
+      const cAmount = parseUnits(
+        collateralAmount.toString(),
+        collateralToken.decimals
+      );
+      const bAmount = parseEther(borrowAmount.toString());
+
+      return trancheId
+        ? send(trancheId, bAmount, account, { value: cAmount })
+        : send(strategyAddress, bAmount, account, { value: cAmount });
+    },
+    depositBorrowState: state,
+  };
+}
+
+export function useNativeRepayWithdrawTrans(
+  trancheId: number | null | undefined,
+  collateralToken: Token | null | undefined,
+  lendingAddress: string | undefined | null
+) {
+  const addresses = useAddresses();
+  const lendingContract = new Contract(
+    lendingAddress === addresses.IsolatedLending
+      ? addresses.WrapNativeIsolatedLending
+      : addresses.WrapNativeStableLending,
+    new Interface(WrapNativeIsolatedLending.abi)
+  );
+
+  const { send, state } = useContractFunction(
+    lendingContract,
+    'repayAndWithdraw'
+  );
+
+  const account = useContext(UserAddressContext);
+
+  return {
+    sendRepayWithdraw: (
+      collateralAmount: string | number,
+      repayAmount: string | number
+    ) =>
+      account && trancheId && collateralToken
+        ? send(
+          trancheId,
+          parseUnits(collateralAmount.toString(), collateralToken.decimals),
+          parseEther(repayAmount.toString()),
+          account
+        )
+        : console.error('Trying to withdraw but parameters not set'),
+    repayWithdrawState: state,
+  };
+}
+
+export function useDepositBorrowTrans(
+  trancheId: number | null | undefined,
+  lendingAddress: string | undefined | null
+) {
+  const addresses = useAddresses();
+  const lendingContract = new Contract(
+    lendingAddress === addresses.IsolatedLending
+      ? addresses.IsolatedLending
+      : addresses.StableLending,
+    new Interface(IsolatedLending.abi)
+  );
+  const { send, state } = useContractFunction(
+    lendingContract,
+    trancheId ? 'depositAndBorrow' : 'mintDepositAndBorrow'
+  );
+  const account = useContext(UserAddressContext);
+
+  return {
+    sendDepositBorrow: (
+      collateralToken: Token,
+      strategyAddress: string,
+      collateralAmount: string | number,
+      borrowAmount: string | number
+    ) => {
+      const cAmount = parseUnits(
+        collateralAmount.toString(),
+        collateralToken.decimals
+      );
+      const bAmount = parseEther(borrowAmount.toString());
+
+      return trancheId
+        ? send(trancheId, cAmount, bAmount, account)
+        : send(
+          collateralToken.address,
+          strategyAddress,
+          cAmount,
+          bAmount,
+          account
+        );
+    },
+    depositBorrowState: state,
+  };
+}
+
+export function useRepayWithdrawTrans(
+  trancheId: number | null | undefined,
+  collateralToken: Token | null | undefined,
+  lendingAddress: string | undefined | null
+) {
+  const addresses = useAddresses();
+  const lendingContract = new Contract(
+    lendingAddress === addresses.IsolatedLending
+      ? addresses.IsolatedLending
+      : addresses.StableLending,
+    new Interface(IsolatedLending.abi)
+  );
+
+  const { send, state } = useContractFunction(
+    lendingContract,
+    'repayAndWithdraw'
+  );
+
+  const account = useContext(UserAddressContext);
+
+  return {
+    sendRepayWithdraw: (
+      collateralAmount: string | number,
+      repayAmount: string | number
+    ) =>
+      account && trancheId && collateralToken
+        ? send(
+          trancheId,
+          parseUnits(collateralAmount.toString(), collateralToken.decimals),
+          parseEther(repayAmount.toString()),
+          account
+        )
+        : console.error('Trying to withdraw but parameters not set'),
+    repayWithdrawState: state,
   };
 }

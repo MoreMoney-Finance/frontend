@@ -19,10 +19,6 @@ import * as React from 'react';
 import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useStable } from '../../../../chain-interaction/views/contracts';
-import {
-  useNativeRepayWithdrawTrans,
-  useRepayWithdrawTrans,
-} from '../../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
 import WarningMessage from '../../../../components/notifications/WarningMessage';
 import { TokenAmountInputField } from '../../../../components/tokens/TokenAmountInputField';
@@ -39,6 +35,8 @@ import { ParsedPositionMetaRow } from '../../../../chain-interaction/views/posit
 import {
   calcLiqPriceFromNum,
   ParsedStratMetaRow,
+  useNativeRepayWithdrawTrans,
+  useRepayWithdrawTrans,
 } from '../../../../chain-interaction/views/strategies';
 
 export default function RepayWithdraw({

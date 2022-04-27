@@ -3,11 +3,13 @@ import {
   CurrencyValue,
   Token,
   useContractCalls,
+  useContractFunction,
 } from '@usedapp/core';
-import { BigNumber } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import IsolatedLending from '../../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import StableLending from '../../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
+import DirectFlashLiquidation from '../../contracts/artifacts/contracts/liquidation/DirectFlashLiquidation.sol/DirectFlashLiquidation.json';
 import { useAddresses, useIsolatedLendingView, useStable } from './contracts';
 import { parsePositionMeta } from './strategies';
 
@@ -144,4 +146,17 @@ export function useUpdatedMetadataLiquidatablePositions(
   const updatedData = useContractCalls(positionCalls);
 
   return updatedData.filter((x) => x !== undefined);
+}
+
+export function useLiquidationTrans(contractAddress: string) {
+  const liquidationContract = new Contract(
+    contractAddress,
+    new Interface(DirectFlashLiquidation.abi)
+  );
+  const { send, state } = useContractFunction(liquidationContract, 'liquidate');
+
+  return {
+    sendLiquidation: send,
+    liquidationState: state,
+  };
 }

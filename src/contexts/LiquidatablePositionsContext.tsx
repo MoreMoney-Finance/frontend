@@ -6,10 +6,10 @@ import React, { useEffect, useState } from 'react';
 import { useStable } from '../chain-interaction/views/contracts';
 import {
   ParsedPositionMetaRow,
+  parsePositionMeta,
   useUpdatedMetadataLiquidatablePositions,
   useUpdatedPositions,
 } from '../chain-interaction/views/positions';
-import { parsePositionMeta } from '../chain-interaction/views/strategies';
 import { parseFloatCurrencyValue } from '../utils';
 import { StrategyMetadataContext } from './StrategyMetadataContext';
 

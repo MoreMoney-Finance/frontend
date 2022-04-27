@@ -15,14 +15,14 @@ import {
   YieldMonitorMetadata,
   YYMetadata,
 } from '../../contexts/ExternalMetadataContext';
-import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
-import StrategyViewer from '../../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
-import { parseFloatCurrencyValue } from '../../utils';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
+import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
 import IsolatedLending from '../../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import YieldConversionStrategy from '../../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import Strategy from '../../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
+import StrategyViewer from '../../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import WrapNativeIsolatedLending from '../../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
+import { parseFloatCurrencyValue } from '../../utils';
 import { getTokenFromAddress, tokenAmount } from '../tokens';
 import {
   addresses,
@@ -32,7 +32,6 @@ import {
   useTotalSupply,
   YieldType,
 } from './contracts';
-import { ParsedPositionMetaRow, RawPositionMetaRow } from './positions';
 
 type RawStratMetaRow = {
   debtCeiling: BigNumber;
@@ -341,39 +340,6 @@ function parseStratMeta(
       balance: parseFloatCurrencyValue(balance),
     };
   }
-}
-
-export function parsePositionMeta(
-  row: RawPositionMetaRow,
-  stable: Token,
-  trancheContract: string
-): ParsedPositionMetaRow {
-  const debt = new CurrencyValue(stable, row.debt);
-  const posYield = new CurrencyValue(stable, row.yield);
-  const collateral =
-    tokenAmount(stable.chainId, row.token, row.collateral) ??
-    new CurrencyValue(
-      new Token('', '', stable.chainId, row.token),
-      row.collateral
-    );
-
-  const borrowablePercent = row.borrowablePer10k.toNumber() / 100;
-
-  return {
-    trancheContract,
-    trancheId: row.trancheId.toNumber(),
-    strategy: row.strategy,
-    debt,
-    collateral,
-    token: getTokenFromAddress(stable.chainId, row.token)!,
-    yield: posYield,
-    collateralValue: new CurrencyValue(stable, row.collateralValue),
-    borrowablePercent,
-    owner: row.owner,
-    liquidationPrice: debt.gt(posYield)
-      ? calcLiquidationPrice(borrowablePercent, debt.sub(posYield), collateral!)
-      : 0,
-  };
 }
 
 export function useTallyHarvestBalance(strategyAddress: string) {

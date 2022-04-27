@@ -11,7 +11,8 @@ import IsolatedLending from '../../contracts/artifacts/contracts/IsolatedLending
 import StableLending from '../../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
 import DirectFlashLiquidation from '../../contracts/artifacts/contracts/liquidation/DirectFlashLiquidation.sol/DirectFlashLiquidation.json';
 import { useAddresses, useIsolatedLendingView, useStable } from './contracts';
-import { parsePositionMeta } from './strategies';
+import { calcLiquidationPrice } from './strategies';
+import { tokenAmount, getTokenFromAddress } from '../tokens';
 
 export type ParsedPositionMetaRow = {
   trancheId: number;
@@ -158,5 +159,38 @@ export function useLiquidationTrans(contractAddress: string) {
   return {
     sendLiquidation: send,
     liquidationState: state,
+  };
+}
+
+export function parsePositionMeta(
+  row: RawPositionMetaRow,
+  stable: Token,
+  trancheContract: string
+): ParsedPositionMetaRow {
+  const debt = new CurrencyValue(stable, row.debt);
+  const posYield = new CurrencyValue(stable, row.yield);
+  const collateral =
+    tokenAmount(stable.chainId, row.token, row.collateral) ??
+    new CurrencyValue(
+      new Token('', '', stable.chainId, row.token),
+      row.collateral
+    );
+
+  const borrowablePercent = row.borrowablePer10k.toNumber() / 100;
+
+  return {
+    trancheContract,
+    trancheId: row.trancheId.toNumber(),
+    strategy: row.strategy,
+    debt,
+    collateral,
+    token: getTokenFromAddress(stable.chainId, row.token)!,
+    yield: posYield,
+    collateralValue: new CurrencyValue(stable, row.collateralValue),
+    borrowablePercent,
+    owner: row.owner,
+    liquidationPrice: debt.gt(posYield)
+      ? calcLiquidationPrice(borrowablePercent, debt.sub(posYield), collateral!)
+      : 0,
   };
 }

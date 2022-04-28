@@ -370,7 +370,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
       const stratViewer = new ethers.Contract(
         addresses.StrategyViewer,
-        new Interface(StrategyViewer.abi),
+        StrategyViewer.abi,
         provider
       );
 

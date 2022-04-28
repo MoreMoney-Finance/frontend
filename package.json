@@ -21,9 +21,11 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "@usedapp/core": "^0.6.3",
+    "@usedapp/core": "^1.0.1",
+    "@walletconnect/web3-provider": "^1.7.8",
     "@web3-react/core": "^6.1.9",
     "@web3-react/network-connector": "https://gitpkg.now.sh/MoreMoney-Finance/web3-react/packages/network-connector?built-branch",
+    "authereum": "^0.1.14",
     "ethers": "5.2.0",
     "framer-motion": "^4.0.0",
     "http-proxy-middleware": "^2.0.1",
@@ -35,7 +37,9 @@
     "react-scripts": "^4.0.3",
     "react-table": "^7.7.0",
     "typescript": "^4.1.2",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "web3": "^1.7.3",
+    "web3modal": "^1.9.7"
   },
   "devDependencies": {
     "@types/react-table": "^7.7.8",

@@ -10,9 +10,11 @@ import {
 } from '@chakra-ui/react';
 import { Token } from '@usedapp/core';
 import * as React from 'react';
-import { ParsedStakingMetadata } from '../../../chain-interaction/contracts';
 import { getIconsFromTokenAddress } from '../../../chain-interaction/tokens';
-import { useClaimReward } from '../../../chain-interaction/transactions';
+import {
+  ParsedStakingMetadata,
+  useClaimReward,
+} from '../../../chain-interaction/views/staking';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { parseFloatCurrencyValue } from '../../../utils';
 

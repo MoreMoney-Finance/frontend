@@ -1,6 +1,6 @@
 import { parseEther } from '@ethersproject/units';
 import * as React from 'react';
-import { useUpdatedPositions } from '../../../../chain-interaction/contracts';
+import { useUpdatedPositions } from '../../../../chain-interaction/views/positions';
 import { PositionsTable } from './components/PositionsTable';
 
 export default function AllOpenPositions(

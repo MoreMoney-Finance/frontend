@@ -2,11 +2,11 @@ import {
   ContractCall,
   Token,
   useContractCalls,
-  useEthers
+  useEthers,
 } from '@usedapp/core';
 import { getAddress, Interface } from 'ethers/lib/utils';
 import React from 'react';
-import { useAddresses } from '../chain-interaction/contracts';
+import { useAddresses } from '../chain-interaction/views/contracts';
 import { getTokensInQuestion } from '../chain-interaction/tokens';
 import IsolatedLendingLiquidation from '../contracts/artifacts/contracts/IsolatedLendingLiquidation.sol/IsolatedLendingLiquidation.json';
 
@@ -34,7 +34,7 @@ export function LiquidationFeesCtxProvider({
   const results = useContractCalls(calls) ?? [];
   results?.forEach((result: any[] | undefined, index: number) => {
     if (result) {
-      const [tokenAddress, ] = tokensInQuestion[index];
+      const [tokenAddress] = tokensInQuestion[index];
       tokenFees.set(getAddress(tokenAddress), result[0].toNumber() / 100);
       // console.log(`Set Fee for ${token.name}: ${result[0]} (${tokenAddress}): ${result[0].toNumber()}`);
     } else {

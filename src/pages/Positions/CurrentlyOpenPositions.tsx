@@ -3,12 +3,11 @@ import { CurrencyValue, Token } from '@usedapp/core';
 import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
+import { useStable, YieldType } from '../../chain-interaction/views/contracts';
 import {
   TokenStratPositionMetadata,
   useIsolatedPositionMetadata,
-  useStable,
-  YieldType,
-} from '../../chain-interaction/contracts';
+} from '../../chain-interaction/views/positions';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 import { parseFloatCurrencyValue } from '../../utils';
 import { TrancheCard } from './TrancheCard';

@@ -2,12 +2,12 @@ import { Grid } from '@chakra-ui/react';
 import { parseEther } from '@ethersproject/units';
 import * as React from 'react';
 import { useContext } from 'react';
+import { useStable } from '../../../chain-interaction/views/contracts';
+import { ParsedPositionMetaRow } from '../../../chain-interaction/views/positions';
 import {
-  ParsedPositionMetaRow,
   ParsedStratMetaRow,
-  useStable,
-} from '../../../chain-interaction/contracts';
-import { useMigrateStrategy } from '../../../chain-interaction/transactions';
+  useMigrateStrategy,
+} from '../../../chain-interaction/views/strategies';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import StrategyNameAndSwitch, {

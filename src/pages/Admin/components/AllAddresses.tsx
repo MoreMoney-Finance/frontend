@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { useEthers, getExplorerAddressLink } from '@usedapp/core';
 import * as React from 'react';
-import { useAddresses } from '../../../chain-interaction/contracts';
+import { useAddresses } from '../../../chain-interaction/views/contracts';
 import CopyClipboard from './CopyClipboard/CopyClipboard';
 
 export default function AllAddresses(props: React.PropsWithChildren<unknown>) {

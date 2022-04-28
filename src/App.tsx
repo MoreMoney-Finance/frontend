@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { useAddresses } from './chain-interaction/contracts';
+import { useAddresses } from './chain-interaction/views/contracts';
 import NavigationBar from './components/navigation/NavigationBar';
 import GlobalDebtCeilingMessage from './components/notifications/GlobalDebtCeilingMessage';
 import NetworkNotSupported from './components/notifications/NetworkNotSupported';

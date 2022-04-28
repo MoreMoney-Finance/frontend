@@ -1,14 +1,16 @@
 import { Button, VStack } from '@chakra-ui/react';
 import React, { useContext } from 'react';
 import {
-  ParsedPositionMetaRow,
-  ParsedStratMetaRow,
   TxStatus,
   useStable,
-} from '../../../../chain-interaction/contracts';
-import { useMigrateStrategy } from '../../../../chain-interaction/transactions';
-import { UserAddressContext } from '../../../../contexts/UserAddressContext';
+} from '../../../../chain-interaction/views/contracts';
+import { ParsedPositionMetaRow } from '../../../../chain-interaction/views/positions';
+import {
+  ParsedStratMetaRow,
+  useMigrateStrategy,
+} from '../../../../chain-interaction/views/strategies';
 import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
+import { UserAddressContext } from '../../../../contexts/UserAddressContext';
 import { StrategyDataTable } from './StrategyDataTable';
 
 export function MigrateStrategy(
@@ -18,9 +20,8 @@ export function MigrateStrategy(
   const account = useContext(UserAddressContext);
 
   const stable = useStable();
-  const { sendMigrateStrategy, migrateStrategyState } = useMigrateStrategy(
-    trancheContract
-  );
+  const { sendMigrateStrategy, migrateStrategyState } =
+    useMigrateStrategy(trancheContract);
 
   return (
     <VStack>
@@ -47,4 +48,3 @@ export function MigrateStrategy(
     </VStack>
   );
 }
-

@@ -1,6 +1,6 @@
 import { Box, Tab, TabList, Tabs } from '@chakra-ui/react';
 import * as React from 'react';
-import { ParsedStratMetaRow } from '../../../chain-interaction/contracts';
+import { ParsedStratMetaRow } from '../../../chain-interaction/views/strategies';
 import { deprecatedTokenList } from '../../../constants/deprecated-token-list';
 
 export function TableTabs({

@@ -1,5 +1,4 @@
 import {
-  // Button,
   Container,
   Flex,
   GridItem,
@@ -10,13 +9,8 @@ import {
 // import { CurrencyValue } from '@usedapp/core';
 // import { BigNumber } from 'ethers';
 import * as React from 'react';
-import {
-  ParsedPositionMetaRow,
-  ParsedStratMetaRow,
-  // useStable,
-  // useEstimatedHarvestable,
-  // YieldType,
-} from '../../../../chain-interaction/contracts';
+import { ParsedPositionMetaRow } from '../../../../chain-interaction/views/positions';
+import { ParsedStratMetaRow } from '../../../../chain-interaction/views/strategies';
 // import {
 //   useAMMHarvest,
 //   useHarvestPartially,

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { ParsedStratMetaRow } from '../../../../chain-interaction/contracts';
 import { Table, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 // import {
 //   useAMMHarvest,
@@ -10,6 +9,7 @@ import { Table, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 import { getExplorerAddressLink } from '@usedapp/core';
 // import { EnsureWalletConnected } from '../../../../components/account/EnsureWalletConnected';
 import { useLocation } from 'react-router-dom';
+import { ParsedStratMetaRow } from '../../../../chain-interaction/views/strategies';
 // import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
 
 export function StrategyDataTable(row: ParsedStratMetaRow) {

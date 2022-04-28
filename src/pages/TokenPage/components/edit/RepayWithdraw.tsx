@@ -18,16 +18,7 @@ import { getAddress, parseEther } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  calcLiqPriceFromNum,
-  ParsedPositionMetaRow,
-  ParsedStratMetaRow,
-  useStable,
-} from '../../../../chain-interaction/contracts';
-import {
-  useNativeRepayWithdrawTrans,
-  useRepayWithdrawTrans,
-} from '../../../../chain-interaction/transactions';
+import { useStable } from '../../../../chain-interaction/views/contracts';
 import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
 import WarningMessage from '../../../../components/notifications/WarningMessage';
 import { TokenAmountInputField } from '../../../../components/tokens/TokenAmountInputField';
@@ -40,6 +31,13 @@ import {
 import farminfo from '../../../../contracts/farminfo.json';
 import { parseFloatCurrencyValue, parseFloatNoNaN } from '../../../../utils';
 import { ConfirmPositionModal } from './ConfirmPositionModal';
+import { ParsedPositionMetaRow } from '../../../../chain-interaction/views/positions';
+import {
+  calcLiqPriceFromNum,
+  ParsedStratMetaRow,
+  useNativeRepayWithdrawTrans,
+  useRepayWithdrawTrans,
+} from '../../../../chain-interaction/views/strategies';
 
 export default function RepayWithdraw({
   position,

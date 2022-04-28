@@ -1,7 +1,7 @@
 import { Box, Table, Tbody, Td, Thead, Tr } from '@chakra-ui/react';
 import * as React from 'react';
 import { Column, useTable } from 'react-table';
-import { ParsedStratMetaRow } from '../../../../chain-interaction/contracts';
+import { ParsedStratMetaRow } from '../../../../chain-interaction/views/strategies';
 import ChangeStrategyButton from './ChangeStrategyButton';
 
 type Entity = {

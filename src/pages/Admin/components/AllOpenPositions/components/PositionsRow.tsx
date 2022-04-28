@@ -3,11 +3,9 @@ import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {
-  ParsedPositionMetaRow,
-  ParsedStratMetaRow,
-  useStable,
-} from '../../../../../chain-interaction/contracts';
+import { useStable } from '../../../../../chain-interaction/views/contracts';
+import { ParsedPositionMetaRow } from '../../../../../chain-interaction/views/positions';
+import { ParsedStratMetaRow } from '../../../../../chain-interaction/views/strategies';
 import { TokenDescription } from '../../../../../components/tokens/TokenDescription';
 import CopyClipboard from '../../CopyClipboard/CopyClipboard';
 import { LiquidatableAction } from './PositionsTable';

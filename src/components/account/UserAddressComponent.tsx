@@ -8,6 +8,7 @@ import { useAddresses, useStable } from '../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../chain-interaction/tokens';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
+import { useConnectWallet } from '../../utils';
 
 type Props = {
   handleOpenModal: any;
@@ -15,7 +16,8 @@ type Props = {
 
 export function UserAddressComponent({ handleOpenModal }: Props) {
   const [isLargerThan1280] = useMediaQuery('(min-width: 1280px)');
-  const { activateBrowserWallet, chainId } = useEthers();
+  const { chainId } = useEthers();
+  const { onConnect } = useConnectWallet();
   const account = useContext(UserAddressContext);
   const stable = useStable();
   const balanceCtx = React.useContext(WalletBalancesContext);
@@ -30,7 +32,7 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
     new CurrencyValue(moreToken, BigNumber.from('0'));
 
   function handleConnectWallet() {
-    activateBrowserWallet();
+    onConnect();
   }
 
   return (

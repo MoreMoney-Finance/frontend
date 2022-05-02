@@ -31,9 +31,6 @@ export function useConnectWallet() {
     injected: {
       package: 'metamask',
     },
-    binancechainwallet: {
-      package: true,
-    },
     walletconnect: {
       package: WalletConnectProvider,
       options: {

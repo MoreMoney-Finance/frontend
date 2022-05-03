@@ -1,13 +1,13 @@
 import { Button } from '@chakra-ui/react';
-import { useEthers } from '@usedapp/core';
 import * as React from 'react';
 import { useContext } from 'react';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
+import { useConnectWallet } from '../../utils';
 
 export function EnsureWalletConnected(
   params: React.PropsWithChildren<unknown>
 ) {
-  const { activateBrowserWallet } = useEthers();
+  const { onConnect } = useConnectWallet();
   const account = useContext(UserAddressContext);
 
   return (
@@ -18,7 +18,7 @@ export function EnsureWalletConnected(
         <Button
           variant={'submit'}
           onClick={() => {
-            activateBrowserWallet();
+            onConnect();
           }}
         >
           Connect to a wallet

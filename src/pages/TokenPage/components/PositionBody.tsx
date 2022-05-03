@@ -107,7 +107,7 @@ export function PositionBody({
           stratMeta={stratMeta[chosenStrategy]}
         />
 
-        <CollateralAPY stratMetaData={stratMeta[chosenStrategy]} />
+        <CollateralAPY stratMeta={stratMeta} />
         <StrategyNameAndSwitch
           position={position}
           chooseStrategy={chooseStrategy}

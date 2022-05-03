@@ -1,12 +1,20 @@
 import { Container, Flex, GridItem, Text } from '@chakra-ui/react';
 import * as React from 'react';
-import { ParsedStratMetaRow } from '../../../../chain-interaction/contracts';
+import {
+  ParsedStratMetaRow,
+  YieldType,
+} from '../../../../chain-interaction/contracts';
 
 export default function CollateralAPY({
-  stratMetaData,
+  stratMeta,
 }: {
-  stratMetaData: ParsedStratMetaRow;
+  stratMeta: Record<string, ParsedStratMetaRow>;
 }) {
+  const options = Object.values(stratMeta);
+
+  const multipleOptions = options.length > 1;
+  const textVariant = multipleOptions ? 'bodySmall' : 'bodyLarge';
+
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
       {/* <GridItem colSpan={2}> */}
@@ -17,13 +25,25 @@ export default function CollateralAPY({
           alignItems={'center'}
           h={'100%'}
         >
-          <Text variant="h400" color="whiteAlpha.400">
-            Collateral APY
-          </Text>
-          <Text variant="bodyExtraLarge">
-            {' '}
-            <b>{stratMetaData.APY.toFixed(2)}%</b>
-          </Text>
+          {Object.keys(stratMeta).map((strat) => {
+            const stratLabel =
+              stratMeta[strat].yieldType === YieldType.REPAYING
+                ? 'Self-repaying loan'
+                : 'Compound collateral';
+
+            return (
+              <>
+                <Text variant={textVariant} color="whiteAlpha.400">
+                  Collateral APY
+                </Text>
+                <Text>{stratLabel}</Text>
+                <Text variant={textVariant}>
+                  <b>{stratMeta[strat].APY.toFixed(2)}%</b>
+                </Text>
+                <br />
+              </>
+            );
+          })}
         </Flex>
       </Container>
     </GridItem>

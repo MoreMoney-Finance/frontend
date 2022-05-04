@@ -12,7 +12,7 @@ export default function CollateralAPY({
   const multipleOptions =
     stratMeta[chosenStrategy].selfRepayingAPY > 0 &&
     stratMeta[chosenStrategy].compoundingAPY > 0;
-  const textVariant = multipleOptions ? 'bodySmall' : 'bodyLarge';
+  const textVariant = 'bodySmall';
 
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
@@ -27,23 +27,21 @@ export default function CollateralAPY({
           <Text variant={textVariant} color="whiteAlpha.400">
             Collateral APY
           </Text>
-          <br />
-          {stratMeta[chosenStrategy].selfRepayingAPY > 0 ? (
-            <>
-              <Text>{'Self Repaying APR'}</Text>
-              <Text variant={textVariant}>
-                <b>{stratMeta[chosenStrategy].selfRepayingAPY.toFixed(2)}%</b>
+          <Text variant="bodyExtraLarge">
+            {' '}
+            <b>{stratMeta[chosenStrategy].APY.toFixed(2)}%</b>
+          </Text>
+          {multipleOptions ? (
+            <Flex flexDirection={'column'} alignItems="center">
+              <Text variant={'bodySmall'} color="whiteAlpha.400">
+                {stratMeta[chosenStrategy].compoundingAPY.toFixed(2)}%
+                {' Compounding'}
               </Text>
-              <br />
-            </>
-          ) : null}
-          {stratMeta[chosenStrategy].compoundingAPY > 0 ? (
-            <>
-              <Text>{'Compound APY'}</Text>
-              <Text variant={textVariant}>
-                <b>{stratMeta[chosenStrategy].compoundingAPY.toFixed(2)}%</b>
+              <Text variant={'bodySmall'} color="whiteAlpha.400">
+                {stratMeta[chosenStrategy].selfRepayingAPY.toFixed(2)}%
+                {' Self-Repaying'}
               </Text>
-            </>
+            </Flex>
           ) : null}
         </Flex>
       </Container>

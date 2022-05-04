@@ -1,18 +1,17 @@
 import { Container, Flex, GridItem, Text } from '@chakra-ui/react';
 import * as React from 'react';
-import {
-  ParsedStratMetaRow,
-  YieldType,
-} from '../../../../chain-interaction/contracts';
+import { ParsedStratMetaRow } from '../../../../chain-interaction/contracts';
 
 export default function CollateralAPY({
   stratMeta,
+  chosenStrategy,
 }: {
   stratMeta: Record<string, ParsedStratMetaRow>;
+  chosenStrategy: string;
 }) {
-  const options = Object.values(stratMeta);
-
-  const multipleOptions = options.length > 1;
+  const multipleOptions =
+    stratMeta[chosenStrategy].selfRepayingAPY > 0 &&
+    stratMeta[chosenStrategy].compoundingAPY > 0;
   const textVariant = multipleOptions ? 'bodySmall' : 'bodyLarge';
 
   return (
@@ -25,25 +24,27 @@ export default function CollateralAPY({
           alignItems={'center'}
           h={'100%'}
         >
-          {Object.keys(stratMeta).map((strat) => {
-            const stratLabel =
-              stratMeta[strat].yieldType === YieldType.REPAYING
-                ? 'Self-repaying loan'
-                : 'Compound collateral';
-
-            return (
-              <>
-                <Text variant={textVariant} color="whiteAlpha.400">
-                  Collateral APY
-                </Text>
-                <Text>{stratLabel}</Text>
-                <Text variant={textVariant}>
-                  <b>{stratMeta[strat].APY.toFixed(2)}%</b>
-                </Text>
-                <br />
-              </>
-            );
-          })}
+          <Text variant={textVariant} color="whiteAlpha.400">
+            Collateral APY
+          </Text>
+          <br />
+          {stratMeta[chosenStrategy].selfRepayingAPY > 0 ? (
+            <>
+              <Text>{'Self Repaying APR'}</Text>
+              <Text variant={textVariant}>
+                <b>{stratMeta[chosenStrategy].selfRepayingAPY.toFixed(2)}%</b>
+              </Text>
+              <br />
+            </>
+          ) : null}
+          {stratMeta[chosenStrategy].compoundingAPY > 0 ? (
+            <>
+              <Text>{'Compound APY'}</Text>
+              <Text variant={textVariant}>
+                <b>{stratMeta[chosenStrategy].compoundingAPY.toFixed(2)}%</b>
+              </Text>
+            </>
+          ) : null}
         </Flex>
       </Container>
     </GridItem>

@@ -3,10 +3,17 @@ import * as React from 'react';
 import { ParsedStratMetaRow } from '../../../../chain-interaction/contracts';
 
 export default function CollateralAPY({
-  stratMetaData,
+  stratMeta,
+  chosenStrategy,
 }: {
-  stratMetaData: ParsedStratMetaRow;
+  stratMeta: Record<string, ParsedStratMetaRow>;
+  chosenStrategy: string;
 }) {
+  const multipleOptions =
+    stratMeta[chosenStrategy].selfRepayingAPY > 0 &&
+    stratMeta[chosenStrategy].compoundingAPY > 0;
+  const textVariant = 'bodySmall';
+
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
       {/* <GridItem colSpan={2}> */}
@@ -17,13 +24,33 @@ export default function CollateralAPY({
           alignItems={'center'}
           h={'100%'}
         >
-          <Text variant="h400" color="whiteAlpha.400">
+          <Text variant={textVariant} color="whiteAlpha.400">
             Collateral APY
           </Text>
           <Text variant="bodyExtraLarge">
             {' '}
-            <b>{stratMetaData.APY.toFixed(2)}%</b>
+            <b>{stratMeta[chosenStrategy].APY.toFixed(2)}%</b>
           </Text>
+          {multipleOptions ? (
+            <Flex flexDirection={'column'} alignItems="center">
+              <Flex flexDirection={'row'}>
+                <Text color="white">
+                  {stratMeta[chosenStrategy].compoundingAPY.toFixed(2)}%
+                </Text>
+                <Text variant={'bodySmall'} color="whiteAlpha.400">
+                  &nbsp;{'Compounding'}
+                </Text>
+              </Flex>
+              <Flex flexDirection={'row'}>
+                <Text color="white">
+                  {stratMeta[chosenStrategy].selfRepayingAPY.toFixed(2)}%
+                </Text>
+                <Text variant={'bodySmall'} color="whiteAlpha.400">
+                  &nbsp;{'Self-Repaying'}
+                </Text>
+              </Flex>
+            </Flex>
+          ) : null}
         </Flex>
       </Container>
     </GridItem>

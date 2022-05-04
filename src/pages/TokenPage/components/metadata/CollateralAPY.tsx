@@ -33,14 +33,22 @@ export default function CollateralAPY({
           </Text>
           {multipleOptions ? (
             <Flex flexDirection={'column'} alignItems="center">
-              <Text variant={'bodySmall'} color="whiteAlpha.400">
-                {stratMeta[chosenStrategy].compoundingAPY.toFixed(2)}%
-                {' Compounding'}
-              </Text>
-              <Text variant={'bodySmall'} color="whiteAlpha.400">
-                {stratMeta[chosenStrategy].selfRepayingAPY.toFixed(2)}%
-                {' Self-Repaying'}
-              </Text>
+              <Flex flexDirection={'row'}>
+                <Text color="white">
+                  {stratMeta[chosenStrategy].compoundingAPY.toFixed(2)}%
+                </Text>
+                <Text variant={'bodySmall'} color="whiteAlpha.400">
+                  &nbsp;{'Compounding'}
+                </Text>
+              </Flex>
+              <Flex flexDirection={'row'}>
+                <Text color="white">
+                  {stratMeta[chosenStrategy].selfRepayingAPY.toFixed(2)}%
+                </Text>
+                <Text variant={'bodySmall'} color="whiteAlpha.400">
+                  &nbsp;{'Self-Repaying'}
+                </Text>
+              </Flex>
             </Flex>
           ) : null}
         </Flex>

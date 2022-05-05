@@ -47,8 +47,13 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const { yieldFarmingData, yieldMonitor } = useContext(
     ExternalMetadataContext
   );
+
   const avaxMorePayload = Object.values(yieldMonitor).filter(
     (item) => item.lpAddress === '0xb8361d0e3f3b0fc5e6071f3a3c3271223c49e3d9'
+  )[0];
+
+  const avaxMoneyPayload = Object.values(yieldMonitor).filter(
+    (item) => item.lpAddress === '0x66D12e1cb13EAbAB21f1Fb6628B1Ef33C6dED5a7'
   )[0];
 
   const { balance, vested } = useSpecialRewardsData(
@@ -75,6 +80,17 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
               'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05',
           stakeTokenURL:
               'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm',
+        },
+        {
+          asset: 'MONEY-AVAX (TraderJoe)',
+          stake: 'n/a',
+          tvl: avaxMoneyPayload?.tvl,
+          reward: avaxMoneyPayload ? 'MORE + ' + avaxMoneyPayload : 'n/a',
+          apr: avaxMoneyPayload?.totalApy,
+          getTokenURL:
+              'https://traderjoexyz.com/pool/0x0f577433bf59560ef2a79c124e9ff99fca258948/AVAX',
+          stakeTokenURL:
+              'https://traderjoexyz.com/farm/0x66D12e1cb13EAbAB21f1Fb6628B1Ef33C6dED5a7-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00',
         },
       ]
       : [];

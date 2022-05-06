@@ -22,7 +22,9 @@ declare let window: any;
 export const App = (params: React.PropsWithChildren<unknown>) => {
   const addresses = useAddresses();
   const { active, chainId, activateBrowserWallet, account } = useEthers();
+  // const chainIdsList = [31337, 43114];
   const config = useConfig();
+  const chainIdsList = config.networks!.map((network) => network.chainId);
 
   const [requestedSwitch, setRequestedSwitch] = React.useState(false);
   useEffect(() => {
@@ -39,7 +41,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
         accounts.length > 0 &&
         !requestedSwitch &&
         walletChainId &&
-        !config.supportedChains.includes(walletChainId)
+        !chainIdsList.includes(walletChainId)
       ) {
         setRequestedSwitch(true);
         try {

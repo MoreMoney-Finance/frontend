@@ -1,5 +1,5 @@
 import { ColorModeScript } from '@chakra-ui/react';
-import { ChainId, DAppProvider } from '@usedapp/core';
+import { Avalanche, ChainId, DAppProvider, Hardhat } from '@usedapp/core';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -25,7 +25,7 @@ ReactDOM.render(
     <ColorModeScript />
     <DAppProvider
       config={{
-        supportedChains: [ChainId.Avalanche, ChainId.Hardhat],
+        networks: [Avalanche, Hardhat],
         readOnlyChainId: ChainId.Avalanche,
         readOnlyUrls: {
           [ChainId.Avalanche]: 'https://api.avax.network/ext/bc/C/rpc',

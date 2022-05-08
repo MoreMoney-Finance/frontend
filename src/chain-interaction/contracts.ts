@@ -213,7 +213,7 @@ function parseStratMeta(
               0.3 *
               0.8) /
               0.5 +
-            8
+            7.2
         : underlyingAddress in yyMetadata
         ? yyMetadata[underlyingAddress].apy * 0.9
         : token.address in yieldMonitor

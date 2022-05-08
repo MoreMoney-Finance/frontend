@@ -246,8 +246,7 @@ function parseStratMeta(
                 )) *
                 0.3 *
                 0.8) /
-                0.5 +
-              8
+              0.5
           : token.address in yieldMonitor
           ? yieldMonitor[token.address].totalApy -
             parseFloat(yieldMonitor[token.address].apy.toString())
@@ -258,7 +257,10 @@ function parseStratMeta(
         : 0;
 
     const compoundingAPY =
-      row.yieldType === 0 && token.address in yieldMonitor
+      strategyAddress === addresses[chainId].LiquidYieldStrategy
+        && token.address !== '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
+        ? 7.2
+        : row.yieldType === 0 && token.address in yieldMonitor
         ? parseFloat(yieldMonitor[token.address].apy.toString())
         : strategyAddress === addresses[chainId].YieldYakStrategy ||
           strategyAddress === addresses[chainId].YieldYakAVAXStrategy

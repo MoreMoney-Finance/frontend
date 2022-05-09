@@ -3,11 +3,17 @@ import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import React from 'react';
 import {
-  ParsedStratMetaRow,
   ParsedPositionMetaRow,
+  ParsedStratMetaRow,
+  useAddresses,
   useStable,
 } from '../../chain-interaction/contracts';
+import {
+  usePrimitiveLiquidationTrans,
+  viewBidTarget,
+} from '../../chain-interaction/transactions';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
+import { parseFloatCurrencyValue } from '../../utils';
 import { LiquidatableAction } from './LiquidatablePositionsTable';
 
 export function LiquidatableRow(
@@ -23,6 +29,7 @@ export function LiquidatableRow(
     parsedPositionHealth,
   } = params;
 
+  const addresses = useAddresses();
   // const location = useLocation();
   // const details = location.search?.includes('details=true');
 
@@ -42,6 +49,10 @@ export function LiquidatableRow(
   //   })} (${token.address})`
   // );
 
+  const { sendLiquidation, liquidationState } = usePrimitiveLiquidationTrans(
+    params.trancheContract
+  );
+
   const collateral =
     'collateral' in params && params.collateral
       ? params.collateral
@@ -57,8 +68,50 @@ export function LiquidatableRow(
     params.debt.format(),
     params.collateral?.toString(),
     params.collateral?.format(),
-    parsedPositionHealth
+    parsedPositionHealth,
+    sendLiquidation,
+    liquidationState
   );
+
+  const primitiveLiquidate = async () => {
+    const lendingAddress =
+      params.trancheContract === addresses.IsolatedLending
+        ? addresses.IsolatedLendingLiquidation
+        : addresses.StableLendingLiquidation;
+    const extantCollateral = parseFloatCurrencyValue(params.collateral!);
+    const extantCollateralValue = parseFloatCurrencyValue(
+      params.collateralValue
+    );
+    const ltvPer10k = params.borrowablePercent * 100;
+    console.log('ltvPer10k', ltvPer10k);
+    const debt = parseFloatCurrencyValue(params.debt);
+    console.log('debt', debt);
+    const requestedColVal =
+      (debt +
+        (10000 * debt - ltvPer10k * extantCollateralValue) /
+          (10000 - ltvPer10k)) /
+      2;
+    console.log('requestedColVal', requestedColVal);
+    const collateralRequested =
+      (extantCollateral * requestedColVal) / extantCollateralValue;
+    console.log('collateralRequested2', collateralRequested);
+    const bidTarget = await viewBidTarget(
+      params.trancheId,
+      lendingAddress,
+      requestedColVal,
+      0
+    );
+    console.log('bidTarget', bidTarget);
+    const rebalancingBid = (1000 * bidTarget) / 984;
+    console.log(
+      'liquidating',
+      collateralRequested,
+      rebalancingBid,
+      params.trancheContract
+    );
+    // sendLiquidation(params.trancheId);
+  };
+
   return (
     <>
       <Tr key={`${params.trancheId}`}>
@@ -123,6 +176,13 @@ export function LiquidatableRow(
             >
               Liquidate
             </Button>
+          ) : (
+            <Text>Not Liquidatable Yet</Text>
+          )}
+        </Td>
+        <Td>
+          {liquidateButton ? (
+            <Button onClick={primitiveLiquidate}>Liquidate</Button>
           ) : (
             <Text>Not Liquidatable Yet</Text>
           )}

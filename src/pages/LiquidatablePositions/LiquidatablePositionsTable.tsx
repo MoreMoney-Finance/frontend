@@ -31,6 +31,7 @@ export function LiquidatablePositionsTable({
           <Td>Collateral</Td>
           <Td>Debt</Td>
           <Td>Liquidate</Td>
+          <Td>Primitive Liquidate</Td>
         </Tr>
       </Thead>
 

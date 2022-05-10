@@ -11,19 +11,20 @@ import { BigNumber, ethers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
-import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
+import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
+import DirectFlashLiquidation from '../contracts/artifacts/contracts/liquidation/DirectFlashLiquidation.sol/DirectFlashLiquidation.json';
+import StableLendingLiquidation from '../contracts/artifacts/contracts/liquidation/StableLendingLiquidation.sol/StableLendingLiquidation.json';
+import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import CurvePoolRewards from '../contracts/artifacts/contracts/rewards/CurvePoolRewards.sol/CurvePoolRewards.json';
+import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
+import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import YieldYakStrategy from '../contracts/artifacts/contracts/strategies/YieldYakStrategy.sol/YieldYakStrategy.json';
-import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
-import DirectFlashLiquidation from '../contracts/artifacts/contracts/liquidation/DirectFlashLiquidation.sol/DirectFlashLiquidation.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
 import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
-import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
-import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
 import {
   useAddresses,
   useRegisteredOracle,
@@ -451,6 +452,58 @@ export function useUpdatePriceOracle(token?: Token) {
     sendUpdatePriceOracle: () =>
       token && send(token.address, parseEther('1'), stable.address),
     updatePriceOracleState: state,
+  };
+}
+
+export async function viewBidTarget(
+  trancheId: number,
+  lendingAddress: string,
+  requestedColVal: string,
+  defaultResult: any
+) {
+  const provider = new ethers.providers.JsonRpcProvider(
+    'https://api.avax.network/ext/bc/C/rpc'
+  );
+
+  const liquidationContract = new ethers.Contract(
+    lendingAddress,
+    new Interface(StableLendingLiquidation.abi),
+    provider
+  );
+
+  const result = await liquidationContract.viewBidTarget(
+    trancheId,
+    parseEther(requestedColVal)
+  );
+  return result ?? defaultResult;
+}
+
+export function usePrimitiveLiquidationTrans(contractAddress: string) {
+  const addresses = useAddresses();
+  const lendingAddress =
+    contractAddress === addresses.IsolatedLending
+      ? addresses.IsolatedLendingLiquidation
+      : addresses.StableLendingLiquidation;
+  const liquidationContract = new Contract(
+    lendingAddress,
+    new Interface(StableLendingLiquidation.abi)
+  );
+  const { send, state } = useContractFunction(liquidationContract, 'liquidate');
+
+  return {
+    sendLiquidation: (
+      trancheId: number,
+      collateralRequested: string,
+      rebalancingBid: string,
+      recipient: string
+    ) =>
+      send(
+        trancheId,
+        parseEther(collateralRequested),
+        rebalancingBid,
+        recipient
+      ),
+    liquidationState: state,
   };
 }
 

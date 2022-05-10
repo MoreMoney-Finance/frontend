@@ -13,8 +13,10 @@ import {
   viewBidTarget,
 } from '../../chain-interaction/transactions';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
+import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { parseFloatCurrencyValue } from '../../utils';
 import { LiquidatableAction } from './LiquidatablePositionsTable';
+import { TransactionErrorDialog } from '../../components/notifications/TransactionErrorDialog';
 
 export function LiquidatableRow(
   params: React.PropsWithChildren<
@@ -30,6 +32,7 @@ export function LiquidatableRow(
   } = params;
 
   const addresses = useAddresses();
+  const account = React.useContext(UserAddressContext);
   // const location = useLocation();
   // const details = location.search?.includes('details=true');
 
@@ -62,16 +65,16 @@ export function LiquidatableRow(
       ? params.debt.sub(params.yield)
       : new CurrencyValue(stable, BigNumber.from(0));
 
-  console.log(
-    'liquidatable',
-    params.trancheId,
-    params.debt.format(),
-    params.collateral?.toString(),
-    params.collateral?.format(),
-    parsedPositionHealth,
-    sendLiquidation,
-    liquidationState
-  );
+  // console.log(
+  //   'liquidatable',
+  //   params.trancheId,
+  //   params.debt.format(),
+  //   params.collateral?.toString(),
+  //   params.collateral?.format(),
+  //   parsedPositionHealth,
+  //   sendLiquidation,
+  //   liquidationState
+  // );
 
   const primitiveLiquidate = async () => {
     const lendingAddress =
@@ -83,33 +86,38 @@ export function LiquidatableRow(
       params.collateralValue
     );
     const ltvPer10k = params.borrowablePercent * 100;
-    console.log('ltvPer10k', ltvPer10k);
+
     const debt = parseFloatCurrencyValue(params.debt);
-    console.log('debt', debt);
+
     const requestedColVal =
       (debt +
         (10000 * debt - ltvPer10k * extantCollateralValue) /
           (10000 - ltvPer10k)) /
       2;
-    console.log('requestedColVal', requestedColVal);
+
     const collateralRequested =
       (extantCollateral * requestedColVal) / extantCollateralValue;
-    console.log('collateralRequested2', collateralRequested);
+
     const bidTarget = await viewBidTarget(
       params.trancheId,
       lendingAddress,
-      requestedColVal,
+      requestedColVal.toString(),
       0
     );
-    console.log('bidTarget', bidTarget);
+
     const rebalancingBid = (1000 * bidTarget) / 984;
     console.log(
-      'liquidating',
+      'rebalancingBid',
+      requestedColVal,
       collateralRequested,
-      rebalancingBid,
-      params.trancheContract
+      rebalancingBid
     );
-    // sendLiquidation(params.trancheId);
+    sendLiquidation(
+      params.trancheId,
+      collateralRequested.toString(),
+      rebalancingBid.toString(),
+      account!
+    );
   };
 
   return (
@@ -182,7 +190,13 @@ export function LiquidatableRow(
         </Td>
         <Td>
           {liquidateButton ? (
-            <Button onClick={primitiveLiquidate}>Liquidate</Button>
+            <>
+              <TransactionErrorDialog
+                title="Primitive Liquidate"
+                state={liquidationState}
+              />
+              <Button onClick={primitiveLiquidate}>Liquidate</Button>
+            </>
           ) : (
             <Text>Not Liquidatable Yet</Text>
           )}

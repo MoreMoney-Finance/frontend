@@ -77,8 +77,8 @@ export function LiquidatablePositionsCtxProvider({
 
   const START = cachedPositions.tstamp;
   const updatedPositions = useUpdatedPositions(START);
-  console.log('parseCachePositions', parsedCachePositions);
-  console.log('updatedPositions', updatedPositions);
+  // console.log('parseCachePositions', parsedCachePositions);
+  // console.log('updatedPositions', updatedPositions);
   const jointUpdatedPositions = [...parsedCachePositions, ...updatedPositions];
   const updatedMetadata =
     useUpdatedMetadataLiquidatablePositions(parsedCachePositions);

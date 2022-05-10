@@ -458,7 +458,7 @@ export function useUpdatePriceOracle(token?: Token) {
 export async function viewBidTarget(
   trancheId: number,
   lendingAddress: string,
-  requestedColVal: number,
+  requestedColVal: string,
   defaultResult: any
 ) {
   const provider = new ethers.providers.JsonRpcProvider(
@@ -467,15 +467,15 @@ export async function viewBidTarget(
 
   const liquidationContract = new ethers.Contract(
     lendingAddress,
-    StableLendingLiquidation.abi,
+    new Interface(StableLendingLiquidation.abi),
     provider
   );
 
   const result = await liquidationContract.viewBidTarget(
     trancheId,
-    requestedColVal
+    parseEther(requestedColVal)
   );
-  return result || defaultResult;
+  return result ?? defaultResult;
 }
 
 export function usePrimitiveLiquidationTrans(contractAddress: string) {
@@ -493,10 +493,16 @@ export function usePrimitiveLiquidationTrans(contractAddress: string) {
   return {
     sendLiquidation: (
       trancheId: number,
-      collateralRequested: number,
-      rebalancingBid: number,
+      collateralRequested: string,
+      rebalancingBid: string,
       recipient: string
-    ) => send(trancheId, collateralRequested, rebalancingBid, recipient),
+    ) =>
+      send(
+        trancheId,
+        parseEther(collateralRequested),
+        rebalancingBid,
+        recipient
+      ),
     liquidationState: state,
   };
 }

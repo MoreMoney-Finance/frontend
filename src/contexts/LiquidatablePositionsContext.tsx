@@ -185,7 +185,11 @@ export function LiquidatablePositionsCtxProvider({
     .filter((posMeta) => !stableTickers.includes(posMeta.token?.ticker))
     //sort liquidatable first
     .sort(function (a, b) {
-      return a.positionHealthOrder - b.positionHealthOrder;
+      if (a.positionHealthOrder === b.positionHealthOrder) {
+        return parseFloatCurrencyValue(b.debt) - parseFloatCurrencyValue(a.debt);
+      } else {
+        return a.positionHealthOrder - b.positionHealthOrder;
+      }
     });
 
   return (

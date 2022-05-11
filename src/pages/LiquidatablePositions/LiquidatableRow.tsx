@@ -88,38 +88,42 @@ export function LiquidatableRow(
 
     const debt = params.debt.value;
 
-    const requestedColVal =
-      debt
-        .add(debt
-          .mul(10000)
-          .sub(extantCollateralValue.mul(ltvPer10k))
-          .div(10000 - ltvPer10k)
-        )
-        .div(2);
+    if (debt.gt(extantCollateralValue.mul(91).div(100))) {
+      sendLiquidation(params.trancheId, extantCollateral, debt, account!);
+    } else {
+      const requestedColVal =
+        debt
+          .add(debt
+            .mul(10000)
+            .sub(extantCollateralValue.mul(ltvPer10k))
+            .div(10000 - ltvPer10k)
+          )
+          .div(2);
 
-    const collateralRequested =
-      extantCollateral.mul(requestedColVal).div(extantCollateralValue);
+      const collateralRequested =
+        extantCollateral.mul(requestedColVal).div(extantCollateralValue);
 
-    const bidTarget = await viewBidTarget(
-      params.trancheId,
-      lendingAddress,
-      requestedColVal,
-      BigNumber.from(0)
-    );
+      const bidTarget = await viewBidTarget(
+        params.trancheId,
+        lendingAddress,
+        requestedColVal,
+        BigNumber.from(0)
+      );
 
-    const rebalancingBid = bidTarget.mul(1000).div(984);
-    console.log(
-      'rebalancingBid',
-      formatEther(requestedColVal),
-      formatUnits(collateralRequested, params.token.decimals),
-      formatEther(rebalancingBid)
-    );
-    sendLiquidation(
-      params.trancheId,
-      collateralRequested,
-      rebalancingBid,
-      account!
-    );
+      const rebalancingBid = bidTarget.mul(1000).div(984);
+      console.log(
+        'rebalancingBid',
+        formatEther(requestedColVal),
+        formatUnits(collateralRequested, params.token.decimals),
+        formatEther(rebalancingBid)
+      );
+      sendLiquidation(
+        params.trancheId,
+        collateralRequested,
+        rebalancingBid,
+        account!
+      );
+    }
   };
 
   return (

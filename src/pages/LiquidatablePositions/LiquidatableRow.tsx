@@ -88,7 +88,7 @@ export function LiquidatableRow(
 
     const debt = params.debt.value;
 
-    if (debt.gt(extantCollateralValue.mul(91).div(100))) {
+    if (debt.gt(extantCollateralValue.mul(85).div(100))) {
       sendLiquidation(params.trancheId, extantCollateral, debt, account!);
     } else {
       const requestedColVal =

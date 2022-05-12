@@ -81,6 +81,7 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
   const supply = useTotalSupply('totalSupply', [], ['']);
 
   const curvePoolSL = useCurvePoolSLDeposited();
+  console.log('curvePoolSL', curvePoolSL.toString());
   const colRatio = !tvl.isZero()
     ? tvlNoFarm.value.mul(10000).div(supply.sub(curvePoolSL)).toNumber() / 100
     : 0;

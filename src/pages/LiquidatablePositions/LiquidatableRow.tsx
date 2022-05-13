@@ -86,7 +86,7 @@ export function LiquidatableRow(
 
     const ltvPer10k = params.borrowablePercent * 100;
 
-    const debt = params.debt.value;
+    const debt = params.debt.value.sub(params.yield.value);
 
     if (debt.gt(extantCollateralValue.mul(87).div(100))) {
       console.log('liquidating', params.trancheId, extantCollateral.toString(), debt.toString(), account!);

@@ -212,7 +212,7 @@ function parseStratMeta(
           : (yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
               .totalApy *
               0.3 *
-              0.8) /
+              0.2) /
               0.5 +
             7.2
         : underlyingAddress in yyMetadata
@@ -246,7 +246,7 @@ function parseStratMeta(
                   ].apy.toString()
                 )) *
                 0.3 *
-                0.8) /
+                0.2) /
               0.5
           : token.address in yieldMonitor
           ? yieldMonitor[token.address].totalApy -

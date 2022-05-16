@@ -3,12 +3,20 @@ import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import React from 'react';
 import {
-  ParsedStratMetaRow,
   ParsedPositionMetaRow,
+  ParsedStratMetaRow,
+  useAddresses,
   useStable,
 } from '../../chain-interaction/contracts';
+import {
+  usePrimitiveLiquidationTrans,
+  viewBidTarget,
+} from '../../chain-interaction/transactions';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
+import { UserAddressContext } from '../../contexts/UserAddressContext';
+import { parseFloatCurrencyValue } from '../../utils';
 import { LiquidatableAction } from './LiquidatablePositionsTable';
+import { TransactionErrorDialog } from '../../components/notifications/TransactionErrorDialog';
 
 export function LiquidatableRow(
   params: React.PropsWithChildren<
@@ -23,6 +31,8 @@ export function LiquidatableRow(
     parsedPositionHealth,
   } = params;
 
+  const addresses = useAddresses();
+  const account = React.useContext(UserAddressContext);
   // const location = useLocation();
   // const details = location.search?.includes('details=true');
 
@@ -42,6 +52,10 @@ export function LiquidatableRow(
   //   })} (${token.address})`
   // );
 
+  const { sendLiquidation, liquidationState } = usePrimitiveLiquidationTrans(
+    params.trancheContract
+  );
+
   const collateral =
     'collateral' in params && params.collateral
       ? params.collateral
@@ -51,14 +65,61 @@ export function LiquidatableRow(
       ? params.debt.sub(params.yield)
       : new CurrencyValue(stable, BigNumber.from(0));
 
-  console.log(
-    'liquidatable',
-    params.trancheId,
-    params.debt.format(),
-    params.collateral?.toString(),
-    params.collateral?.format(),
-    parsedPositionHealth
-  );
+  // console.log(
+  //   'liquidatable',
+  //   params.trancheId,
+  //   params.debt.format(),
+  //   params.collateral?.toString(),
+  //   params.collateral?.format(),
+  //   parsedPositionHealth,
+  //   sendLiquidation,
+  //   liquidationState
+  // );
+
+  const primitiveLiquidate = async () => {
+    const lendingAddress =
+      params.trancheContract === addresses.IsolatedLending
+        ? addresses.IsolatedLendingLiquidation
+        : addresses.StableLendingLiquidation;
+    const extantCollateral = parseFloatCurrencyValue(params.collateral!);
+    const extantCollateralValue = parseFloatCurrencyValue(
+      params.collateralValue
+    );
+    const ltvPer10k = params.borrowablePercent * 100;
+
+    const debt = parseFloatCurrencyValue(params.debt);
+
+    const requestedColVal =
+      (debt +
+        (10000 * debt - ltvPer10k * extantCollateralValue) /
+          (10000 - ltvPer10k)) /
+      2;
+
+    const collateralRequested =
+      (extantCollateral * requestedColVal) / extantCollateralValue;
+
+    const bidTarget = await viewBidTarget(
+      params.trancheId,
+      lendingAddress,
+      requestedColVal.toString(),
+      0
+    );
+
+    const rebalancingBid = (1000 * bidTarget) / 984;
+    console.log(
+      'rebalancingBid',
+      requestedColVal,
+      collateralRequested,
+      rebalancingBid
+    );
+    sendLiquidation(
+      params.trancheId,
+      collateralRequested.toString(),
+      rebalancingBid.toString(),
+      account!
+    );
+  };
+
   return (
     <>
       <Tr key={`${params.trancheId}`}>
@@ -123,6 +184,19 @@ export function LiquidatableRow(
             >
               Liquidate
             </Button>
+          ) : (
+            <Text>Not Liquidatable Yet</Text>
+          )}
+        </Td>
+        <Td>
+          {liquidateButton ? (
+            <>
+              <TransactionErrorDialog
+                title="Primitive Liquidate"
+                state={liquidationState}
+              />
+              <Button onClick={primitiveLiquidate}>Liquidate</Button>
+            </>
           ) : (
             <Text>Not Liquidatable Yet</Text>
           )}

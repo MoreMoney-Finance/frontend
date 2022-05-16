@@ -24,19 +24,18 @@ import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
-import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
 import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
+import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
 import InterestRateController from '../contracts/artifacts/contracts/InterestRateController.sol/InterestRateController.json';
-import { getTokenFromAddress, tokenAmount } from './tokens';
 import { parseFloatCurrencyValue } from '../utils';
-
+import { getTokenFromAddress, tokenAmount } from './tokens';
 // import earnedRewards from '../constants/earned-rewards.json';
 // import rewardsRewards from '../constants/rewards-rewards.json';
 
@@ -82,7 +81,9 @@ export type DeploymentAddresses = {
 
   VestingLaunchReward: string;
 
+  CurvePool: string;
   CurvePoolSL: string;
+  CurvePoolSL2: string;
   StrategyViewer: string;
 
   LiquidYieldStrategy: string;
@@ -215,9 +216,9 @@ function parseStratMeta(
           : (yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
               .totalApy *
               0.3 *
-              0.8) /
+              0.2) /
               0.5 +
-            8
+            7.2
         : underlyingAddress in yyMetadata
         ? yyMetadata[underlyingAddress].apy * 0.9
         : token.address in yieldMonitor
@@ -248,9 +249,8 @@ function parseStratMeta(
                   ].apy.toString()
                 )) *
                 0.3 *
-                0.8) /
-                0.5 +
-              8
+                0.2) /
+              0.5
           : token.address in yieldMonitor
           ? yieldMonitor[token.address].totalApy -
             parseFloat(yieldMonitor[token.address].apy.toString())
@@ -261,7 +261,10 @@ function parseStratMeta(
         : 0;
 
     const compoundingAPY =
-      row.yieldType === 0 && token.address in yieldMonitor
+      strategyAddress === addresses[chainId].LiquidYieldStrategy &&
+      token.address !== '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
+        ? 7.2
+        : row.yieldType === 0 && token.address in yieldMonitor
         ? parseFloat(yieldMonitor[token.address].apy.toString())
         : strategyAddress === addresses[chainId].YieldYakStrategy ||
           strategyAddress === addresses[chainId].YieldYakAVAXStrategy
@@ -992,6 +995,22 @@ function timestamp2Date(tstamp: BigNumber) {
 }
 
 export function useCurvePoolSLDeposited() {
-  // const address = useAddresses().CurvePoolSL;
-  return 0;
+  const addressCurvePool = useAddresses().CurvePoolSL;
+  const addressCurvePool2 = useAddresses().CurvePoolSL2;
+
+  const balance1 = (useContractCall({
+    address: useAddresses().CurvePool,
+    abi: new Interface(ERC20.abi),
+    method: 'balanceOf',
+    args: [addressCurvePool],
+  }) ?? [BigNumber.from(0)])[0];
+
+  const balance2 = (useContractCall({
+    address: useAddresses().CurvePool,
+    abi: new Interface(ERC20.abi),
+    method: 'balanceOf',
+    args: [addressCurvePool2],
+  }) ?? [BigNumber.from(0)])[0];
+
+  return balance1.add(balance2);
 }

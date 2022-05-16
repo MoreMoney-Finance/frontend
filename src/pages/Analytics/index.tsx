@@ -65,22 +65,22 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
     (tvl, row) => tvl.add(row.tvl),
     new CurrencyValue(stable, BigNumber.from(0))
   );
+  console.log('All farm TVL:', tvlsFarm.format());
 
-  Object.values(allStratMeta)
-    .flatMap((rows) => Object.values(rows))
-    .map((row) => console.log(row.token.ticker, row.tvlInPeg.format()));
   const tvlNoFarm = Object.values(allStratMeta)
     .flatMap((rows) => Object.values(rows))
     .reduce(
       (tvl, row) => tvl.add(row.tvlInPeg),
       new CurrencyValue(stable, BigNumber.from(0))
     );
+  console.log('No-farm TVL', tvlNoFarm.format());
 
   const tvl = tvlNoFarm.add(tvlsFarm);
 
   const supply = useTotalSupply('totalSupply', [], ['']);
 
   const curvePoolSL = useCurvePoolSLDeposited();
+  console.log('curvePoolSL', curvePoolSL.toString());
   const colRatio = !tvl.isZero()
     ? tvlNoFarm.value.mul(10000).div(supply.sub(curvePoolSL)).toNumber() / 100
     : 0;

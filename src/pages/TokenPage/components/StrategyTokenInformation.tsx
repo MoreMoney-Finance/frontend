@@ -1,5 +1,4 @@
 import {
-  // Button,
   Container,
   Flex,
   GridItem,
@@ -7,15 +6,15 @@ import {
   Spacer,
   Text,
 } from '@chakra-ui/react';
+import { BigNumber } from 'ethers';
 // import { CurrencyValue } from '@usedapp/core';
 // import { BigNumber } from 'ethers';
 import * as React from 'react';
+import lines from '../../../assets/img/lines.svg';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
-  // useStable,
-  // useEstimatedHarvestable,
-  // YieldType,
+  useInterestRate,
 } from '../../../chain-interaction/contracts';
 // import {
 //   useAMMHarvest,
@@ -23,7 +22,6 @@ import {
 // } from '../../../chain-interaction/transactions';
 // import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { LiquidationFeesContext } from '../../../contexts/LiquidationFeesContext';
-import lines from '../../../assets/img/lines.svg';
 
 export default function StrategyTokenInformation({
   stratMeta,
@@ -40,6 +38,8 @@ export default function StrategyTokenInformation({
   // );
 
   const tokenFees = React.useContext(LiquidationFeesContext);
+  const interestRate = useInterestRate(BigNumber.from(0));
+  console.log('interestRate', interestRate.toString());
 
   // const { sendHarvestPartially, harvestPartiallyState } = useHarvestPartially(
   //   stratMeta.strategyAddress
@@ -83,6 +83,13 @@ export default function StrategyTokenInformation({
           padding={'30px 130px 40px 40px'}
         >
           <Flex w={'full'}>
+            <Text variant="h200" color={'whiteAlpha.400'}>
+              Interest Rate
+            </Text>
+            <Spacer />
+            <Text variant={'bodyLarge'}>{interestRate.toString() ?? ''}%</Text>
+          </Flex>
+          <Flex w={'full'} marginTop={'30px'}>
             <Text variant="h200" color={'whiteAlpha.400'}>
               Borrow Fee
             </Text>

@@ -22,6 +22,7 @@ import {
 } from '../contexts/ExternalMetadataContext';
 import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
+import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
 import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
@@ -32,10 +33,9 @@ import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies
 import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
+import InterestRateController from '../contracts/artifacts/contracts/InterestRateController.sol/InterestRateController.json';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 import { parseFloatCurrencyValue } from '../utils';
-import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
-// import VeMore from '../contracts/artifacts/contracts/governance/VeMore.sol/VeMore.json';
 
 // import earnedRewards from '../constants/earned-rewards.json';
 // import rewardsRewards from '../constants/rewards-rewards.json';
@@ -87,8 +87,7 @@ export type DeploymentAddresses = {
 
   LiquidYieldStrategy: string;
   MultiTraderJoeMasterChef3Strategy: string;
-  VeMore: string;
-  xMoney: string;
+  InterestRateController: string;
 };
 
 export function useAddresses() {
@@ -177,8 +176,6 @@ export type ParsedStratMetaRow = {
   harvestBalance2Tally: CurrencyValue;
   yieldType: YieldType;
   balance: number;
-  selfRepayingAPY: number;
-  compoundingAPY: number;
 };
 
 function parseStratMeta(
@@ -226,48 +223,6 @@ function parseStratMeta(
         ? additionalYield[token.address][strategyAddress]
         : 0;
 
-    const selfRepayingAPY =
-      row.yieldType === 0
-        ? strategyAddress === addresses[chainId].LiquidYieldStrategy
-          ? token.address === '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
-            ? ((yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-                .totalApy -
-                parseFloat(
-                  yieldMonitor[
-                    '0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'
-                  ].apy.toString()
-                )) *
-                0.65 *
-                0.8) /
-              0.5
-            : ((yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-                .totalApy -
-                parseFloat(
-                  yieldMonitor[
-                    '0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'
-                  ].apy.toString()
-                )) *
-                0.3 *
-                0.8) /
-                0.5 +
-              8
-          : token.address in yieldMonitor
-          ? yieldMonitor[token.address].totalApy -
-            parseFloat(yieldMonitor[token.address].apy.toString())
-          : token.address in additionalYield &&
-            strategyAddress in additionalYield[token.address]
-          ? additionalYield[token.address][strategyAddress]
-          : 0
-        : 0;
-
-    const compoundingAPY =
-      row.yieldType === 0 && token.address in yieldMonitor
-        ? parseFloat(yieldMonitor[token.address].apy.toString())
-        : strategyAddress === addresses[chainId].YieldYakStrategy ||
-          strategyAddress === addresses[chainId].YieldYakAVAXStrategy
-        ? APY
-        : 0;
-
     let syntheticDebtCeil = globalMoneyAvailable.add(row.totalDebt);
 
     const trueOne = parseUnits('1', token.decimals);
@@ -298,10 +253,21 @@ function parseStratMeta(
         row.yieldType
       ],
       balance: parseFloatCurrencyValue(balance),
-      selfRepayingAPY: selfRepayingAPY,
-      compoundingAPY: compoundingAPY,
     };
   }
+}
+
+export function useInterestRate(defaultResult: any) {
+  const addresses = useAddresses();
+  const abi = new Interface(InterestRateController.abi);
+  return (
+    (useContractCall({
+      abi,
+      address: addresses.InterestRateController,
+      method: 'currentRatePer10k',
+      args: [],
+    }) ?? [defaultResult])[0] / 100
+  );
 }
 
 const COMPOUNDING = 52;
@@ -419,7 +385,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
       const stratViewer = new ethers.Contract(
         addresses.StrategyViewer,
-        StrategyViewer.abi,
+        new Interface(StrategyViewer.abi),
         provider
       );
 
@@ -613,17 +579,6 @@ export function useIsolatedPositionMetadata(
     : legacyResults;
 }
 
-export function xMoneyTotalSupply(defaultResult: any) {
-  const address = useAddresses().xMore;
-  const abi = new Interface(xMore.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method: 'totalSupply',
-    args: [],
-  }) ?? [defaultResult])[0];
-}
-
 export function xMoreTotalSupply(
   method: string,
   args: any[],
@@ -646,35 +601,6 @@ export function useGlobalDebtCeiling(
 ) {
   const address = useAddresses().Stablecoin;
   const abi = new Interface(Stablecoin.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method,
-    args,
-  }) ?? [defaultResult])[0];
-}
-
-export function useBalanceOfToken(
-  address: string,
-  args: any[],
-  defaultResult: any
-) {
-  const abi = new Interface(ERC20.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method: 'balanceOf',
-    args,
-  }) ?? [defaultResult])[0];
-}
-
-export function useTotalSupplyToken(
-  address: string,
-  method: string,
-  args: any[],
-  defaultResult: any
-) {
-  const abi = new Interface(ERC20.abi);
   return (useContractCall({
     abi,
     address,

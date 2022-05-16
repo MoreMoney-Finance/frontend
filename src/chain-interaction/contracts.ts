@@ -88,6 +88,7 @@ export type DeploymentAddresses = {
   LiquidYieldStrategy: string;
   MultiTraderJoeMasterChef3Strategy: string;
   VeMore: string;
+  xMoney: string;
 };
 
 export function useAddresses() {
@@ -610,6 +611,17 @@ export function useIsolatedPositionMetadata(
   return 'StableLending' in addresses
     ? current.reduce(reduceFn(addresses.StableLending), legacyResults)
     : legacyResults;
+}
+
+export function xMoneyTotalSupply(defaultResult: any) {
+  const address = useAddresses().xMore;
+  const abi = new Interface(xMore.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method: 'totalSupply',
+    args: [],
+  }) ?? [defaultResult])[0];
 }
 
 export function xMoreTotalSupply(

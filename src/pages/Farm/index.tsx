@@ -11,8 +11,9 @@ import {
   Link,
   Text,
 } from '@chakra-ui/react';
-import { useEthers } from '@usedapp/core';
-import { ethers } from 'ethers';
+import { formatEther } from '@ethersproject/units';
+import { CurrencyValue, useEthers } from '@usedapp/core';
+import { BigNumber, ethers } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
 import {
@@ -20,14 +21,23 @@ import {
   useAddresses,
   useParsedStakingMetadata,
   useSpecialRewardsData,
+  useStable,
+  xMoneyTotalSupply,
 } from '../../chain-interaction/contracts';
-import { useWithdrawLaunchVestingTrans } from '../../chain-interaction/transactions';
+import {
+  useStake,
+  useStakeXMoney,
+  useWithdraw,
+  useWithdrawLaunchVestingTrans,
+  useWithdrawXMoney,
+} from '../../chain-interaction/transactions';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import {
   ExternalMetadataContext,
   YieldFarmingData,
 } from '../../contexts/ExternalMetadataContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
+import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
 import farminfo from '../../contracts/farminfo.json';
 import { formatNumber } from '../../utils';
 import ClaimReward from './components/ClaimReward';
@@ -78,6 +88,23 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
         },
       ]
       : [];
+
+  const balanceCtx = React.useContext(WalletBalancesContext);
+  const stakingAddress = useAddresses().CurvePoolRewards;
+  const xMoneyAddress = useAddresses().xMoney;
+  const { sendStake, stakeState } = useStake();
+  const { sendWithdraw, withdrawState } = useWithdraw();
+
+  const { sendDepositXMoney, depositState } = useStakeXMoney();
+  const { sendWithdrawXMoney, withdrawState: withdrawXMoneyState } =
+    useWithdrawXMoney();
+
+  const stable = useStable();
+  const xMoneyBalance =
+    balanceCtx.get(xMoneyAddress) ??
+    new CurrencyValue(stable, BigNumber.from('0'));
+
+  const xMoneyTVL = formatEther(xMoneyTotalSupply(BigNumber.from('0')));
 
   return (
     <>
@@ -177,6 +204,9 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           )}
           {stakeMeta.map((item, index) => {
             const { totalRewards } = item;
+
+            const token = item.stakingToken;
+
             return (
               <FarmItem
                 key={'farmRowStakeMeta' + index}
@@ -228,7 +258,12 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                           padding={'16px'}
                           position="relative"
                         >
-                          <DepositForm stakeMeta={item} />
+                          <DepositForm
+                            token={token}
+                            stakingAddress={stakingAddress}
+                            sendStake={sendStake}
+                            stakeState={stakeState}
+                          />
                         </Container>
                       </GridItem>
                       <GridItem width={'100%'} colSpan={5} rowSpan={1}>
@@ -237,7 +272,12 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                           padding={'16px'}
                           position="relative"
                         >
-                          <WithdrawForm stakeMeta={item} />
+                          <WithdrawForm
+                            token={token}
+                            stakedBalance={item.stakedBalance}
+                            sendWithdraw={sendWithdraw}
+                            withdrawState={withdrawState}
+                          />
                         </Container>
                       </GridItem>
                       <GridItem
@@ -262,6 +302,69 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
               />
             );
           })}
+          <AccordionItem
+            key={'xmoney-accordion'}
+            width={'full'}
+            style={{ boxSizing: 'border-box', ...accordionStyling }}
+          >
+            <AccordionButton width={'full'}>
+              <Grid
+                templateColumns="repeat(6, 1fr)"
+                gap={2}
+                w={'full'}
+                alignContent={'center'}
+                verticalAlign={'center'}
+              >
+                <Flex w={'full'} justifyContent={'center'}>
+                  <Box w={'fit-content'}>
+                    <Text>XMONEY</Text>
+                  </Box>
+                </Flex>
+                <Box>
+                  <Text>{xMoneyBalance.format({})}</Text>
+                </Box>
+                <Box>
+                  <Text>$ {formatNumber(parseFloat(xMoneyTVL))}</Text>
+                </Box>
+                <Flex w={'full'} justifyContent={'center'}>
+                  n/a
+                </Flex>
+                <Box>n/a%</Box>
+              </Grid>
+            </AccordionButton>
+            <AccordionPanel mt="16px">
+              <Grid templateColumns="repeat(10, 1fr)" gap={6}>
+                <GridItem w="100%" colSpan={5}>
+                  <Container
+                    variant={'token'}
+                    padding={'16px'}
+                    position="relative"
+                  >
+                    <DepositForm
+                      token={stable}
+                      stakingAddress={xMoneyAddress}
+                      sendStake={sendDepositXMoney}
+                      stakeState={depositState}
+                    />
+                  </Container>
+                </GridItem>
+                <GridItem w="100%" colSpan={5}>
+                  <Container
+                    variant={'token'}
+                    padding={'16px'}
+                    position="relative"
+                  >
+                    <WithdrawForm
+                      token={stable}
+                      stakedBalance={xMoneyBalance}
+                      sendWithdraw={sendWithdrawXMoney}
+                      withdrawState={withdrawXMoneyState}
+                    />
+                  </Container>
+                </GridItem>
+              </Grid>
+            </AccordionPanel>
+          </AccordionItem>
         </Accordion>
         {params.children}
       </Box>

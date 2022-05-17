@@ -12,10 +12,10 @@ import { parseFloatNoNaN } from '../../../utils';
 
 export function UnstakeMoney(props: React.PropsWithChildren<unknown>) {
   const balanceCtx = React.useContext(WalletBalancesContext);
-  const xMoney = useAddresses().xMoney;
+  const iMoney = useAddresses().iMoney;
   const { chainId } = useEthers();
 
-  const token = getTokenFromAddress(chainId, xMoney);
+  const token = getTokenFromAddress(chainId, iMoney);
 
   const { sendUnstake, unstakeState } = useUnstakeMore();
 
@@ -34,7 +34,7 @@ export function UnstakeMoney(props: React.PropsWithChildren<unknown>) {
     sendUnstake(token, data['xmore-unstake']);
   }
 
-  const stakeMoreDisabled = balanceCtx.get(xMoney)?.isZero();
+  const stakeMoreDisabled = balanceCtx.get(iMoney)?.isZero();
   const unstakeMoreButtonDisabled = parseFloatNoNaN(xmoreUnstakeInput) === 0;
 
   return (
@@ -51,7 +51,7 @@ export function UnstakeMoney(props: React.PropsWithChildren<unknown>) {
         </Box>
         <TokenAmountInputField
           name="xmore-unstake"
-          max={balanceCtx.get(xMoney)}
+          max={balanceCtx.get(iMoney)}
           isDisabled={stakeMoreDisabled}
           placeholder={'xMORE to unstake'}
           registerForm={registerDepForm}

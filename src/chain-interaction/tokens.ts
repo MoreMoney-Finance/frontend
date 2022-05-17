@@ -196,18 +196,18 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
     );
   }
 
-  if ('xMoney' in addresses) {
+  if ('iMoney' in addresses) {
     addressToken[chainIds[chainId]].set(
-      getAddress(addresses.xMoney),
+      getAddress(addresses.iMoney),
       new Token(
-        'XMoney',
-        'xMONEY',
+        'IMoney',
+        'iMoney',
         chainIds[chainId],
-        getAddress(addresses.xMoney),
+        getAddress(addresses.iMoney),
         18
       )
     );
-    addressIcons.set(getAddress(addresses.xMoney), [
+    addressIcons.set(getAddress(addresses.iMoney), [
       'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Coin-Logo-FINAL.jpg',
     ]);
   }
@@ -227,17 +227,17 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
     ]);
   }
 
-  if ('VeMore' in addresses) {
+  if ('VeMoreToken' in addresses) {
     addressToken[chainIds[chainId]].set(
-      getAddress(addresses['VeMore']),
+      getAddress(addresses['VeMoreToken']),
       new Token(
         'vMore Token',
         'vMore',
         chainIds[chainId],
-        getAddress(addresses['VeMore'])
+        getAddress(addresses['VeMoreToken'])
       )
     );
-    addressIcons.set(getAddress(addresses['VeMore']), [
+    addressIcons.set(getAddress(addresses['VeMoreToken']), [
       'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg',
     ]);
   }

@@ -2,7 +2,7 @@ import {
   ContractCall,
   Token,
   useContractCalls,
-  useEthers
+  useEthers,
 } from '@usedapp/core';
 import { getAddress, Interface } from 'ethers/lib/utils';
 import React from 'react';
@@ -18,7 +18,7 @@ export function LiquidationFeesCtxProvider({
   children,
 }: React.PropsWithChildren<any>) {
   const { chainId } = useEthers();
-  const address = useAddresses().StableLendingLiquidation;
+  const address = useAddresses().StableLending2Liquidation;
   const tokenFees = new Map<string, number>();
 
   function convert2ContractCall(aT: [string, Token]) {
@@ -34,7 +34,7 @@ export function LiquidationFeesCtxProvider({
   const results = useContractCalls(calls) ?? [];
   results?.forEach((result: any[] | undefined, index: number) => {
     if (result) {
-      const [tokenAddress, ] = tokensInQuestion[index];
+      const [tokenAddress] = tokensInQuestion[index];
       tokenFees.set(getAddress(tokenAddress), result[0].toNumber() / 100);
       // console.log(`Set Fee for ${token.name}: ${result[0]} (${tokenAddress}): ${result[0].toNumber()}`);
     } else {

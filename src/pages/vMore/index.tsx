@@ -1,8 +1,8 @@
 import { Box, Flex, Grid, Text } from '@chakra-ui/react';
 import * as React from 'react';
-import { EditMoreVeMore } from './edit/EditMoreVeMore';
-import { MoreBalanceVeMore } from './metadata/MoreBalanceVeMore';
-import { StakingAPRVeMore } from './metadata/StakingAPRVeMore';
+import { EditMoreVeMoreToken } from './edit/EditMoreVeMore';
+import { MoreBalanceVeMoreToken } from './metadata/MoreBalanceVeMore';
+import { StakingAPRVeMoreToken } from './metadata/StakingAPRVeMore';
 
 export default function vMorePage(props: React.PropsWithChildren<unknown>) {
   return (
@@ -19,9 +19,9 @@ export default function vMorePage(props: React.PropsWithChildren<unknown>) {
         gap={'20px'}
         marginTop={'30px'}
       >
-        <MoreBalanceVeMore />
-        <EditMoreVeMore />
-        <StakingAPRVeMore />
+        <MoreBalanceVeMoreToken />
+        <EditMoreVeMoreToken />
+        <StakingAPRVeMoreToken />
       </Grid>
       {props.children}
     </Flex>

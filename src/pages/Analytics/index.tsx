@@ -36,10 +36,9 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
   ).flat(1);
 
   const feeContractNames = [
-    'IsolatedLending',
-    'StableLending',
+    'StableLending2',
     'IsolatedLendingLiquidation',
-    'StableLendingLiquidation',
+    'StableLending2Liquidation',
   ];
   const blacklist = [
     'StrategyRegistry',

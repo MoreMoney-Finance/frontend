@@ -21,7 +21,7 @@ import {
 import { parseFloatNoNaN } from '../../../utils';
 
 export function StakeMoney(props: React.PropsWithChildren<unknown>) {
-  const xMoneyContract = useAddresses().xMoney;
+  const iMoneyContract = useAddresses().iMoney;
   const balanceCtx = useContext(WalletBalancesContext);
   const moneyToken = useAddresses().Stablecoin;
   const account = useContext(UserAddressContext);
@@ -36,7 +36,7 @@ export function StakeMoney(props: React.PropsWithChildren<unknown>) {
 
   const allowance = new CurrencyValue(
     token,
-    useTokenAllowance(token.address, account, xMoneyContract) ??
+    useTokenAllowance(token.address, account, iMoneyContract) ??
       BigNumber.from('0')
   );
   const { approveState, sendApprove } = useApproveTrans(token.address);
@@ -89,7 +89,7 @@ export function StakeMoney(props: React.PropsWithChildren<unknown>) {
           <EnsureWalletConnected>
             <Button
               variant={'submit-primary'}
-              onClick={() => sendApprove(xMoneyContract)}
+              onClick={() => sendApprove(iMoneyContract)}
               isLoading={
                 approveState.status == TxStatus.SUCCESS &&
                 allowance.gt(walletBalance) === false

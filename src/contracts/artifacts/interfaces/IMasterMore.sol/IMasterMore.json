@@ -202,7 +202,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "_newVeMoreBalance",
+          "name": "_newVeMoreTokenBalance",
           "type": "uint256"
         }
       ],

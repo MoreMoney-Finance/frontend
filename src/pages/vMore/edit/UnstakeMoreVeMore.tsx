@@ -6,8 +6,8 @@ import { useForm } from 'react-hook-form';
 import { useAddresses } from '../../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../../chain-interaction/tokens';
 import {
-  useGetStakedMoreVeMore,
-  useUnstakeVeMoreForMore,
+  useGetStakedMoreVeMoreToken,
+  useUnstakeVeMoreTokenForMore,
 } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';
@@ -16,18 +16,21 @@ import { parseFloatNoNaN } from '../../../utils';
 
 export function UnstakeMoreVeMore(props: React.PropsWithChildren<unknown>) {
   const { chainId } = useEthers();
-  const veMoreToken = getTokenFromAddress(chainId, useAddresses().VeMore);
+  const veMoreTokenToken = getTokenFromAddress(
+    chainId,
+    useAddresses().VeMoreToken
+  );
   const account = React.useContext(UserAddressContext);
-  const veMoreStaked = useGetStakedMoreVeMore(account!);
+  const veMoreTokenStaked = useGetStakedMoreVeMoreToken(account!);
 
-  const veMoreBalance = new CurrencyValue(
-    veMoreToken,
-    BigNumber.from(veMoreStaked)
+  const veMoreTokenBalance = new CurrencyValue(
+    veMoreTokenToken,
+    BigNumber.from(veMoreTokenStaked)
   );
 
-  const token = getTokenFromAddress(chainId, veMoreToken.address);
+  const token = getTokenFromAddress(chainId, veMoreTokenToken.address);
 
-  const { sendUnstake, unstakeState } = useUnstakeVeMoreForMore();
+  const { sendUnstake, unstakeState } = useUnstakeVeMoreTokenForMore();
 
   const {
     handleSubmit: handleSubmitDepForm,
@@ -37,15 +40,16 @@ export function UnstakeMoreVeMore(props: React.PropsWithChildren<unknown>) {
     watch,
   } = useForm();
 
-  const [veMoreUnstakeInput] = watch(['veMore-unstake']);
+  const [veMoreTokenUnstakeInput] = watch(['veMoreToken-unstake']);
 
   function onStakeMore(data: { [x: string]: any }) {
     console.log('data', data);
-    sendUnstake(token, data['veMore-unstake']);
+    sendUnstake(token, data['veMoreToken-unstake']);
   }
 
-  const stakeMoreDisabled = veMoreBalance.isZero();
-  const unstakeMoreButtonDisabled = parseFloatNoNaN(veMoreUnstakeInput) === 0;
+  const stakeMoreDisabled = veMoreTokenBalance.isZero();
+  const unstakeMoreButtonDisabled =
+    parseFloatNoNaN(veMoreTokenUnstakeInput) === 0;
 
   return (
     <form onSubmit={handleSubmitDepForm(onStakeMore)}>
@@ -56,21 +60,24 @@ export function UnstakeMoreVeMore(props: React.PropsWithChildren<unknown>) {
             color={'whiteAlpha.600'}
             lineHeight={'14px'}
           >
-            Unstake VeMore
+            Unstake VeMoreToken
           </Text>
         </Box>
         <TokenAmountInputField
-          name="veMore-unstake"
-          max={veMoreBalance}
+          name="veMoreToken-unstake"
+          max={veMoreTokenBalance}
           isDisabled={stakeMoreDisabled}
-          placeholder={'veMore to unstake'}
+          placeholder={'veMoreToken to unstake'}
           registerForm={registerDepForm}
           setValueForm={setValueDepForm}
           errorsForm={errorsDepForm}
           width="full"
         />
       </Flex>
-      <TransactionErrorDialog state={unstakeState} title={'Unstake veMore'} />
+      <TransactionErrorDialog
+        state={unstakeState}
+        title={'Unstake veMoreToken'}
+      />
       <Box marginTop={'10px'}>
         <Button
           variant={unstakeMoreButtonDisabled ? 'submit' : 'submit-primary'}
@@ -78,7 +85,7 @@ export function UnstakeMoreVeMore(props: React.PropsWithChildren<unknown>) {
           isLoading={isSubmittingDepForm}
           isDisabled={unstakeMoreButtonDisabled}
         >
-          Unstake VeMore
+          Unstake VeMoreToken
         </Button>
       </Box>
       {props.children}

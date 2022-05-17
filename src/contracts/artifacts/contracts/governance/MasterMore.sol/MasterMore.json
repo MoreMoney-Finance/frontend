@@ -482,8 +482,8 @@
           "type": "address"
         },
         {
-          "internalType": "contract IVeMore",
-          "name": "_veMore",
+          "internalType": "contract IVeMoreToken",
+          "name": "_veMoreToken",
           "type": "address"
         },
         {
@@ -893,12 +893,12 @@
     {
       "inputs": [
         {
-          "internalType": "contract IVeMore",
-          "name": "_newVeMore",
+          "internalType": "contract IVeMoreToken",
+          "name": "_newVeMoreToken",
           "type": "address"
         }
       ],
-      "name": "setVeMore",
+      "name": "setVeMoreToken",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -984,7 +984,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "_newVeMoreBalance",
+          "name": "_newVeMoreTokenBalance",
           "type": "uint256"
         }
       ],
@@ -1042,10 +1042,10 @@
     },
     {
       "inputs": [],
-      "name": "veMore",
+      "name": "veMoreToken",
       "outputs": [
         {
-          "internalType": "contract IVeMore",
+          "internalType": "contract IVeMoreToken",
           "name": "",
           "type": "address"
         }

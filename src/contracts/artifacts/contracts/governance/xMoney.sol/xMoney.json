@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "xMoney",
-  "sourceName": "contracts/governance/xMoney.sol",
+  "contractName": "iMoney",
+  "sourceName": "contracts/governance/iMoney.sol",
   "abi": [
     {
       "inputs": [

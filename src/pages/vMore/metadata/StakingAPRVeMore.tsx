@@ -15,10 +15,10 @@ import {
 } from '../../../chain-interaction/contracts';
 import { formatNumber } from '../../../utils';
 
-export function StakingAPRVeMore(props: React.PropsWithChildren<unknown>) {
+export function StakingAPRVeMoreToken(props: React.PropsWithChildren<unknown>) {
   const addresses = useAddresses();
   const totalSupplyStakedVMore = formatEther(
-    useTotalSupplyToken(addresses.VeMore, 'totalSupply', [], 0)
+    useTotalSupplyToken(addresses.VeMoreToken, 'totalSupply', [], 0)
   );
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>

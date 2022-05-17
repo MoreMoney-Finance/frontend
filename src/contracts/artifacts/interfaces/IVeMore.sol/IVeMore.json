@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "IVeMore",
-  "sourceName": "interfaces/IVeMore.sol",
+  "contractName": "IVeMoreToken",
+  "sourceName": "interfaces/IVeMoreToken.sol",
   "abi": [
     {
       "inputs": [

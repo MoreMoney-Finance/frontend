@@ -5,9 +5,9 @@ import * as React from 'react';
 import { useAddresses } from '../../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../../chain-interaction/tokens';
 import {
-  useClaimableVeMore,
+  useClaimableVeMoreToken,
   useClaimVeMore,
-  useGetStakedMoreVeMore,
+  useGetStakedMoreVeMoreToken,
 } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
@@ -17,28 +17,31 @@ export default function ClaimVeMore({
 }: React.PropsWithChildren<any>) {
   const { chainId } = useEthers();
   const account = React.useContext(UserAddressContext);
-  const veMoreToken = getTokenFromAddress(chainId, useAddresses().VeMore);
+  const veMoreTokenToken = getTokenFromAddress(
+    chainId,
+    useAddresses().VeMoreToken
+  );
   const moreToken = getTokenFromAddress(chainId, useAddresses().MoreToken);
 
-  const stakedMore = useGetStakedMoreVeMore(account!);
-  const claimableVeMore = useClaimableVeMore(account!);
+  const stakedMore = useGetStakedMoreVeMoreToken(account!);
+  const claimableVeMoreToken = useClaimableVeMoreToken(account!);
 
   const stakedMoreBalance = new CurrencyValue(
     moreToken,
     BigNumber.from(stakedMore)
   );
-  const claimableVeMoreBalance = new CurrencyValue(
-    veMoreToken,
-    BigNumber.from(claimableVeMore)
+  const claimableVeMoreTokenBalance = new CurrencyValue(
+    veMoreTokenToken,
+    BigNumber.from(claimableVeMoreToken)
   );
 
   const { sendClaim, claimState } = useClaimVeMore();
 
-  const disabledButton = BigNumber.from(claimableVeMore).isZero();
+  const disabledButton = BigNumber.from(claimableVeMoreToken).isZero();
 
   return (
     <>
-      <TransactionErrorDialog state={claimState} title="Claim VeMORE" />
+      <TransactionErrorDialog state={claimState} title="Claim VeMoreToken" />
       <Flex
         flexDirection={['column', 'column', 'row']}
         height={'100%'}
@@ -66,7 +69,9 @@ export default function ClaimVeMore({
             Claimable
           </Text>
           <Flex direction={'column'} justifyContent={'flex-start'}>
-            <Text variant="bodyHuge">{claimableVeMoreBalance.format()}</Text>
+            <Text variant="bodyHuge">
+              {claimableVeMoreTokenBalance.format()}
+            </Text>
           </Flex>
         </Flex>
       </Flex>

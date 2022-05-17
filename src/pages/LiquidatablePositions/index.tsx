@@ -14,23 +14,15 @@ import { LiquidatablePositionsTable } from './LiquidatablePositionsTable';
 
 export default function LiquidatablePositions() {
   const addresses = useAddresses();
-  const { sendLiquidation: sendDirectLiquidationLegacy } = useLiquidationTrans(
-    'IsolatedLending' in addresses
-      ? addresses.DirectFlashLiquidation
-      : addresses.DirectFlashStableLiquidation
-  );
+
   const { sendLiquidation: sendDirectLiquidationCurrent } = useLiquidationTrans(
-    'StableLending' in addresses
+    'StableLending2' in addresses
       ? addresses.DirectFlashStableLiquidation
       : addresses.DirectFlashLiquidation
   );
-  const { sendLiquidation: sendLPTLiquidationLegacy } = useLiquidationTrans(
-    'IsolatedLending' in addresses
-      ? addresses.LPTFlashLiquidation
-      : addresses.LPTFlashStableLiquidation
-  );
+
   const { sendLiquidation: sendLPTLiquidationCurrent } = useLiquidationTrans(
-    'StableLending' in addresses
+    'StableLending2' in addresses
       ? addresses.LPTFlashStableLiquidation
       : addresses.LPTFlashLiquidation
   );
@@ -50,17 +42,9 @@ export default function LiquidatablePositions() {
     string,
     Record<LiquidationType, (...args: any[]) => Promise<void>>
   > = {
-    ...('IsolatedLending' in addresses
+    ...('StableLending2' in addresses
       ? {
-        [addresses.IsolatedLending]: {
-          [LiquidationType.LPT]: sendLPTLiquidationLegacy,
-          [LiquidationType.Direct]: sendDirectLiquidationLegacy,
-        },
-      }
-      : {}),
-    ...('StableLending' in addresses
-      ? {
-        [addresses.StableLending]: {
+        [addresses.StableLending2]: {
           [LiquidationType.LPT]: sendLPTLiquidationCurrent,
           [LiquidationType.Direct]: sendDirectLiquidationCurrent,
         },
@@ -88,9 +72,7 @@ export default function LiquidatablePositions() {
             positions={liquidatablePositions}
             action={{
               callback: (pos) => {
-                const { liqType, router } = getLiquidationParams(
-                  pos
-                );
+                const { liqType, router } = getLiquidationParams(pos);
                 console.log('liquidating', pos, liqType, router);
                 console.log(lending2Liquidation);
                 if (getAddress(pos.token.address) in token2Liquidation) {

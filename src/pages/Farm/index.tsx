@@ -22,14 +22,14 @@ import {
   useParsedStakingMetadata,
   useSpecialRewardsData,
   useStable,
-  xMoneyTotalSupply,
+  iMoneyTotalSupply,
 } from '../../chain-interaction/contracts';
 import {
   useStake,
-  useStakeXMoney,
+  useStakeIMoney,
   useWithdraw,
   useWithdrawLaunchVestingTrans,
-  useWithdrawXMoney,
+  useWithdrawIMoney,
 } from '../../chain-interaction/transactions';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import {
@@ -68,7 +68,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
 
   const farmInfoIdx = (chainId?.toString() ?? '43114') as keyof typeof farminfo;
   const getLPTokenLinks = [
-    `https://avax.curve.fi/factory/${farminfo[farmInfoIdx].curvePoolIdx}/deposit`,
+    `https://avax.curve.fi/factory/${farminfo[farmInfoIdx]?.curvePoolIdx}/deposit`,
   ];
 
   const externalData: YieldFarmingData[] =
@@ -91,20 +91,20 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
 
   const balanceCtx = React.useContext(WalletBalancesContext);
   const stakingAddress = useAddresses().CurvePoolRewards;
-  const xMoneyAddress = useAddresses().xMoney;
+  const iMoneyAddress = useAddresses().iMoney;
   const { sendStake, stakeState } = useStake();
   const { sendWithdraw, withdrawState } = useWithdraw();
 
-  const { sendDepositXMoney, depositState } = useStakeXMoney();
-  const { sendWithdrawXMoney, withdrawState: withdrawXMoneyState } =
-    useWithdrawXMoney();
+  const { sendDepositIMoney, depositState } = useStakeIMoney();
+  const { sendWithdrawIMoney, withdrawState: withdrawIMoneyState } =
+    useWithdrawIMoney();
 
   const stable = useStable();
-  const xMoneyBalance =
-    balanceCtx.get(xMoneyAddress) ??
+  const iMoneyBalance =
+    balanceCtx.get(iMoneyAddress) ??
     new CurrencyValue(stable, BigNumber.from('0'));
 
-  const xMoneyTVL = formatEther(xMoneyTotalSupply(BigNumber.from('0')));
+  const iMoneyTVL = formatEther(iMoneyTotalSupply(BigNumber.from('0')));
 
   return (
     <>
@@ -302,69 +302,49 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
               />
             );
           })}
-          <AccordionItem
-            key={'xmoney-accordion'}
-            width={'full'}
-            style={{ boxSizing: 'border-box', ...accordionStyling }}
-          >
-            <AccordionButton width={'full'}>
-              <Grid
-                templateColumns="repeat(6, 1fr)"
-                gap={2}
-                w={'full'}
-                alignContent={'center'}
-                verticalAlign={'center'}
-              >
-                <Flex w={'full'} justifyContent={'center'}>
-                  <Box w={'fit-content'}>
-                    <Text>XMONEY</Text>
-                  </Box>
-                </Flex>
-                <Box>
-                  <Text>{xMoneyBalance.format({})}</Text>
-                </Box>
-                <Box>
-                  <Text>$ {formatNumber(parseFloat(xMoneyTVL))}</Text>
-                </Box>
-                <Flex w={'full'} justifyContent={'center'}>
-                  n/a
-                </Flex>
-                <Box>n/a%</Box>
-              </Grid>
-            </AccordionButton>
-            <AccordionPanel mt="16px">
-              <Grid templateColumns="repeat(10, 1fr)" gap={6}>
-                <GridItem w="100%" colSpan={5}>
-                  <Container
-                    variant={'token'}
-                    padding={'16px'}
-                    position="relative"
-                  >
-                    <DepositForm
-                      token={stable}
-                      stakingAddress={xMoneyAddress}
-                      sendStake={sendDepositXMoney}
-                      stakeState={depositState}
-                    />
-                  </Container>
-                </GridItem>
-                <GridItem w="100%" colSpan={5}>
-                  <Container
-                    variant={'token'}
-                    padding={'16px'}
-                    position="relative"
-                  >
-                    <WithdrawForm
-                      token={stable}
-                      stakedBalance={xMoneyBalance}
-                      sendWithdraw={sendWithdrawXMoney}
-                      withdrawState={withdrawXMoneyState}
-                    />
-                  </Container>
-                </GridItem>
-              </Grid>
-            </AccordionPanel>
-          </AccordionItem>
+          <FarmItem
+            key={'farmRow'}
+            asset="iMoney"
+            stake={iMoneyBalance.format({})}
+            tvl={`$ ${formatNumber(parseFloat(iMoneyTVL))}`}
+            reward={`n/a`}
+            apr={'n/a %'}
+            acquire={<></>}
+            content={
+              <AccordionPanel mt="16px">
+                <Grid templateColumns="repeat(10, 1fr)" gap={6}>
+                  <GridItem w="100%" colSpan={5}>
+                    <Container
+                      variant={'token'}
+                      padding={'16px'}
+                      position="relative"
+                    >
+                      <DepositForm
+                        token={stable}
+                        stakingAddress={iMoneyAddress}
+                        sendStake={sendDepositIMoney}
+                        stakeState={depositState}
+                      />
+                    </Container>
+                  </GridItem>
+                  <GridItem w="100%" colSpan={5}>
+                    <Container
+                      variant={'token'}
+                      padding={'16px'}
+                      position="relative"
+                    >
+                      <WithdrawForm
+                        token={stable}
+                        stakedBalance={iMoneyBalance}
+                        sendWithdraw={sendWithdrawIMoney}
+                        withdrawState={withdrawIMoneyState}
+                      />
+                    </Container>
+                  </GridItem>
+                </Grid>
+              </AccordionPanel>
+            }
+          />
         </Accordion>
         {params.children}
       </Box>

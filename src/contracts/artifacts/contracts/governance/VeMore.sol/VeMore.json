@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "VeMore",
-  "sourceName": "contracts/governance/VeMore.sol",
+  "contractName": "VeMoreToken",
+  "sourceName": "contracts/governance/VeMoreToken.sol",
   "abi": [
     {
       "anonymous": false,
@@ -343,7 +343,7 @@
           "type": "address"
         },
         {
-          "internalType": "contract IVeMoreNFT",
+          "internalType": "contract IVeMoreTokenNFT",
           "name": "_nft",
           "type": "address"
         }
@@ -429,7 +429,7 @@
       "name": "nft",
       "outputs": [
         {
-          "internalType": "contract IVeMoreNFT",
+          "internalType": "contract IVeMoreTokenNFT",
           "name": "",
           "type": "address"
         }
@@ -566,7 +566,7 @@
     {
       "inputs": [
         {
-          "internalType": "contract IVeMoreNFT",
+          "internalType": "contract IVeMoreTokenNFT",
           "name": "_nft",
           "type": "address"
         }

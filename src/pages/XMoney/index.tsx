@@ -11,7 +11,7 @@ import * as React from 'react';
 import { StakeMoney } from './components/StakeMoney';
 import { UnstakeMoney } from './components/UnstakeMoney';
 
-export function XMoneyPage(props: React.PropsWithChildren<unknown>) {
+export function IMoneyPage(props: React.PropsWithChildren<unknown>) {
   return (
     <Flex
       alignItems="center"

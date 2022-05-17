@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "IVeMoreNFT",
-  "sourceName": "interfaces/IVeMoreNFT.sol",
+  "contractName": "IVeMoreTokenNFT",
+  "sourceName": "interfaces/IVeMoreTokenNFT.sol",
   "abi": [
     {
       "anonymous": false,
@@ -126,7 +126,7 @@
           "type": "uint256"
         }
       ],
-      "name": "VeMoreCreation",
+      "name": "VeMoreTokenCreation",
       "type": "event"
     },
     {
@@ -137,7 +137,7 @@
           "type": "uint256"
         }
       ],
-      "name": "VeMorees",
+      "name": "VeMoreTokenes",
       "outputs": [
         {
           "internalType": "uint32",
@@ -195,7 +195,7 @@
     },
     {
       "inputs": [],
-      "name": "VeMoreesLength",
+      "name": "VeMoreTokenesLength",
       "outputs": [
         {
           "internalType": "uint256",
@@ -328,7 +328,7 @@
           "type": "uint256"
         }
       ],
-      "name": "getVeMoreDetails",
+      "name": "getVeMoreTokenDetails",
       "outputs": [
         {
           "internalType": "uint16",
@@ -806,7 +806,7 @@
     },
     {
       "inputs": [],
-      "name": "withdrawVeMore",
+      "name": "withdrawVeMoreToken",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"

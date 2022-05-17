@@ -4,24 +4,24 @@ import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useAddresses } from '../../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../../chain-interaction/tokens';
-import { useBalanceOfVeMore } from '../../../chain-interaction/transactions';
+import { useBalanceOfVeMoreToken } from '../../../chain-interaction/transactions';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../contexts/WalletBalancesContext';
 
-export function MoreBalanceVeMore() {
+export function MoreBalanceVeMoreToken() {
   const { chainId } = useEthers();
   const account = React.useContext(UserAddressContext);
   const moreToken = getTokenFromAddress(chainId, useAddresses().MoreToken);
-  const veMoreToken = getTokenFromAddress(chainId, useAddresses().VeMore);
+  const veMoreToken = getTokenFromAddress(chainId, useAddresses().VeMoreToken);
 
   const moreBalance =
     useWalletBalance(moreToken.address) ??
     new CurrencyValue(moreToken, BigNumber.from('0'));
-  const veMoreBalanceOf = useBalanceOfVeMore(account!);
+  const veMoreTokenBalanceOf = useBalanceOfVeMoreToken(account!);
 
-  const veMoreBalance = new CurrencyValue(
+  const veMoreTokenBalance = new CurrencyValue(
     veMoreToken,
-    BigNumber.from(veMoreBalanceOf)
+    BigNumber.from(veMoreTokenBalanceOf)
   );
 
   return (
@@ -58,7 +58,7 @@ export function MoreBalanceVeMore() {
               borderRadius="100%"
             />
             <Flex direction={'column'} padding="16px" justifyContent={'center'}>
-              <Text variant="bodyHuge">{veMoreBalance.format()}</Text>
+              <Text variant="bodyHuge">{veMoreTokenBalance.format()}</Text>
             </Flex>
           </Flex>
         </Flex>

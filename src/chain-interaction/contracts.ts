@@ -23,17 +23,16 @@ import {
 import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
-import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
+import InterestRateController from '../contracts/artifacts/contracts/InterestRateController.sol/InterestRateController.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
 import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
-import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
+import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
-import InterestRateController from '../contracts/artifacts/contracts/InterestRateController.sol/InterestRateController.json';
 import { parseFloatCurrencyValue } from '../utils';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 // import earnedRewards from '../constants/earned-rewards.json';
@@ -48,7 +47,6 @@ export const addresses: Record<
 export type DeploymentAddresses = {
   Fund: string;
   Roles: string;
-  IsolatedLending: string;
   IsolatedLendingLiquidation: string;
   DependencyController: string;
   OracleRegistry: string;
@@ -70,7 +68,6 @@ export type DeploymentAddresses = {
   MoreToken: string;
   xMore: string;
 
-  StableLending: string;
   StableLendingLiquidation: string;
   DirectFlashStableLiquidation: string;
   LPTFlashStableLiquidation: string;
@@ -89,8 +86,14 @@ export type DeploymentAddresses = {
   LiquidYieldStrategy: string;
   MultiTraderJoeMasterChef3Strategy: string;
   InterestRateController: string;
-  VeMore: string;
-  xMoney: string;
+  VeMoreToken: string;
+  VeMoreStaking: string;
+  iMoney: string;
+  StableLending2: string;
+  YieldYakAVAXStrategy2: string;
+  YieldYakStrategy2: string;
+  WrapNativeStableLending2: string;
+  StableLending2Liquidation: string;
 };
 
 export function useAddresses() {
@@ -108,24 +111,18 @@ export function useIsolatedLendingView(
 ) {
   const addresses = useAddresses();
 
-  const abi = new Interface(IsolatedLending.abi);
+  const abi = new Interface(StableLending2.abi);
 
   return {
     legacy: (useContractCall({
       abi,
-      address:
-        'IsolatedLending' in addresses
-          ? addresses.IsolatedLending
-          : addresses.StableLending,
+      address: addresses.StableLending2,
       method,
       args,
     }) ?? [defaultResult])[0],
     current: (useContractCall({
       abi,
-      address:
-        'StableLending' in addresses
-          ? addresses.StableLending
-          : addresses.IsolatedLending,
+      address: addresses.StableLending2,
       method,
       args,
     }) ?? [defaultResult])[0],
@@ -209,20 +206,20 @@ function parseStratMeta(
       strategyAddress === addresses[chainId].LiquidYieldStrategy
         ? token.address === '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
           ? (yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-              .totalApy *
+              ?.totalApy *
               0.65 *
               0.8) /
             0.5
           : (yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-              .totalApy *
+              ?.totalApy *
               0.3 *
               0.2) /
               0.5 +
             7.2
         : underlyingAddress in yyMetadata
-        ? yyMetadata[underlyingAddress].apy * 0.9
+        ? yyMetadata[underlyingAddress]?.apy * 0.9
         : token.address in yieldMonitor
-        ? yieldMonitor[token.address].totalApy
+        ? yieldMonitor[token.address]?.totalApy
         : token.address in additionalYield &&
           strategyAddress in additionalYield[token.address]
         ? additionalYield[token.address][strategyAddress]
@@ -232,28 +229,28 @@ function parseStratMeta(
         ? strategyAddress === addresses[chainId].LiquidYieldStrategy
           ? token.address === '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
             ? ((yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-                .totalApy -
+                ?.totalApy -
                 parseFloat(
                   yieldMonitor[
                     '0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'
-                  ].apy.toString()
+                  ]?.apy.toString()
                 )) *
                 0.65 *
                 0.8) /
               0.5
             : ((yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-                .totalApy -
+                ?.totalApy -
                 parseFloat(
                   yieldMonitor[
                     '0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'
-                  ].apy.toString()
+                  ]?.apy.toString()
                 )) *
                 0.3 *
                 0.2) /
               0.5
           : token.address in yieldMonitor
-          ? yieldMonitor[token.address].totalApy -
-            parseFloat(yieldMonitor[token.address].apy.toString())
+          ? yieldMonitor[token.address]?.totalApy -
+            parseFloat(yieldMonitor[token.address]?.apy.toString())
           : token.address in additionalYield &&
             strategyAddress in additionalYield[token.address]
           ? additionalYield[token.address][strategyAddress]
@@ -265,7 +262,7 @@ function parseStratMeta(
       token.address !== '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
         ? 7.2
         : row.yieldType === 0 && token.address in yieldMonitor
-        ? parseFloat(yieldMonitor[token.address].apy.toString())
+        ? parseFloat(yieldMonitor[token.address]?.apy.toString())
         : strategyAddress === addresses[chainId].YieldYakStrategy ||
           strategyAddress === addresses[chainId].YieldYakAVAXStrategy
         ? APY
@@ -388,10 +385,9 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const addresses = useAddresses();
 
   const token2Strat = {
-    ['0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE']:
-      addresses.LiquidYieldStrategy,
+    ['0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE']: addresses.YieldYakStrategy2,
     ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']:
-      addresses.YieldYakAVAXStrategy,
+      addresses.YieldYakAVAXStrategy2,
     ['0x60781C2586D68229fde47564546784ab3fACA982']: addresses.YieldYakStrategy,
     ['0x59414b3089ce2AF0010e7523Dea7E2b35d776ec7']: addresses.YieldYakStrategy,
     ['0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd']: addresses.YieldYakStrategy,
@@ -408,11 +404,11 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       addresses.MultiTraderJoeMasterChef3Strategy,
   };
 
-  const masterChef2Tokens = [
-    '0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33',
-    '0xa389f9430876455c36478deea9769b7ca4e3ddb1',
-    '0xed8cbd9f0ce3c6986b22002f03c6475ceb7a6256',
-  ].map(getAddress);
+  // const masterChef2Tokens = [
+  //   '0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33',
+  //   '0xa389f9430876455c36478deea9769b7ca4e3ddb1',
+  //   '0xed8cbd9f0ce3c6986b22002f03c6475ceb7a6256',
+  // ].map(getAddress);
 
   const tokens = Object.keys(token2Strat);
   tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
@@ -421,41 +417,39 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
   tokens.push('0x454E67025631C065d3cFAD6d71E6892f74487a15');
   strats.push(addresses.YieldYakStrategy);
-
-  const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
-
   tokens.push('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');
   strats.push(addresses.sJoeStrategy);
 
+  const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
+
   React.useEffect(() => {
     async function getData() {
-      const provider = new ethers.providers.JsonRpcProvider(
-        'https://api.avax.network/ext/bc/C/rpc'
-      );
+      const provider = new ethers.providers.JsonRpcProvider();
 
       const stratViewer = new ethers.Contract(
         addresses.StrategyViewer,
         new Interface(StrategyViewer.abi),
         provider
       );
-
       const normalResults = await stratViewer.viewMetadata(
-        addresses.StableLending,
+        addresses.StableLending2,
         tokens,
         strats
       );
-      const noHarvestBalanceResults =
-        await stratViewer.viewMetadataNoHarvestBalance(
-          addresses.StableLending,
-          addresses.OracleRegistry,
-          addresses.Stablecoin,
-          masterChef2Tokens,
-          Array(masterChef2Tokens.length).fill(
-            addresses.TraderJoeMasterChef2Strategy
-          )
-        );
+      // const noHarvestBalanceResults =
+      //   await stratViewer.viewMetadataNoHarvestBalance(
+      //     addresses.StableLending2,
+      //     addresses.OracleRegistry,
+      //     addresses.Stablecoin,
+      //     masterChef2Tokens,
+      //     []
+      //     // Array(masterChef2Tokens.length).fill(
+      //     //   addresses.TraderJoeMasterChef2Strategy
+      //     // )
+      //   );
 
-      const results = [...normalResults, ...noHarvestBalanceResults];
+      // const results = [...normalResults, ...noHarvestBalanceResults];
+      const results = [...normalResults];
 
       const reduceFn = (result: StrategyMetadata, row: RawStratMetaRow) => {
         const parsedRow = parseStratMeta(
@@ -488,6 +482,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       balancesCtx &&
       yyMetadata &&
       globalMoneyAvailable != 0 &&
+      // strats[0] !== undefined &&
       yieldMonitor &&
       Object.values(stratMeta).length === 0
     ) {
@@ -620,16 +615,11 @@ export function useIsolatedPositionMetadata(
   }
 
   const addresses = useAddresses();
-  const legacyResults =
-    'IsolatedLending' in addresses
-      ? legacy.reduce(reduceFn(addresses.IsolatedLending), {})
-      : {};
-  return 'StableLending' in addresses
-    ? current.reduce(reduceFn(addresses.StableLending), legacyResults)
-    : legacyResults;
+  const legacyResults = {};
+  return current.reduce(reduceFn(addresses.StableLending2), legacyResults);
 }
 
-export function xMoneyTotalSupply(defaultResult: any) {
+export function iMoneyTotalSupply(defaultResult: any) {
   const address = useAddresses().xMore;
   const abi = new Interface(xMore.abi);
   return (useContractCall({
@@ -742,20 +732,16 @@ export function useUpdatedPositions(timeStart: number) {
     return Array(endPeriod - startPeriod)
       .fill(startPeriod)
       .map((x, i) => ({
-        abi: new Interface(IsolatedLending.abi),
+        abi: new Interface(StableLending2.abi),
         address: trancheContract,
         method: 'viewPositionsByTrackingPeriod',
         args: [x + i],
       }));
   }
 
-  const legacyRows =
-    (useContractCalls(
-      args(addresses.IsolatedLending)
-    ) as RawPositionMetaRow[][][]) || [];
   const currentRows =
     (useContractCalls(
-      args(addresses.StableLending)
+      args(addresses.StableLending2)
     ) as RawPositionMetaRow[][][]) || [];
 
   function parseRows(rows: RawPositionMetaRow[][][], trancheContract: string) {
@@ -766,11 +752,8 @@ export function useUpdatedPositions(timeStart: number) {
       .map((row) => parsePositionMeta(row, stable, trancheContract));
   }
   return [
-    ...((legacyRows.length > 0 &&
-      parseRows(legacyRows, addresses.IsolatedLending)) ||
-      []),
     ...((currentRows.length > 0 &&
-      parseRows(currentRows, addresses.StableLending)) ||
+      parseRows(currentRows, addresses.StableLending2)) ||
       []),
   ];
 }
@@ -779,8 +762,7 @@ export function useUpdatedMetadataLiquidatablePositions(
   positions?: ParsedPositionMetaRow[]
 ) {
   const abi = {
-    [useAddresses().IsolatedLending]: new Interface(IsolatedLending.abi),
-    [useAddresses().StableLending]: new Interface(StableLending.abi),
+    [useAddresses().StableLending2]: new Interface(StableLending2.abi),
   };
 
   const positionCalls: ContractCall[] = positions!.map((pos) => {

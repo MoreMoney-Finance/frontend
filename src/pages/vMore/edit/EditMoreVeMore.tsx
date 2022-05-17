@@ -12,7 +12,7 @@ import ClaimVeMore from './ClaimVeMore';
 import { StakeMoreVeMore } from './StakeMoreVeMore';
 import { UnstakeMoreVeMore } from './UnstakeMoreVeMore';
 
-export function EditMoreVeMore(props: React.PropsWithChildren<unknown>) {
+export function EditMoreVeMoreToken(props: React.PropsWithChildren<unknown>) {
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
       <Container variant={'token'} padding={'35px 20px 20px 20px'}>

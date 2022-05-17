@@ -8,7 +8,7 @@ import { TxStatus, useAddresses } from '../../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../../chain-interaction/tokens';
 import {
   useApproveTrans,
-  useStakeMoreForVeMore,
+  useStakeMoreForVeMoreToken,
 } from '../../../chain-interaction/transactions';
 import { EnsureWalletConnected } from '../../../components/account/EnsureWalletConnected';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
@@ -21,7 +21,7 @@ import {
 import { parseFloatNoNaN } from '../../../utils';
 
 export function StakeMoreVeMore(props: React.PropsWithChildren<unknown>) {
-  const veMoreContract = useAddresses().VeMore;
+  const veMoreTokenContract = useAddresses().VeMoreStaking;
   const balanceCtx = useContext(WalletBalancesContext);
   const moreToken = useAddresses().MoreToken;
   const account = useContext(UserAddressContext);
@@ -32,11 +32,11 @@ export function StakeMoreVeMore(props: React.PropsWithChildren<unknown>) {
     useWalletBalance(token.address) ??
     new CurrencyValue(token, BigNumber.from('0'));
 
-  const { sendStake, stakeState } = useStakeMoreForVeMore();
+  const { sendStake, stakeState } = useStakeMoreForVeMoreToken();
 
   const allowance = new CurrencyValue(
     token,
-    useTokenAllowance(token.address, account, veMoreContract) ??
+    useTokenAllowance(token.address, account, veMoreTokenContract) ??
       BigNumber.from('0')
   );
   const { approveState, sendApprove } = useApproveTrans(token.address);
@@ -89,7 +89,7 @@ export function StakeMoreVeMore(props: React.PropsWithChildren<unknown>) {
           <EnsureWalletConnected>
             <Button
               variant={'submit-primary'}
-              onClick={() => sendApprove(veMoreContract)}
+              onClick={() => sendApprove(veMoreTokenContract)}
               isLoading={
                 approveState.status == TxStatus.SUCCESS &&
                 allowance.gt(walletBalance) === false

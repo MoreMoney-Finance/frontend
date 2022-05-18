@@ -25,6 +25,7 @@ import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.jso
 import WrapNativeStableLending2 from '../contracts/artifacts/contracts/WrapNativeStableLending2.sol/WrapNativeStableLending2.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import VeMoreToken from '../contracts/artifacts/contracts/governance/VeMoreToken.sol/VeMoreToken.json';
+import VeMoreStaking from '../contracts/artifacts/contracts/governance/VeMoreStaking.sol/VeMoreStaking.json';
 import iMoney from '../contracts/artifacts/contracts/rewards/iMoney.sol/iMoney.json';
 import {
   useAddresses,
@@ -92,8 +93,11 @@ export function useClaimableVeMoreToken(account: string) {
 
 export function useClaimVeMore() {
   const addresses = useAddresses();
-  const cprAddress = addresses.VeMoreToken;
-  const cprContract = new Contract(cprAddress, new Interface(VeMoreToken.abi));
+  const cprAddress = addresses.VeMoreStaking;
+  const cprContract = new Contract(
+    cprAddress,
+    new Interface(VeMoreStaking.abi)
+  );
   const { send, state } = useContractFunction(cprContract, 'claim');
 
   return {
@@ -106,8 +110,11 @@ export function useClaimVeMore() {
 
 export function useUnstakeVeMoreTokenForMore() {
   const addresses = useAddresses();
-  const cprAddress = addresses.VeMoreToken;
-  const cprContract = new Contract(cprAddress, new Interface(VeMoreToken.abi));
+  const cprAddress = addresses.VeMoreStaking;
+  const cprContract = new Contract(
+    cprAddress,
+    new Interface(VeMoreStaking.abi)
+  );
   const { send, state } = useContractFunction(cprContract, 'withdraw');
 
   return {
@@ -122,9 +129,12 @@ export function useUnstakeVeMoreTokenForMore() {
 export function useStakeMoreForVeMoreToken() {
   // TODO: change cprAddress and the ABI to use the correct address
   const addresses = useAddresses();
-  const cprAddress = addresses.VeMoreToken;
+  const cprAddress = addresses.VeMoreStaking;
 
-  const cprContract = new Contract(cprAddress, new Interface(VeMoreToken.abi));
+  const cprContract = new Contract(
+    cprAddress,
+    new Interface(VeMoreStaking.abi)
+  );
   const { send, state } = useContractFunction(cprContract, 'deposit');
 
   return {

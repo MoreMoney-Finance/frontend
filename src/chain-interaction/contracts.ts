@@ -719,10 +719,10 @@ export function useYieldConversionStrategyView(
   }) ?? [defaultResult])[0];
 }
 
-const ONE_WEEK_SECONDS = 60 * 60 * 24 * 7;
+const TWELVE_HOURS_SECONDS = 43200;
 export function useUpdatedPositions(timeStart: number) {
-  const endPeriod = 1 + Math.round(Date.now() / 1000 / ONE_WEEK_SECONDS);
-  const startPeriod = Math.floor(timeStart / 1000 / ONE_WEEK_SECONDS) - 2;
+  const endPeriod = 1 + Math.round(Date.now() / 1000 / TWELVE_HOURS_SECONDS);
+  const startPeriod = Math.floor(timeStart / 1000 / TWELVE_HOURS_SECONDS) - 2;
   // console.log('endPeriod', endPeriod);
   // console.log('startPeriod', startPeriod);
   const stable = useStable();

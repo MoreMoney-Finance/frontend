@@ -51,7 +51,8 @@ export function LiquidatablePositionsCtxProvider({
   });
   useEffect(() => {
     fetch(
-      'https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/updated-positions.json'
+      'https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/v2-updated-positions.json'
+      // 'https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/updated-positions.json'
     )
       .then((response) => response.json())
       .then(setCachedPosition)

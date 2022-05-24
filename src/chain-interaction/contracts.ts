@@ -27,6 +27,7 @@ import InterestRateController from '../contracts/artifacts/contracts/InterestRat
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
+// import StableLending2InterestForwarder from '../contracts/artifacts/contracts/rewards/StableLending2InterestForwarder.sol/StableLending2InterestForwarder.json';
 import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
 import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
@@ -88,12 +89,12 @@ export type DeploymentAddresses = {
   InterestRateController: string;
   VeMoreToken: string;
   VeMoreStaking: string;
-  iMoney: string;
   StableLending2: string;
   YieldYakAVAXStrategy2: string;
   YieldYakStrategy2: string;
   WrapNativeStableLending2: string;
   StableLending2Liquidation: string;
+  StableLending2InterestForwarder: string;
 };
 
 export function useAddresses() {
@@ -482,7 +483,6 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       balancesCtx &&
       yyMetadata &&
       globalMoneyAvailable != 0 &&
-      // strats[0] !== undefined &&
       yieldMonitor &&
       Object.values(stratMeta).length === 0
     ) {

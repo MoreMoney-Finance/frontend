@@ -12,7 +12,7 @@ import { parseFloatNoNaN } from '../../../utils';
 
 export function UnstakeMoney(props: React.PropsWithChildren<unknown>) {
   const balanceCtx = React.useContext(WalletBalancesContext);
-  const iMoney = useAddresses().iMoney;
+  const iMoney = useAddresses().StableLending2InterestForwarder;
   const { chainId } = useEthers();
 
   const token = getTokenFromAddress(chainId, iMoney);

@@ -21,7 +21,7 @@ import {
 import { parseFloatNoNaN } from '../../../utils';
 
 export function StakeMoney(props: React.PropsWithChildren<unknown>) {
-  const iMoneyContract = useAddresses().iMoney;
+  const iMoneyContract = useAddresses().StableLending2InterestForwarder;
   const balanceCtx = useContext(WalletBalancesContext);
   const moneyToken = useAddresses().Stablecoin;
   const account = useContext(UserAddressContext);

@@ -91,7 +91,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
 
   const balanceCtx = React.useContext(WalletBalancesContext);
   const stakingAddress = useAddresses().CurvePoolRewards;
-  const iMoneyAddress = useAddresses().iMoney;
+  const iMoneyAddress = useAddresses().StableLending2InterestForwarder;
   const { sendStake, stakeState } = useStake();
   const { sendWithdraw, withdrawState } = useWithdraw();
 

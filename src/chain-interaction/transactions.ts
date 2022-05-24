@@ -26,7 +26,7 @@ import WrapNativeStableLending2 from '../contracts/artifacts/contracts/WrapNativ
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import VeMoreToken from '../contracts/artifacts/contracts/governance/VeMoreToken.sol/VeMoreToken.json';
 import VeMoreStaking from '../contracts/artifacts/contracts/governance/VeMoreStaking.sol/VeMoreStaking.json';
-import iMoney from '../contracts/artifacts/contracts/rewards/iMoney.sol/iMoney.json';
+import StableLending2InterestForwarder from '../contracts/artifacts/contracts/rewards/StableLending2InterestForwarder.sol/StableLending2InterestForwarder.json';
 import {
   useAddresses,
   useRegisteredOracle,
@@ -199,8 +199,11 @@ export function useClaimReward() {
 }
 
 export function useStakeIMoney() {
-  const cprAddress = useAddresses().iMoney;
-  const cprContract = new Contract(cprAddress, new Interface(iMoney.abi));
+  const cprAddress = useAddresses().StableLending2InterestForwarder;
+  const cprContract = new Contract(
+    cprAddress,
+    new Interface(StableLending2InterestForwarder.abi)
+  );
   const { send, state } = useContractFunction(cprContract, 'deposit');
 
   return {
@@ -213,8 +216,11 @@ export function useStakeIMoney() {
 }
 
 export function useWithdrawIMoney() {
-  const cprAddress = useAddresses().iMoney;
-  const cprContract = new Contract(cprAddress, new Interface(iMoney.abi));
+  const cprAddress = useAddresses().StableLending2InterestForwarder;
+  const cprContract = new Contract(
+    cprAddress,
+    new Interface(StableLending2InterestForwarder.abi)
+  );
   const { send, state } = useContractFunction(cprContract, 'withdraw');
 
   return {

@@ -32,6 +32,7 @@
     "SimpleHoldingStrategy": "0x21C971D78E1A398710d964Ed1AC4C80E5940ed25",
     "StableLending": "0x23082269Ea17C4f5103bAB6cD9DFE1f6CE138616",
     "StableLendingLiquidation": "0xB9961f2E9C9Caa52AaBdf83ADC1Ca0AD9A2DeC4f",
+    "StableLending2InterestForwarder": "0x2A2Cca8C14b08Dc0121Be1490F39B0148D792642",
     "Stablecoin": "0x0f577433Bf59560Ef2a79c124E9Ff99fCa258948",
     "StrategyRegistry": "0x5C836f816732F064D6e985D8e38f4f78d594716e",
     "StrategyTokenActivation": "0x32A69aaCf76d0521A664D1F25b59ed0c8d692ba4",

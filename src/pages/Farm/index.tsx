@@ -204,15 +204,16 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           )}
           {stakeMeta.map((item, index) => {
             const { totalRewards } = item;
-
             const token = item.stakingToken;
-
+            if (item?.stakedBalance?.currency === undefined) {
+              return <></>;
+            }
             return (
               <FarmItem
                 key={'farmRowStakeMeta' + index}
                 asset={<TokenDescription token={item.stakingToken} />}
-                stake={`${item.stakedBalance.format({ suffix: '' })}`}
-                tvl={`$ ${item.tvl.format({ suffix: '' })}`}
+                stake={`${item.stakedBalance?.format({ suffix: '' })}`}
+                tvl={`$ ${item.tvl?.format({ suffix: '' })}`}
                 reward={
                   totalRewards.isZero() ? (
                     <Box w={'fit-content'}>

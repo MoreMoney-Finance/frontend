@@ -70,8 +70,8 @@ export function useBalanceOfVeMoreToken(account: string) {
 }
 
 export function useGetStakedMoreVeMoreToken(account: string) {
-  const address = useAddresses().VeMoreToken;
-  const abi = new Interface(VeMoreToken.abi);
+  const address = useAddresses().VeMoreStaking;
+  const abi = new Interface(VeMoreStaking.abi);
   return (useContractCall({
     abi,
     address,

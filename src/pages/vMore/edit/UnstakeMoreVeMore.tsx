@@ -67,17 +67,14 @@ export function UnstakeMoreVeMore(props: React.PropsWithChildren<unknown>) {
           name="veMoreToken-unstake"
           max={veMoreTokenBalance}
           isDisabled={stakeMoreDisabled}
-          placeholder={'veMoreToken to unstake'}
+          placeholder={'MORE to unstake'}
           registerForm={registerDepForm}
           setValueForm={setValueDepForm}
           errorsForm={errorsDepForm}
           width="full"
         />
       </Flex>
-      <TransactionErrorDialog
-        state={unstakeState}
-        title={'Unstake veMoreToken'}
-      />
+      <TransactionErrorDialog state={unstakeState} title={'Unstake MORE'} />
       <Box marginTop={'10px'}>
         <Button
           variant={unstakeMoreButtonDisabled ? 'submit' : 'submit-primary'}
@@ -85,7 +82,7 @@ export function UnstakeMoreVeMore(props: React.PropsWithChildren<unknown>) {
           isLoading={isSubmittingDepForm}
           isDisabled={unstakeMoreButtonDisabled}
         >
-          Unstake VeMoreToken
+          Unstake MORE
         </Button>
       </Box>
       {props.children}

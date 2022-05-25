@@ -196,18 +196,18 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
     );
   }
 
-  if ('iMoney' in addresses) {
+  if ('StableLending2InterestForwarder' in addresses) {
     addressToken[chainIds[chainId]].set(
-      getAddress(addresses.iMoney),
+      getAddress(addresses.StableLending2InterestForwarder),
       new Token(
-        'IMoney',
+        'iMoney',
         'iMoney',
         chainIds[chainId],
-        getAddress(addresses.iMoney),
+        getAddress(addresses.StableLending2InterestForwarder),
         18
       )
     );
-    addressIcons.set(getAddress(addresses.iMoney), [
+    addressIcons.set(getAddress(addresses.StableLending2InterestForwarder), [
       'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Coin-Logo-FINAL.jpg',
     ]);
   }

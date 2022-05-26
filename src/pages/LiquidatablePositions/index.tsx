@@ -16,15 +16,11 @@ export default function LiquidatablePositions() {
   const addresses = useAddresses();
 
   const { sendLiquidation: sendDirectLiquidationCurrent } = useLiquidationTrans(
-    'StableLending2' in addresses
-      ? addresses.DirectFlashStableLiquidation
-      : addresses.DirectFlashLiquidation
+    addresses.DirectFlashStable2Liquidation
   );
 
   const { sendLiquidation: sendLPTLiquidationCurrent } = useLiquidationTrans(
-    'StableLending2' in addresses
-      ? addresses.LPTFlashStableLiquidation
-      : addresses.LPTFlashLiquidation
+    addresses.LPTFlashStable2Liquidation
   );
 
   const { sendLiquidation: sendWsMaxiLiquidation } = useLiquidationTrans(

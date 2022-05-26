@@ -70,7 +70,9 @@ export type DeploymentAddresses = {
 
   StableLendingLiquidation: string;
   DirectFlashStableLiquidation: string;
+  DirectFlashStable2Liquidation: string;
   LPTFlashStableLiquidation: string;
+  LPTFlashStable2Liquidation: string;
   wsMAXIStableLiquidation: string;
   xJoeStableLiquidation: string;
   WrapNativeStableLending: string;

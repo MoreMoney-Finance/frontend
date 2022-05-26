@@ -15,7 +15,6 @@ import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.j
 import DirectFlashLiquidation from '../contracts/artifacts/contracts/liquidation/DirectFlashLiquidation.sol/DirectFlashLiquidation.json';
 import StableLending2Liquidation from '../contracts/artifacts/contracts/liquidation/StableLending2Liquidation.sol/StableLending2Liquidation.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
-import CurvePoolRewards from '../contracts/artifacts/contracts/rewards/CurvePoolRewards.sol/CurvePoolRewards.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
@@ -179,25 +178,6 @@ export function useStakeMore() {
   };
 }
 
-export function useClaimReward() {
-  const ilAddress = useAddresses().CurvePoolRewards;
-  const ilContract = new Contract(
-    ilAddress,
-    new Interface(CurvePoolRewards.abi)
-  );
-  const { send, state } = useContractFunction(
-    ilContract,
-    'withdrawVestedReward'
-  );
-
-  return {
-    sendClaim: () => {
-      return send();
-    },
-    claimState: state,
-  };
-}
-
 export function useStakeIMoney() {
   const cprAddress = useAddresses().StableLending2InterestForwarder;
   const cprContract = new Contract(
@@ -225,40 +205,6 @@ export function useWithdrawIMoney() {
 
   return {
     sendWithdrawIMoney: (withdrawToken: Token, amount: string | number) => {
-      const wAmount = parseUnits(amount.toString(), withdrawToken.decimals);
-      return send(wAmount);
-    },
-    withdrawState: state,
-  };
-}
-
-export function useStake() {
-  const cprAddress = useAddresses().CurvePoolRewards;
-  const cprContract = new Contract(
-    cprAddress,
-    new Interface(CurvePoolRewards.abi)
-  );
-  const { send, state } = useContractFunction(cprContract, 'stake');
-
-  return {
-    sendStake: (stakeToken: Token, amount: string | number) => {
-      const sAmount = parseUnits(amount.toString(), stakeToken.decimals);
-      return send(sAmount);
-    },
-    stakeState: state,
-  };
-}
-
-export function useWithdraw() {
-  const cprAddress = useAddresses().CurvePoolRewards;
-  const cprContract = new Contract(
-    cprAddress,
-    new Interface(CurvePoolRewards.abi)
-  );
-  const { send, state } = useContractFunction(cprContract, 'withdraw');
-
-  return {
-    sendWithdraw: (withdrawToken: Token, amount: string | number) => {
       const wAmount = parseUnits(amount.toString(), withdrawToken.decimals);
       return send(wAmount);
     },

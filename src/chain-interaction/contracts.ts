@@ -62,7 +62,6 @@ export type DeploymentAddresses = {
   PangolinMiniChefStrategy: string;
   AMMYieldConverter: string;
   WrapNativeIsolatedLending: string;
-  CurvePoolRewards: string;
   DirectFlashLiquidation: string;
   LPTFlashLiquidation: string;
 
@@ -389,20 +388,20 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
     ['0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE']: addresses.YieldYakStrategy2,
     ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']:
       addresses.YieldYakAVAXStrategy2,
-    ['0x60781C2586D68229fde47564546784ab3fACA982']: addresses.YieldYakStrategy,
-    ['0x59414b3089ce2AF0010e7523Dea7E2b35d776ec7']: addresses.YieldYakStrategy,
-    ['0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd']: addresses.YieldYakStrategy,
-    ['0xd586e7f844cea2f87f50152665bcbc2c279d8d70']: addresses.YieldYakStrategy,
-    ['0x8729438EB15e2C8B576fCc6AeCdA6A148776C0F5']: addresses.YieldYakStrategy,
-    ['0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664']: addresses.YieldYakStrategy,
-    ['0xA389f9430876455C36478DeEa9769B7Ca4E3DDB1']: addresses.YieldYakStrategy,
-    ['0xeD8CBD9F0cE3C6986b22002F03c6475CEb7a6256']: addresses.YieldYakStrategy,
-    ['0x454E67025631C065d3cFAD6d71E6892f74487a15']:
-      addresses.TraderJoeMasterChefStrategy,
-    ['0x2148D1B21Faa7eb251789a51B404fc063cA6AAd6']:
-      addresses.SimpleHoldingStrategy,
-    ['0xCDFD91eEa657cc2701117fe9711C9a4F61FEED23']:
-      addresses.MultiTraderJoeMasterChef3Strategy,
+    // ['0x60781C2586D68229fde47564546784ab3fACA982']: addresses.YieldYakStrategy,
+    // ['0x59414b3089ce2AF0010e7523Dea7E2b35d776ec7']: addresses.YieldYakStrategy,
+    // ['0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd']: addresses.YieldYakStrategy,
+    // ['0xd586e7f844cea2f87f50152665bcbc2c279d8d70']: addresses.YieldYakStrategy,
+    // ['0x8729438EB15e2C8B576fCc6AeCdA6A148776C0F5']: addresses.YieldYakStrategy,
+    // ['0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664']: addresses.YieldYakStrategy,
+    // ['0xA389f9430876455C36478DeEa9769B7Ca4E3DDB1']: addresses.YieldYakStrategy,
+    // ['0xeD8CBD9F0cE3C6986b22002F03c6475CEb7a6256']: addresses.YieldYakStrategy,
+    // ['0x454E67025631C065d3cFAD6d71E6892f74487a15']:
+    //   addresses.TraderJoeMasterChefStrategy,
+    // ['0x2148D1B21Faa7eb251789a51B404fc063cA6AAd6']:
+    //   addresses.SimpleHoldingStrategy,
+    // ['0xCDFD91eEa657cc2701117fe9711C9a4F61FEED23']:
+    //   addresses.MultiTraderJoeMasterChef3Strategy,
   };
 
   // const masterChef2Tokens = [
@@ -412,14 +411,14 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   // ].map(getAddress);
 
   const tokens = Object.keys(token2Strat);
-  tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
+  // tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
   const strats = Object.values(token2Strat);
-  strats.push(addresses.LiquidYieldStrategy);
+  // strats.push(addresses.LiquidYieldStrategy);
 
-  tokens.push('0x454E67025631C065d3cFAD6d71E6892f74487a15');
-  strats.push(addresses.YieldYakStrategy);
-  tokens.push('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');
-  strats.push(addresses.sJoeStrategy);
+  // tokens.push('0x454E67025631C065d3cFAD6d71E6892f74487a15');
+  // strats.push(addresses.YieldYakStrategy);
+  // tokens.push('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');
+  // strats.push(addresses.sJoeStrategy);
 
   const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
 

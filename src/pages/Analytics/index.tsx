@@ -5,35 +5,25 @@ import {
   useContractCalls,
   useEthers,
 } from '@usedapp/core';
-import { BigNumber, ethers } from 'ethers';
+import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
+import { BigNumber } from 'ethers';
 import * as React from 'react';
-import { useContext } from 'react';
 import {
   DeploymentAddresses,
-  ParsedStakingMetadata,
   useAddresses,
   useAllFeesEver,
   useCurvePoolSLDeposited,
-  useParsedStakingMetadata,
   useStable,
   useTotalSupply,
 } from '../../chain-interaction/contracts';
+import { tokenAmount } from '../../chain-interaction/tokens';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 import { AnalyticsBox } from './AnalyticsBox';
-import { UserAddressContext } from '../../contexts/UserAddressContext';
-import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
-import { tokenAmount } from '../../chain-interaction/tokens';
 
 export default function Analytics(props: React.PropsWithChildren<unknown>) {
   const allStratMeta = React.useContext(StrategyMetadataContext);
 
-  const account = useContext(UserAddressContext);
   const addresses = useAddresses();
-
-  const stakeMeta: ParsedStakingMetadata[] = useParsedStakingMetadata(
-    [addresses.CurvePoolRewards],
-    account ?? ethers.constants.AddressZero
-  ).flat(1);
 
   const feeContractNames = [
     'StableLending2',
@@ -60,11 +50,6 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
   });
   // console.log('contracts', contracts);
   const stable = useStable();
-  const tvlsFarm = stakeMeta.reduce(
-    (tvl, row) => tvl.add(row.tvl),
-    new CurrencyValue(stable, BigNumber.from(0))
-  );
-  console.log('All farm TVL:', tvlsFarm.format());
 
   const tvlNoFarm = Object.values(allStratMeta)
     .flatMap((rows) => Object.values(rows))
@@ -74,7 +59,7 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
     );
   console.log('No-farm TVL', tvlNoFarm.format());
 
-  const tvl = tvlNoFarm.add(tvlsFarm);
+  const tvl = tvlNoFarm;
 
   const supply = useTotalSupply('totalSupply', [], ['']);
 
@@ -95,7 +80,6 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
     );
 
   const circulatingBlacklist = [
-    addresses.CurvePoolRewards,
     addresses.VestingLaunchReward,
     '0xcb2fb8db0e80adf47720d48e1ae9315e7d128808',
     '0xba8983fdde65354c1330e38d042c7d2f784ca3de',

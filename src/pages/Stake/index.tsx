@@ -28,10 +28,10 @@ export default function StakePage({
 
   //vMore data
   const totalStakedVMore = formatEther(
-    useBalanceOfToken(addresses.VeMoreToken, [addresses.VeMoreToken], 0)
+    useBalanceOfToken(addresses.MoreToken, [addresses.VeMoreStaking], 0)
   );
   const yourStakeVMore = formatEther(
-    useBalanceOfToken(addresses.VeMoreToken, [account], 0)
+    useBalanceOfToken(addresses.VeMoreStaking, [account], 0)
   );
   const totalSupplyStakedVMore = formatEther(
     useTotalSupplyToken(addresses.VeMoreToken, 'totalSupply', [], 0)

@@ -60,7 +60,7 @@ export function UnstakeMoreVeMore(props: React.PropsWithChildren<unknown>) {
             color={'whiteAlpha.600'}
             lineHeight={'14px'}
           >
-            Unstake vMore
+            Unstake veMore
           </Text>
         </Box>
         <TokenAmountInputField

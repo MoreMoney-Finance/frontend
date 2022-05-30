@@ -17,7 +17,7 @@ import { formatNumber } from '../../../utils';
 
 export function StakingAPRVeMoreToken(props: React.PropsWithChildren<unknown>) {
   const addresses = useAddresses();
-  const totalSupplyStakedVMore = formatEther(
+  const totalSupplyStakedVeMore = formatEther(
     useTotalSupplyToken(addresses.VeMoreToken, 'totalSupply', [], 0)
   );
   return (
@@ -54,7 +54,7 @@ export function StakingAPRVeMoreToken(props: React.PropsWithChildren<unknown>) {
             </Text>
             <Spacer />
             <Text variant={'bodyLarge'}>
-              {formatNumber(parseFloat(totalSupplyStakedVMore))}
+              {formatNumber(parseFloat(totalSupplyStakedVeMore))}
             </Text>
           </Flex>
         </Flex>

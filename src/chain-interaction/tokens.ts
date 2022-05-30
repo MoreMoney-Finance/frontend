@@ -231,8 +231,8 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
     addressToken[chainIds[chainId]].set(
       getAddress(addresses['VeMoreToken']),
       new Token(
-        'vMore Token',
-        'vMore',
+        'veMore Token',
+        'veMore',
         chainIds[chainId],
         getAddress(addresses['VeMoreToken'])
       )

@@ -70,7 +70,7 @@ ReactDOM.render(
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/stake" element={<StakePage />} />
             <Route path="/xmore" element={<XMorePage />} />
-            <Route path="/vmore" element={<VeMoreTokenPage />} />
+            <Route path="/vemore" element={<VeMoreTokenPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/admin/:positions" element={<AdminPage />} />
           </Route>

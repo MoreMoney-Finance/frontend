@@ -27,12 +27,12 @@ export default function StakePage({
     useTotalSupplyToken(addresses.xMore, 'totalSupply', [], 0)
   );
 
-  //vMore data
-  const totalStakedVMore = formatEther(
+  //veMore data
+  const totalStakedVeMore = formatEther(
     useBalanceOfToken(addresses.MoreToken, [addresses.VeMoreStaking], 0)
   );
-  const yourStakeVMore = formatEther(useGetStakedMoreVeMoreToken(account!));
-  const totalSupplyStakedVMore = formatEther(
+  const yourStakeVeMore = formatEther(useGetStakedMoreVeMoreToken(account!));
+  const totalSupplyStakedVeMore = formatEther(
     useTotalSupplyToken(addresses.VeMoreToken, 'totalSupply', [], 0)
   );
 
@@ -60,11 +60,11 @@ export default function StakePage({
           <Container variant={'token'}>
             <StakeBox
               img="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg"
-              title="vMore"
-              link="/vmore"
-              totalStaked={formatNumber(parseFloat(totalStakedVMore))}
-              yourStake={formatNumber(parseFloat(yourStakeVMore))}
-              totalSupply={formatNumber(parseFloat(totalSupplyStakedVMore))}
+              title="veMore"
+              link="/vemore"
+              totalStaked={formatNumber(parseFloat(totalStakedVeMore))}
+              yourStake={formatNumber(parseFloat(yourStakeVeMore))}
+              totalSupply={formatNumber(parseFloat(totalSupplyStakedVeMore))}
             />
           </Container>
         </Box>

@@ -80,8 +80,8 @@ export function useGetStakedMoreVeMoreToken(account: string) {
 }
 
 export function useClaimableVeMoreToken(account: string) {
-  const address = useAddresses().VeMoreToken;
-  const abi = new Interface(VeMoreToken.abi);
+  const address = useAddresses().VeMoreStaking;
+  const abi = new Interface(VeMoreStaking.abi);
   return (useContractCall({
     abi,
     address,

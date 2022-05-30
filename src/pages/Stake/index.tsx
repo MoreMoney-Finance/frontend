@@ -6,6 +6,7 @@ import {
   useBalanceOfToken,
   useTotalSupplyToken,
 } from '../../chain-interaction/contracts';
+import { useGetStakedMoreVeMoreToken } from '../../chain-interaction/transactions';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { formatNumber } from '../../utils';
 import StakeBox from './components/StakeBox';
@@ -30,9 +31,7 @@ export default function StakePage({
   const totalStakedVMore = formatEther(
     useBalanceOfToken(addresses.MoreToken, [addresses.VeMoreStaking], 0)
   );
-  const yourStakeVMore = formatEther(
-    useBalanceOfToken(addresses.VeMoreStaking, [account], 0)
-  );
+  const yourStakeVMore = formatEther(useGetStakedMoreVeMoreToken(account!));
   const totalSupplyStakedVMore = formatEther(
     useTotalSupplyToken(addresses.VeMoreToken, 'totalSupply', [], 0)
   );

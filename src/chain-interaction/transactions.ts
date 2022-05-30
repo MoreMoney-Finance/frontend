@@ -516,7 +516,9 @@ export async function viewBidTarget(
   requestedColVal: string,
   defaultResult: any
 ) {
-  const provider = new ethers.providers.JsonRpcProvider();
+  const provider = new ethers.providers.JsonRpcProvider(
+    'https://api.avax.network/ext/bc/C/rpc'
+  );
 
   const liquidationContract = new ethers.Contract(
     lendingAddress,

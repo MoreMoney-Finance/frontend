@@ -3,6 +3,7 @@ import {
   ChainId,
   ContractCall,
   CurrencyValue,
+  ERC20Interface,
   Token,
   useContractCall,
   useContractCalls,
@@ -426,7 +427,9 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
   React.useEffect(() => {
     async function getData() {
-      const provider = new ethers.providers.JsonRpcProvider();
+      const provider = new ethers.providers.JsonRpcProvider(
+        'https://api.avax.network/ext/bc/C/rpc'
+      );
 
       const stratViewer = new ethers.Contract(
         addresses.StrategyViewer,
@@ -666,9 +669,8 @@ export function useBalanceOfToken(
   args: any[],
   defaultResult: any
 ) {
-  const abi = new Interface(ERC20.abi);
   return (useContractCall({
-    abi,
+    abi: ERC20Interface,
     address,
     method: 'balanceOf',
     args,

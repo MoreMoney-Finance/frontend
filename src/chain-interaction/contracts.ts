@@ -24,11 +24,11 @@ import {
 import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
+import iMoney from '../contracts/artifacts/contracts/rewards/iMoney.sol/iMoney.json';
 import InterestRateController from '../contracts/artifacts/contracts/InterestRateController.sol/InterestRateController.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
-// import StableLending2InterestForwarder from '../contracts/artifacts/contracts/rewards/StableLending2InterestForwarder.sol/StableLending2InterestForwarder.json';
 import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
 import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
@@ -37,9 +37,9 @@ import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFe
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
 import { parseFloatCurrencyValue } from '../utils';
 import { getTokenFromAddress, tokenAmount } from './tokens';
+import StableLending2InterestForwarder from '../contracts/artifacts/contracts/rewards/StableLending2InterestForwarder.sol/StableLending2InterestForwarder.json';
 // import earnedRewards from '../constants/earned-rewards.json';
 // import rewardsRewards from '../constants/rewards-rewards.json';
-
 /* eslint-disable */
 export const addresses: Record<
   string,
@@ -97,6 +97,7 @@ export type DeploymentAddresses = {
   WrapNativeStableLending2: string;
   StableLending2Liquidation: string;
   StableLending2InterestForwarder: string;
+  iMoney: string;
 };
 
 export function useAddresses() {
@@ -305,6 +306,55 @@ function parseStratMeta(
       compoundingAPY: compoundingAPY,
     };
   }
+}
+
+export type IMoneyAccountInfo = {
+  depositAmount: BigNumber;
+  lastCumulRewardSimple: number;
+  lastCumulRewardWeighted: number;
+  factor: BigNumber;
+};
+export function useIMoneyAccountInfo(account: string): IMoneyAccountInfo {
+  const addresses = useAddresses();
+  const abi = new Interface(iMoney.abi);
+  const res =
+    useContractCall({
+      abi,
+      address: addresses.iMoney,
+      method: 'accounts',
+      args: [account],
+    }) ?? ({} as any);
+
+  return {
+    depositAmount: res?.depositAmount ?? BigNumber.from(0),
+    lastCumulRewardSimple: res?.lastCumulRewardSimple ?? 0,
+    lastCumulRewardWeighted: res?.lastCumulRewardWeighted ?? 0,
+    factor: res?.factor ?? BigNumber.from(0),
+  };
+}
+
+export function useIMoneyTotalWeights(defaultResult: any) {
+  const addresses = useAddresses();
+  const abi = new Interface(StableLending2InterestForwarder.abi);
+  return (useContractCall({
+    abi,
+    address: addresses.StableLending2InterestForwarder,
+    method: 'totalWeights',
+    args: [],
+  }) ?? [defaultResult])[0];
+}
+
+export function useBoostedSharePer10k(defaultResult: any) {
+  const addresses = useAddresses();
+  const abi = new Interface(iMoney.abi);
+  return (
+    (useContractCall({
+      abi,
+      address: addresses.iMoney,
+      method: 'boostedSharePer10k',
+      args: [],
+    }) ?? [defaultResult])[0] / 100
+  );
 }
 
 export function useInterestRate(defaultResult: any) {
@@ -624,8 +674,8 @@ export function useIsolatedPositionMetadata(
 }
 
 export function iMoneyTotalSupply(defaultResult: any) {
-  const address = useAddresses().xMore;
-  const abi = new Interface(xMore.abi);
+  const address = useAddresses().iMoney;
+  const abi = new Interface(iMoney.abi);
   return (useContractCall({
     abi,
     address,

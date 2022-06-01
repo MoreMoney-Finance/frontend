@@ -25,6 +25,8 @@ import {
   useInterestRate,
   useSpecialRewardsData,
   useStable,
+  useTotalDebt,
+  useTotalSupplyIMoney,
 } from '../../chain-interaction/contracts';
 import {
   useStakeIMoney,
@@ -89,6 +91,8 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
 
   const iMoneyTVL = formatEther(iMoneyTotalSupply(BigNumber.from('0')));
 
+  const totalDebt = useTotalDebt(BigNumber.from(0));
+  const totalSupplyIMoney = useTotalSupplyIMoney(BigNumber.from(1));
   const currentRate = useInterestRate(BigNumber.from(0));
   const boostedShare = useBoostedSharePer10k(BigNumber.from(0));
   const accountInfo = useIMoneyAccountInfo(account!);
@@ -101,14 +105,15 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   );
   const totalWeights = useIMoneyTotalWeights(parseEther('100'));
 
-  const baseRate = (currentRate * (100 - boostedShare)) / 100;
+  const ratio = totalDebt.mul(currentRate).div(totalSupplyIMoney).toNumber();
+  const baseRate = (ratio * (100 - boostedShare)) / 100;
   const boostedRate =
     weight
-      .mul(Math.round(currentRate * boostedShare))
+      .mul(Math.round(ratio * boostedShare))
       .div(totalWeights)
       .toNumber() / 100;
 
-  const avgBoostedRate = (currentRate * boostedShare) / 100;
+  const avgBoostedRate = (ratio * boostedShare) / 100;
 
   return (
     <>

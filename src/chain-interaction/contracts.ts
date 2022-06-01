@@ -308,6 +308,17 @@ function parseStratMeta(
   }
 }
 
+export function useTotalDebt(defaultResult: any) {
+  const addresses = useAddresses();
+  const abi = new Interface(StableLending2.abi);
+  return (useContractCall({
+    abi,
+    address: addresses.StableLending2,
+    method: 'totalDebt',
+    args: [],
+  }) ?? [defaultResult])[0];
+}
+
 export type IMoneyAccountInfo = {
   depositAmount: BigNumber;
   lastCumulRewardSimple: number;
@@ -724,6 +735,16 @@ export function useBalanceOfToken(
     address,
     method: 'balanceOf',
     args,
+  }) ?? [defaultResult])[0];
+}
+
+export function useTotalSupplyIMoney(defaultResult: any) {
+  const abi = new Interface(iMoney.abi);
+  return (useContractCall({
+    abi,
+    address: useAddresses().iMoney,
+    method: 'totalSupply',
+    args: [],
   }) ?? [defaultResult])[0];
 }
 

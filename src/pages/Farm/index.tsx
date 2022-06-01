@@ -11,7 +11,7 @@ import {
   Link,
   Text,
 } from '@chakra-ui/react';
-import { formatEther } from '@ethersproject/units';
+import { formatEther, parseEther } from '@ethersproject/units';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber, ethers } from 'ethers';
 import * as React from 'react';
@@ -19,6 +19,10 @@ import { useContext } from 'react';
 import {
   iMoneyTotalSupply,
   useAddresses,
+  useBoostedSharePer10k,
+  useIMoneyAccountInfo,
+  useIMoneyTotalWeights,
+  useInterestRate,
   useSpecialRewardsData,
   useStable,
 } from '../../chain-interaction/contracts';
@@ -33,7 +37,7 @@ import {
 } from '../../contexts/ExternalMetadataContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
-import { formatNumber } from '../../utils';
+import { formatNumber, sqrt } from '../../utils';
 import DepositForm from './components/DepositForm';
 import WithdrawForm from './components/WithdrawForm';
 import FarmItem from './FarmItem';
@@ -84,6 +88,27 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
     new CurrencyValue(stable, BigNumber.from('0'));
 
   const iMoneyTVL = formatEther(iMoneyTotalSupply(BigNumber.from('0')));
+
+  const currentRate = useInterestRate(BigNumber.from(0));
+  const boostedShare = useBoostedSharePer10k(BigNumber.from(0));
+  const accountInfo = useIMoneyAccountInfo(account!);
+  const weight = sqrt(
+    accountInfo.factor.mul(
+      accountInfo.depositAmount.isZero()
+        ? parseEther('100')
+        : accountInfo.depositAmount
+    )
+  );
+  const totalWeights = useIMoneyTotalWeights(parseEther('100'));
+
+  const baseRate = (currentRate * (100 - boostedShare)) / 100;
+  const boostedRate =
+    weight
+      .mul(Math.round(currentRate * boostedShare))
+      .div(totalWeights)
+      .toNumber() / 100;
+
+  const avgBoostedRate = (currentRate * boostedShare) / 100;
 
   return (
     <>
@@ -183,11 +208,15 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           )}
           <FarmItem
             key={'farmRow'}
-            asset="iMoney"
+            asset="MONEY staking"
             stake={iMoneyBalance.format({})}
             tvl={`$ ${formatNumber(parseFloat(iMoneyTVL))}`}
             reward={`n/a`}
-            apr={'n/a %'}
+            apr={
+              account
+                ? `${baseRate}%+ ${boostedRate}% boosted`
+                : `${baseRate}%+ ${avgBoostedRate}% avg boosted`
+            }
             acquire={<></>}
             content={
               <AccordionPanel mt="16px">

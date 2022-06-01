@@ -1,6 +1,20 @@
 import { CurrencyValue, useEthers } from '@usedapp/core';
 import WalletConnectProvider from '@walletconnect/web3-provider';
+import { BigNumber, ethers } from 'ethers';
 import Web3Modal from 'web3modal';
+
+export function sqrt(value: BigNumber): BigNumber {
+  const ONE = ethers.BigNumber.from(1);
+  const TWO = ethers.BigNumber.from(2);
+  const x = ethers.BigNumber.from(value);
+  let z = x.add(ONE).div(TWO);
+  let y = x;
+  while (z.sub(y).isNegative()) {
+    y = z;
+    z = x.div(z).add(z).div(TWO);
+  }
+  return y;
+}
 
 export function parseFloatNoNaN(input: string) {
   const parsed = parseFloat(input);

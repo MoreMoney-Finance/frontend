@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { formatEther, parseEther } from '@ethersproject/units';
 import { CurrencyValue } from '@usedapp/core';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
 import {
@@ -23,7 +23,6 @@ import {
   useIMoneyAccountInfo,
   useIMoneyTotalWeights,
   useInterestRate,
-  useSpecialRewardsData,
   useStable,
   useTotalDebt,
   useTotalSupplyIMoney,
@@ -31,7 +30,6 @@ import {
 import {
   useStakeIMoney,
   useWithdrawIMoney,
-  useWithdrawLaunchVestingTrans,
 } from '../../chain-interaction/transactions';
 import {
   ExternalMetadataContext,
@@ -53,11 +51,6 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const avaxMorePayload = Object.values(yieldMonitor).filter(
     (item) => item.lpAddress === '0xb8361d0e3f3b0fc5e6071f3a3c3271223c49e3d9'
   )[0];
-
-  const { balance, vested } = useSpecialRewardsData(
-    account ?? ethers.constants.AddressZero
-  );
-  const { send: sendSpecialWithdraw } = useWithdrawLaunchVestingTrans();
 
   const externalData: YieldFarmingData[] =
     avaxMorePayload && yieldFarmingData
@@ -148,30 +141,6 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           variant={'farm'}
           defaultIndex={0}
         >
-          {!balance.isZero() ? (
-            <FarmItem
-              key={'farmRow'}
-              asset="Special Launch Rewards"
-              stake={'n/a'}
-              tvl={`n/a`}
-              reward={`${balance.format()}`}
-              apr={'n/a'}
-              acquire={
-                <Button
-                  color={'white'}
-                  variant={'primary'}
-                  onClick={() => {
-                    console.log(`Claiming vested`, vested.format());
-                    sendSpecialWithdraw(vested.value);
-                  }}
-                >
-                  {vested.format({ suffix: '' })} Vested
-                </Button>
-              }
-            />
-          ) : (
-            <></>
-          )}
           {externalData.length > 0 ? (
             externalData.map((item) => (
               <FarmItem

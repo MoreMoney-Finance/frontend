@@ -16,6 +16,7 @@ import Analytics from './pages/Analytics';
 import Dashboard from './pages/Dashboard';
 import { ErrorBoundary } from './pages/ErrorBoundary/ErrorBoundary';
 import FarmPage from './pages/Farm';
+import IMoneyPage from './pages/iMoney';
 import LiquidatablePositions from './pages/LiquidatablePositions';
 import LiquidationProtectedLoans from './pages/Loans';
 import PositionsPage from './pages/Positions';
@@ -70,6 +71,7 @@ ReactDOM.render(
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/stake" element={<StakePage />} />
             <Route path="/xmore" element={<XMorePage />} />
+            <Route path="/imoney" element={<IMoneyPage />} />
             <Route path="/vemore" element={<VeMoreTokenPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/admin/:positions" element={<AdminPage />} />

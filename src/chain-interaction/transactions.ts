@@ -90,6 +90,34 @@ export function useClaimableVeMoreToken(account: string) {
   }) ?? [0])[0];
 }
 
+export function useViewPendingReward(account: string, defaultResult: any) {
+  const address = useAddresses().StableLending2InterestForwarder;
+  const abi = new Interface(StableLending2InterestForwarder.abi);
+  return (useContractCall({
+    abi,
+    address,
+    method: 'viewPendingReward',
+    args: [account],
+  }) ?? [defaultResult])[0];
+}
+
+export function useClaimIMoney() {
+  const addresses = useAddresses();
+  const cprAddress = addresses.StableLending2InterestForwarder;
+  const cprContract = new Contract(
+    cprAddress,
+    new Interface(StableLending2InterestForwarder.abi)
+  );
+  const { send, state } = useContractFunction(cprContract, 'deposit');
+
+  return {
+    sendClaim: () => {
+      return send(BigNumber.from(0));
+    },
+    claimState: state,
+  };
+}
+
 export function useClaimVeMore() {
   const addresses = useAddresses();
   const cprAddress = addresses.VeMoreStaking;

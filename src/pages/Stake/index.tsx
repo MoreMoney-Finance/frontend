@@ -1,20 +1,29 @@
-import { Box, Container, Flex, Text } from '@chakra-ui/react';
+import { Box, Container, Flex, HStack, Text } from '@chakra-ui/react';
 import { formatEther } from '@ethersproject/units';
+import { CurrencyValue, useEthers } from '@usedapp/core';
+import { BigNumber } from 'ethers';
 import * as React from 'react';
 import {
+  iMoneyTotalSupply,
   useAddresses,
   useBalanceOfToken,
+  useStable,
+  useTotalSupplyIMoney,
   useTotalSupplyToken,
 } from '../../chain-interaction/contracts';
+import { getTokenFromAddress } from '../../chain-interaction/tokens';
 import { useGetStakedMoreVeMoreToken } from '../../chain-interaction/transactions';
+import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
-import { formatNumber } from '../../utils';
+import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
+import { formatNumber, parseFloatCurrencyValue } from '../../utils';
 import StakeBox from './components/StakeBox';
 
 export default function StakePage({
   children,
 }: React.PropsWithChildren<unknown>) {
   const account = React.useContext(UserAddressContext);
+  const { chainId } = useEthers();
   const addresses = useAddresses();
   //xmore data
   const totalStakedXMore = formatEther(
@@ -36,13 +45,64 @@ export default function StakePage({
     useTotalSupplyToken(addresses.VeMoreToken, 'totalSupply', [], 0)
   );
 
+  //iMoney data
+  const totalStakedIMoney = formatEther(
+    useBalanceOfToken(
+      addresses.Stablecoin,
+      [addresses.StableLending2InterestForwarder],
+      0
+    )
+  );
+  const balanceCtx = React.useContext(WalletBalancesContext);
+  const iMoneyAddress = useAddresses().StableLending2InterestForwarder;
+  const stable = useStable();
+  const iMoneyBalance =
+    balanceCtx.get(iMoneyAddress) ??
+    new CurrencyValue(stable, BigNumber.from('0'));
+  const iMoneyTVL = formatEther(iMoneyTotalSupply(BigNumber.from('0')));
+  const totalSupplyIMoney = new CurrencyValue(
+    stable,
+    useTotalSupplyIMoney(BigNumber.from(1))
+  );
+
+  const inputStyle = {
+    marginTop: '12px',
+    padding: '12px',
+    bg: 'whiteAlpha.50',
+    borderRadius: '10px',
+    justifyContent: 'space-between',
+  };
+
+  console.log({ iMoneyBalance, iMoneyTVL, totalSupplyIMoney });
+
   return (
     <Flex flexDirection={'column'}>
-      <Box textAlign="center" margin="50px 10px 50px 10px">
-        <Text fontSize={['36', '48', '48']} lineHeight="56px">
-          <b>Maximize yield by staking MORE</b>
-        </Text>
-      </Box>
+      <Flex flexDirection={['column', 'column', 'row', 'row']} marginTop="50px">
+        <Box w="100%" h="auto" padding={'36px'}>
+          <Container variant={'token'}>
+            <StakeBox
+              img="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg"
+              title="veMore"
+              link="/vemore"
+              totalStaked={formatNumber(parseFloat(totalStakedVeMore))}
+              yourStake={formatNumber(parseFloat(yourStakeVeMore))}
+              totalSupply={formatNumber(parseFloat(totalSupplyStakedVeMore))}
+            />
+          </Container>
+        </Box>
+        <Box w="100%" h="auto" padding={'36px'}>
+          <Container variant={'token'}>
+            <StakeBox
+              img="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Coin-Logo-FINAL.jpg"
+              title="iMoney"
+              link="/imoney"
+              totalStaked={formatNumber(parseFloat(totalStakedIMoney))}
+              yourStake={parseFloatCurrencyValue(iMoneyBalance).toString()}
+              totalSupply={formatNumber(parseFloat(totalSupplyIMoney.format()))}
+            />
+          </Container>
+        </Box>
+      </Flex>
       <Flex flexDirection={['column', 'column', 'row', 'row']}>
         <Box w="100%" h="auto" padding={'36px'}>
           <Container variant={'token'}>
@@ -57,15 +117,35 @@ export default function StakePage({
           </Container>
         </Box>
         <Box w="100%" h="auto" padding={'36px'}>
-          <Container variant={'token'}>
-            <StakeBox
-              img="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg"
-              title="veMore"
-              link="/vemore"
-              totalStaked={formatNumber(parseFloat(totalStakedVeMore))}
-              yourStake={formatNumber(parseFloat(yourStakeVeMore))}
-              totalSupply={formatNumber(parseFloat(totalSupplyStakedVeMore))}
-            />
+          <Container variant={'token'} padding="16px">
+            {/* descriptions of the tokens */}
+            <HStack {...inputStyle}>
+              <TokenDescription
+                token={getTokenFromAddress(chainId, addresses.VeMoreToken)}
+              />
+              <Text fontSize={'14px'} color="gray.400">
+                Boost your yield on iMoney staking and LP rewards
+              </Text>
+            </HStack>
+            <HStack {...inputStyle}>
+              <TokenDescription
+                token={getTokenFromAddress(
+                  chainId,
+                  addresses.StableLending2InterestForwarder
+                )}
+              />
+              <Text fontSize={'14px'} color="gray.400">
+                Earn interest on your MONEY
+              </Text>
+            </HStack>
+            <HStack {...inputStyle}>
+              <TokenDescription
+                token={getTokenFromAddress(chainId, addresses.xMore)}
+              />
+              <Text fontSize={'14px'} color="gray.400">
+                Get compounding MORE rewards
+              </Text>
+            </HStack>
           </Container>
         </Box>
       </Flex>

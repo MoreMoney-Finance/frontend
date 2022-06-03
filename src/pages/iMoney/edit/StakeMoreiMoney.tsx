@@ -1,23 +1,25 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAddresses } from '../../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../../chain-interaction/tokens';
-import { useUnstakeMore } from '../../../chain-interaction/transactions';
+import { useStakeIMoney } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';
 import { WalletBalancesContext } from '../../../contexts/WalletBalancesContext';
 import { parseFloatNoNaN } from '../../../utils';
 
-export function UnstakeMoney(props: React.PropsWithChildren<unknown>) {
-  const balanceCtx = React.useContext(WalletBalancesContext);
-  const iMoney = useAddresses().StableLending2InterestForwarder;
+export function StakeMoreIMoney(props: React.PropsWithChildren<unknown>) {
+  const balanceCtx = useContext(WalletBalancesContext);
+  const moneyToken = useAddresses().Stablecoin;
   const { chainId } = useEthers();
 
-  const token = getTokenFromAddress(chainId, iMoney);
+  const token = getTokenFromAddress(chainId, moneyToken);
 
-  const { sendUnstake, unstakeState } = useUnstakeMore();
+  const { sendDepositIMoney: sendStake, depositState: stakeState } =
+    useStakeIMoney();
 
   const {
     handleSubmit: handleSubmitDepForm,
@@ -27,15 +29,15 @@ export function UnstakeMoney(props: React.PropsWithChildren<unknown>) {
     watch,
   } = useForm();
 
-  const [xmoreUnstakeInput] = watch(['xmore-unstake']);
+  const [moreStakeInput] = watch(['money-stake']);
 
   function onStakeMore(data: { [x: string]: any }) {
     console.log('data', data);
-    sendUnstake(token, data['xmore-unstake']);
+    sendStake(token, data['money-stake']);
   }
 
-  const stakeMoreDisabled = balanceCtx.get(iMoney)?.isZero();
-  const unstakeMoreButtonDisabled = parseFloatNoNaN(xmoreUnstakeInput) === 0;
+  const stakeMoreDisabled = balanceCtx.get(moneyToken)?.isZero();
+  const stakeMoreButtonDisabled = parseFloatNoNaN(moreStakeInput) === 0;
 
   return (
     <form onSubmit={handleSubmitDepForm(onStakeMore)}>
@@ -46,29 +48,29 @@ export function UnstakeMoney(props: React.PropsWithChildren<unknown>) {
             color={'whiteAlpha.600'}
             lineHeight={'14px'}
           >
-            Unstake xMORE
+            Stake MORE
           </Text>
         </Box>
         <TokenAmountInputField
-          name="xmore-unstake"
-          max={balanceCtx.get(iMoney)}
+          name="money-stake"
+          max={balanceCtx.get(moneyToken)}
           isDisabled={stakeMoreDisabled}
-          placeholder={'xMORE to unstake'}
+          placeholder={'MONEY to stake'}
           registerForm={registerDepForm}
           setValueForm={setValueDepForm}
           errorsForm={errorsDepForm}
           width="full"
         />
       </Flex>
-      <TransactionErrorDialog state={unstakeState} title={'Unstake xMORE'} />
+      <TransactionErrorDialog state={stakeState} title={'Stake MORE'} />
       <Box marginTop={'10px'}>
         <Button
-          variant={unstakeMoreButtonDisabled ? 'submit' : 'submit-primary'}
+          variant={stakeMoreButtonDisabled ? 'submit' : 'submit-primary'}
           type="submit"
           isLoading={isSubmittingDepForm}
-          isDisabled={unstakeMoreButtonDisabled}
+          isDisabled={stakeMoreButtonDisabled}
         >
-          Unstake xMORE
+          Stake MONEY
         </Button>
       </Box>
       {props.children}

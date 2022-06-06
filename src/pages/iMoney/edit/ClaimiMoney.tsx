@@ -24,7 +24,10 @@ export default function ClaimIMoney({
 
   const { sendClaim, claimState } = useClaimIMoney();
 
-  const pendingRewards = useViewPendingReward(account!, BigNumber.from(0));
+  const pendingRewards = new CurrencyValue(
+    stable,
+    useViewPendingReward(account!, BigNumber.from(0))
+  );
 
   return (
     <>
@@ -56,7 +59,7 @@ export default function ClaimIMoney({
             Claimable
           </Text>
           <Flex direction={'column'} justifyContent={'flex-start'}>
-            <Text variant="bodyHuge">{pendingRewards.toString()}</Text>
+            <Text variant="bodyHuge">{pendingRewards.format()}</Text>
           </Flex>
         </Flex>
       </Flex>

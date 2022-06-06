@@ -1,17 +1,14 @@
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import {
   Accordion,
-  AccordionPanel,
   Box,
   Button,
-  Container,
   Flex,
   Grid,
-  GridItem,
   Link,
   Text,
 } from '@chakra-ui/react';
-import { formatEther, parseEther } from '@ethersproject/units';
+import { formatEther } from '@ethersproject/units';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
@@ -19,28 +16,18 @@ import { useContext } from 'react';
 import {
   iMoneyTotalSupply,
   useAddresses,
-  useBoostedSharePer10k,
-  useIMoneyAccountInfo,
-  useIMoneyTotalWeights,
-  useInterestRate,
+  useIMoneyAPR,
   useStable,
-  useTotalDebt,
-  useTotalSupplyIMoney,
 } from '../../chain-interaction/contracts';
-import {
-  useStakeIMoney,
-  useWithdrawIMoney,
-} from '../../chain-interaction/transactions';
 import {
   ExternalMetadataContext,
   YieldFarmingData,
 } from '../../contexts/ExternalMetadataContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
-import { formatNumber, sqrt } from '../../utils';
-import DepositForm from './components/DepositForm';
-import WithdrawForm from './components/WithdrawForm';
+import { formatNumber } from '../../utils';
 import FarmItem from './FarmItem';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const account = useContext(UserAddressContext);
@@ -73,10 +60,6 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const balanceCtx = React.useContext(WalletBalancesContext);
   const iMoneyAddress = useAddresses().StableLending2InterestForwarder;
 
-  const { sendDepositIMoney, depositState } = useStakeIMoney();
-  const { sendWithdrawIMoney, withdrawState: withdrawIMoneyState } =
-    useWithdrawIMoney();
-
   const stable = useStable();
   const iMoneyBalance =
     balanceCtx.get(iMoneyAddress) ??
@@ -84,29 +67,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
 
   const iMoneyTVL = formatEther(iMoneyTotalSupply(BigNumber.from('0')));
 
-  const totalDebt = useTotalDebt(BigNumber.from(0));
-  const totalSupplyIMoney = useTotalSupplyIMoney(BigNumber.from(1));
-  const currentRate = useInterestRate(BigNumber.from(0));
-  const boostedShare = useBoostedSharePer10k(BigNumber.from(0));
-  const accountInfo = useIMoneyAccountInfo(account!);
-  const weight = sqrt(
-    accountInfo.factor.mul(
-      accountInfo.depositAmount.isZero()
-        ? parseEther('100')
-        : accountInfo.depositAmount
-    )
-  );
-  const totalWeights = useIMoneyTotalWeights(parseEther('100'));
-
-  const ratio = totalDebt.mul(currentRate).div(totalSupplyIMoney).toNumber();
-  const baseRate = (ratio * (100 - boostedShare)) / 100;
-  const boostedRate =
-    weight
-      .mul(Math.round(ratio * boostedShare))
-      .div(totalWeights)
-      .toNumber() / 100;
-
-  const avgBoostedRate = (ratio * boostedShare) / 100;
+  const { baseRate, boostedRate, avgBoostedRate } = useIMoneyAPR(account!);
 
   return (
     <>
@@ -191,40 +152,17 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                 ? `${baseRate}%+ ${boostedRate}% boosted`
                 : `${baseRate}%+ ${avgBoostedRate}% avg boosted`
             }
-            acquire={<></>}
-            content={
-              <AccordionPanel mt="16px">
-                <Grid templateColumns="repeat(10, 1fr)" gap={6}>
-                  <GridItem w="100%" colSpan={5}>
-                    <Container
-                      variant={'token'}
-                      padding={'16px'}
-                      position="relative"
-                    >
-                      <DepositForm
-                        token={stable}
-                        stakingAddress={iMoneyAddress}
-                        sendStake={sendDepositIMoney}
-                        stakeState={depositState}
-                      />
-                    </Container>
-                  </GridItem>
-                  <GridItem w="100%" colSpan={5}>
-                    <Container
-                      variant={'token'}
-                      padding={'16px'}
-                      position="relative"
-                    >
-                      <WithdrawForm
-                        token={stable}
-                        stakedBalance={iMoneyBalance}
-                        sendWithdraw={sendWithdrawIMoney}
-                        withdrawState={withdrawIMoneyState}
-                      />
-                    </Container>
-                  </GridItem>
-                </Grid>
-              </AccordionPanel>
+            acquire={
+              <Flex flexDirection={'column'}>
+                <Button
+                  as={RouterLink}
+                  to={'/imoney'}
+                  color={'white'}
+                  variant={'primary'}
+                >
+                  Earn MONEY
+                </Button>
+              </Flex>
             }
           />
         </Accordion>

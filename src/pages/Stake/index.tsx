@@ -1,12 +1,12 @@
-import { Box, Container, Flex, HStack, Text } from '@chakra-ui/react';
+import { Box, Container, Flex, HStack, Spacer, Text } from '@chakra-ui/react';
 import { formatEther } from '@ethersproject/units';
 import { CurrencyValue, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
 import {
-  iMoneyTotalSupply,
   useAddresses,
   useBalanceOfToken,
+  useIMoneyAPR,
   useStable,
   useTotalSupplyIMoney,
   useTotalSupplyToken,
@@ -16,7 +16,7 @@ import { useGetStakedMoreVeMoreToken } from '../../chain-interaction/transaction
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
-import { formatNumber, parseFloatCurrencyValue } from '../../utils';
+import { formatNumber } from '../../utils';
 import StakeBox from './components/StakeBox';
 
 export default function StakePage({
@@ -46,20 +46,12 @@ export default function StakePage({
   );
 
   //iMoney data
-  const totalStakedIMoney = formatEther(
-    useBalanceOfToken(
-      addresses.Stablecoin,
-      [addresses.StableLending2InterestForwarder],
-      0
-    )
-  );
   const balanceCtx = React.useContext(WalletBalancesContext);
   const iMoneyAddress = useAddresses().StableLending2InterestForwarder;
   const stable = useStable();
   const iMoneyBalance =
     balanceCtx.get(iMoneyAddress) ??
     new CurrencyValue(stable, BigNumber.from('0'));
-  const iMoneyTVL = formatEther(iMoneyTotalSupply(BigNumber.from('0')));
   const totalSupplyIMoney = new CurrencyValue(
     stable,
     useTotalSupplyIMoney(BigNumber.from(1))
@@ -73,7 +65,7 @@ export default function StakePage({
     justifyContent: 'space-between',
   };
 
-  console.log({ iMoneyBalance, iMoneyTVL, totalSupplyIMoney });
+  const { baseRate, boostedRate, avgBoostedRate } = useIMoneyAPR(account!);
 
   return (
     <Flex flexDirection={'column'}>
@@ -94,12 +86,33 @@ export default function StakePage({
           <Container variant={'token'}>
             <StakeBox
               img="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Coin-Logo-FINAL.jpg"
-              title="iMoney"
+              title={`iMoney`}
               link="/imoney"
-              totalStaked={formatNumber(parseFloat(totalStakedIMoney))}
-              yourStake={parseFloatCurrencyValue(iMoneyBalance).toString()}
-              totalSupply={formatNumber(parseFloat(totalSupplyIMoney.format()))}
-            />
+              totalStaked={formatNumber(parseFloat(totalSupplyIMoney.format()))}
+              yourStake={iMoneyBalance.format({ suffix: '' })}
+              totalSupply={null}
+              buttonLabel="Earn MONEY"
+            >
+              <>
+                <Spacer />
+                <Box>
+                  <Flex
+                    flexDirection={'column'}
+                    justify="center"
+                    alignItems={'center'}
+                  >
+                    <Text fontSize={'md'} color={'gray.400'}>
+                      {'Base + Boosted APR'}
+                    </Text>
+                    <Text fontSize={'sm'}>
+                      {account
+                        ? `${baseRate}% + ${boostedRate}% `
+                        : `${baseRate}% + ${avgBoostedRate}% avg`}
+                    </Text>
+                  </Flex>
+                </Box>
+              </>
+            </StakeBox>
           </Container>
         </Box>
       </Flex>

@@ -34,7 +34,10 @@ export function StakingAPRIMoney(props: React.PropsWithChildren<unknown>) {
     stable,
     useTotalSupplyIMoney(BigNumber.from(1))
   );
-  const pendingRewards = useViewPendingReward(account!, BigNumber.from(0));
+  const pendingRewards = new CurrencyValue(
+    stable,
+    useViewPendingReward(account!, BigNumber.from(0))
+  );
 
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
@@ -67,7 +70,7 @@ export function StakingAPRIMoney(props: React.PropsWithChildren<unknown>) {
               Claimable
             </Text>
             <Spacer />
-            <Text variant={'bodyLarge'}> {pendingRewards.toString()}</Text>
+            <Text variant={'bodyLarge'}> {pendingRewards.format()}</Text>
           </Flex>
           <Flex w={'full'} marginTop={'30px'}>
             <Text variant="h200" color={'whiteAlpha.400'}>

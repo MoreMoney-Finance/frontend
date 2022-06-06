@@ -24,9 +24,9 @@ import {
 import { WalletBalancesContext } from '../contexts/WalletBalancesContext';
 import ERC20 from '../contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
-import iMoney from '../contracts/artifacts/contracts/rewards/iMoney.sol/iMoney.json';
 import InterestRateController from '../contracts/artifacts/contracts/InterestRateController.sol/InterestRateController.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
+import iMoney from '../contracts/artifacts/contracts/rewards/iMoney.sol/iMoney.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
 import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
@@ -35,9 +35,8 @@ import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies
 import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
-import { parseFloatCurrencyValue } from '../utils';
+import { parseFloatCurrencyValue, sqrt } from '../utils';
 import { getTokenFromAddress, tokenAmount } from './tokens';
-import StableLending2InterestForwarder from '../contracts/artifacts/contracts/rewards/StableLending2InterestForwarder.sol/StableLending2InterestForwarder.json';
 // import earnedRewards from '../constants/earned-rewards.json';
 // import rewardsRewards from '../constants/rewards-rewards.json';
 /* eslint-disable */
@@ -346,10 +345,10 @@ export function useIMoneyAccountInfo(account: string): IMoneyAccountInfo {
 
 export function useIMoneyTotalWeights(defaultResult: any) {
   const addresses = useAddresses();
-  const abi = new Interface(StableLending2InterestForwarder.abi);
+  const abi = new Interface(iMoney.abi);
   return (useContractCall({
     abi,
-    address: addresses.StableLending2InterestForwarder,
+    address: addresses.iMoney,
     method: 'totalWeights',
     args: [],
   }) ?? [defaultResult])[0];
@@ -736,6 +735,33 @@ export function useBalanceOfToken(
     method: 'balanceOf',
     args,
   }) ?? [defaultResult])[0];
+}
+
+export function useIMoneyAPR(account: string) {
+  const totalDebt = useTotalDebt(BigNumber.from(0));
+  const totalSupplyIMoney = useTotalSupplyIMoney(BigNumber.from(1));
+  const currentRate = useInterestRate(BigNumber.from(0));
+  const boostedShare = useBoostedSharePer10k(BigNumber.from(0));
+  const accountInfo = useIMoneyAccountInfo(account!);
+  const weight = sqrt(
+    accountInfo.factor.mul(
+      accountInfo.depositAmount.isZero()
+        ? parseEther('100')
+        : accountInfo.depositAmount
+    )
+  );
+  const totalWeights = useIMoneyTotalWeights(parseEther('100'));
+
+  const ratio = totalDebt.mul(currentRate).div(totalSupplyIMoney).toNumber();
+  const baseRate = (ratio * (100 - boostedShare)) / 100;
+  const boostedRate =
+    weight
+      .mul(Math.round(ratio * boostedShare))
+      .div(totalWeights)
+      .toNumber() / 100;
+
+  const avgBoostedRate = (ratio * boostedShare) / 100;
+  return { baseRate, boostedRate, avgBoostedRate };
 }
 
 export function useTotalSupplyIMoney(defaultResult: any) {

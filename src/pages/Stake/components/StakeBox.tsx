@@ -10,13 +10,15 @@ export default function StakeBox({
   totalStaked,
   yourStake,
   totalSupply,
+  buttonLabel,
 }: React.PropsWithChildren<{
   title: string;
   img: string;
   link: string;
   totalStaked: string;
   yourStake: string;
-  totalSupply: string;
+  totalSupply: string | null;
+  buttonLabel?: string;
 }>) {
   const navigate = useNavigate();
   return (
@@ -29,7 +31,9 @@ export default function StakeBox({
           </Flex>
         </Box>
         <Spacer />
-        <Button onClick={() => navigate(link)}>Earn {title}</Button>
+        <Button onClick={() => navigate(link)}>
+          {buttonLabel ?? `Earn ${title}`}
+        </Button>
       </Flex>
       <Flex
         flexDirection={['column', 'column', 'row', 'row']}
@@ -53,15 +57,24 @@ export default function StakeBox({
             <Text fontSize={'sm'}>{yourStake}</Text>
           </Flex>
         </Box>
-        <Spacer />
-        <Box>
-          <Flex flexDirection={'column'} justify="center" alignItems={'center'}>
-            <Text fontSize={'md'} color={'gray.400'}>
-              {'Total Supply'}
-            </Text>
-            <Text fontSize={'sm'}>{totalSupply}</Text>
-          </Flex>
-        </Box>
+        {totalSupply ? (
+          <>
+            <Spacer />
+            <Box>
+              <Flex
+                flexDirection={'column'}
+                justify="center"
+                alignItems={'center'}
+              >
+                <Text fontSize={'md'} color={'gray.400'}>
+                  {'Total Supply'}
+                </Text>
+                <Text fontSize={'sm'}>{totalSupply}</Text>
+              </Flex>
+            </Box>
+          </>
+        ) : null}
+        {children}
       </Flex>
       {/* <Flex padding="16px" justify={'center'}> */}
       {/* <Box width={'100%'}> */}
@@ -77,7 +90,6 @@ export default function StakeBox({
           </Flex>
         </Box> */}
       {/* </Flex> */}
-      {children}
     </Flex>
   );
 }

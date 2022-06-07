@@ -2,7 +2,7 @@ import { Interface } from '@ethersproject/abi';
 import { Contract } from '@ethersproject/contracts';
 import IERC20 from '@openzeppelin/contracts/build/contracts/IERC20.json';
 import { useContractCall, useContractFunction } from '@usedapp/core';
-import { Token } from '@usedapp/core/dist/esm/src/model';
+import { CurrencyValue, Token } from '@usedapp/core/dist/esm/src/model';
 import {
   parseEther,
   parseUnits,
@@ -32,6 +32,7 @@ import {
   useStable,
   useYieldConversionStrategyView,
 } from './contracts';
+import { parseFloatCurrencyValue } from '../utils';
 
 export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   const contractsABI: Record<string, any> = {
@@ -277,7 +278,8 @@ export function useNativeDepositBorrowTrans(
 
 export function useNativeRepayWithdrawTrans(
   trancheId: number | null | undefined,
-  collateralToken: Token | null | undefined
+  collateralToken: Token | null | undefined,
+  totalDebt: CurrencyValue | undefined
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
@@ -297,16 +299,25 @@ export function useNativeRepayWithdrawTrans(
       collateralAmount: string | number,
       repayAmount: string | number
     ) =>
-      account && trancheId && collateralToken
+      account && trancheId && collateralToken && totalDebt
         ? send(
           trancheId,
           parseUnits(collateralAmount.toString(), collateralToken.decimals),
-          parseEther(repayAmount.toString()),
+          prepRepayAmount(repayAmount, totalDebt),
           account
         )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
   };
+}
+
+function prepRepayAmount(repayAmount: string | number, totalDebt: CurrencyValue) {
+  const parsedNumber = parseFloat(repayAmount.toString());
+  if (Math.abs(parsedNumber - parseFloatCurrencyValue(totalDebt)) < 1) {
+    return parseEther((parsedNumber * 1.01).toString());
+  } else {
+    return parseEther(repayAmount.toString());
+  }
 }
 
 export function useDepositBorrowTrans(trancheId: number | null | undefined) {
@@ -361,7 +372,8 @@ export function useApproveTrans(tokenAddress: string) {
 
 export function useRepayWithdrawTrans(
   trancheId: number | null | undefined,
-  collateralToken: Token | null | undefined
+  collateralToken: Token | null | undefined,
+  totalDebt: CurrencyValue | undefined
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
@@ -381,11 +393,11 @@ export function useRepayWithdrawTrans(
       collateralAmount: string | number,
       repayAmount: string | number
     ) =>
-      account && trancheId && collateralToken
+      account && trancheId && collateralToken && totalDebt
         ? send(
           trancheId,
           parseUnits(collateralAmount.toString(), collateralToken.decimals),
-          parseEther(repayAmount.toString()),
+          prepRepayAmount(repayAmount, totalDebt),
           account
         )
         : console.error('Trying to withdraw but parameters not set'),

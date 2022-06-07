@@ -42,14 +42,18 @@ export function useMigratePosition() {
     '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7':
       addresses.YieldYakAVAXStrategy2,
   };
+
   const { send, state } = useContractFunction(cprContract, 'migratePosition');
 
   return {
     sendMigrate: (trancheId: number, token: string) => {
       return send(trancheId, migratePositionsStrategies[token]);
     },
-    canMigrate: (strategy: string) =>
-      Object.values(migratePositionsStrategies).includes(strategy),
+    canMigrate: (token: string) => {
+      console.log('Migrate', Object.values(migratePositionsStrategies), token);
+      return Object.keys(migratePositionsStrategies).includes(token);
+    },
+
     migrateState: state,
   };
 }

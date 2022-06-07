@@ -63,7 +63,7 @@ export function TrancheRow(
         <Td>{row.debt}</Td>
 
         <Td>
-          {canMigrate(params.strategyAddress) ? (
+          {canMigrate(params.token.address) ? (
             <Button
               onClick={(e) => {
                 migrateClick();

@@ -2,6 +2,8 @@ import { Box, Button, Container, Flex, Text } from '@chakra-ui/react';
 import { Token } from '@usedapp/core';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useMigratePosition } from '../../chain-interaction/transactions';
+import { TransactionErrorDialog } from '../../components/notifications/TransactionErrorDialog';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { TrancheData } from './CurrentlyOpenPositions';
 
@@ -12,8 +14,14 @@ export function TrancheCard({
   token: Token;
   row: TrancheData;
 }) {
+  const { sendMigrate, migrateState, canMigrate } = useMigratePosition();
+
+  const migrateClick = () => {
+    sendMigrate(row.trancheId, row.token.address);
+  };
   return (
     <>
+      <TransactionErrorDialog state={migrateState} title="Migrate" />
       <Container variant="token" marginTop={'20px'}>
         <Flex flexDirection={'row'} justifyContent={'space-between'} p={'4'}>
           <Box fontFamily={'Rubik'} color={'whiteAlpha.400'}>
@@ -90,7 +98,19 @@ export function TrancheCard({
             Migrate
           </Box>
           <Box>
-            <Button>Migrate</Button>
+            {canMigrate(row.token.address) ? (
+              <Button
+                onClick={(e) => {
+                  migrateClick();
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                Migrate
+              </Button>
+            ) : (
+              <Text>N/A</Text>
+            )}
           </Box>
         </Flex>
 

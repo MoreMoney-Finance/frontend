@@ -92,6 +92,7 @@ export type DeploymentAddresses = {
   VeMoreStaking: string;
   StableLending2: string;
   YieldYakAVAXStrategy2: string;
+  AltYieldYakAVAXStrategy2: string;
   YieldYakStrategy2: string;
   WrapNativeStableLending2: string;
   StableLending2Liquidation: string;
@@ -474,9 +475,10 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   // ].map(getAddress);
 
   const tokens = Object.keys(token2Strat);
-  // tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
   const strats = Object.values(token2Strat);
-  // strats.push(addresses.LiquidYieldStrategy);
+
+  tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
+  strats.push(addresses.AltYieldYakAVAXStrategy2);
 
   // tokens.push('0x454E67025631C065d3cFAD6d71E6892f74487a15');
   // strats.push(addresses.YieldYakStrategy);

@@ -34,6 +34,7 @@ export function TrancheTable({
             <Td>Liq. price</Td>
             <Td>Collateral</Td>
             <Td>Debt</Td>
+            <Td>Migrate</Td>
           </Tr>
         </Thead>
 

@@ -25,12 +25,34 @@ import YieldYakStrategy from '../contracts/artifacts/contracts/strategies/YieldY
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
 import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
+import Migrate from '../contracts/artifacts/contracts/Migrate.sol/Migrate.json';
 import {
   useAddresses,
   useRegisteredOracle,
   useStable,
   useYieldConversionStrategyView,
 } from './contracts';
+
+export function useMigratePosition() {
+  const addresses = useAddresses();
+  const cprAddress = useAddresses().Migrate;
+  const cprContract = new Contract(cprAddress, new Interface(Migrate.abi));
+  const migratePositionsStrategies: Record<string, string> = {
+    '0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE': addresses.YieldYakStrategy2,
+    '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7':
+      addresses.YieldYakAVAXStrategy2,
+  };
+  const { send, state } = useContractFunction(cprContract, 'migratePosition');
+
+  return {
+    sendMigrate: (trancheId: number, token: string) => {
+      return send(trancheId, migratePositionsStrategies[token]);
+    },
+    canMigrate: (strategy: string) =>
+      Object.values(migratePositionsStrategies).includes(strategy),
+    migrateState: state,
+  };
+}
 
 export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   const contractsABI: Record<string, any> = {
@@ -51,8 +73,8 @@ export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
       contractsABI[strategyAddress] === undefined
         ? null
         : isYY
-          ? () => send(tokenAddress)
-          : () => send(),
+        ? () => send(tokenAddress)
+        : () => send(),
     withdrawState: state,
   };
 }
@@ -205,11 +227,11 @@ export function useNativeRepayWithdrawTrans(
     ) =>
       account && trancheId && collateralToken
         ? send(
-          trancheId,
-          parseUnits(collateralAmount.toString(), collateralToken.decimals),
-          parseEther(repayAmount.toString()),
-          account
-        )
+            trancheId,
+            parseUnits(collateralAmount.toString(), collateralToken.decimals),
+            parseEther(repayAmount.toString()),
+            account
+          )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
   };
@@ -248,12 +270,12 @@ export function useDepositBorrowTrans(
       return trancheId
         ? send(trancheId, cAmount, bAmount, account)
         : send(
-          collateralToken.address,
-          strategyAddress,
-          cAmount,
-          bAmount,
-          account
-        );
+            collateralToken.address,
+            strategyAddress,
+            cAmount,
+            bAmount,
+            account
+          );
     },
     depositBorrowState: state,
   };
@@ -297,11 +319,11 @@ export function useRepayWithdrawTrans(
     ) =>
       account && trancheId && collateralToken
         ? send(
-          trancheId,
-          parseUnits(collateralAmount.toString(), collateralToken.decimals),
-          parseEther(repayAmount.toString()),
-          account
-        )
+            trancheId,
+            parseUnits(collateralAmount.toString(), collateralToken.decimals),
+            parseEther(repayAmount.toString()),
+            account
+          )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
   };

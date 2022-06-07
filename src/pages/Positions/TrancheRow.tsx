@@ -1,10 +1,12 @@
-import { Td, Text, Tr } from '@chakra-ui/react';
+import { Button, Td, Text, Tr } from '@chakra-ui/react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
 } from '../../chain-interaction/contracts';
+import { useMigratePosition } from '../../chain-interaction/transactions';
+import { TransactionErrorDialog } from '../../components/notifications/TransactionErrorDialog';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { TrancheData } from './CurrentlyOpenPositions';
 import { TrancheAction } from './TrancheTable';
@@ -16,8 +18,15 @@ export function TrancheRow(
   >
 ) {
   const { row } = params;
+  const { sendMigrate, migrateState, canMigrate } = useMigratePosition();
+
+  const migrateClick = () => {
+    sendMigrate(row.trancheId, params.token.address);
+  };
+
   return (
     <>
+      <TransactionErrorDialog state={migrateState} title="Migrate" />
       <Tr
         key={`${params.trancheId}`}
         as={Link}
@@ -52,6 +61,22 @@ export function TrancheRow(
         <Td>{row.collateral}</Td>
 
         <Td>{row.debt}</Td>
+
+        <Td>
+          {canMigrate(params.strategyAddress) ? (
+            <Button
+              onClick={(e) => {
+                migrateClick();
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
+              Migrate
+            </Button>
+          ) : (
+            <Text>N/A</Text>
+          )}
+        </Td>
       </Tr>
     </>
   );

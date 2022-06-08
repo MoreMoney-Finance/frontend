@@ -48,7 +48,7 @@ export function StakeMoreIMoney(props: React.PropsWithChildren<unknown>) {
             color={'whiteAlpha.600'}
             lineHeight={'14px'}
           >
-            Stake MORE
+            Stake MONEY
           </Text>
         </Box>
         <TokenAmountInputField

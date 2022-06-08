@@ -18,7 +18,7 @@ export function EditMoreIMoney(props: React.PropsWithChildren<unknown>) {
       <Container variant={'token'} padding={'35px 20px 20px 20px'}>
         <Tabs variant={'primary'}>
           <TabList>
-            <Tab>Stake MORE</Tab>
+            <Tab>Stake</Tab>
             <Tab>Unstake</Tab>
             <Tab>Claim</Tab>
           </TabList>

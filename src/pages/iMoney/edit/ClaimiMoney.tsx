@@ -31,7 +31,7 @@ export default function ClaimIMoney({
 
   return (
     <>
-      <TransactionErrorDialog state={claimState} title="Claim VeMoreToken" />
+      <TransactionErrorDialog state={claimState} title="Claim iMoney" />
       <Flex
         flexDirection={['column', 'column', 'row']}
         height={'100%'}

@@ -62,7 +62,7 @@ export function StakeMoreIMoney(props: React.PropsWithChildren<unknown>) {
           width="full"
         />
       </Flex>
-      <TransactionErrorDialog state={stakeState} title={'Stake MORE'} />
+      <TransactionErrorDialog state={stakeState} title={'Stake MONEY'} />
       <Box marginTop={'10px'}>
         <Button
           variant={stakeMoreButtonDisabled ? 'submit' : 'submit-primary'}

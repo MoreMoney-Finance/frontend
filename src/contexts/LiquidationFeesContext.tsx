@@ -1,9 +1,10 @@
 import {
-  ContractCall,
+  Call,
   Token,
-  useContractCalls,
+  useCalls,
   useEthers,
 } from '@usedapp/core';
+import { Contract } from 'ethers';
 import { getAddress, Interface } from 'ethers/lib/utils';
 import React from 'react';
 import { useAddresses } from '../chain-interaction/contracts';
@@ -23,15 +24,14 @@ export function LiquidationFeesCtxProvider({
 
   function convert2ContractCall(aT: [string, Token]) {
     return {
-      abi: new Interface(IsolatedLendingLiquidation.abi),
-      address: address,
+      contract: new Contract(address, new Interface(IsolatedLendingLiquidation.abi)),
       method: 'viewLiquidationFeePer10k',
       args: [aT[0]],
     };
   }
   const tokensInQuestion = getTokensInQuestion(chainId!);
-  const calls: ContractCall[] = tokensInQuestion.map(convert2ContractCall);
-  const results = useContractCalls(calls) ?? [];
+  const calls: Call[] = tokensInQuestion.map(convert2ContractCall);
+  const results = useCalls(calls).map((x) => (x ?? {value: undefined}).value) ?? [];
   results?.forEach((result: any[] | undefined, index: number) => {
     if (result) {
       const [tokenAddress] = tokensInQuestion[index];

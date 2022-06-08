@@ -1,7 +1,7 @@
 import { Flex } from '@chakra-ui/react';
 import { CurrencyValue, Token } from '@usedapp/core';
-import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber } from 'ethers';
+import { parseEther } from 'ethers/lib/utils';
 import * as React from 'react';
 import {
   TokenStratPositionMetadata,

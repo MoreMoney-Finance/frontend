@@ -1,19 +1,15 @@
-import { parseUnits } from '@ethersproject/units';
+import { formatEther, parseEther, parseUnits } from '@ethersproject/units';
 import {
+  Call,
   ChainId,
-  ContractCall,
   CurrencyValue,
   ERC20Interface,
   Token,
-  useContractCall,
-  useContractCalls,
+  useCall,
+  useCalls,
   useEthers,
 } from '@usedapp/core';
-import {
-  formatEther,
-  parseEther,
-} from '@usedapp/core/node_modules/@ethersproject/units';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, Contract, ethers } from 'ethers';
 import { getAddress, Interface, parseBytes32String } from 'ethers/lib/utils';
 import React, { useContext, useState } from 'react';
 import {
@@ -116,20 +112,23 @@ export function useIsolatedLendingView(
   const addresses = useAddresses();
 
   const abi = new Interface(StableLending2.abi);
+  const contract = new Contract(addresses.StableLending2, abi);
 
   return {
-    legacy: (useContractCall({
-      abi,
-      address: addresses.StableLending2,
-      method,
-      args,
-    }) ?? [defaultResult])[0],
-    current: (useContractCall({
-      abi,
-      address: addresses.StableLending2,
-      method,
-      args,
-    }) ?? [defaultResult])[0],
+    legacy: (
+      useCall({
+        contract,
+        method,
+        args,
+      }) ?? { value: [defaultResult] }
+    ).value[0],
+    current: (
+      useCall({
+        contract,
+        method,
+        args,
+      }) ?? { value: [defaultResult] }
+    ).value[0],
   };
 }
 
@@ -311,12 +310,14 @@ function parseStratMeta(
 export function useTotalDebt(defaultResult: any) {
   const addresses = useAddresses();
   const abi = new Interface(StableLending2.abi);
-  return (useContractCall({
-    abi,
-    address: addresses.StableLending2,
-    method: 'totalDebt',
-    args: [],
-  }) ?? [defaultResult])[0];
+  const contract = new Contract(addresses.StableLending2, abi);
+  return (
+    useCall({
+      contract,
+      method: 'totalDebt',
+      args: [],
+    }) ?? { value: [defaultResult] }
+  ).value[0];
 }
 
 export type IMoneyAccountInfo = {
@@ -328,10 +329,10 @@ export type IMoneyAccountInfo = {
 export function useIMoneyAccountInfo(account: string): IMoneyAccountInfo {
   const addresses = useAddresses();
   const abi = new Interface(iMoney.abi);
+  const contract = new Contract(addresses.iMoney, abi);
   const res =
-    useContractCall({
-      abi,
-      address: addresses.iMoney,
+    useCall({
+      contract,
       method: 'accounts',
       args: [account],
     }) ?? ({} as any);
@@ -347,37 +348,43 @@ export function useIMoneyAccountInfo(account: string): IMoneyAccountInfo {
 export function useIMoneyTotalWeights(defaultResult: any) {
   const addresses = useAddresses();
   const abi = new Interface(iMoney.abi);
-  return (useContractCall({
-    abi,
-    address: addresses.iMoney,
-    method: 'totalWeights',
-    args: [],
-  }) ?? [defaultResult])[0];
+  const contract = new Contract(addresses.iMoney, abi);
+  return (
+    useCall({
+      contract,
+      method: 'totalWeights',
+      args: [],
+    }) ?? { value: [defaultResult] }
+  ).value[0];
 }
 
 export function useBoostedSharePer10k(defaultResult: any) {
   const addresses = useAddresses();
   const abi = new Interface(iMoney.abi);
+  const contract = new Contract(addresses.iMoney, abi);
   return (
-    (useContractCall({
-      abi,
-      address: addresses.iMoney,
-      method: 'boostedSharePer10k',
-      args: [],
-    }) ?? [defaultResult])[0] / 100
+    (
+      useCall({
+        contract,
+        method: 'boostedSharePer10k',
+        args: [],
+      }) ?? { value: [defaultResult] }
+    ).value[0] / 100
   );
 }
 
 export function useInterestRate(defaultResult: any) {
   const addresses = useAddresses();
   const abi = new Interface(InterestRateController.abi);
+  const contract = new Contract(addresses.InterestRateController, abi);
   return (
-    (useContractCall({
-      abi,
-      address: addresses.InterestRateController,
-      method: 'currentRatePer10k',
-      args: [],
-    }) ?? [defaultResult])[0] / 100
+    (
+      useCall({
+        contract,
+        method: 'currentRatePer10k',
+        args: [],
+      }) ?? { value: [defaultResult] }
+    ).value[0] / 100
   );
 }
 
@@ -688,12 +695,14 @@ export function useIsolatedPositionMetadata(
 export function iMoneyTotalSupply(defaultResult: any) {
   const address = useAddresses().iMoney;
   const abi = new Interface(iMoney.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method: 'totalSupply',
-    args: [],
-  }) ?? [defaultResult])[0];
+  const contract = new Contract(address, abi);
+  return (
+    useCall({
+      contract,
+      method: 'totalSupply',
+      args: [],
+    }) ?? { value: [defaultResult] }
+  ).value[0];
 }
 
 export function xMoreTotalSupply(
@@ -703,12 +712,14 @@ export function xMoreTotalSupply(
 ) {
   const address = useAddresses().xMore;
   const abi = new Interface(xMore.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method,
-    args,
-  }) ?? [defaultResult])[0];
+  const contract = new Contract(address, abi);
+  return (
+    useCall({
+      contract,
+      method,
+      args,
+    }) ?? { value: [defaultResult] }
+  ).value[0];
 }
 
 export function useGlobalDebtCeiling(
@@ -718,12 +729,14 @@ export function useGlobalDebtCeiling(
 ) {
   const address = useAddresses().Stablecoin;
   const abi = new Interface(Stablecoin.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method,
-    args,
-  }) ?? [defaultResult])[0];
+  const contract = new Contract(address, abi);
+  return (
+    useCall({
+      contract,
+      method,
+      args,
+    }) ?? { value: [defaultResult] }
+  ).value[0];
 }
 
 export function useBalanceOfToken(
@@ -731,12 +744,13 @@ export function useBalanceOfToken(
   args: any[],
   defaultResult: any
 ) {
-  return (useContractCall({
-    abi: ERC20Interface,
-    address,
-    method: 'balanceOf',
-    args,
-  }) ?? [defaultResult])[0];
+  return (
+    useCall({
+      contract: new Contract(address, ERC20Interface),
+      method: 'balanceOf',
+      args,
+    }) ?? { value: [defaultResult] }
+  ).value[0];
 }
 
 export function useIMoneyAPR(account: string) {
@@ -768,12 +782,14 @@ export function useIMoneyAPR(account: string) {
 
 export function useTotalSupplyIMoney(defaultResult: any) {
   const abi = new Interface(iMoney.abi);
-  return (useContractCall({
-    abi,
-    address: useAddresses().iMoney,
-    method: 'totalSupply',
-    args: [],
-  }) ?? [defaultResult])[0];
+  const contract = new Contract(useAddresses().iMoney, abi);
+  return (
+    useCall({
+      contract,
+      method: 'totalSupply',
+      args: [],
+    }) ?? { value: [defaultResult] }
+  ).value[0];
 }
 
 export function useTotalSupplyToken(
@@ -783,12 +799,14 @@ export function useTotalSupplyToken(
   defaultResult: any
 ) {
   const abi = new Interface(ERC20.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method,
-    args,
-  }) ?? [defaultResult])[0];
+  const contract = new Contract(address, abi);
+  return (
+    useCall({
+      contract,
+      method,
+      args,
+    }) ?? { value: [defaultResult] }
+  ).value[0];
 }
 
 export function useTotalSupply(
@@ -798,12 +816,14 @@ export function useTotalSupply(
 ) {
   const address = useAddresses().Stablecoin;
   const abi = new Interface(ERC20.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method,
-    args,
-  }) ?? [defaultResult])[0];
+  const contract = new Contract(address, abi);
+  return (
+    useCall({
+      contract,
+      method,
+      args,
+    }) ?? { value: [defaultResult] }
+  ).value[0];
 }
 
 export function useYieldConversionStrategyView(
@@ -813,12 +833,14 @@ export function useYieldConversionStrategyView(
   defaultResult: any
 ) {
   const abi = new Interface(YieldConversionStrategy.abi);
-  return (useContractCall({
-    abi,
-    address: strategyAddress,
-    method,
-    args,
-  }) ?? [defaultResult])[0];
+  const contract = new Contract(strategyAddress, abi);
+  return (
+    useCall({
+      contract,
+      method,
+      args,
+    }) ?? { value: [defaultResult] }
+  ).value[0];
 }
 
 const TWELVE_HOURS_SECONDS = 43200;
@@ -829,12 +851,16 @@ export function useUpdatedPositions(timeStart: number) {
   // console.log('startPeriod', startPeriod);
   const stable = useStable();
   const addresses = useAddresses();
+  const contract = new Contract(
+    addresses.StableLending2,
+    new Interface(StableLending2.abi)
+  );
 
   function args(trancheContract: string) {
     return Array(endPeriod - startPeriod)
       .fill(startPeriod)
       .map((x, i) => ({
-        abi: new Interface(StableLending2.abi),
+        contract,
         address: trancheContract,
         method: 'viewPositionsByTrackingPeriod',
         args: [x + i],
@@ -842,8 +868,8 @@ export function useUpdatedPositions(timeStart: number) {
   }
 
   const currentRows =
-    (useContractCalls(
-      args(addresses.StableLending2)
+    (useCalls(args(addresses.StableLending2)).map(
+      (x) => (x ?? { value: undefined }).value
     ) as RawPositionMetaRow[][][]) || [];
 
   function parseRows(rows: RawPositionMetaRow[][][], trancheContract: string) {
@@ -867,16 +893,15 @@ export function useUpdatedMetadataLiquidatablePositions(
     [useAddresses().StableLending2]: new Interface(StableLending2.abi),
   };
 
-  const positionCalls: ContractCall[] = positions!.map((pos) => {
+  const positionCalls: Call[] = positions!.map((pos) => {
     return {
-      abi: abi[pos.trancheContract],
-      address: pos.trancheContract,
+      contract: new Contract(pos.trancheContract, abi[pos.trancheContract]),
       method: 'viewPositionMetadata',
       args: [pos.trancheId],
     };
   });
 
-  const updatedData = useContractCalls(positionCalls);
+  const updatedData = useCalls(positionCalls).map((x) => (x ?? { value: undefined}).value);
 
   return updatedData.filter((x) => x !== undefined);
 }
@@ -884,28 +909,30 @@ export function useUpdatedMetadataLiquidatablePositions(
 export function useRegisteredOracle(tokenAddress?: string) {
   const address = useAddresses().OracleRegistry;
   const abi = new Interface(OracleRegistry.abi);
+  const contract = new Contract(address, abi);
   const stable = useStable();
-  return (useContractCall({
-    abi,
-    address,
-    method: 'tokenOracle',
-    args: [tokenAddress, stable.address],
-  }) ?? [undefined])[0];
+  return (
+    useCall({
+      contract,
+      method: 'tokenOracle',
+      args: [tokenAddress, stable.address],
+    }) ?? { value: [undefined] }
+  ).value[0];
 }
 
 export function useAllFeesEver(contracts: string[]) {
   function convert2ContractCall(contract: string) {
     return {
-      abi: new Interface(IFeeReporter.abi),
-      address: contract,
+      contract: new Contract(contract, new Interface(IFeeReporter.abi)),
       method: 'viewAllFeesEver',
       args: [],
     };
   }
 
-  const calls: ContractCall[] = contracts.map(convert2ContractCall);
+  const calls: Call[] = contracts.map(convert2ContractCall);
   // console.log('calls', calls);
-  const results = useContractCalls(calls) ?? [];
+  const results =
+    useCalls(calls).map((x) => (x ?? { value: undefined }).value) ?? [];
 
   return results;
 }
@@ -915,12 +942,14 @@ export function useEstimatedHarvestable(
   tokenAddress: string
 ) {
   const abi = new Interface(IStrategy.abi);
-  return (useContractCall({
-    abi,
-    address: strategyAddress,
-    method: 'viewEstimatedHarvestable',
-    args: [tokenAddress],
-  }) ?? [undefined])[0];
+  const contract = new Contract(strategyAddress, abi);
+  return (
+    useCall({
+      contract,
+      method: 'viewEstimatedHarvestable',
+      args: [tokenAddress],
+    }) ?? { value: [undefined] }
+  ).value[0];
 }
 
 export function useStakingMetadata(
@@ -929,15 +958,17 @@ export function useStakingMetadata(
 ): [RawStakingMetadata][] {
   const abi = new Interface(VestingStakingRewards.abi);
   const userAccount = account ?? ethers.constants.AddressZero;
-  const calls: ContractCall[] = stakingContracts.map((address) => ({
-    abi,
-    address,
+
+  const calls: Call[] = stakingContracts.map((address) => ({
+    contract: new Contract(address, abi),
     method: 'stakingMetadata',
     args: [userAccount],
   }));
 
-  let contractCalls2 = useContractCalls(calls);
-  const results = (contractCalls2 ?? []) as unknown as [RawStakingMetadata][];
+  let contractCalls2 = useCalls(calls);
+  const results = (contractCalls2.map(
+    (x) => (x ?? { value: undefined }).value
+  ) ?? []) as unknown as [RawStakingMetadata][];
   return results;
 }
 
@@ -1053,20 +1084,23 @@ export function useSpecialRewardsData(account: string) {
   const abi = new Interface(VestingLaunchReward.abi);
   const { chainId } = useEthers();
   const moreToken = getTokenFromAddress(chainId, addresses.MoreToken);
+  const contract = new Contract(address, abi);
 
-  const balance = (useContractCall({
-    address,
-    abi,
-    method: 'balanceOf',
-    args: [account],
-  }) ?? [BigNumber.from(0)])[0];
+  const balance = (
+    useCall({
+      contract,
+      method: 'balanceOf',
+      args: [account],
+    }) ?? { value: [BigNumber.from(0)] }
+  ).value[0];
 
-  const vested = (useContractCall({
-    address,
-    abi,
-    method: 'burnableByAccount',
-    args: [account],
-  }) ?? [BigNumber.from(0)])[0];
+  const vested = (
+    useCall({
+      contract,
+      method: 'burnableByAccount',
+      args: [account],
+    }) ?? { value: [BigNumber.from(0)] }
+  ).value[0];
 
   return {
     balance: new CurrencyValue(moreToken, balance),
@@ -1081,20 +1115,25 @@ function timestamp2Date(tstamp: BigNumber) {
 export function useCurvePoolSLDeposited() {
   const addressCurvePool = useAddresses().CurvePoolSL;
   const addressCurvePool2 = useAddresses().CurvePoolSL2;
+  const contract = new Contract(
+    useAddresses().CurvePool,
+    new Interface(ERC20.abi)
+  );
+  const balance1 = (
+    useCall({
+      contract,
+      method: 'balanceOf',
+      args: [addressCurvePool],
+    }) ?? { value: [BigNumber.from(0)] }
+  ).value[0];
 
-  const balance1 = (useContractCall({
-    address: useAddresses().CurvePool,
-    abi: new Interface(ERC20.abi),
-    method: 'balanceOf',
-    args: [addressCurvePool],
-  }) ?? [BigNumber.from(0)])[0];
-
-  const balance2 = (useContractCall({
-    address: useAddresses().CurvePool,
-    abi: new Interface(ERC20.abi),
-    method: 'balanceOf',
-    args: [addressCurvePool2],
-  }) ?? [BigNumber.from(0)])[0];
+  const balance2 = (
+    useCall({
+      contract,
+      method: 'balanceOf',
+      args: [addressCurvePool2],
+    }) ?? { value: [BigNumber.from(0)] }
+  ).value[0];
 
   return balance1.add(balance2);
 }

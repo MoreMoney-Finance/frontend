@@ -1,7 +1,7 @@
 import { Progress } from '@chakra-ui/react';
 import { CurrencyValue } from '@usedapp/core';
-import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
-import { BigNumber } from '@usedapp/core/node_modules/ethers';
+import { BigNumber } from 'ethers';
+import { parseEther } from 'ethers/lib/utils';
 import React, { useEffect, useState } from 'react';
 import {
   ParsedPositionMetaRow,

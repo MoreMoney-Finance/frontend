@@ -1,11 +1,12 @@
 import {
-  ContractCall,
+  Call,
   CurrencyValue,
   ERC20Interface,
   Token,
-  useContractCalls,
+  useCalls,
   useEthers,
 } from '@usedapp/core';
+import { Contract } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import React, { useContext } from 'react';
 import { getTokensInQuestion } from '../chain-interaction/tokens';
@@ -25,17 +26,16 @@ export function WalletBalancesCtxProvider({
 
   function convert2ContractCall(aT: [string, Token]) {
     return {
-      abi: ERC20Interface,
-      address: aT[0],
+      contract: new Contract(aT[0], ERC20Interface),
       method: 'balanceOf',
       args: [account],
     };
   }
   const tokensInQuestion = getTokensInQuestion(chainId!);
-  const calls: ContractCall[] = account
+  const calls: Call[] = account
     ? tokensInQuestion.map(convert2ContractCall)
     : [];
-  const results = useContractCalls(calls) ?? [];
+  const results = (useCalls(calls) ?? []).map((x) => (x ?? { value: undefined }).value);
   results?.forEach((result: any[] | undefined, index: number) => {
     if (result) {
       const [tokenAddress, token] = tokensInQuestion[index];

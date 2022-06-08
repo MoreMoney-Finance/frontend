@@ -11,7 +11,7 @@ import {
   YieldType,
 } from '../../chain-interaction/contracts';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
-import { parseFloatCurrencyValue, useContractName } from '../../utils';
+import { parseFloatCurrencyValue } from '../../utils';
 import { TrancheCard } from './TrancheCard';
 import { TrancheTable } from './TrancheTable';
 

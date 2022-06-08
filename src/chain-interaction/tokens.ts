@@ -4,7 +4,7 @@ import {
   CurrencyValue,
   NativeCurrency,
   Token,
-  useContractCall,
+  useCall,
 } from '@usedapp/core';
 import { getAddress, Interface, parseUnits } from 'ethers/lib/utils';
 import tokenlist from '../constants/tokenlist.json';
@@ -12,6 +12,7 @@ import deployAddresses from '../contracts/addresses.json';
 import lptokens from '../contracts/lptokens.json';
 import { ParsedPositionMetaRow, useAddresses, useStable } from './contracts';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
+import { Contract } from 'ethers';
 
 const addressToken: Record<ChainId, Map<string, Token>> = Object.fromEntries(
   Object.values(ChainId).map((key) => [key, new Map()])
@@ -296,13 +297,15 @@ export function useOraclePrices(
   const stable = useStable();
   const method = 'viewAmountsInPeg';
   const args = [tokenAddresses, tokenInAmounts, stable.address];
+  const contract = new Contract(address, abi);
 
-  const pegValues = (useContractCall({
-    abi,
-    address,
-    method,
-    args,
-  }) ?? [[]])[0];
+  const pegValues = (
+    useCall({
+      contract,
+      method,
+      args,
+    }) ?? { value: [[]] }
+  ).value[0];
 
   return Object.fromEntries(
     pegValues.map((v: BigNumber, i: number) => [

@@ -43,6 +43,7 @@ ReactDOM.render(
           [ChainId.Localhost]: '0x0FB54156B496b5a040b51A71817aED9e2927912E',
           [ChainId.Hardhat]: '0x0FB54156B496b5a040b51A71817aED9e2927912E',
         },
+        bufferGasLimitPercentage: 15
       }}
     >
       <BrowserRouter>

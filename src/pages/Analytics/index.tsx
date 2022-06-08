@@ -2,11 +2,11 @@ import { Box, Container, Grid, Text } from '@chakra-ui/react';
 import {
   CurrencyValue,
   ERC20Interface,
-  useContractCalls,
+  useCalls,
   useEthers,
 } from '@usedapp/core';
-import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
-import { BigNumber } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
+import { parseEther } from 'ethers/lib/utils';
 import * as React from 'react';
 import {
   DeploymentAddresses,
@@ -88,15 +88,15 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
 
   function convert2ContractCall(holder: string) {
     return {
-      abi: ERC20Interface,
-      address: addresses.MoreToken,
+      contract: new Contract(addresses.MoreToken, ERC20Interface),
       method: 'balanceOf',
       args: [holder],
     };
   }
-  const balances = useContractCalls(
+  const balances = useCalls(
     circulatingBlacklist.map(convert2ContractCall)
   )
+    .map((x) => (x ?? { value: undefined }).value)
     .map(
       (result: any[] | undefined) =>
         (result ? result[0] : undefined) ?? BigNumber.from(0)

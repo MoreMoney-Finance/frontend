@@ -21,7 +21,7 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "@usedapp/core": "^1.0.1",
+    "@usedapp/core": "^1.0.8",
     "@walletconnect/web3-provider": "^1.7.8",
     "@web3-react/core": "^6.1.9",
     "@web3-react/network-connector": "https://gitpkg.now.sh/MoreMoney-Finance/web3-react/packages/network-connector?built-branch",

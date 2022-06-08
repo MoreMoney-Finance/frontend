@@ -36,7 +36,7 @@ export default function LiquidatablePositions() {
 
   const lending2Liquidation: Record<
     string,
-    Record<LiquidationType, (...args: any[]) => Promise<void>>
+    Record<LiquidationType, (...args: any[]) => Promise<any>>
   > = {
     ...('StableLending2' in addresses
       ? {

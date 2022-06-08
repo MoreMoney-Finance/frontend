@@ -1,14 +1,10 @@
 import { Interface } from '@ethersproject/abi';
 import { Contract } from '@ethersproject/contracts';
 import IERC20 from '@openzeppelin/contracts/build/contracts/IERC20.json';
-import { useContractCall, useContractFunction } from '@usedapp/core';
+import { useCall, useContractFunction } from '@usedapp/core';
 import { CurrencyValue, Token } from '@usedapp/core/dist/esm/src/model';
-import {
-  parseEther,
-  parseUnits,
-} from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber, ethers } from 'ethers';
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress, parseEther, parseUnits } from 'ethers/lib/utils';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
@@ -61,45 +57,53 @@ export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
 export function useBalanceOfVeMoreToken(account: string) {
   const address = useAddresses().VeMoreToken;
   const abi = new Interface(VeMoreToken.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method: 'balanceOf',
-    args: [account],
-  }) ?? [0])[0];
+  const contract = new Contract(address, abi);
+  return (
+    useCall({
+      contract,
+      method: 'balanceOf',
+      args: [account],
+    }) ?? { value: [0] }
+  ).value[0];
 }
 
 export function useGetStakedMoreVeMoreToken(account: string) {
   const address = useAddresses().VeMoreStaking;
   const abi = new Interface(VeMoreStaking.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method: 'getStakedMore',
-    args: [account],
-  }) ?? [0])[0];
+  const contract = new Contract(address, abi);
+  return (
+    useCall({
+      contract,
+      method: 'getStakedMore',
+      args: [account],
+    }) ?? { value: [0] }
+  ).value[0];
 }
 
 export function useClaimableVeMoreToken(account: string) {
   const address = useAddresses().VeMoreStaking;
   const abi = new Interface(VeMoreStaking.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method: 'claimable',
-    args: [account],
-  }) ?? [0])[0];
+  const contract = new Contract(address, abi);
+  return (
+    useCall({
+      contract,
+      method: 'claimable',
+      args: [account],
+    }) ?? { value: [0] }
+  ).value[0];
 }
 
 export function useViewPendingReward(account: string, defaultResult: any) {
   const address = useAddresses().StableLending2InterestForwarder;
   const abi = new Interface(StableLending2InterestForwarder.abi);
-  return (useContractCall({
-    abi,
-    address,
-    method: 'viewPendingReward',
-    args: [account],
-  }) ?? [defaultResult])[0];
+  const contract = new Contract(address, abi);
+  return (
+    useCall({
+      contract,
+      method: 'viewPendingReward',
+      args: [account],
+    }) ?? { value: [defaultResult] }
+  ).value[0];
 }
 
 export function useClaimIMoney() {
@@ -311,7 +315,10 @@ export function useNativeRepayWithdrawTrans(
   };
 }
 
-function prepRepayAmount(repayAmount: string | number, totalDebt: CurrencyValue) {
+function prepRepayAmount(
+  repayAmount: string | number,
+  totalDebt: CurrencyValue
+) {
   const parsedNumber = parseFloat(repayAmount.toString());
   if (Math.abs(parsedNumber - parseFloatCurrencyValue(totalDebt)) < 1) {
     return parseEther((parsedNumber * 1.01).toString());

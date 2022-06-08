@@ -1,5 +1,6 @@
 import { Box, Table, Tbody, Td, Thead, Tr } from '@chakra-ui/react';
 import * as React from 'react';
+import { useState } from 'react';
 import { Column, useTable } from 'react-table';
 import { ParsedStratMetaRow } from '../../../../chain-interaction/contracts';
 import ChangeStrategyButton from './ChangeStrategyButton';
@@ -22,11 +23,26 @@ export function ChangeStrategyTable({
   currentStrategy: string;
   onClose: () => void;
 }) {
+
+
+  const [contractNames, setContractName] = useState<Record<string, string>>({});
+
+  React.useEffect(() => {
+    Object.values(stratMeta).map((meta) => {
+      const address = meta.underlyingStrategy;
+
+      if (address) {
+        fetch(`https://api.snowtrace.io/api?module=contract&action=getsourcecode&address=${address}`)
+          .then(response => response.json())
+          .then(data => setContractName({ ...contractNames, [address]: data.result[0].ContractName }));
+      }
+    })
+  }, [stratMeta]);
   const data = Object.keys(stratMeta).map((key) => {
     const meta = stratMeta[key];
     return {
       strategyAddress: meta.strategyAddress,
-      strategyName: meta.strategyName,
+      strategyName: contractNames[meta.underlyingStrategy] ?? meta.strategyName,
       apy: meta.APY.toFixed(2) + '%',
       totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
       action:

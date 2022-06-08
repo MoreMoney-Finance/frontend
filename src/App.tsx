@@ -7,6 +7,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useAddresses } from './chain-interaction/contracts';
 import NavigationBar from './components/navigation/NavigationBar';
 import GlobalDebtCeilingMessage from './components/notifications/GlobalDebtCeilingMessage';
+import MigratePositionsComponent from './components/notifications/MigratePositionsComponent';
 import NetworkNotSupported from './components/notifications/NetworkNotSupported';
 import PhishingAlertComponent from './components/notifications/PhishingAlertComponent';
 import { TransactionToasts } from './components/notifications/TransactionToasts';
@@ -93,6 +94,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
               {addresses ? (
                 <>
                   <PhishingAlertComponent />
+                  <MigratePositionsComponent />
                   <Box
                     maxWidth="1280px"
                     margin="0 auto"

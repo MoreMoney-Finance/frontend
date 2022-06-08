@@ -13,21 +13,19 @@ import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   iMoneyTotalSupply,
   useAddresses,
   useIMoneyAPR,
+  usePlatypusAPR,
   useStable,
 } from '../../chain-interaction/contracts';
-import {
-  ExternalMetadataContext,
-  YieldFarmingData,
-} from '../../contexts/ExternalMetadataContext';
+import { ExternalMetadataContext } from '../../contexts/ExternalMetadataContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
 import { formatNumber } from '../../utils';
 import FarmItem from './FarmItem';
-import { Link as RouterLink } from 'react-router-dom';
 
 export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const account = useContext(UserAddressContext);
@@ -38,21 +36,42 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const avaxMorePayload = Object.values(yieldMonitor).filter(
     (item) => item.lpAddress === '0xb8361d0e3f3b0fc5e6071f3a3c3271223c49e3d9'
   )[0];
+  const { APR_MONEY, APR_USDC, MoneyTVL, usdcTVL } = usePlatypusAPR(account!);
 
-  const externalData: YieldFarmingData[] =
+  const externalData =
     avaxMorePayload && yieldFarmingData
       ? [
         ...yieldFarmingData,
         {
           asset: 'MORE-AVAX',
           stake: 'n/a',
-          tvl: avaxMorePayload.tvl,
+          tvl: formatNumber(avaxMorePayload.tvl),
           reward: 'MORE + ' + avaxMorePayload.rewardsCoin,
-          apr: avaxMorePayload.totalApy,
+          apr: formatNumber(avaxMorePayload.totalApy),
           getTokenURL:
               'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05',
           stakeTokenURL:
               'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm',
+        },
+        {
+          asset: 'MONEY (Platypus)',
+          stake: 'n/a',
+          tvl: formatNumber(parseFloat(MoneyTVL)),
+          reward: 'n/a',
+          apr: APR_MONEY.toFixed(2),
+          getTokenURL: 'https://app.platypus.finance/pool?pool_group=factory',
+          stakeTokenURL:
+              'https://app.platypus.finance/pool?pool_group=factory',
+        },
+        {
+          asset: 'USDC (Platypus)',
+          stake: 'n/a',
+          tvl: formatNumber(parseFloat(usdcTVL)),
+          reward: 'n/a',
+          apr: APR_USDC.toFixed(2),
+          getTokenURL: 'https://app.platypus.finance/pool?pool_group=factory',
+          stakeTokenURL:
+              'https://app.platypus.finance/pool?pool_group=factory',
         },
       ]
       : [];
@@ -108,9 +127,9 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                 key={'farmRow' + item.asset}
                 asset={item.asset}
                 stake={item.stake}
-                tvl={`$ ${formatNumber(item.tvl)}`}
+                tvl={`$ ${item.tvl}`}
                 reward={`${item.reward}`}
-                apr={`${formatNumber(item.apr)} %`}
+                apr={`${item.apr} %`}
                 acquire={
                   <Flex flexDirection={'column'}>
                     <Button

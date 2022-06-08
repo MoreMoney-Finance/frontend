@@ -55,11 +55,12 @@ export default function CurrentlyOpenPositions({
           'debt' in params && params.debt.gt(params.yield)
             ? params.debt.sub(params.yield)
             : new CurrencyValue(stable, BigNumber.from(0));
+        const contractName = useContractName(params.underlyingStrategy);
 
         const stratLabel =
           params.yieldType === YieldType.REPAYING
             ? 'Self-repaying'
-            : useContractName(params.underlyingStrategy) ?? 'Compounding';
+            : contractName ?? 'Compounding';
         const totalPercentage =
           parseFloatCurrencyValue(collateral) > 0 && usdPrice > 0
             ? (100 * parseFloatCurrencyValue(debt)) /

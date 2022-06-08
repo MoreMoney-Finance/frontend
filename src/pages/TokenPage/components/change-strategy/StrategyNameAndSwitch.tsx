@@ -20,11 +20,12 @@ export default function StrategyNameAndSwitch({
   stratMeta: Record<string, ParsedStratMetaRow>;
   chosenStrategy: string;
 }) {
+  const contractName = useContractName(stratMeta[chosenStrategy].underlyingStrategy);
+
   const stratLabel =
     stratMeta[chosenStrategy].yieldType === YieldType.REPAYING
       ? 'Self-repaying loan'
-      : useContractName(stratMeta[chosenStrategy].underlyingStrategy)
-      ?? 'Compound collateral';
+      : contractName ?? 'Compound collateral';
 
   const options = Object.values(stratMeta).filter((strat) =>
     stratFilter(strat, position)

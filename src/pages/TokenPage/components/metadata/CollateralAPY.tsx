@@ -14,6 +14,7 @@ export default function CollateralAPY({
     stratMeta[chosenStrategy].selfRepayingAPY > 0 &&
     stratMeta[chosenStrategy].compoundingAPY > 0;
   const textVariant = 'bodySmall';
+  const contractName = useContractName(stratMeta[chosenStrategy].underlyingStrategy);
 
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
@@ -39,8 +40,7 @@ export default function CollateralAPY({
                   {stratMeta[chosenStrategy].compoundingAPY.toFixed(2)}%
                 </Text>
                 <Text variant={'bodySmall'} color="whiteAlpha.400">
-                  &nbsp;{useContractName(stratMeta[chosenStrategy].underlyingStrategy)
-                    ?? 'Compounding'}
+                  &nbsp;{contractName ?? 'Compounding'}
                 </Text>
               </Flex>
               <Flex flexDirection={'row'}>

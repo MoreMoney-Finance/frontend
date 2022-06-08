@@ -12,13 +12,12 @@ import * as React from 'react';
 import lines from '../../../assets/img/lines.svg';
 import {
   useAddresses,
+  useIMoneyAPR,
   useStable,
-  useTotalSupplyIMoney,
 } from '../../../chain-interaction/contracts';
 import { useViewPendingReward } from '../../../chain-interaction/transactions';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { WalletBalancesContext } from '../../../contexts/WalletBalancesContext';
-import { formatNumber } from '../../../utils';
 
 export function StakingAPRIMoney(props: React.PropsWithChildren<unknown>) {
   const account = React.useContext(UserAddressContext);
@@ -30,14 +29,12 @@ export function StakingAPRIMoney(props: React.PropsWithChildren<unknown>) {
     balanceCtx.get(iMoneyAddress) ??
     new CurrencyValue(stable, BigNumber.from('0'));
 
-  const totalSupplyIMoney = new CurrencyValue(
-    stable,
-    useTotalSupplyIMoney(BigNumber.from(1))
-  );
   const pendingRewards = new CurrencyValue(
     stable,
     useViewPendingReward(account!, BigNumber.from(0))
   );
+
+  const { baseRate, boostedRate, avgBoostedRate } = useIMoneyAPR(account!);
 
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
@@ -60,6 +57,16 @@ export function StakingAPRIMoney(props: React.PropsWithChildren<unknown>) {
         >
           <Flex w={'full'} marginTop={'30px'}>
             <Text variant="h200" color={'whiteAlpha.400'}>
+              iMONEY APR
+            </Text>
+            <Spacer />
+            <Text variant={'bodyLarge'}>
+              {account
+                ? `${baseRate}% + ${boostedRate}% `
+                : `${baseRate}% + ${avgBoostedRate}% avg`}</Text>
+          </Flex>
+          <Flex w={'full'} marginTop={'30px'}>
+            <Text variant="h200" color={'whiteAlpha.400'}>
               Staked MONEY
             </Text>
             <Spacer />
@@ -71,15 +78,6 @@ export function StakingAPRIMoney(props: React.PropsWithChildren<unknown>) {
             </Text>
             <Spacer />
             <Text variant={'bodyLarge'}> {pendingRewards.format()}</Text>
-          </Flex>
-          <Flex w={'full'} marginTop={'30px'}>
-            <Text variant="h200" color={'whiteAlpha.400'}>
-              Total iMoney Supply
-            </Text>
-            <Spacer />
-            <Text variant={'bodyLarge'}>
-              {formatNumber(parseFloat(totalSupplyIMoney.format()))}
-            </Text>
           </Flex>
         </Flex>
         {props?.children}

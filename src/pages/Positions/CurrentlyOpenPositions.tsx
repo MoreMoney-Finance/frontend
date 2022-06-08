@@ -10,7 +10,7 @@ import {
   YieldType,
 } from '../../chain-interaction/contracts';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
-import { parseFloatCurrencyValue } from '../../utils';
+import { parseFloatCurrencyValue, useContractName } from '../../utils';
 import { TrancheCard } from './TrancheCard';
 import { TrancheTable } from './TrancheTable';
 
@@ -48,23 +48,23 @@ export default function CurrentlyOpenPositions({
         const { token, APY, borrowablePercent, usdPrice } = params;
 
         const collateral =
-            'collateral' in params && params.collateral
-              ? params.collateral
-              : new CurrencyValue(token, BigNumber.from(0));
+          'collateral' in params && params.collateral
+            ? params.collateral
+            : new CurrencyValue(token, BigNumber.from(0));
         const debt =
-            'debt' in params && params.debt.gt(params.yield)
-              ? params.debt.sub(params.yield)
-              : new CurrencyValue(stable, BigNumber.from(0));
+          'debt' in params && params.debt.gt(params.yield)
+            ? params.debt.sub(params.yield)
+            : new CurrencyValue(stable, BigNumber.from(0));
 
         const stratLabel =
-            params.yieldType === YieldType.REPAYING
-              ? 'Self-repaying'
-              : 'Compounding';
+          params.yieldType === YieldType.REPAYING
+            ? 'Self-repaying'
+            : useContractName(params.underlyingStrategy) ?? 'Compounding';
         const totalPercentage =
-            parseFloatCurrencyValue(collateral) > 0 && usdPrice > 0
-              ? (100 * parseFloatCurrencyValue(debt)) /
-                (parseFloatCurrencyValue(collateral) * usdPrice)
-              : 0;
+          parseFloatCurrencyValue(collateral) > 0 && usdPrice > 0
+            ? (100 * parseFloatCurrencyValue(debt)) /
+            (parseFloatCurrencyValue(collateral) * usdPrice)
+            : 0;
         const liquidatableZone = borrowablePercent;
         const criticalZone = (90 * borrowablePercent) / 100;
         const riskyZone = (80 * borrowablePercent) / 100;

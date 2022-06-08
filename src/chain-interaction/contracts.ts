@@ -194,6 +194,7 @@ export type ParsedStratMetaRow = {
   balance: number;
   selfRepayingAPY: number;
   compoundingAPY: number;
+  underlyingStrategy: string;
 };
 
 function parseStratMeta(
@@ -316,6 +317,7 @@ function parseStratMeta(
       balance: parseFloatCurrencyValue(balance),
       selfRepayingAPY: selfRepayingAPY,
       compoundingAPY: compoundingAPY,
+      underlyingStrategy: underlyingAddress
     };
   }
 }

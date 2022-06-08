@@ -3956,7 +3956,15 @@
   resolved "https://registry.npmjs.org/@uniswap/token-lists/-/token-lists-1.0.0-beta.27.tgz"
   integrity sha512-x5hmIniQ9TGqOBCRqfWcmZi/U5kB0qrHMDQ9igs3nMbK0wwmYLraL4owbIwXFGR/co6/lJYJC4K/Gjn4wZY5mQ==
 
-"@usedapp/core@^1.0.8":
+"@usedapp/coingecko@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@usedapp/coingecko/-/coingecko-1.0.8.tgz#ca84d02faf4f3b816e48f32cc02830253b78a3c5"
+  integrity sha512-ISmLOpAwIliLxrzY6mND+XccO22NMcxZ3Hoy4tsF6TCFKuOKgHRevEF+r8CHof9VzMrxBPM/cAjl5Ty9erQGnw==
+  dependencies:
+    "@usedapp/core" "1.0.8"
+    isomorphic-fetch "^3.0.0"
+
+"@usedapp/core@1.0.8", "@usedapp/core@^1.0.8":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@usedapp/core/-/core-1.0.8.tgz#3ab8e88e8c12568afe699c06d7a0f0696e998d87"
   integrity sha512-6j877hph0YCUAeF8nw/xdevuahLwhaWXZePJhfKaFI5BStMTPPJ27tAV8L/Z1Htd75Hu91/knlD/sTpE3wfvgA==
@@ -9956,6 +9964,14 @@ isobject@^3.0.0, isobject@^3.0.1:
   version "3.0.1"
   resolved "https://registry.npmjs.org/isobject/-/isobject-3.0.1.tgz"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
+
+isomorphic-fetch@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-3.0.0.tgz#0267b005049046d2421207215d45d6a262b8b8b4"
+  integrity sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==
+  dependencies:
+    node-fetch "^2.6.1"
+    whatwg-fetch "^3.4.1"
 
 isstream@~0.1.2:
   version "0.1.2"

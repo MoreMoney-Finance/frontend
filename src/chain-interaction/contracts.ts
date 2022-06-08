@@ -1,4 +1,9 @@
-import { formatEther, parseEther, parseUnits } from '@ethersproject/units';
+import {
+  formatEther,
+  formatUnits,
+  parseEther,
+  parseUnits,
+} from '@ethersproject/units';
 import {
   Call,
   ChainId,
@@ -33,6 +38,14 @@ import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFe
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
 import { parseFloatCurrencyValue, sqrt } from '../utils';
 import { getTokenFromAddress, tokenAmount } from './tokens';
+import { useCoingeckoPrice } from '@usedapp/coingecko';
+import {
+  masterPlatypusPool,
+  tokenPerSecMoneyAddress,
+  tokenPerSecUSDCAddress,
+  tvlMoneyAddress,
+  tvlUSDCAddress,
+} from '../constants/platypus-pool';
 // import earnedRewards from '../constants/earned-rewards.json';
 // import rewardsRewards from '../constants/rewards-rewards.json';
 /* eslint-disable */
@@ -691,7 +704,16 @@ export function useIsolatedPositionMetadata(
   const legacyResults = {};
   return current.reduce(reduceFn(addresses.StableLending2), legacyResults);
 }
-
+export function useCustomTotalSupply(address: string, defaultResult: any) {
+  const contract = new Contract(address, ERC20Interface);
+  return (
+    useCall({
+      contract,
+      method: 'totalSupply',
+      args: [],
+    }) ?? { value: [defaultResult] }
+  ).value[0];
+}
 export function iMoneyTotalSupply(defaultResult: any) {
   const address = useAddresses().iMoney;
   const abi = new Interface(iMoney.abi);
@@ -749,6 +771,213 @@ export function useBalanceOfToken(
       contract: new Contract(address, ERC20Interface),
       method: 'balanceOf',
       args,
+    }) ?? { value: [defaultResult] }
+  ).value[0];
+}
+
+export function usePlatypusAPR(account: string) {
+  /*
+  APR = (rewarder tokenPerSec * MORE price * 606024365 / (TVL in MONEY or USDC MONEY or USDC price) - 1 )* 100%
+  tokenPerSec: from rewarder contract. 
+    USDC rewarder: 0x032e09C819ed14314eD62Ea91c41151A228BdAb4 
+    MONEY rewarder: 0x77286ac09F4e0b7E6D37B4B77cd2D0Fb6b49323D
+  token price: from coingecko
+  TVL: check balance from these contracts. 
+    USDC: 0x551C259Bf4D88edFdAbb04179342a73dAa759583 
+    MONEY: 0xE08947eE864Af325D9F98743B3b905875Ae0Ec99 
+  */
+  /*
+    MasterPlatypus.ptpPerSec() * MasterPlatypus.poolInfo(pid).baseAllocPoint / MasterPlatypus.totalAllocPoints()
+    our PIDs are:
+      USDC: 5
+      MONEY: 4
+    MasterPlatypus is at: 0x7125b4211357d7c3a90f796c956c12c681146ebb
+    you need to replace tokensPerSec with morePerSec and ptpPerSec and morePrice with ptpPrice (in the case of ptpPerSec), run the same formula on both and add them up 
+*/
+  const tokenPerSecUsdc = formatEther(
+    useTokenPerSecPlatypus(tokenPerSecUSDCAddress, BigNumber.from(0))
+  );
+  const tokenPerSecMoney = formatEther(
+    useTokenPerSecPlatypus(tokenPerSecMoneyAddress, BigNumber.from(0))
+  );
+  const ptpPerSec = formatEther(usePtpPerSec(BigNumber.from(0)));
+  const totalAllocPoints = useTotalAllocPoints(BigNumber.from(0));
+  const ptpPerSecMoney = useTokenPerSecPoolInfo(
+    parseFloat(ptpPerSec.toString()),
+    4,
+    BigNumber.from(0),
+    parseFloat(totalAllocPoints.toString())
+  );
+  const ptpPerSecUsdc = useTokenPerSecPoolInfo(
+    parseFloat(ptpPerSec.toString()),
+    5,
+    BigNumber.from(0),
+    parseFloat(totalAllocPoints.toString())
+  );
+
+  const morePrice = useCoingeckoPrice('more-token', 'usd');
+  const ptpPrice = useCoingeckoPrice('platypus-finance', 'usd');
+  const MoneyTVL = formatEther(
+    useCustomTotalSupply(tvlMoneyAddress, BigNumber.from('0'))
+  );
+  const usdcTVL = formatUnits(
+    useCustomTotalSupply(tvlUSDCAddress, BigNumber.from('0')),
+    6
+  ).toString();
+
+  const APR_USDC_MORE = calculatePlatypusAPR(
+    tokenPerSecUsdc,
+    morePrice ?? '1',
+    usdcTVL
+  );
+  const APR_MONEY_MORE = calculatePlatypusAPR(
+    tokenPerSecMoney,
+    morePrice ?? '1',
+    MoneyTVL
+  );
+
+  const APR_USDC_PTP = calculatePlatypusAPR(
+    ptpPerSecUsdc.toString(),
+    ptpPrice ?? '1',
+    usdcTVL
+  );
+  const APR_MONEY_PTP = calculatePlatypusAPR(
+    ptpPerSecMoney.toString(),
+    ptpPrice ?? '1',
+    MoneyTVL
+  );
+
+  return {
+    APR_MONEY: APR_MONEY_MORE + APR_MONEY_PTP,
+    APR_USDC: APR_USDC_MORE + APR_USDC_PTP,
+    MoneyTVL,
+    usdcTVL,
+  };
+}
+function calculatePlatypusAPR(
+  tokenPerSecMoney: string,
+  tokenPrice: string,
+  tvl: string
+) {
+  return (
+    ((parseFloat(tokenPerSecMoney.toString()) *
+      parseFloat(tokenPrice.toString() ?? '1') *
+      60 *
+      60 *
+      24 *
+      365) /
+      parseFloat(tvl)) *
+    100
+  );
+}
+
+function useTokenPerSecPoolInfo(
+  ptpPerSec: number,
+  poolId: number,
+  defaultResult: any,
+  totalAllocPoints: number
+) {
+  const abi = new Interface([
+    {
+      inputs: [{ name: '', type: 'uint256' }],
+      name: 'poolInfo',
+      outputs: [
+        {
+          name: 'lpToken',
+          type: 'address',
+        },
+        {
+          name: 'baseAllocPoint',
+          type: 'uint256',
+        },
+        {
+          name: 'lastRewardTimestamp',
+          type: 'uint256',
+        },
+        {
+          name: 'accPtpPerShare',
+          type: 'uint256',
+        },
+        {
+          name: 'rewarder',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+  ]);
+  const contract = new Contract(masterPlatypusPool, abi);
+  const res = (
+    useCall({
+      contract,
+      method: 'poolInfo',
+      args: [poolId],
+    }) ?? {
+      value: {
+        baseAllocPoint: defaultResult,
+      },
+    }
+  ).value;
+  return (ptpPerSec * res.baseAllocPoint) / totalAllocPoints;
+}
+
+function useTotalAllocPoints(defaultResult: any) {
+  const abi = new Interface([
+    {
+      inputs: [],
+      name: 'totalBaseAllocPoint',
+      outputs: [{ name: '', type: 'uint256' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+  ]);
+  const contract = new Contract(masterPlatypusPool, abi);
+  return (
+    useCall({
+      contract,
+      method: 'totalBaseAllocPoint',
+      args: [],
+    }) ?? { value: [defaultResult] }
+  ).value[0];
+}
+
+function usePtpPerSec(defaultResult: any) {
+  const abi = new Interface([
+    {
+      inputs: [],
+      name: 'ptpPerSec',
+      outputs: [{ name: '', type: 'uint256' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+  ]);
+  const contract = new Contract(masterPlatypusPool, abi);
+  return (
+    useCall({
+      contract,
+      method: 'ptpPerSec',
+      args: [],
+    }) ?? { value: [defaultResult] }
+  ).value[0];
+}
+
+function useTokenPerSecPlatypus(address: string, defaultResult: any) {
+  const abi = new Interface([
+    {
+      inputs: [],
+      name: 'tokenPerSec',
+      outputs: [{ name: '', type: 'uint256' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+  ]);
+  const contract = new Contract(address, abi);
+  return (
+    useCall({
+      contract,
+      method: 'tokenPerSec',
+      args: [],
     }) ?? { value: [defaultResult] }
   ).value[0];
 }
@@ -901,7 +1130,9 @@ export function useUpdatedMetadataLiquidatablePositions(
     };
   });
 
-  const updatedData = useCalls(positionCalls).map((x) => (x ?? { value: undefined}).value);
+  const updatedData = useCalls(positionCalls).map(
+    (x) => (x ?? { value: undefined }).value
+  );
 
   return updatedData.filter((x) => x !== undefined);
 }

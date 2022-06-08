@@ -1,6 +1,7 @@
 import { CurrencyValue, useEthers } from '@usedapp/core';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import { BigNumber, ethers } from 'ethers';
+import { useEffect, useState } from 'react';
 import Web3Modal from 'web3modal';
 
 export function sqrt(value: BigNumber): BigNumber {
@@ -66,4 +67,17 @@ export function useConnectWallet() {
     }
   }
   return { onConnect };
+}
+
+export function useContractName(address: string | undefined) {
+  const [name, setName] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    if (address) {
+      fetch(`https://api.snowtrace.io/api?module=contract&action=getsourcecode&address=${address}`)
+        .then(response => response.json())
+        .then(data => setName(data.result[0].ContractName));
+    }
+  }, [address]);
+
+  return name;
 }

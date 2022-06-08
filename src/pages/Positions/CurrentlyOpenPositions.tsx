@@ -3,6 +3,7 @@ import { CurrencyValue, Token } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import { parseEther } from 'ethers/lib/utils';
 import * as React from 'react';
+import { useState } from 'react';
 import {
   TokenStratPositionMetadata,
   useIsolatedPositionMetadata,
@@ -40,6 +41,20 @@ export default function CurrentlyOpenPositions({
     .filter((pos) => pos.strategy in allStratMeta[pos.token.address]);
   const stable = useStable();
 
+  const [contractNames, setContractName] = useState<Record<string, string>>({});
+
+  React.useEffect(() => {
+    positions.map((posMeta) => {
+      const address = allStratMeta[posMeta.token.address][posMeta.strategy].underlyingStrategy;
+
+      if (address) {
+        fetch(`https://api.snowtrace.io/api?module=contract&action=getsourcecode&address=${address}`)
+          .then(response => response.json())
+          .then(data => setContractName({ ...contractNames, [address]: data.result[0].ContractName }));
+      }
+    })
+  }, [positions]);
+
   const rows: TrancheData[] =
     positions.length > 0
       ? positions.map((posMeta) => {
@@ -55,7 +70,7 @@ export default function CurrentlyOpenPositions({
           'debt' in params && params.debt.gt(params.yield)
             ? params.debt.sub(params.yield)
             : new CurrencyValue(stable, BigNumber.from(0));
-        const contractName = useContractName(params.underlyingStrategy);
+        const contractName = contractNames[params.underlyingStrategy];
 
         const stratLabel =
           params.yieldType === YieldType.REPAYING

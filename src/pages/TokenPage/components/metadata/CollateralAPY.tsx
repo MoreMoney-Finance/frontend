@@ -1,7 +1,6 @@
 import { Container, Flex, GridItem, Text } from '@chakra-ui/react';
 import * as React from 'react';
 import { ParsedStratMetaRow } from '../../../../chain-interaction/contracts';
-import { useContractName } from '../../../../utils';
 
 export default function CollateralAPY({
   stratMeta,
@@ -14,7 +13,6 @@ export default function CollateralAPY({
     stratMeta[chosenStrategy].selfRepayingAPY > 0 &&
     stratMeta[chosenStrategy].compoundingAPY > 0;
   const textVariant = 'bodySmall';
-  const contractName = useContractName(stratMeta[chosenStrategy].underlyingStrategy);
 
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
@@ -40,7 +38,8 @@ export default function CollateralAPY({
                   {stratMeta[chosenStrategy].compoundingAPY.toFixed(2)}%
                 </Text>
                 <Text variant={'bodySmall'} color="whiteAlpha.400">
-                  &nbsp;{contractName ?? 'Compounding'}
+                  &nbsp;{stratMeta[chosenStrategy].underlyingStrategyName
+                    ?? 'Compounding'}
                 </Text>
               </Flex>
               <Flex flexDirection={'row'}>

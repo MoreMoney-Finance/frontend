@@ -81,3 +81,26 @@ export function useContractName(address: string | undefined) {
 
   return name;
 }
+
+export async function getContractNames(underlyingAddresses: Set<string>) {
+  console.log('Getting contract names');
+
+  const names = new Map<string, string>();
+
+  for (const address of underlyingAddresses) {
+    const result = await (await fetch(`https://api.snowtrace.io/api?module=contract&action=getsourcecode&address=${address}`)).json();
+    console.log(`Setting contract name ${address}: ${result.result[0].ContractName}`);
+    const name = result.result[0].ContractName;
+    if (!name) {
+      console.log(`Trying to query for ${address}`, result);
+    }
+    names.set(address, name && spacecamel(name.replace('Strategy', '')));
+  }
+
+  console.log('Finished getting contract names');
+  return names;
+}
+
+function spacecamel(s:string){
+  return s.replace(/([a-z])([A-Z])/g, '$1 $2');
+}

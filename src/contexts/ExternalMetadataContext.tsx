@@ -53,6 +53,7 @@ export type ExternalMetadataType = {
   yieldMonitor: Record<string, YieldMonitorMetadata>;
   xMoreData: xMoreMetadata;
   additionalYieldData: Record<string, Record<string, number>>;
+  underlyingStrategyNames: Map<string, string>;
 };
 
 export const ExternalMetadataContext =
@@ -62,6 +63,7 @@ export const ExternalMetadataContext =
     yieldMonitor: {},
     xMoreData: {} as xMoreMetadata,
     additionalYieldData: {},
+    underlyingStrategyNames: new Map<string, string>()
   });
 
 export function ExternalMetadataCtxProvider({

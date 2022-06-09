@@ -13,6 +13,7 @@ import lptokens from '../contracts/lptokens.json';
 import { ParsedPositionMetaRow, useAddresses, useStable } from './contracts';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import { Contract } from 'ethers';
+import { handleCallResultDefault } from './wrapper';
 
 const addressToken: Record<ChainId, Map<string, Token>> = Object.fromEntries(
   Object.values(ChainId).map((key) => [key, new Map()])
@@ -299,13 +300,15 @@ export function useOraclePrices(
   const args = [tokenAddresses, tokenInAmounts, stable.address];
   const contract = new Contract(address, abi);
 
-  const pegValues = (
+  const pegValues = handleCallResultDefault(
     useCall({
       contract,
       method,
       args,
-    }) ?? { value: [[]] }
-  ).value[0];
+    }),
+    [],
+    'OracleRegistry'
+  );
 
   return Object.fromEntries(
     pegValues.map((v: BigNumber, i: number) => [

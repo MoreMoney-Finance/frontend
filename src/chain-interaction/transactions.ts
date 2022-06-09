@@ -29,6 +29,7 @@ import {
   useYieldConversionStrategyView,
 } from './contracts';
 import { parseFloatCurrencyValue } from '../utils';
+import { handleCallResultDefault } from './wrapper';
 
 export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   const contractsABI: Record<string, any> = {
@@ -58,52 +59,60 @@ export function useBalanceOfVeMoreToken(account: string) {
   const address = useAddresses().VeMoreToken;
   const abi = new Interface(VeMoreToken.abi);
   const contract = new Contract(address, abi);
-  return (
+  return handleCallResultDefault(
     useCall({
       contract,
       method: 'balanceOf',
       args: [account],
-    }) ?? { value: [0] }
-  ).value[0];
+    }),
+    0,
+    'VeMoreToken balanceOf'
+  );
 }
 
 export function useGetStakedMoreVeMoreToken(account: string) {
   const address = useAddresses().VeMoreStaking;
   const abi = new Interface(VeMoreStaking.abi);
   const contract = new Contract(address, abi);
-  return (
+  return handleCallResultDefault(
     useCall({
       contract,
       method: 'getStakedMore',
       args: [account],
-    }) ?? { value: [0] }
-  ).value[0];
+    }),
+    0,
+    'VeMoreStaking getStakedMore'
+  );
 }
 
 export function useClaimableVeMoreToken(account: string) {
   const address = useAddresses().VeMoreStaking;
   const abi = new Interface(VeMoreStaking.abi);
   const contract = new Contract(address, abi);
-  return (
+  return handleCallResultDefault(
     useCall({
       contract,
       method: 'claimable',
       args: [account],
-    }) ?? { value: [0] }
-  ).value[0];
+    }),
+    0,
+    'VeMoreStaking claimable'
+  );
 }
 
 export function useViewPendingReward(account: string, defaultResult: any) {
   const address = useAddresses().StableLending2InterestForwarder;
   const abi = new Interface(StableLending2InterestForwarder.abi);
   const contract = new Contract(address, abi);
-  return (
+  return handleCallResultDefault(
     useCall({
       contract,
       method: 'viewPendingReward',
       args: [account],
-    }) ?? { value: [defaultResult] }
-  ).value[0];
+    }),
+    defaultResult,
+    'useViewPendingReward'
+  );
 }
 
 export function useClaimIMoney() {

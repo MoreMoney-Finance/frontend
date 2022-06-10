@@ -361,7 +361,8 @@ export function useIMoneyAccountInfo(account: string): IMoneyAccountInfo {
       args: [account],
     }),
     {},
-    'useIMoneyAccountInfo'
+    'useIMoneyAccountInfo',
+    true
   );
 
   return {

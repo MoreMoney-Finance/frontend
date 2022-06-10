@@ -1,5 +1,5 @@
-import { Alert, AlertIcon, Box, Text } from '@chakra-ui/react';
 import * as React from 'react';
+import { Alert, AlertIcon, Box, Text } from '@chakra-ui/react';
 
 export default function MigratePositionsComponent() {
   return (
@@ -7,11 +7,9 @@ export default function MigratePositionsComponent() {
       <Box w="100%" color="white" textAlign={'center'}>
         <Alert
           status="info"
-          height={'100px'}
-          alignItems="center"
-          justifyContent="center"
-          textAlign="center"
-          fontSize={'22px'}
+          justifyContent={'center'}
+          fontSize={'lg'}
+          borderRadius={'full'}
         >
           <AlertIcon />
           <Text>Want to borrow more? After migrating: &nbsp;</Text>

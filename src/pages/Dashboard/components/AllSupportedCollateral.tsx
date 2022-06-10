@@ -185,13 +185,16 @@ export function AllSupportedCollateral() {
           <b>Select a collateral asset to</b>
         </Text>
         <Text fontSize={['36', '48', '48']} lineHeight="56px">
-          <b>Open an interest-free debt position</b>
+          <b>Borrow the yield bearing</b>
         </Text>
         <Text fontSize={['36', '48', '48']} lineHeight="56px">
-          that improves with yield from
+          stablecoin MONEY
         </Text>
         <Text fontSize={['36', '48', '48']} lineHeight="56px">
-          collateral
+          while still earning yield
+        </Text>
+        <Text fontSize={['36', '48', '48']} lineHeight="56px">
+          on your collateral
         </Text>
       </Box>
 

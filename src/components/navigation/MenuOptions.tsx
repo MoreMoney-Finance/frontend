@@ -24,11 +24,11 @@ const Links = [
     title: 'Trade MORE',
     link: 'https://traderjoexyz.com/trade?inputCurrency=AVAX&outputCurrency=0xd9d90f882cddd6063959a9d837b05cb748718a05',
   },
-  { title: 'Trade MONEY (Curve)', link: 'https://avax.curve.fi/factory/39' },
   {
-    title: 'Trade MONEY (Pangolin)',
-    link: 'https://app.pangolin.exchange/#/swap?inputCurrency=AVAX&outputCurrency=0x0f577433Bf59560Ef2a79c124E9Ff99fCa258948',
+    title: 'Trade MONEY (Platypus)',
+    link: 'https://app.platypus.finance/pool?pool_group=factory',
   },
+  { title: 'Trade MONEY (Curve)', link: 'https://avax.curve.fi/factory/39' },
 ];
 
 export default function MenuOptions() {

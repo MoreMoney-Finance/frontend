@@ -94,7 +94,6 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
               {addresses ? (
                 <>
                   <PhishingAlertComponent />
-                  <MigratePositionsComponent />
                   <Box
                     maxWidth="1280px"
                     margin="0 auto"
@@ -130,6 +129,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                       <NavigationBar />
                       <br />
                       <GlobalDebtCeilingMessage />
+                      <MigratePositionsComponent />
                       {/* <LiquidatablePositionsMessage /> */}
                       <Box paddingBottom={'70px'}>
                         {params.children}

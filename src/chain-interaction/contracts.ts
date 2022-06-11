@@ -108,6 +108,7 @@ export type DeploymentAddresses = {
   StableLending2Liquidation: string;
   StableLending2InterestForwarder: string;
   iMoney: string;
+  OldYieldYakAVAXStrategy2: string;
 };
 
 export function useAddresses() {
@@ -523,6 +524,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
   tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
   strats.push(addresses.AltYieldYakAVAXStrategy2);
+  tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
+  strats.push(addresses.OldYieldYakAVAXStrategy2);
 
   // tokens.push('0x454E67025631C065d3cFAD6d71E6892f74487a15');
   // strats.push(addresses.YieldYakStrategy);

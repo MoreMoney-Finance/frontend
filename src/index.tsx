@@ -9,6 +9,7 @@ import PositionsPage from './pages/Positions';
 import TokenPage from './pages/TokenPage';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
+import FarmPage from './pages/Farm';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -38,6 +39,7 @@ ReactDOM.render(
               }
             />
             <Route path="/positions" element={<PositionsPage />} />
+            <Route path="/farm" element={<FarmPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

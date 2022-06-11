@@ -4,7 +4,7 @@ import {
   CurrencyValue,
   NativeCurrency,
   Token,
-  useContractCall,
+  useCall,
 } from '@usedapp/core';
 import { getAddress, Interface, parseUnits } from 'ethers/lib/utils';
 import tokenlist from '../constants/tokenlist.json';
@@ -12,6 +12,8 @@ import deployAddresses from '../contracts/addresses.json';
 import lptokens from '../contracts/lptokens.json';
 import { ParsedPositionMetaRow, useAddresses, useStable } from './contracts';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
+import { Contract } from 'ethers';
+import { handleCallResultDefault } from './wrapper';
 
 const addressToken: Record<ChainId, Map<string, Token>> = Object.fromEntries(
   Object.values(ChainId).map((key) => [key, new Map()])
@@ -196,6 +198,22 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
     );
   }
 
+  if ('StableLending2InterestForwarder' in addresses) {
+    addressToken[chainIds[chainId]].set(
+      getAddress(addresses.StableLending2InterestForwarder),
+      new Token(
+        'iMoney',
+        'iMoney',
+        chainIds[chainId],
+        getAddress(addresses.StableLending2InterestForwarder),
+        18
+      )
+    );
+    addressIcons.set(getAddress(addresses.StableLending2InterestForwarder), [
+      'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Coin-Logo-FINAL.jpg',
+    ]);
+  }
+
   if ('MoreToken' in addresses) {
     addressToken[chainIds[chainId]].set(
       getAddress(addresses['MoreToken']),
@@ -211,6 +229,21 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
     ]);
   }
 
+  if ('VeMoreToken' in addresses) {
+    addressToken[chainIds[chainId]].set(
+      getAddress(addresses['VeMoreToken']),
+      new Token(
+        'veMore Token',
+        'veMore',
+        chainIds[chainId],
+        getAddress(addresses['VeMoreToken'])
+      )
+    );
+    addressIcons.set(getAddress(addresses['VeMoreToken']), [
+      'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg',
+    ]);
+  }
+
   if ('xMore' in addresses) {
     addressToken[chainIds[chainId]].set(
       getAddress(addresses['xMore']),
@@ -222,7 +255,7 @@ for (const [chainId, addresses] of Object.entries(deployAddresses)) {
       )
     );
     addressIcons.set(getAddress(addresses['xMore']), [
-      'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Moremoney_05.jpg',
+      'https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/xMORE%20logo.png',
     ]);
   }
 }
@@ -265,13 +298,17 @@ export function useOraclePrices(
   const stable = useStable();
   const method = 'viewAmountsInPeg';
   const args = [tokenAddresses, tokenInAmounts, stable.address];
+  const contract = new Contract(address, abi);
 
-  const pegValues = (useContractCall({
-    abi,
-    address,
-    method,
-    args,
-  }) ?? [[]])[0];
+  const pegValues = handleCallResultDefault(
+    useCall({
+      contract,
+      method,
+      args,
+    }),
+    [],
+    'OracleRegistry'
+  );
 
   return Object.fromEntries(
     pegValues.map((v: BigNumber, i: number) => [

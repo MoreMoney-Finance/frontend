@@ -69,7 +69,7 @@ export default function RepayWithdraw({
   const { sendRepayWithdraw, repayWithdrawState } = useRepayWithdrawTrans(
     position && position.trancheId,
     token,
-    position ? position.trancheContract : undefined
+    position?.debt
   );
   // console.log('position.trancheId', position?.trancheId);
   const {
@@ -78,7 +78,7 @@ export default function RepayWithdraw({
   } = useNativeRepayWithdrawTrans(
     position && position.trancheId,
     token,
-    position ? position.trancheContract : undefined
+    position?.debt
   );
 
   function onRepayWithdraw(data: { [x: string]: any }) {

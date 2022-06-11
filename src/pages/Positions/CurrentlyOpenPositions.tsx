@@ -1,7 +1,7 @@
 import { Flex } from '@chakra-ui/react';
 import { CurrencyValue, Token } from '@usedapp/core';
-import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units';
 import { BigNumber } from 'ethers';
+import { parseEther } from 'ethers/lib/utils';
 import * as React from 'react';
 import {
   TokenStratPositionMetadata,
@@ -48,23 +48,24 @@ export default function CurrentlyOpenPositions({
         const { token, APY, borrowablePercent, usdPrice } = params;
 
         const collateral =
-            'collateral' in params && params.collateral
-              ? params.collateral
-              : new CurrencyValue(token, BigNumber.from(0));
+          'collateral' in params && params.collateral
+            ? params.collateral
+            : new CurrencyValue(token, BigNumber.from(0));
         const debt =
-            'debt' in params && params.debt.gt(params.yield)
-              ? params.debt.sub(params.yield)
-              : new CurrencyValue(stable, BigNumber.from(0));
+          'debt' in params && params.debt.gt(params.yield)
+            ? params.debt.sub(params.yield)
+            : new CurrencyValue(stable, BigNumber.from(0));
+        const contractName = params.underlyingStrategyName;
 
         const stratLabel =
-            params.yieldType === YieldType.REPAYING
-              ? 'Self-repaying'
-              : 'Compounding';
+          params.yieldType === YieldType.REPAYING
+            ? 'Self-repaying'
+            : contractName ?? 'Compounding';
         const totalPercentage =
-            parseFloatCurrencyValue(collateral) > 0 && usdPrice > 0
-              ? (100 * parseFloatCurrencyValue(debt)) /
-                (parseFloatCurrencyValue(collateral) * usdPrice)
-              : 0;
+          parseFloatCurrencyValue(collateral) > 0 && usdPrice > 0
+            ? (100 * parseFloatCurrencyValue(debt)) /
+            (parseFloatCurrencyValue(collateral) * usdPrice)
+            : 0;
         const liquidatableZone = borrowablePercent;
         const criticalZone = (90 * borrowablePercent) / 100;
         const riskyZone = (80 * borrowablePercent) / 100;

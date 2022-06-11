@@ -1,48 +1,46 @@
 import { Interface } from '@ethersproject/abi';
 import { Contract } from '@ethersproject/contracts';
 import IERC20 from '@openzeppelin/contracts/build/contracts/IERC20.json';
-import { useContractFunction } from '@usedapp/core';
-import { Token } from '@usedapp/core/dist/esm/src/model';
-import {
-  parseEther,
-  parseUnits,
-} from '@usedapp/core/node_modules/@ethersproject/units';
+import { useCall, useContractFunction } from '@usedapp/core';
+import { CurrencyValue, Token } from '@usedapp/core/dist/esm/src/model';
 import { BigNumber, ethers } from 'ethers';
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress, parseEther, parseUnits } from 'ethers/lib/utils';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
-import IsolatedLending from '../contracts/artifacts/contracts/IsolatedLending.sol/IsolatedLending.json';
 import DirectFlashLiquidation from '../contracts/artifacts/contracts/liquidation/DirectFlashLiquidation.sol/DirectFlashLiquidation.json';
-import StableLendingLiquidation from '../contracts/artifacts/contracts/liquidation/StableLendingLiquidation.sol/StableLendingLiquidation.json';
+import StableLending2Liquidation from '../contracts/artifacts/contracts/liquidation/StableLending2Liquidation.sol/StableLending2Liquidation.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
-import CurvePoolRewards from '../contracts/artifacts/contracts/rewards/CurvePoolRewards.sol/CurvePoolRewards.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
-import StableLending from '../contracts/artifacts/contracts/StableLending.sol/StableLending.json';
+import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import YieldYakStrategy from '../contracts/artifacts/contracts/strategies/YieldYakStrategy.sol/YieldYakStrategy.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
-import WrapNativeIsolatedLending from '../contracts/artifacts/contracts/WrapNativeIsolatedLending.sol/WrapNativeIsolatedLending.json';
+import WrapNativeStableLending2 from '../contracts/artifacts/contracts/WrapNativeStableLending2.sol/WrapNativeStableLending2.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
+import VeMoreToken from '../contracts/artifacts/contracts/governance/VeMoreToken.sol/VeMoreToken.json';
+import VeMoreStaking from '../contracts/artifacts/contracts/governance/VeMoreStaking.sol/VeMoreStaking.json';
+import StableLending2InterestForwarder from '../contracts/artifacts/contracts/rewards/StableLending2InterestForwarder.sol/StableLending2InterestForwarder.json';
 import {
   useAddresses,
   useRegisteredOracle,
   useStable,
   useYieldConversionStrategyView,
 } from './contracts';
+import { parseFloatCurrencyValue } from '../utils';
+import { handleCallResultDefault } from './wrapper';
 
 export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   const contractsABI: Record<string, any> = {
     [useAddresses().YieldYakStrategy]: new Interface(YieldYakStrategy.abi),
-    [useAddresses().StableLending]: new Interface(StableLending.abi),
-    [useAddresses().IsolatedLending]: new Interface(IsolatedLending.abi),
+    [useAddresses().StableLending2]: new Interface(StableLending2.abi),
   };
   const isYY = useAddresses().YieldYakStrategy === strategyAddress;
 
   const feesContract = new Contract(
     strategyAddress,
-    contractsABI[strategyAddress] ?? new Interface(StableLending.abi)
+    contractsABI[strategyAddress] ?? new Interface(StableLending2.abi)
   );
   const { send, state } = useContractFunction(feesContract, 'withdrawFees');
 
@@ -57,6 +55,138 @@ export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   };
 }
 
+export function useBalanceOfVeMoreToken(account: string) {
+  const address = useAddresses().VeMoreToken;
+  const abi = new Interface(VeMoreToken.abi);
+  const contract = new Contract(address, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'balanceOf',
+      args: [account],
+    }),
+    0,
+    'VeMoreToken balanceOf'
+  );
+}
+
+export function useGetStakedMoreVeMoreToken(account: string) {
+  const address = useAddresses().VeMoreStaking;
+  const abi = new Interface(VeMoreStaking.abi);
+  const contract = new Contract(address, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'getStakedMore',
+      args: [account],
+    }),
+    0,
+    'VeMoreStaking getStakedMore'
+  );
+}
+
+export function useClaimableVeMoreToken(account: string) {
+  const address = useAddresses().VeMoreStaking;
+  const abi = new Interface(VeMoreStaking.abi);
+  const contract = new Contract(address, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'claimable',
+      args: [account],
+    }),
+    0,
+    'VeMoreStaking claimable'
+  );
+}
+
+export function useViewPendingReward(account: string, defaultResult: any) {
+  const address = useAddresses().StableLending2InterestForwarder;
+  const abi = new Interface(StableLending2InterestForwarder.abi);
+  const contract = new Contract(address, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'viewPendingReward',
+      args: [account],
+    }),
+    defaultResult,
+    'useViewPendingReward'
+  );
+}
+
+export function useClaimIMoney() {
+  const addresses = useAddresses();
+  const cprAddress = addresses.StableLending2InterestForwarder;
+  const cprContract = new Contract(
+    cprAddress,
+    new Interface(StableLending2InterestForwarder.abi)
+  );
+  const { send, state } = useContractFunction(cprContract, 'deposit');
+
+  return {
+    sendClaim: () => {
+      return send(BigNumber.from(0));
+    },
+    claimState: state,
+  };
+}
+
+export function useClaimVeMore() {
+  const addresses = useAddresses();
+  const cprAddress = addresses.VeMoreStaking;
+  const cprContract = new Contract(
+    cprAddress,
+    new Interface(VeMoreStaking.abi)
+  );
+  const { send, state } = useContractFunction(cprContract, 'claim');
+
+  return {
+    sendClaim: () => {
+      return send();
+    },
+    claimState: state,
+  };
+}
+
+export function useUnstakeVeMoreTokenForMore() {
+  const addresses = useAddresses();
+  const cprAddress = addresses.VeMoreStaking;
+  const cprContract = new Contract(
+    cprAddress,
+    new Interface(VeMoreStaking.abi)
+  );
+  const { send, state } = useContractFunction(cprContract, 'withdraw');
+
+  return {
+    sendUnstake: (unstakeToken: Token, amount: string | number) => {
+      const sAmount = parseUnits(amount.toString(), unstakeToken.decimals);
+      return send(sAmount);
+    },
+    unstakeState: state,
+  };
+}
+
+export function useStakeMoreForVeMoreToken() {
+  // TODO: change cprAddress and the ABI to use the correct address
+  const addresses = useAddresses();
+  const cprAddress = addresses.VeMoreStaking;
+
+  const cprContract = new Contract(
+    cprAddress,
+    new Interface(VeMoreStaking.abi)
+  );
+  const { send, state } = useContractFunction(cprContract, 'deposit');
+
+  return {
+    sendStake: (stakeToken: Token, amount: string | number) => {
+      const sAmount = parseUnits(amount.toString(), stakeToken.decimals);
+      return send(sAmount);
+    },
+    stakeState: state,
+  };
+}
+
 export function useUnstakeMore() {
   // TODO: change cprAddress and the ABI to use the correct address
   const cprAddress = useAddresses().xMore;
@@ -64,8 +194,11 @@ export function useUnstakeMore() {
   const { send, state } = useContractFunction(cprContract, 'leave');
 
   return {
-    sendUnstake: (leaveMoreToken: Token, amount: string | number) => {
-      const sAmount = parseUnits(amount.toString(), leaveMoreToken.decimals);
+    sendUnstake: (leaveMoreTokenToken: Token, amount: string | number) => {
+      const sAmount = parseUnits(
+        amount.toString(),
+        leaveMoreTokenToken.decimals
+      );
       return send(sAmount);
     },
     unstakeState: state,
@@ -87,52 +220,33 @@ export function useStakeMore() {
   };
 }
 
-export function useClaimReward() {
-  const ilAddress = useAddresses().CurvePoolRewards;
-  const ilContract = new Contract(
-    ilAddress,
-    new Interface(CurvePoolRewards.abi)
-  );
-  const { send, state } = useContractFunction(
-    ilContract,
-    'withdrawVestedReward'
-  );
-
-  return {
-    sendClaim: () => {
-      return send();
-    },
-    claimState: state,
-  };
-}
-
-export function useStake() {
-  const cprAddress = useAddresses().CurvePoolRewards;
+export function useStakeIMoney() {
+  const cprAddress = useAddresses().StableLending2InterestForwarder;
   const cprContract = new Contract(
     cprAddress,
-    new Interface(CurvePoolRewards.abi)
+    new Interface(StableLending2InterestForwarder.abi)
   );
-  const { send, state } = useContractFunction(cprContract, 'stake');
+  const { send, state } = useContractFunction(cprContract, 'deposit');
 
   return {
-    sendStake: (stakeToken: Token, amount: string | number) => {
+    sendDepositIMoney: (stakeToken: Token, amount: string | number) => {
       const sAmount = parseUnits(amount.toString(), stakeToken.decimals);
       return send(sAmount);
     },
-    stakeState: state,
+    depositState: state,
   };
 }
 
-export function useWithdraw() {
-  const cprAddress = useAddresses().CurvePoolRewards;
+export function useWithdrawIMoney() {
+  const cprAddress = useAddresses().StableLending2InterestForwarder;
   const cprContract = new Contract(
     cprAddress,
-    new Interface(CurvePoolRewards.abi)
+    new Interface(StableLending2InterestForwarder.abi)
   );
   const { send, state } = useContractFunction(cprContract, 'withdraw');
 
   return {
-    sendWithdraw: (withdrawToken: Token, amount: string | number) => {
+    sendWithdrawIMoney: (withdrawToken: Token, amount: string | number) => {
       const wAmount = parseUnits(amount.toString(), withdrawToken.decimals);
       return send(wAmount);
     },
@@ -141,15 +255,12 @@ export function useWithdraw() {
 }
 
 export function useNativeDepositBorrowTrans(
-  trancheId: number | null | undefined,
-  lendingAddress: string | undefined | null
+  trancheId: number | null | undefined
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    lendingAddress === addresses.IsolatedLending
-      ? addresses.WrapNativeIsolatedLending
-      : addresses.WrapNativeStableLending,
-    new Interface(WrapNativeIsolatedLending.abi)
+    addresses.WrapNativeStableLending2,
+    new Interface(WrapNativeStableLending2.abi)
   );
   const { send, state } = useContractFunction(
     lendingContract,
@@ -181,14 +292,12 @@ export function useNativeDepositBorrowTrans(
 export function useNativeRepayWithdrawTrans(
   trancheId: number | null | undefined,
   collateralToken: Token | null | undefined,
-  lendingAddress: string | undefined | null
+  totalDebt: CurrencyValue | undefined
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    lendingAddress === addresses.IsolatedLending
-      ? addresses.WrapNativeIsolatedLending
-      : addresses.WrapNativeStableLending,
-    new Interface(WrapNativeIsolatedLending.abi)
+    addresses.WrapNativeStableLending2,
+    new Interface(WrapNativeStableLending2.abi)
   );
 
   const { send, state } = useContractFunction(
@@ -203,11 +312,11 @@ export function useNativeRepayWithdrawTrans(
       collateralAmount: string | number,
       repayAmount: string | number
     ) =>
-      account && trancheId && collateralToken
+      account && trancheId && collateralToken && totalDebt
         ? send(
           trancheId,
           parseUnits(collateralAmount.toString(), collateralToken.decimals),
-          parseEther(repayAmount.toString()),
+          prepRepayAmount(repayAmount, totalDebt),
           account
         )
         : console.error('Trying to withdraw but parameters not set'),
@@ -215,16 +324,23 @@ export function useNativeRepayWithdrawTrans(
   };
 }
 
-export function useDepositBorrowTrans(
-  trancheId: number | null | undefined,
-  lendingAddress: string | undefined | null
+function prepRepayAmount(
+  repayAmount: string | number,
+  totalDebt: CurrencyValue
 ) {
+  const parsedNumber = parseFloat(repayAmount.toString());
+  if (Math.abs(parsedNumber - parseFloatCurrencyValue(totalDebt)) < 1) {
+    return parseEther((parsedNumber * 1.01).toString());
+  } else {
+    return parseEther(repayAmount.toString());
+  }
+}
+
+export function useDepositBorrowTrans(trancheId: number | null | undefined) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    lendingAddress === addresses.IsolatedLending
-      ? addresses.IsolatedLending
-      : addresses.StableLending,
-    new Interface(IsolatedLending.abi)
+    addresses.StableLending2,
+    new Interface(StableLending2.abi)
   );
   const { send, state } = useContractFunction(
     lendingContract,
@@ -273,14 +389,12 @@ export function useApproveTrans(tokenAddress: string) {
 export function useRepayWithdrawTrans(
   trancheId: number | null | undefined,
   collateralToken: Token | null | undefined,
-  lendingAddress: string | undefined | null
+  totalDebt: CurrencyValue | undefined
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    lendingAddress === addresses.IsolatedLending
-      ? addresses.IsolatedLending
-      : addresses.StableLending,
-    new Interface(IsolatedLending.abi)
+    addresses.StableLending2,
+    new Interface(StableLending2.abi)
   );
 
   const { send, state } = useContractFunction(
@@ -295,11 +409,11 @@ export function useRepayWithdrawTrans(
       collateralAmount: string | number,
       repayAmount: string | number
     ) =>
-      account && trancheId && collateralToken
+      account && trancheId && collateralToken && totalDebt
         ? send(
           trancheId,
           parseUnits(collateralAmount.toString(), collateralToken.decimals),
-          parseEther(repayAmount.toString()),
+          prepRepayAmount(repayAmount, totalDebt),
           account
         )
         : console.error('Trying to withdraw but parameters not set'),
@@ -365,14 +479,11 @@ export function useMigrateStrategy(
   lendingContractAddress: string | undefined | null
 ) {
   const addresses = useAddresses();
-  const lendingAddress =
-    lendingContractAddress ??
-    addresses.StableLending ??
-    addresses.IsolatedLending;
+  const lendingAddress = lendingContractAddress ?? addresses.StableLending2;
 
   const strategy = new Contract(
     lendingAddress,
-    new Interface(IsolatedLending.abi)
+    new Interface(StableLending2.abi)
   );
   const { send, state } = useContractFunction(strategy, 'migrateStrategy');
 
@@ -467,7 +578,7 @@ export async function viewBidTarget(
 
   const liquidationContract = new ethers.Contract(
     lendingAddress,
-    new Interface(StableLendingLiquidation.abi),
+    new Interface(StableLending2Liquidation.abi),
     provider
   );
 
@@ -478,15 +589,12 @@ export async function viewBidTarget(
   return result ?? defaultResult;
 }
 
-export function usePrimitiveLiquidationTrans(contractAddress: string) {
+export function usePrimitiveLiquidationTrans() {
   const addresses = useAddresses();
-  const lendingAddress =
-    contractAddress === addresses.IsolatedLending
-      ? addresses.IsolatedLendingLiquidation
-      : addresses.StableLendingLiquidation;
+  const lendingAddress = addresses.StableLending2Liquidation;
   const liquidationContract = new Contract(
     lendingAddress,
-    new Interface(StableLendingLiquidation.abi)
+    new Interface(StableLending2Liquidation.abi)
   );
   const { send, state } = useContractFunction(liquidationContract, 'liquidate');
 

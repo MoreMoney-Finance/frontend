@@ -38,7 +38,8 @@ export default function CollateralAPY({
                   {stratMeta[chosenStrategy].compoundingAPY.toFixed(2)}%
                 </Text>
                 <Text variant={'bodySmall'} color="whiteAlpha.400">
-                  &nbsp;{'Compounding'}
+                  &nbsp;{stratMeta[chosenStrategy].underlyingStrategyName
+                    ?? 'Compounding'}
                 </Text>
               </Flex>
               <Flex flexDirection={'row'}>

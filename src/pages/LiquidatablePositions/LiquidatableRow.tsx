@@ -52,9 +52,7 @@ export function LiquidatableRow(
   //   })} (${token.address})`
   // );
 
-  const { sendLiquidation, liquidationState } = usePrimitiveLiquidationTrans(
-    params.trancheContract
-  );
+  const { sendLiquidation, liquidationState } = usePrimitiveLiquidationTrans();
 
   const collateral =
     'collateral' in params && params.collateral
@@ -77,10 +75,7 @@ export function LiquidatableRow(
   // );
 
   const primitiveLiquidate = async () => {
-    const lendingAddress =
-      params.trancheContract === addresses.IsolatedLending
-        ? addresses.IsolatedLendingLiquidation
-        : addresses.StableLendingLiquidation;
+    const lendingAddress = addresses.StableLending2Liquidation;
     const extantCollateral = parseFloatCurrencyValue(params.collateral!);
     const extantCollateralValue = parseFloatCurrencyValue(
       params.collateralValue

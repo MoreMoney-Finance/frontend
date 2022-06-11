@@ -1,5 +1,11 @@
 import { ColorModeScript } from '@chakra-ui/react';
-import { Avalanche, ChainId, DAppProvider, Hardhat } from '@usedapp/core';
+import {
+  Avalanche,
+  ChainId,
+  DAppProvider,
+  Hardhat,
+  Localhost,
+} from '@usedapp/core';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -10,10 +16,13 @@ import Analytics from './pages/Analytics';
 import Dashboard from './pages/Dashboard';
 import { ErrorBoundary } from './pages/ErrorBoundary/ErrorBoundary';
 import FarmPage from './pages/Farm';
+import IMoneyPage from './pages/iMoney';
 import LiquidatablePositions from './pages/LiquidatablePositions';
 import LiquidationProtectedLoans from './pages/Loans';
 import PositionsPage from './pages/Positions';
+import StakePage from './pages/Stake';
 import TokenPage from './pages/TokenPage';
+import VeMoreTokenPage from './pages/vMore';
 import XMorePage from './pages/XMore';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
@@ -23,14 +32,18 @@ ReactDOM.render(
     <ColorModeScript />
     <DAppProvider
       config={{
-        networks: [Avalanche, Hardhat],
+        networks: [Avalanche, Hardhat, Localhost],
         readOnlyChainId: ChainId.Avalanche,
         readOnlyUrls: {
           [ChainId.Avalanche]: 'https://api.avax.network/ext/bc/C/rpc',
+          [ChainId.Localhost]: 'http://localhost:8545',
+          [ChainId.Hardhat]: 'http://localhost:8545',
         },
         multicallAddresses: {
+          [ChainId.Localhost]: '0x0FB54156B496b5a040b51A71817aED9e2927912E',
           [ChainId.Hardhat]: '0x0FB54156B496b5a040b51A71817aED9e2927912E',
         },
+        bufferGasLimitPercentage: 15
       }}
     >
       <BrowserRouter>
@@ -57,7 +70,10 @@ ReactDOM.render(
             />
             <Route path="/loans" element={<LiquidationProtectedLoans />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/stake" element={<StakePage />} />
             <Route path="/xmore" element={<XMorePage />} />
+            <Route path="/imoney" element={<IMoneyPage />} />
+            <Route path="/vemore" element={<VeMoreTokenPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/admin/:positions" element={<AdminPage />} />
           </Route>

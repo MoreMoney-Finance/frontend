@@ -27,8 +27,6 @@ export function StrategyDataTable(row: ParsedStratMetaRow) {
   //   row.strategyAddress
   // );
 
-  const balance2Tally = row.harvestBalance2Tally;
-
   const explorerLink = getExplorerAddressLink(
     row.strategyAddress,
     row.token.chainId

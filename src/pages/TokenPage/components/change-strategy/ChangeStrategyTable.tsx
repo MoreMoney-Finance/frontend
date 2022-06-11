@@ -22,11 +22,12 @@ export function ChangeStrategyTable({
   currentStrategy: string;
   onClose: () => void;
 }) {
+
   const data = Object.keys(stratMeta).map((key) => {
     const meta = stratMeta[key];
     return {
       strategyAddress: meta.strategyAddress,
-      strategyName: meta.strategyName,
+      strategyName: meta.underlyingStrategyName ?? meta.strategyName,
       apy: meta.APY.toFixed(2) + '%',
       totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
       action:

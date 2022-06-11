@@ -1,9 +1,10 @@
 import {
-  ContractCall,
+  Call,
   Token,
-  useContractCalls,
-  useEthers
+  useCalls,
+  useEthers,
 } from '@usedapp/core';
+import { Contract } from 'ethers';
 import { getAddress, Interface } from 'ethers/lib/utils';
 import React from 'react';
 import { useAddresses } from '../chain-interaction/contracts';
@@ -18,23 +19,22 @@ export function LiquidationFeesCtxProvider({
   children,
 }: React.PropsWithChildren<any>) {
   const { chainId } = useEthers();
-  const address = useAddresses().StableLendingLiquidation;
+  const address = useAddresses().StableLending2Liquidation;
   const tokenFees = new Map<string, number>();
 
   function convert2ContractCall(aT: [string, Token]) {
     return {
-      abi: new Interface(IsolatedLendingLiquidation.abi),
-      address: address,
+      contract: new Contract(address, new Interface(IsolatedLendingLiquidation.abi)),
       method: 'viewLiquidationFeePer10k',
       args: [aT[0]],
     };
   }
   const tokensInQuestion = getTokensInQuestion(chainId!);
-  const calls: ContractCall[] = tokensInQuestion.map(convert2ContractCall);
-  const results = useContractCalls(calls) ?? [];
+  const calls: Call[] = tokensInQuestion.map(convert2ContractCall);
+  const results = useCalls(calls).map((x) => (x ?? {value: undefined}).value) ?? [];
   results?.forEach((result: any[] | undefined, index: number) => {
     if (result) {
-      const [tokenAddress, ] = tokensInQuestion[index];
+      const [tokenAddress] = tokensInQuestion[index];
       tokenFees.set(getAddress(tokenAddress), result[0].toNumber() / 100);
       // console.log(`Set Fee for ${token.name}: ${result[0]} (${tokenAddress}): ${result[0].toNumber()}`);
     } else {

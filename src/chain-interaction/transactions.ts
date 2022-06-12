@@ -330,7 +330,7 @@ function prepRepayAmount(
 ) {
   const parsedNumber = parseFloat(repayAmount.toString());
   if (Math.abs(parsedNumber - parseFloatCurrencyValue(totalDebt)) < 1) {
-    return parseEther((parsedNumber * 1.01).toString());
+    return parseEther((parsedNumber * 1.10).toString());
   } else {
     return parseEther(repayAmount.toString());
   }

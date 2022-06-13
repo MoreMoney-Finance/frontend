@@ -5,35 +5,50 @@ import {
   useCalls,
   useEthers,
 } from '@usedapp/core';
-import { BigNumber, Contract } from 'ethers';
+import { BigNumber, Contract, ethers } from 'ethers';
 import { parseEther } from 'ethers/lib/utils';
 import * as React from 'react';
 import {
   DeploymentAddresses,
+  ParsedStakingMetadata,
   useAddresses,
   useAllFeesEver,
   useCurvePoolSLDeposited,
+  useLegacyIsolatedStrategyMetadata,
+  useParsedStakingMetadata,
   useStable,
   useTotalSupply,
 } from '../../chain-interaction/contracts';
 import { tokenAmount } from '../../chain-interaction/tokens';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
+import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { AnalyticsBox } from './AnalyticsBox';
 
 export default function Analytics(props: React.PropsWithChildren<unknown>) {
   const allStratMeta = React.useContext(StrategyMetadataContext);
+  const legacyStratMeta = useLegacyIsolatedStrategyMetadata();
 
+  const account = React.useContext(UserAddressContext);
   const addresses = useAddresses();
 
+  const stakeMeta: ParsedStakingMetadata[] = useParsedStakingMetadata(
+    [addresses.CurvePoolRewards],
+    account ?? ethers.constants.AddressZero
+  ).flat(1);
+
   const feeContractNames = [
+    'IsolatedLending',
+    'StableLending',
     'StableLending2',
     'IsolatedLendingLiquidation',
+    'StableLendingLiquidation',
     'StableLending2Liquidation',
   ];
   const blacklist = [
     'StrategyRegistry',
     'StrategyTokenActivation',
     'StrategyViewer',
+    'LegacyStrategyViewer',
   ];
   const keys: (keyof DeploymentAddresses)[] = Object.keys(
     addresses
@@ -50,6 +65,11 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
   });
   // console.log('contracts', contracts);
   const stable = useStable();
+  const tvlsFarm = stakeMeta.reduce(
+    (tvl, row) => tvl.add(row.tvl),
+    new CurrencyValue(stable, BigNumber.from(0))
+  );
+  console.log('All farm TVL:', tvlsFarm.format());
 
   const tvlNoFarm = Object.values(allStratMeta)
     .flatMap((rows) => Object.values(rows))
@@ -57,9 +77,15 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
       (tvl, row) => tvl.add(row.tvlInPeg),
       new CurrencyValue(stable, BigNumber.from(0))
     );
+  const legacyTvlNoFarm = Object.values(legacyStratMeta)
+    .flatMap((rows) => Object.values(rows))
+    .reduce(
+      (tvl, row) => tvl.add(row.tvlInPeg),
+      new CurrencyValue(stable, BigNumber.from(0))
+    );
   console.log('No-farm TVL', tvlNoFarm.format());
 
-  const tvl = tvlNoFarm;
+  const tvl = tvlNoFarm.add(tvlsFarm).add(legacyTvlNoFarm);
 
   const supply = useTotalSupply('totalSupply', [], ['']);
 
@@ -80,6 +106,7 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
     );
 
   const circulatingBlacklist = [
+    addresses.CurvePoolRewards,
     addresses.VestingLaunchReward,
     '0xcb2fb8db0e80adf47720d48e1ae9315e7d128808',
     '0xba8983fdde65354c1330e38d042c7d2f784ca3de',
@@ -89,13 +116,14 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
   function convert2ContractCall(holder: string) {
     return {
       contract: new Contract(addresses.MoreToken, ERC20Interface),
+      abi: ERC20Interface,
+      address: addresses.MoreToken,
       method: 'balanceOf',
       args: [holder],
     };
   }
-  const balances = useCalls(
-    circulatingBlacklist.map(convert2ContractCall)
-  )
+
+  const balances = useCalls(circulatingBlacklist.map(convert2ContractCall))
     .map((x) => (x ?? { value: undefined }).value)
     .map(
       (result: any[] | undefined) =>

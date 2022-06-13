@@ -94,6 +94,7 @@ export type DeploymentAddresses = {
   CurvePoolSL: string;
   CurvePoolSL2: string;
   StrategyViewer: string;
+  LegacyStrategyViewer: string;
 
   LiquidYieldStrategy: string;
   MultiTraderJoeMasterChef3Strategy: string;
@@ -109,6 +110,8 @@ export type DeploymentAddresses = {
   StableLending2InterestForwarder: string;
   iMoney: string;
   OldYieldYakAVAXStrategy2: string;
+  CurvePoolRewards: string;
+  StableLending: string;
 };
 
 export function useAddresses() {
@@ -497,20 +500,6 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
     ['0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE']: addresses.YieldYakStrategy2,
     ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']:
       addresses.YieldYakAVAXStrategy2,
-    // ['0x60781C2586D68229fde47564546784ab3fACA982']: addresses.YieldYakStrategy,
-    // ['0x59414b3089ce2AF0010e7523Dea7E2b35d776ec7']: addresses.YieldYakStrategy,
-    // ['0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd']: addresses.YieldYakStrategy,
-    // ['0xd586e7f844cea2f87f50152665bcbc2c279d8d70']: addresses.YieldYakStrategy,
-    // ['0x8729438EB15e2C8B576fCc6AeCdA6A148776C0F5']: addresses.YieldYakStrategy,
-    // ['0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664']: addresses.YieldYakStrategy,
-    // ['0xA389f9430876455C36478DeEa9769B7Ca4E3DDB1']: addresses.YieldYakStrategy,
-    // ['0xeD8CBD9F0cE3C6986b22002F03c6475CEb7a6256']: addresses.YieldYakStrategy,
-    // ['0x454E67025631C065d3cFAD6d71E6892f74487a15']:
-    //   addresses.TraderJoeMasterChefStrategy,
-    // ['0x2148D1B21Faa7eb251789a51B404fc063cA6AAd6']:
-    //   addresses.SimpleHoldingStrategy,
-    // ['0xCDFD91eEa657cc2701117fe9711C9a4F61FEED23']:
-    //   addresses.MultiTraderJoeMasterChef3Strategy,
   };
 
   // const masterChef2Tokens = [
@@ -526,11 +515,6 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   strats.push(addresses.AltYieldYakAVAXStrategy2);
   tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
   strats.push(addresses.OldYieldYakAVAXStrategy2);
-
-  // tokens.push('0x454E67025631C065d3cFAD6d71E6892f74487a15');
-  // strats.push(addresses.YieldYakStrategy);
-  // tokens.push('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');
-  // strats.push(addresses.sJoeStrategy);
 
   const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
 
@@ -660,6 +644,129 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   ]);
 
   return stratMeta;
+}
+
+export function useLegacyIsolatedStrategyMetadata(): StrategyMetadata {
+  const [legacyStratMeta, setLegacyStratMeta] = useState<StrategyMetadata>({});
+  const stable = useStable();
+  const { chainId } = useEthers();
+
+  const globalDebtCeiling = useGlobalDebtCeiling(
+    'globalDebtCeiling',
+    [],
+    BigNumber.from(0)
+  );
+  const totalSupply = useTotalSupply('totalSupply', [], BigNumber.from(0));
+
+  const balancesCtx = useContext(WalletBalancesContext);
+  const { yyMetadata, yieldMonitor, additionalYieldData } = useContext(
+    ExternalMetadataContext
+  );
+
+  const addresses = useAddresses();
+
+  //legacy
+  const legacyToken2Strat = {
+    ['0x60781C2586D68229fde47564546784ab3fACA982']: addresses.YieldYakStrategy,
+    ['0x59414b3089ce2AF0010e7523Dea7E2b35d776ec7']: addresses.YieldYakStrategy,
+    ['0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd']: addresses.YieldYakStrategy,
+    ['0xd586e7f844cea2f87f50152665bcbc2c279d8d70']: addresses.YieldYakStrategy,
+    ['0x8729438EB15e2C8B576fCc6AeCdA6A148776C0F5']: addresses.YieldYakStrategy,
+    ['0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664']: addresses.YieldYakStrategy,
+    ['0xA389f9430876455C36478DeEa9769B7Ca4E3DDB1']: addresses.YieldYakStrategy,
+    ['0xeD8CBD9F0cE3C6986b22002F03c6475CEb7a6256']: addresses.YieldYakStrategy,
+    ['0x454E67025631C065d3cFAD6d71E6892f74487a15']:
+      addresses.TraderJoeMasterChefStrategy,
+    ['0x2148D1B21Faa7eb251789a51B404fc063cA6AAd6']:
+      addresses.SimpleHoldingStrategy,
+    ['0xCDFD91eEa657cc2701117fe9711C9a4F61FEED23']:
+      addresses.MultiTraderJoeMasterChef3Strategy,
+  };
+  // const masterChef2Tokens = [
+  //   '0x57319d41f71e81f3c65f2a47ca4e001ebafd4f33',
+  //   '0xa389f9430876455c36478deea9769b7ca4e3ddb1',
+  //   '0xed8cbd9f0ce3c6986b22002f03c6475ceb7a6256',
+  // ].map(getAddress);
+
+  const legacyTokens = Object.keys(legacyToken2Strat);
+  const legacyStrats = Object.values(legacyToken2Strat);
+
+  //legacy
+  legacyTokens.push('0x454E67025631C065d3cFAD6d71E6892f74487a15');
+  legacyStrats.push(addresses.YieldYakStrategy);
+  legacyTokens.push('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');
+  legacyStrats.push(addresses.sJoeStrategy);
+
+  const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
+
+  React.useEffect(() => {
+    async function getData() {
+      const provider = new ethers.providers.JsonRpcProvider(
+        'https://api.avax.network/ext/bc/C/rpc'
+      );
+
+      const stratViewer = new ethers.Contract(
+        addresses.LegacyStrategyViewer,
+        new Interface(StrategyViewer.abi),
+        provider
+      );
+      const normalResults = await stratViewer.viewMetadata(
+        addresses.StableLending,
+        legacyTokens,
+        legacyStrats
+      );
+
+      const results = [...normalResults];
+
+      const reduceFn = (result: StrategyMetadata, row: RawStratMetaRow) => {
+        const parsedRow = parseStratMeta(
+          chainId ?? 43114,
+          row,
+          stable,
+          balancesCtx,
+          yyMetadata,
+          globalMoneyAvailable,
+          yieldMonitor,
+          additionalYieldData,
+          '0x0000000000000000000000000000000000000000'
+        );
+
+        return parsedRow
+          ? {
+              ...result,
+              [parsedRow.token.address]: {
+                [parsedRow.strategyAddress]: parsedRow,
+                ...(result[parsedRow.token.address] || {}),
+              },
+            }
+          : result;
+      };
+
+      setLegacyStratMeta(results?.reduce(reduceFn, {}) ?? {});
+    }
+    if (
+      chainId &&
+      stable &&
+      balancesCtx &&
+      yyMetadata &&
+      globalMoneyAvailable != 0 &&
+      yieldMonitor &&
+      Object.values(legacyStratMeta).length === 0
+    ) {
+      getData();
+    }
+  }, [
+    chainId,
+    stable,
+    balancesCtx,
+    yyMetadata,
+    globalMoneyAvailable,
+    yieldMonitor,
+    legacyStratMeta,
+    underlyingStrategyNames,
+  ]);
+
+  return legacyStratMeta;
 }
 
 export type ParsedPositionMetaRow = {

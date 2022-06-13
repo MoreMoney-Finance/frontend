@@ -40,6 +40,7 @@ import WarningMessage from '../../../../components/notifications/WarningMessage'
 import { TokenAmountInputField } from '../../../../components/tokens/TokenAmountInputField';
 import { TokenDescription } from '../../../../components/tokens/TokenDescription';
 import { WNATIVE_ADDRESS } from '../../../../constants/addresses';
+import { MakeMostOfMoneyContext } from '../../../../contexts/MakeMostOfMoneyContext';
 import { UserAddressContext } from '../../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../../contexts/WalletBalancesContext';
 import { parseFloatCurrencyValue, parseFloatNoNaN } from '../../../../utils';
@@ -56,6 +57,9 @@ export default function DepositBorrow({
   const { chainId } = useEthers();
   const [data, setData] = useState<{ [x: string]: any }>();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { onToggle, onClose: onClosePopover } = React.useContext(
+    MakeMostOfMoneyContext
+  );
   const account = useContext(UserAddressContext);
   const stable = useStable();
 
@@ -190,6 +194,24 @@ export default function DepositBorrow({
       );
     }
   }, [customPercentageInput, totalCollateral, extantDebt, usdPrice]);
+
+  React.useEffect(() => {
+    async function waitTransactionResult() {
+      const depositBorrowResult = await depositBorrowState.transaction?.wait();
+      const nativeDepositBorrowResult =
+        await nativeDepositBorrowState.transaction?.wait();
+      if (
+        depositBorrowResult?.status === 1 ||
+        nativeDepositBorrowResult?.status === 1
+      ) {
+        onToggle();
+        setTimeout(() => {
+          onClosePopover();
+        }, 45000);
+      }
+    }
+    waitTransactionResult();
+  }, [depositBorrowState, nativeDepositBorrowState]);
 
   const depositBorrowDisabled =
     !position &&

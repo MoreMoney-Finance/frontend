@@ -1,4 +1,5 @@
 import {
+  Container,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -32,76 +33,80 @@ export default function MakeMostOfMoneyCtxProvider({
           computePositionOnMount={true}
         >
           <PopoverTrigger>{children}</PopoverTrigger>
-          <PopoverContent>
-            <PopoverHeader fontWeight="semibold">
-              Make the MOST of your MONEY
-            </PopoverHeader>
-            <PopoverArrow />
-            <PopoverCloseButton />
-            <PopoverBody paddingLeft={'26px'}>
-              <ul>
-                <li>
-                  <Text>
-                    Trade MONEY on{' '}
-                    <a
-                      href="https://app.platypus.finance/swap"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Text as="u">Platypus</Text>,{' '}
-                    </a>
-                    <a
-                      href="https://traderjoexyz.com/trade?inputCurrency=AVAX&outputCurrency=0x0f577433bf59560ef2a79c124e9ff99fca258948"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Text as="u">Trader Joe</Text>
-                    </a>
-                    , or{' '}
-                    <a
-                      href="https://app.pangolin.exchange/#/swap"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Text as="u">Pangolin</Text>
-                    </a>
-                  </Text>
-                </li>
-                <li>
-                  <Text>
-                    Provide liquidity on{' '}
-                    <a
-                      href="https://app.platypus.finance/pool?pool_group=factory"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Text as="u">Platypus</Text>,{' '}
-                    </a>
-                    <a
-                      href="https://traderjoexyz.com/pool/0x0f577433bf59560ef2a79c124e9ff99fca258948/AVAX"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Text as="u">Trader Joe</Text>
-                    </a>
-                    , or{' '}
-                    <a
-                      href="https://app.pangolin.exchange/#/add/AVAX/0x0f577433Bf59560Ef2a79c124E9Ff99fCa258948"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Text as="u">Pangolin</Text>
-                    </a>
-                  </Text>
-                </li>
-                <li>
-                  <Link to="/imoney">
-                    <Text as="u">Stake MONEY</Text>
-                  </Link>{' '}
-                  to earn interest using iMONEY
-                </li>
-              </ul>
-            </PopoverBody>
+          <PopoverContent background="transparent" border={'none'}>
+            <Container variant="token" paddingLeft={'16px'} paddingRight="16px">
+              <PopoverHeader fontWeight="semibold" padding={'16px'}>
+                Make the MOST of your MONEY
+              </PopoverHeader>
+              <PopoverArrow />
+              <PopoverCloseButton />
+              <PopoverBody padding={'26px'}>
+                <ul>
+                  <li>
+                    <Text>
+                      Trade MONEY on{' '}
+                      <a
+                        href="https://app.platypus.finance/swap"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Text as="u">Platypus</Text>,{' '}
+                      </a>
+                      <a
+                        href="https://traderjoexyz.com/trade?inputCurrency=AVAX&outputCurrency=0x0f577433bf59560ef2a79c124e9ff99fca258948"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Text as="u">Trader Joe</Text>
+                      </a>
+                      , or{' '}
+                      <a
+                        href="https://app.pangolin.exchange/#/swap"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Text as="u">Pangolin.</Text>
+                      </a>
+                    </Text>
+                  </li>
+                  <br />
+                  <li>
+                    <Text>
+                      Provide liquidity on{' '}
+                      <a
+                        href="https://app.platypus.finance/pool?pool_group=factory"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Text as="u">Platypus</Text>,{' '}
+                      </a>
+                      <a
+                        href="https://traderjoexyz.com/pool/0x0f577433bf59560ef2a79c124e9ff99fca258948/AVAX"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Text as="u">Trader Joe</Text>
+                      </a>
+                      , or{' '}
+                      <a
+                        href="https://app.pangolin.exchange/#/add/AVAX/0x0f577433Bf59560Ef2a79c124E9Ff99fCa258948"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Text as="u">Pangolin.</Text>
+                      </a>
+                    </Text>
+                  </li>
+                  <br />
+                  <li>
+                    <Link to="/imoney">
+                      <Text as="u">Stake MONEY</Text>
+                    </Link>{' '}
+                    to earn interest using iMONEY.
+                  </li>
+                </ul>
+              </PopoverBody>
+            </Container>
           </PopoverContent>
         </Popover>
       </>

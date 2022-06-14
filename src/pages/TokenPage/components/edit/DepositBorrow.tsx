@@ -207,7 +207,7 @@ export default function DepositBorrow({
         onToggle();
         setTimeout(() => {
           onClosePopover();
-        }, 45000);
+        }, 60000);
       }
     }
     waitTransactionResult();

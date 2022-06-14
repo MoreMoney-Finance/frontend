@@ -25,7 +25,7 @@ export default function MakeMostOfMoneyCtxProvider({
       <>
         <Popover
           returnFocusOnClose={false}
-          isOpen={true}
+          isOpen={isOpen}
           onClose={onClose}
           placement="bottom"
           closeOnBlur={false}

@@ -38,8 +38,21 @@ export function PositionBody({
     )
   );
 
+  const highestAPYStrategy: any = Object.values(
+    Object.fromEntries(Object.entries(stratMeta))
+  ).reduce((aggStrat, nextStrat) => {
+    return {
+      ...aggStrat,
+      APY: aggStrat.APY > nextStrat.APY ? aggStrat.APY : nextStrat.APY,
+      highestAPY:
+        aggStrat.APY > nextStrat.APY
+          ? aggStrat.strategyAddress
+          : nextStrat.strategyAddress,
+    };
+  });
+
   const [chosenStrategy, setChosenStrategy] = React.useState<string>(
-    position?.strategy ?? Object.keys(stratMeta)[0]
+    position?.strategy ?? highestAPYStrategy['highestAPY']
   );
   const account = useContext(UserAddressContext);
   const stable = useStable();

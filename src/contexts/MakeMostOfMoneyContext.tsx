@@ -25,22 +25,27 @@ export default function MakeMostOfMoneyCtxProvider({
       <>
         <Popover
           returnFocusOnClose={false}
-          isOpen={isOpen}
+          isOpen={true}
           onClose={onClose}
           placement="bottom"
           closeOnBlur={false}
           boundary="scrollParent"
           computePositionOnMount={true}
+          matchWidth={true}
         >
           <PopoverTrigger>{children}</PopoverTrigger>
-          <PopoverContent background="transparent" border={'none'}>
-            <Container variant="token" paddingLeft={'16px'} paddingRight="16px">
+          <PopoverContent
+            background="transparent"
+            border={'none'}
+            width="400px"
+          >
+            <Container variant="token" paddingLeft={'22px'} paddingRight="22px">
               <PopoverHeader fontWeight="semibold" padding={'16px'}>
                 Make the MOST of your MONEY
               </PopoverHeader>
               <PopoverArrow />
               <PopoverCloseButton />
-              <PopoverBody padding={'26px'}>
+              <PopoverBody padding={'32px'}>
                 <ul>
                   <li>
                     <Text>

@@ -52,8 +52,11 @@ export function PositionBody({
   });
 
   const [chosenStrategy, setChosenStrategy] = React.useState<string>(
-    position?.strategy ?? highestAPYStrategy['highestAPY']
+    position?.strategy ??
+      highestAPYStrategy['highestAPY'] ??
+      Object.keys(stratMeta)[0]
   );
+
   const account = useContext(UserAddressContext);
   const stable = useStable();
   const { sendMigrateStrategy, migrateStrategyState } = useMigrateStrategy(

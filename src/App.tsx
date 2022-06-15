@@ -13,6 +13,7 @@ import PhishingAlertComponent from './components/notifications/PhishingAlertComp
 import { TransactionToasts } from './components/notifications/TransactionToasts';
 import { ExternalMetadataCtxProvider } from './contexts/ExternalMetadataContext';
 import { LiquidationFeesCtxProvider } from './contexts/LiquidationFeesContext';
+import MakeMostOfMoneyCtxProvider from './contexts/MakeMostOfMoneyContext';
 import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
 import { UserAddressCtxProvider } from './contexts/UserAddressContext';
 import { WalletBalancesCtxProvider } from './contexts/WalletBalancesContext';
@@ -125,16 +126,18 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                       zIndex="var(--chakra-zIndices-base)"
                     />
                     <StrategyMetadataCtxProvider>
-                      <TransactionToasts />
-                      <NavigationBar />
-                      <br />
-                      <GlobalDebtCeilingMessage />
-                      <MigratePositionsComponent />
-                      {/* <LiquidatablePositionsMessage /> */}
-                      <Box paddingBottom={'70px'}>
-                        {params.children}
-                        <Outlet />
-                      </Box>
+                      <MakeMostOfMoneyCtxProvider>
+                        <TransactionToasts />
+                        <NavigationBar />
+                        <br />
+                        <GlobalDebtCeilingMessage />
+                        <MigratePositionsComponent />
+                        {/* <LiquidatablePositionsMessage /> */}
+                        <Box paddingBottom={'70px'}>
+                          {params.children}
+                          <Outlet />
+                        </Box>
+                      </MakeMostOfMoneyCtxProvider>
                     </StrategyMetadataCtxProvider>
                   </Box>
                 </>

@@ -6,6 +6,7 @@ import { useContext } from 'react';
 import colorDot from '../../assets/img/color_dot.svg';
 import { useAddresses, useStable } from '../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../chain-interaction/tokens';
+import { MakeMostOfMoneyContext } from '../../contexts/MakeMostOfMoneyContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
 import { useConnectWallet } from '../../utils';
@@ -18,6 +19,7 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
   const [isLargerThan1280] = useMediaQuery('(min-width: 1280px)');
   const { chainId } = useEthers();
   const { onConnect } = useConnectWallet();
+  const { MostOfMoneyPopover } = React.useContext(MakeMostOfMoneyContext);
   const account = useContext(UserAddressContext);
   const stable = useStable();
   const balanceCtx = React.useContext(WalletBalancesContext);
@@ -42,20 +44,22 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
       padding={'4px 4px 4px 16px'}
       borderRadius={'10px'}
     >
-      <HStack alignContent={'center'}>
-        {walletBalance &&
-        moreBalance &&
-        !moreBalance.isZero() &&
-        !walletBalance.isZero() &&
-        isLargerThan1280 ? (
-            <Text fontSize={['12px', '14px', '14px']} textAlign="center">
-              {walletBalance?.format({ significantDigits: 2 })} /{' '}
-              {moreBalance?.format({ significantDigits: 2 })}
-            </Text>
-          ) : (
-            <Image src={colorDot} />
-          )}
-      </HStack>
+      <MostOfMoneyPopover>
+        <HStack alignContent={'center'}>
+          {walletBalance &&
+          moreBalance &&
+          !moreBalance.isZero() &&
+          !walletBalance.isZero() &&
+          isLargerThan1280 ? (
+              <Text fontSize={['12px', '14px', '14px']} textAlign="center">
+                {walletBalance?.format({ significantDigits: 2 })} /{' '}
+                {moreBalance?.format({ significantDigits: 2 })}
+              </Text>
+            ) : (
+              <Image src={colorDot} />
+            )}
+        </HStack>
+      </MostOfMoneyPopover>
       <Button
         variant={'primary'}
         padding={'4px 20px'}

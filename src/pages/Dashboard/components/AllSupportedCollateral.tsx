@@ -27,7 +27,7 @@ type Entity = ParsedStratMetaRow & {
   asset: any;
   apy: string;
   MONEYavailable: string;
-  tvlPeg: string;
+  // tvlPeg: string;
   totalBorrowed: string;
   liquidationFee: string;
   balance: number;
@@ -97,7 +97,7 @@ export function AllSupportedCollateral() {
           (1 / (meta.borrowablePercent / 100)) * 100
         )}%`,
         ltv: `${5 * Math.round(meta.borrowablePercent / 5)}%`,
-        tvlPeg: `$ ${meta.tvlInPeg.format({ suffix: '' })}`,
+        // tvlPeg: `$ ${meta.tvlInPeg.format({ suffix: '' })}`,
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
         liquidationFee:
           (tokenFees.get(meta.token.address) ?? 'Loading...') + '%',
@@ -150,13 +150,13 @@ export function AllSupportedCollateral() {
         ),
         accessor: 'MONEYavailable',
       },
-      {
-        Header: tooltip(
-          'TVL ',
-          'Total amount of this asset locked in our protocol, in US dollars'
-        ),
-        accessor: 'tvlPeg',
-      },
+      // {
+      //   Header: tooltip(
+      //     'TVL ',
+      //     'Total amount of this asset locked in our protocol, in US dollars'
+      //   ),
+      //   accessor: 'tvlPeg',
+      // },
       {
         Header: tooltip(
           'Max LTV ',

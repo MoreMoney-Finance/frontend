@@ -4,11 +4,11 @@ import { CurrencyValue, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
 import {
+  iMoneyTotalSupply,
   useAddresses,
   useBalanceOfToken,
   useIMoneyAPR,
   useStable,
-  useTotalSupplyIMoney,
   useTotalSupplyToken,
 } from '../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../chain-interaction/tokens';
@@ -52,10 +52,7 @@ export default function StakePage({
   const iMoneyBalance =
     balanceCtx.get(iMoneyAddress) ??
     new CurrencyValue(stable, BigNumber.from('0'));
-  const totalSupplyIMoney = new CurrencyValue(
-    stable,
-    useTotalSupplyIMoney(BigNumber.from(1))
-  );
+  const totalSupplyIMoney = formatEther(iMoneyTotalSupply(BigNumber.from('0')));
 
   const inputStyle = {
     marginTop: '12px',
@@ -88,7 +85,7 @@ export default function StakePage({
               img="https://raw.githubusercontent.com/MoreMoney-Finance/logos/main/Coin-Logo-FINAL.jpg"
               title={`iMoney`}
               link="/imoney"
-              totalStaked={formatNumber(parseFloat(totalSupplyIMoney.format()))}
+              totalStaked={parseFloat(totalSupplyIMoney).toFixed(2)}
               yourStake={iMoneyBalance.format({ suffix: '' })}
               totalSupply={null}
               buttonLabel="Earn MONEY"

@@ -25,7 +25,7 @@ export default function DepositForm({
 }: React.PropsWithChildren<{
   token: Token;
   stakingAddress?: string;
-  sendStake: (token: Token, amount: string | number) => Promise<void>;
+  sendStake: (token: Token, amount: string | number) => Promise<any>;
   stakeState: TransactionStatus;
 }>) {
   // const token = stakeMeta.stakingToken;

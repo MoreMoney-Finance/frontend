@@ -26,7 +26,7 @@ export default function WithdrawForm({
 }: React.PropsWithChildren<{
   token: Token;
   stakedBalance: CurrencyValue;
-  sendWithdraw: (token: Token, amount: string | number) => Promise<void>;
+  sendWithdraw: (token: Token, amount: string | number) => Promise<any>;
   withdrawState: TransactionStatus;
 }>) {
   // const token = stakeMeta.stakingToken;

@@ -112,6 +112,7 @@ export type DeploymentAddresses = {
   OldYieldYakAVAXStrategy2: string;
   CurvePoolRewards: string;
   StableLending: string;
+  MasterMore: string;
 };
 
 export function useAddresses() {

@@ -1,15 +1,18 @@
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import {
   Accordion,
+  AccordionPanel,
   Box,
   Button,
+  Container,
   Flex,
   Grid,
+  GridItem,
   Link,
   Text,
 } from '@chakra-ui/react';
 import { formatEther } from '@ethersproject/units';
-import { CurrencyValue } from '@usedapp/core';
+import { CurrencyValue, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
@@ -21,14 +24,25 @@ import {
   usePlatypusAPR,
   useStable,
 } from '../../chain-interaction/contracts';
+import { getTokenFromAddress } from '../../chain-interaction/tokens';
+import {
+  useStakeLPToken,
+  useWithdrawLPToken,
+} from '../../chain-interaction/transactions';
 import { ExternalMetadataContext } from '../../contexts/ExternalMetadataContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
 import { formatNumber } from '../../utils';
+import DepositForm from './components/DepositForm';
+import WithdrawForm from './components/WithdrawForm';
 import FarmItem from './FarmItem';
 
 export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const account = useContext(UserAddressContext);
+  const { chainId } = useEthers();
+
+  const addresses = useAddresses();
+  const moreToken = getTokenFromAddress(chainId, addresses.MoreToken);
 
   const { yieldFarmingData, yieldMonitor } = useContext(
     ExternalMetadataContext
@@ -87,6 +101,9 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const iMoneyTVL = formatEther(iMoneyTotalSupply(BigNumber.from('0')));
 
   const { baseRate, boostedRate, avgBoostedRate } = useIMoneyAPR(account!);
+
+  const { sendDepositLPToken, depositState } = useStakeLPToken();
+  const { sendWithdrawLPToken, withdrawState } = useWithdrawLPToken();
 
   return (
     <>
@@ -182,6 +199,85 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                   Earn MONEY
                 </Button>
               </Flex>
+            }
+          />
+
+          <FarmItem
+            key={'farmRow'}
+            asset="LP Token Stake"
+            stake={'n/a'}
+            tvl={`$ n/a`}
+            reward={`n/a`}
+            apr={'n/a'}
+            acquire={
+              <>
+                <Button
+                  as={Link}
+                  href={'https://traderjoexyz.com/home#/'}
+                  isExternal
+                  color={'white'}
+                  variant={'primary'}
+                >
+                  Get LP Token
+                  <ExternalLinkIcon />
+                </Button>
+              </>
+            }
+            content={
+              <AccordionPanel mt={'16px'} width="full">
+                <Grid
+                  templateColumns={[
+                    'repeat(1, 1fr)',
+                    'repeat(1, 1fr)',
+                    'repeat(1, 1fr)',
+                    'repeat(13, 1fr)',
+                  ]}
+                  templateRows={[
+                    'repeat(3, 1fr)',
+                    'repeat(3, 1fr)',
+                    'repeat(3, 1fr)',
+                    '1fr',
+                  ]}
+                  gap={6}
+                >
+                  <GridItem width={'100%'} colSpan={5} rowSpan={1}>
+                    <Container
+                      variant={'token'}
+                      padding={'16px'}
+                      position="relative"
+                    >
+                      <DepositForm
+                        token={moreToken}
+                        sendStake={sendDepositLPToken}
+                        stakeState={depositState}
+                      />
+                    </Container>
+                  </GridItem>
+                  <GridItem width={'100%'} colSpan={5} rowSpan={1}>
+                    <Container
+                      variant={'token'}
+                      padding={'16px'}
+                      position="relative"
+                    >
+                      <WithdrawForm
+                        token={moreToken}
+                        stakedBalance={
+                          new CurrencyValue(stable, BigNumber.from(0))
+                        }
+                        sendWithdraw={sendWithdrawLPToken}
+                        withdrawState={withdrawState}
+                      />
+                    </Container>
+                  </GridItem>
+                  <GridItem width={'100%'} colSpan={[5, 5, 5, 3]} rowSpan={1}>
+                    <Container
+                      variant={'token'}
+                      padding={'16px'}
+                      position="relative"
+                    ></Container>
+                  </GridItem>
+                </Grid>
+              </AccordionPanel>
             }
           />
         </Accordion>

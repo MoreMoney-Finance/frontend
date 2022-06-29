@@ -10,6 +10,14 @@
   "tokens": [
     {
       "chainId": 43114,
+      "address": "0x9e295B5B976a184B14aD8cd72413aD846C299660",
+      "decimals": 18,
+      "name": "fsGLP",
+      "symbol": "fsGLP",
+      "logoURI": "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png"
+    },
+    {
+      "chainId": 43114,
       "address": "0x22d4002028f537599bE9f666d1c4Fa138522f9c8",
       "decimals": 18,
       "name": "Platypus",

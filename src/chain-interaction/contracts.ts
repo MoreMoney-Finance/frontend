@@ -113,6 +113,7 @@ export type DeploymentAddresses = {
   CurvePoolRewards: string;
   StableLending: string;
   MasterMore: string;
+  JLPMasterMore: '0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9';
 };
 
 export function useAddresses() {

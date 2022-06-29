@@ -221,6 +221,19 @@ export function useStakeMore() {
   };
 }
 
+export function useClaimReward() {
+  const cprAddress = useAddresses().MasterMore;
+  const cprContract = new Contract(cprAddress, new Interface(MasterMore.abi));
+  const { send, state } = useContractFunction(cprContract, 'deposit');
+
+  return {
+    sendClaim: () => {
+      return send(0, 0);
+    },
+    claimState: state,
+  };
+}
+
 export function useStakeLPToken() {
   const cprAddress = useAddresses().MasterMore;
   const cprContract = new Contract(cprAddress, new Interface(MasterMore.abi));

@@ -33,6 +33,7 @@ import { ExternalMetadataContext } from '../../contexts/ExternalMetadataContext'
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
 import { formatNumber } from '../../utils';
+import ClaimReward from './components/ClaimReward';
 import DepositForm from './components/DepositForm';
 import WithdrawForm from './components/WithdrawForm';
 import FarmItem from './FarmItem';
@@ -213,7 +214,9 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
               <>
                 <Button
                   as={Link}
-                  href={'https://traderjoexyz.com/home#/'}
+                  href={
+                    'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05'
+                  }
                   isExternal
                   color={'white'}
                   variant={'primary'}
@@ -248,6 +251,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                     >
                       <DepositForm
                         token={moreToken}
+                        stakingAddress={addresses.MasterMore}
                         sendStake={sendDepositLPToken}
                         stakeState={depositState}
                       />
@@ -274,7 +278,9 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                       variant={'token'}
                       padding={'16px'}
                       position="relative"
-                    ></Container>
+                    >
+                      <ClaimReward token={moreToken} />
+                    </Container>
                   </GridItem>
                 </Grid>
               </AccordionPanel>

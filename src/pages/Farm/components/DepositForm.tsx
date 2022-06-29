@@ -17,10 +17,14 @@ import { WNATIVE_ADDRESS } from '../../../constants/addresses';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../contexts/WalletBalancesContext';
 import { parseFloatNoNaN } from '../../../utils';
+import { useTokenAllowance } from '@usedapp/core';
+import { useApproveTrans } from '../../../chain-interaction/transactions';
+import { TxStatus } from '../../../chain-interaction/contracts';
 
 export default function DepositForm({
   token,
   sendStake,
+  stakingAddress,
   stakeState,
 }: React.PropsWithChildren<{
   token: Token;
@@ -67,6 +71,12 @@ export default function DepositForm({
     ? nativeTokenBalance.isZero()
     : walletBalance.isZero();
 
+  const allowResult = useTokenAllowance(token.address, account, stakingAddress);
+  const allowCV = new CurrencyValue(token, allowResult ?? BigNumber.from('0'));
+  const allowance = token.address && account && stakingAddress && allowCV;
+
+  const { approveState, sendApprove } = useApproveTrans(token.address);
+
   return (
     <form onSubmit={handleSubmitDepForm(onDeposit)}>
       <Flex flexDirection={'column'} justify={'start'}>
@@ -91,20 +101,37 @@ export default function DepositForm({
         />
       </Flex>
 
+      <TransactionErrorDialog state={approveState} title={'Approve'} />
       <TransactionErrorDialog state={stakeState} title={'Stake Action'} />
 
       <Box marginTop={'10px'}>
-        <EnsureWalletConnected>
-          <Button
-            type="submit"
-            width={'full'}
-            variant={!confirmButtonEnabled ? 'submit' : 'submit-primary'}
-            isLoading={isSubmittingDepForm}
-            isDisabled={!confirmButtonEnabled}
-          >
-            Confirm
-          </Button>
-        </EnsureWalletConnected>
+        {allowance && !allowance.gt(walletBalance) && !isNativeToken ? (
+          <EnsureWalletConnected>
+            <Button
+              variant={'submit-primary'}
+              onClick={() => sendApprove(stakingAddress)}
+              isLoading={
+                approveState.status === TxStatus.MINING &&
+                allowance &&
+                !allowance.gt(walletBalance)
+              }
+            >
+              Approve {token.name}{' '}
+            </Button>
+          </EnsureWalletConnected>
+        ) : (
+          <EnsureWalletConnected>
+            <Button
+              type="submit"
+              width={'full'}
+              variant={!confirmButtonEnabled ? 'submit' : 'submit-primary'}
+              isLoading={isSubmittingDepForm}
+              isDisabled={!confirmButtonEnabled}
+            >
+              Confirm
+            </Button>
+          </EnsureWalletConnected>
+        )}
       </Box>
     </form>
   );

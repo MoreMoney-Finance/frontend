@@ -65,8 +65,11 @@ export default function DepositBorrow({
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
 
+  const allowTokenExtrawurst = getAddress(token.address) === '0x9e295B5B976a184B14aD8cd72413aD846C299660'
+  ? '0x5643F4b25E36478eE1E90418d5343cb6591BcB9d'
+  : token.address;
   const allowResult = useTokenAllowance(
-    token.address,
+    allowTokenExtrawurst,
     account,
     strategyAddress
   );

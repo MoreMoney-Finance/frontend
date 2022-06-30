@@ -1,7 +1,7 @@
 import { Interface } from '@ethersproject/abi';
 import { Contract } from '@ethersproject/contracts';
 import IERC20 from '@openzeppelin/contracts/build/contracts/IERC20.json';
-import { useCall, useContractFunction } from '@usedapp/core';
+import { ERC20Interface, useCall, useContractFunction } from '@usedapp/core';
 import { CurrencyValue, Token } from '@usedapp/core/dist/esm/src/model';
 import { BigNumber, ethers } from 'ethers';
 import { getAddress, parseEther, parseUnits } from 'ethers/lib/utils';
@@ -31,6 +31,8 @@ import {
 } from './contracts';
 import { parseFloatCurrencyValue } from '../utils';
 import { handleCallResultDefault } from './wrapper';
+import { useCoingeckoPrice } from '@usedapp/coingecko';
+import { JLPMasterMore, WAVAX } from '../constants/addresses';
 
 export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   const contractsABI: Record<string, any> = {
@@ -219,6 +221,92 @@ export function useStakeMore() {
     },
     stakeState: state,
   };
+}
+
+export function useTVLMasterMore() {
+  /*
+    Get lptBalance = JOELPT.balanceOf(MasterMore)
+    TVL = priceOfLPTAmount(lptBalance)
+  */
+  const addresses = useAddresses();
+  const lptBalance = handleCallResultDefault(
+    useCall({
+      contract: new Contract(addresses.MoreToken, ERC20Interface),
+      method: 'balanceOf',
+      args: [addresses.MasterMore],
+    }),
+    BigNumber.from(0),
+    'MasterMore useTVLMasterMore'
+  );
+  console.log('lptBalance', lptBalance.toString());
+  return usePriceOfLPTAmount(lptBalance);
+}
+export function usePriceOfLPTAmount(lptAmount: BigNumber) {
+  /*
+    Get wavaxPoolBalance = WAVAX.balanceOf(LPT)
+    Get totalLPT = LPT.totalSupply()
+    Get Avax price from coingecko
+    return lptAmount * 2 * avaxPrice * wavaxPoolBalance
+    To check: TVL = 2 * wavaxPoolBalance * lptBalance / totalLPT
+  */
+  const wavaxPoolBalance = handleCallResultDefault(
+    useCall({
+      contract: new Contract(WAVAX, ERC20Interface),
+      method: 'balanceOf',
+      args: [JLPMasterMore],
+    }),
+    BigNumber.from(0),
+    'MasterMore usePriceOfLpTAmount'
+  );
+  console.log('wavaxPoolBalance', wavaxPoolBalance.toString());
+  // const totalLPT = handleCallResultDefault(
+  //   useCall({
+  //     contract: new Contract(addresses.WAVAX, ERC20Interface),
+  //     method: 'totalSupply',
+  //     args: [],
+  //   }),
+  //   BigNumber.from(0),
+  //   'MasterMore usePriceOfLpTAmount'
+  // );
+  const avaxPrice = useCoingeckoPrice('avalanche-2', 'usd') ?? 1;
+  console.log('avaxPrice', useCoingeckoPrice('avalanche-2', 'usd'));
+  return (
+    parseFloat(lptAmount.toString()) *
+    2 *
+    parseFloat(avaxPrice.toString()) *
+    parseFloat(wavaxPoolBalance.toString())
+  ).toFixed(2);
+}
+
+export function usePendingTokens(account: string | undefined | null) {
+  const address = useAddresses().MasterMore;
+  const abi = new Interface(MasterMore.abi);
+  const contract = new Contract(address, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'pendingTokens',
+      args: [0, account],
+    }),
+    0,
+    'MasterMore usePendingTokens'
+  );
+}
+
+export function useLPStaked(account: string | undefined | null) {
+  const address = useAddresses().MasterMore;
+  const abi = new Interface(MasterMore.abi);
+  const contract = new Contract(address, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'userInfo',
+      args: [0, account],
+    }),
+    { amount: BigNumber.from(0) },
+    'MasterMore useLPStaked',
+    true
+  );
 }
 
 export function useClaimReward() {

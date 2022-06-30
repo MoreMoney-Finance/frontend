@@ -7,9 +7,11 @@ import { TransactionErrorDialog } from '../../../components/notifications/Transa
 
 export default function ClaimReward({
   token,
+  rewards,
 }: //   stakeMeta,
 React.PropsWithChildren<{
   token: Token;
+  rewards: number;
   //   stakeMeta: ParsedStakingMetadata;
 }>) {
   const { sendClaim, claimState } = useClaimReward();
@@ -40,7 +42,7 @@ React.PropsWithChildren<{
             src={getIconsFromTokenAddress(token.address)[0]}
           />
           {/* <Text>{vested.toFixed(2)} MORE</Text> */}
-          <Text>0 MORE</Text>
+          <Text>{rewards} MORE</Text>
         </HStack>
         <Button
           //   isDisabled={stakeMeta.earned.add(stakeMeta.rewards).isZero()}

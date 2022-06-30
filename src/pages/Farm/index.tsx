@@ -26,7 +26,10 @@ import {
 } from '../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../chain-interaction/tokens';
 import {
+  useLPStaked,
+  usePendingTokens,
   useStakeLPToken,
+  useTVLMasterMore,
   useWithdrawLPToken,
 } from '../../chain-interaction/transactions';
 import { ExternalMetadataContext } from '../../contexts/ExternalMetadataContext';
@@ -105,6 +108,12 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
 
   const { sendDepositLPToken, depositState } = useStakeLPToken();
   const { sendWithdrawLPToken, withdrawState } = useWithdrawLPToken();
+
+  const stakedMore = useLPStaked(account).amount;
+  const rewards = usePendingTokens(account);
+
+  const masterMoreTVL = useTVLMasterMore();
+  console.log('masterMoreTVL', masterMoreTVL);
 
   return (
     <>
@@ -207,7 +216,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
             key={'farmRow'}
             asset="LP Token Stake"
             stake={'n/a'}
-            tvl={`$ n/a`}
+            tvl={`${masterMoreTVL}`}
             reward={`n/a`}
             apr={'n/a'}
             acquire={
@@ -265,9 +274,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                     >
                       <WithdrawForm
                         token={moreToken}
-                        stakedBalance={
-                          new CurrencyValue(stable, BigNumber.from(0))
-                        }
+                        stakedBalance={new CurrencyValue(stable, stakedMore)}
                         sendWithdraw={sendWithdrawLPToken}
                         withdrawState={withdrawState}
                       />
@@ -279,7 +286,10 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                       padding={'16px'}
                       position="relative"
                     >
-                      <ClaimReward token={moreToken} />
+                      <ClaimReward
+                        rewards={rewards.pendingMore}
+                        token={moreToken}
+                      />
                     </Container>
                   </GridItem>
                 </Grid>

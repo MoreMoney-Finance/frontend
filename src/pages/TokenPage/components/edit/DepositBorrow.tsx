@@ -443,8 +443,7 @@ export default function DepositBorrow({
           <Text variant={'h300'} color={'whiteAlpha.600'}>
             Price:
           </Text>
-          <Text variant={'bodySmall'}>{`1 ${token.ticker
-            } = $ ${usdPrice.toFixed(2)}`}</Text>
+          <Text variant={'bodySmall'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(2)}`}</Text>
         </HStack>
         <TransactionErrorDialog state={approveState} title={'Approve'} />
         <TransactionErrorDialog

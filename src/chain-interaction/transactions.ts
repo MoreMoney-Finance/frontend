@@ -255,7 +255,7 @@ export function usePriceOfLPTAmount(lptAmount: BigNumber) {
       method: 'balanceOf',
       args: [JLPMasterMore],
     }),
-    BigNumber.from(0),
+    BigNumber.from(1),
     'MasterMore usePriceOfLpTAmount'
   );
   console.log('wavaxPoolBalance', wavaxPoolBalance.toString());
@@ -269,13 +269,131 @@ export function usePriceOfLPTAmount(lptAmount: BigNumber) {
   //   'MasterMore usePriceOfLpTAmount'
   // );
   const avaxPrice = useCoingeckoPrice('avalanche-2', 'usd') ?? 1;
-  console.log('avaxPrice', useCoingeckoPrice('avalanche-2', 'usd'));
   return (
     parseFloat(lptAmount.toString()) *
     2 *
     parseFloat(avaxPrice.toString()) *
     parseFloat(wavaxPoolBalance.toString())
-  ).toFixed(2);
+  );
+}
+
+export function useLPAPR(account: string | undefined | null) {
+  /*
+    Get morePerSec
+    Get totalAllocPoint
+    For the pool get poolInfo
+    For the user get MasterMore.userInfo
+    Express this using bignumber operations: poolRewardPerYear = 365 * 24 * 60 * 60 * poolInfo.allocPoint / totalAllocPoint
+    Get the coingecko price of MORE
+    Get MasterMore.dilutingRepartition
+    baseAPR = MasterMore.dilutingRepartition() * 100 * poolRewardPerYear * coinGeckoPrice(MORE) / priceOfLPTAmount(LPT, LPT.balanceOf(MasterMore)) / 1000
+    boostedAPR = MasterMore.nonDilutingRepartition() * 100 * poolRewardPerYiear * coinGeckoPrice(MORE) * MasterMore.userInfo(userAddress).factor / priceOfLPTAmount(LPT, LPT.balanceOf(MasterMore)) / poolInfo.sumOfFactors / 1000
+  */
+  const addresses = useAddresses();
+  const abi = new Interface(MasterMore.abi);
+  const contract = new Contract(addresses.MasterMore, abi);
+  // const morePerSec = handleCallResultDefault(
+  //   useCall({
+  //     contract,
+  //     method: 'morePerSec',
+  //     args: [],
+  //   }),
+  //   0,
+  //   'useLPAPR morePerSec'
+  // );
+  const totalAllocPoint = handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'totalAllocPoint',
+      args: [],
+    }),
+    BigNumber.from(1),
+    'useLPAPR totalAllocPoint'
+  );
+  const poolInfo = handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'poolInfo',
+      args: [0],
+    }),
+    {
+      allocPoint: BigNumber.from(1),
+      sumOfFactors: BigNumber.from(1),
+    },
+    'useLPAPR poolInfo',
+    true
+  );
+  const userInfo = handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'userInfo',
+      args: [0, account],
+    }),
+    { factor: BigNumber.from(1) },
+    'useLPAPR userInfo',
+    true
+  );
+  const poolRewardPerYear = poolInfo?.allocPoint
+    .mul(365)
+    .mul(24)
+    .mul(60)
+    .mul(60)
+    .div(totalAllocPoint);
+  const morePrice = parseFloat(useCoingeckoPrice('more-token', 'usd') ?? '1');
+  const dilutingRepartition = handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'dilutingRepartition',
+      args: [],
+    }),
+    BigNumber.from(1),
+    'useLPAPR dilutingRepartition'
+  );
+  const nonDilutingRepartition = handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'nonDilutingRepartition',
+      args: [],
+    }),
+    BigNumber.from(1),
+    'useLPAPR nonDilutingRepartition'
+  );
+  const lptBalance = handleCallResultDefault(
+    useCall({
+      contract: new Contract(addresses.MoreToken, ERC20Interface),
+      method: 'balanceOf',
+      args: [addresses.MasterMore],
+    }),
+    BigNumber.from(1),
+    'MasterMore useTVLMasterMore'
+  );
+  const priceLPT = parseFloat(usePriceOfLPTAmount(lptBalance).toString());
+  console.log('lptBalance', {
+    totalAllocPoint,
+    poolInfo,
+    userInfo,
+    poolRewardPerYear,
+    morePrice,
+    dilutingRepartition,
+    nonDilutingRepartition,
+    lptBalance,
+    priceLPT,
+  });
+  const baseAPR =
+    (dilutingRepartition * 100 * poolRewardPerYear * morePrice) /
+    priceLPT /
+    1000;
+  const boostedAPR =
+    (nonDilutingRepartition *
+      100 *
+      poolRewardPerYear *
+      morePrice *
+      userInfo.factor) /
+    priceLPT /
+    poolInfo?.sumOfFactors /
+    1000;
+
+  return { baseAPR, boostedAPR };
 }
 
 export function usePendingTokens(account: string | undefined | null) {

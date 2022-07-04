@@ -390,13 +390,12 @@ export function useLPAPR(account: string | undefined | null) {
     priceLPT /
     1000;
   const boostedAPR =
-    (nonDilutingRepartition *
+    parseFloat(userInfo.factor.mul(Math.round(nonDilutingRepartition *
       100 *
       poolRewardPerYear *
-      morePrice *
-      parseFloat(userInfo.factor.toString())) /
+      morePrice))
+      .div(poolInfo.sumOfFactors).toString()) /
     priceLPT /
-    parseFloat(poolInfo.sumOfFactors.toString()) /
     1000;
 
   return { baseAPR, boostedAPR };

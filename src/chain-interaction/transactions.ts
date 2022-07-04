@@ -298,15 +298,6 @@ export function useLPAPR(account: string | undefined | null) {
   const addresses = useAddresses();
   const abi = new Interface(MasterMore.abi);
   const contract = new Contract(addresses.MasterMore, abi);
-  // const morePerSec = handleCallResultDefault(
-  //   useCall({
-  //     contract,
-  //     method: 'morePerSec',
-  //     args: [],
-  //   }),
-  //   0,
-  //   'useLPAPR morePerSec'
-  // );
   const totalAllocPoint = handleCallResultDefault(
     useCall({
       contract,
@@ -335,7 +326,7 @@ export function useLPAPR(account: string | undefined | null) {
       method: 'userInfo',
       args: [0, account],
     }),
-    { factor: 1 },
+    { factor: BigNumber.from(1) },
     'useLPAPR userInfo',
     true
   );
@@ -390,11 +381,16 @@ export function useLPAPR(account: string | undefined | null) {
     priceLPT /
     1000;
   const boostedAPR =
-    parseFloat(userInfo.factor.mul(Math.round(nonDilutingRepartition *
-      100 *
-      poolRewardPerYear *
-      morePrice))
-      .div(poolInfo.sumOfFactors).toString()) /
+    parseFloat(
+      userInfo.factor
+        .mul(
+          Math.round(
+            nonDilutingRepartition * 100 * poolRewardPerYear * morePrice
+          )
+        )
+        .div(poolInfo.sumOfFactors.add(1))
+        .toString()
+    ) /
     priceLPT /
     1000;
 

@@ -4,7 +4,7 @@ import IERC20 from '@openzeppelin/contracts/build/contracts/IERC20.json';
 import { ERC20Interface, useCall, useContractFunction } from '@usedapp/core';
 import { CurrencyValue, Token } from '@usedapp/core/dist/esm/src/model';
 import { BigNumber, ethers } from 'ethers';
-import { getAddress, parseEther, parseUnits } from 'ethers/lib/utils';
+import { formatEther, getAddress, parseEther, parseUnits } from 'ethers/lib/utils';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
@@ -270,10 +270,10 @@ export function usePriceOfLPTAmount(lptAmount: BigNumber) {
   // );
   const avaxPrice = useCoingeckoPrice('avalanche-2', 'usd') ?? 1;
   return (
-    parseFloat(lptAmount.toString()) *
+    parseFloat(formatEther(lptAmount)) *
     2 *
     parseFloat(avaxPrice.toString()) *
-    parseFloat(wavaxPoolBalance.toString())
+    parseFloat(formatEther(wavaxPoolBalance))
   );
 }
 

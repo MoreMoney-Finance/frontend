@@ -4,7 +4,12 @@ import IERC20 from '@openzeppelin/contracts/build/contracts/IERC20.json';
 import { ERC20Interface, useCall, useContractFunction } from '@usedapp/core';
 import { CurrencyValue, Token } from '@usedapp/core/dist/esm/src/model';
 import { BigNumber, ethers } from 'ethers';
-import { formatEther, getAddress, parseEther, parseUnits } from 'ethers/lib/utils';
+import {
+  formatEther,
+  getAddress,
+  parseEther,
+  parseUnits,
+} from 'ethers/lib/utils';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
@@ -259,21 +264,22 @@ export function usePriceOfLPTAmount(lptAmount: BigNumber) {
     'MasterMore usePriceOfLpTAmount'
   );
   console.log('wavaxPoolBalance', wavaxPoolBalance.toString());
-  // const totalLPT = handleCallResultDefault(
-  //   useCall({
-  //     contract: new Contract(addresses.WAVAX, ERC20Interface),
-  //     method: 'totalSupply',
-  //     args: [],
-  //   }),
-  //   BigNumber.from(0),
-  //   'MasterMore usePriceOfLpTAmount'
-  // );
+  const totalLPT = handleCallResultDefault(
+    useCall({
+      contract: new Contract(JLPMasterMore, ERC20Interface),
+      method: 'totalSupply',
+      args: [],
+    }),
+    BigNumber.from(1),
+    'MasterMore usePriceOfLpTAmount'
+  );
   const avaxPrice = useCoingeckoPrice('avalanche-2', 'usd') ?? 1;
   return (
-    parseFloat(formatEther(lptAmount)) *
-    2 *
-    parseFloat(avaxPrice.toString()) *
-    parseFloat(formatEther(wavaxPoolBalance))
+    (parseFloat(formatEther(lptAmount)) *
+      2 *
+      parseFloat(avaxPrice.toString()) *
+      parseFloat(formatEther(wavaxPoolBalance))) /
+    parseFloat(formatEther(totalLPT.add(1)))
   );
 }
 
@@ -329,7 +335,7 @@ export function useLPAPR(account: string | undefined | null) {
       method: 'userInfo',
       args: [0, account],
     }),
-    { factor: BigNumber.from(1) },
+    { factor: 1 },
     'useLPAPR userInfo',
     true
   );
@@ -367,7 +373,7 @@ export function useLPAPR(account: string | undefined | null) {
     BigNumber.from(1),
     'MasterMore useTVLMasterMore'
   );
-  const priceLPT = parseFloat(usePriceOfLPTAmount(lptBalance).toString());
+  const priceLPT = usePriceOfLPTAmount(lptBalance);
   console.log('lptBalance', {
     totalAllocPoint,
     poolInfo,
@@ -388,9 +394,9 @@ export function useLPAPR(account: string | undefined | null) {
       100 *
       poolRewardPerYear *
       morePrice *
-      userInfo.factor) /
+      parseFloat(userInfo.factor.toString())) /
     priceLPT /
-    poolInfo?.sumOfFactors /
+    parseFloat(poolInfo.sumOfFactors.toString()) /
     1000;
 
   return { baseAPR, boostedAPR };

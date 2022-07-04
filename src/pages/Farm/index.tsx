@@ -155,9 +155,13 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
             key={'farmRowMoreAvax'}
             asset="MORE-AVAX"
             stake={`${stakedMore.format({})}`}
-            tvl={`${masterMoreTVL}`}
+            tvl={`$ ${masterMoreTVL.toFixed(2)}`}
             reward={`MORE`}
-            apr={`${baseAPR}%+ ${boostedAPR}% boosted`}
+            apr={
+              account
+                ? `${baseAPR.toFixed(1)}%+ ${boostedAPR}% boosted`
+                : `${baseAPR.toFixed(1)}%`
+            }
             acquire={
               <>
                 <Button

@@ -1,15 +1,10 @@
 import { Interface } from '@ethersproject/abi';
 import { Contract } from '@ethersproject/contracts';
 import IERC20 from '@openzeppelin/contracts/build/contracts/IERC20.json';
-import { ERC20Interface, useCall, useContractFunction } from '@usedapp/core';
+import { useCall, useContractFunction } from '@usedapp/core';
 import { CurrencyValue, Token } from '@usedapp/core/dist/esm/src/model';
 import { BigNumber, ethers } from 'ethers';
-import {
-  formatEther,
-  getAddress,
-  parseEther,
-  parseUnits,
-} from 'ethers/lib/utils';
+import { getAddress, parseEther, parseUnits } from 'ethers/lib/utils';
 import { useContext } from 'react';
 import { UserAddressContext } from '../contexts/UserAddressContext';
 import xMore from '../contracts/artifacts/contracts/governance/xMore.sol/xMore.json';
@@ -36,8 +31,6 @@ import {
 } from './contracts';
 import { parseFloatCurrencyValue } from '../utils';
 import { handleCallResultDefault } from './wrapper';
-import { useCoingeckoPrice } from '@usedapp/coingecko';
-import { JLPMasterMore, WAVAX } from '../constants/addresses';
 
 export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   const contractsABI: Record<string, any> = {
@@ -226,210 +219,6 @@ export function useStakeMore() {
     },
     stakeState: state,
   };
-}
-
-export function useTVLMasterMore() {
-  /*
-    Get lptBalance = JOELPT.balanceOf(MasterMore)
-    TVL = priceOfLPTAmount(lptBalance)
-  */
-  const addresses = useAddresses();
-  const lptBalance = handleCallResultDefault(
-    useCall({
-      contract: new Contract(addresses.MoreToken, ERC20Interface),
-      method: 'balanceOf',
-      args: [addresses.MasterMore],
-    }),
-    BigNumber.from(0),
-    'MasterMore useTVLMasterMore'
-  );
-  console.log('lptBalance', lptBalance.toString());
-  return usePriceOfLPTAmount(lptBalance);
-}
-export function usePriceOfLPTAmount(lptAmount: BigNumber) {
-  /*
-    Get wavaxPoolBalance = WAVAX.balanceOf(LPT)
-    Get totalLPT = LPT.totalSupply()
-    Get Avax price from coingecko
-    return lptAmount * 2 * avaxPrice * wavaxPoolBalance
-    To check: TVL = 2 * wavaxPoolBalance * lptBalance / totalLPT
-  */
-  const wavaxPoolBalance = handleCallResultDefault(
-    useCall({
-      contract: new Contract(WAVAX, ERC20Interface),
-      method: 'balanceOf',
-      args: [JLPMasterMore],
-    }),
-    BigNumber.from(1),
-    'MasterMore usePriceOfLpTAmount'
-  );
-  console.log('wavaxPoolBalance', wavaxPoolBalance.toString());
-  const totalLPT = handleCallResultDefault(
-    useCall({
-      contract: new Contract(JLPMasterMore, ERC20Interface),
-      method: 'totalSupply',
-      args: [],
-    }),
-    BigNumber.from(1),
-    'MasterMore usePriceOfLpTAmount'
-  );
-  const avaxPrice = useCoingeckoPrice('avalanche-2', 'usd') ?? 1;
-  return (
-    (parseFloat(formatEther(lptAmount)) *
-      2 *
-      parseFloat(avaxPrice.toString()) *
-      parseFloat(formatEther(wavaxPoolBalance))) /
-    parseFloat(formatEther(totalLPT.add(1)))
-  );
-}
-
-export function useLPAPR(account: string | undefined | null) {
-  /*
-    Get morePerSec
-    Get totalAllocPoint
-    For the pool get poolInfo
-    For the user get MasterMore.userInfo
-    Express this using bignumber operations: poolRewardPerYear = 365 * 24 * 60 * 60 * poolInfo.allocPoint / totalAllocPoint
-    Get the coingecko price of MORE
-    Get MasterMore.dilutingRepartition
-    baseAPR = MasterMore.dilutingRepartition() * 100 * poolRewardPerYear * coinGeckoPrice(MORE) / priceOfLPTAmount(LPT, LPT.balanceOf(MasterMore)) / 1000
-    boostedAPR = MasterMore.nonDilutingRepartition() * 100 * poolRewardPerYiear * coinGeckoPrice(MORE) * MasterMore.userInfo(userAddress).factor / priceOfLPTAmount(LPT, LPT.balanceOf(MasterMore)) / poolInfo.sumOfFactors / 1000
-  */
-  const addresses = useAddresses();
-  const abi = new Interface(MasterMore.abi);
-  const contract = new Contract(addresses.MasterMore, abi);
-  // const morePerSec = handleCallResultDefault(
-  //   useCall({
-  //     contract,
-  //     method: 'morePerSec',
-  //     args: [],
-  //   }),
-  //   0,
-  //   'useLPAPR morePerSec'
-  // );
-  const totalAllocPoint = handleCallResultDefault(
-    useCall({
-      contract,
-      method: 'totalAllocPoint',
-      args: [],
-    }),
-    BigNumber.from(1),
-    'useLPAPR totalAllocPoint'
-  );
-  const poolInfo = handleCallResultDefault(
-    useCall({
-      contract,
-      method: 'poolInfo',
-      args: [0],
-    }),
-    {
-      allocPoint: BigNumber.from(1),
-      sumOfFactors: BigNumber.from(1),
-    },
-    'useLPAPR poolInfo',
-    true
-  );
-  const userInfo = handleCallResultDefault(
-    useCall({
-      contract,
-      method: 'userInfo',
-      args: [0, account],
-    }),
-    { factor: 1 },
-    'useLPAPR userInfo',
-    true
-  );
-  const poolRewardPerYear = poolInfo?.allocPoint
-    .mul(365)
-    .mul(24)
-    .mul(60)
-    .mul(60)
-    .div(totalAllocPoint);
-  const morePrice = parseFloat(useCoingeckoPrice('more-token', 'usd') ?? '1');
-  const dilutingRepartition = handleCallResultDefault(
-    useCall({
-      contract,
-      method: 'dilutingRepartition',
-      args: [],
-    }),
-    BigNumber.from(1),
-    'useLPAPR dilutingRepartition'
-  );
-  const nonDilutingRepartition = handleCallResultDefault(
-    useCall({
-      contract,
-      method: 'nonDilutingRepartition',
-      args: [],
-    }),
-    BigNumber.from(1),
-    'useLPAPR nonDilutingRepartition'
-  );
-  const lptBalance = handleCallResultDefault(
-    useCall({
-      contract: new Contract(addresses.MoreToken, ERC20Interface),
-      method: 'balanceOf',
-      args: [addresses.MasterMore],
-    }),
-    BigNumber.from(1),
-    'MasterMore useTVLMasterMore'
-  );
-  const priceLPT = usePriceOfLPTAmount(lptBalance);
-  console.log('lptBalance', {
-    totalAllocPoint,
-    poolInfo,
-    userInfo,
-    poolRewardPerYear,
-    morePrice,
-    dilutingRepartition,
-    nonDilutingRepartition,
-    lptBalance,
-    priceLPT,
-  });
-  const baseAPR =
-    (dilutingRepartition * 100 * poolRewardPerYear * morePrice) /
-    priceLPT /
-    1000;
-  const boostedAPR =
-    parseFloat(userInfo.factor.mul(Math.round(nonDilutingRepartition *
-      100 *
-      poolRewardPerYear *
-      morePrice))
-      .div(poolInfo.sumOfFactors).toString()) /
-    priceLPT /
-    1000;
-
-  return { baseAPR, boostedAPR };
-}
-
-export function usePendingTokens(account: string | undefined | null) {
-  const address = useAddresses().MasterMore;
-  const abi = new Interface(MasterMore.abi);
-  const contract = new Contract(address, abi);
-  return handleCallResultDefault(
-    useCall({
-      contract,
-      method: 'pendingTokens',
-      args: [0, account],
-    }),
-    0,
-    'MasterMore usePendingTokens'
-  );
-}
-
-export function useLPStaked(account: string | undefined | null) {
-  const address = useAddresses().MasterMore;
-  const abi = new Interface(MasterMore.abi);
-  const contract = new Contract(address, abi);
-  return handleCallResultDefault(
-    useCall({
-      contract,
-      method: 'userInfo',
-      args: [0, account],
-    }),
-    { amount: BigNumber.from(0) },
-    'MasterMore useLPStaked',
-    true
-  );
 }
 
 export function useClaimReward() {

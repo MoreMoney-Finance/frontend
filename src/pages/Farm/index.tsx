@@ -29,8 +29,10 @@ import {
   useLPAPR,
   useLPStaked,
   usePendingTokens,
-  useStakeLPToken,
   useTVLMasterMore,
+} from '../../chain-interaction/contracts';
+import {
+  useStakeLPToken,
   useWithdrawLPToken,
 } from '../../chain-interaction/transactions';
 import { ExternalMetadataContext } from '../../contexts/ExternalMetadataContext';

@@ -1095,7 +1095,7 @@ export function useLPAPR(account: string | undefined | null) {
   );
   const lptBalance = handleCallResultDefault(
     useCall({
-      contract: new Contract(addresses.MoreToken, ERC20Interface),
+      contract: new Contract(JLPMasterMore, ERC20Interface),
       method: 'balanceOf',
       args: [addresses.MasterMore],
     }),

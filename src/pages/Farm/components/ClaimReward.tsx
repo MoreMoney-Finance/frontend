@@ -11,7 +11,7 @@ export default function ClaimReward({
 }: //   stakeMeta,
 React.PropsWithChildren<{
   token: Token;
-  rewards: number;
+  rewards: string;
   //   stakeMeta: ParsedStakingMetadata;
 }>) {
   const { sendClaim, claimState } = useClaimReward();
@@ -42,7 +42,7 @@ React.PropsWithChildren<{
             src={getIconsFromTokenAddress(token.address)[0]}
           />
           {/* <Text>{vested.toFixed(2)} MORE</Text> */}
-          <Text>{rewards} MORE</Text>
+          <Text>{rewards}</Text>
         </HStack>
         <Button
           //   isDisabled={stakeMeta.earned.add(stakeMeta.rewards).isZero()}

@@ -43,12 +43,14 @@ import ClaimReward from './components/ClaimReward';
 import DepositForm from './components/DepositForm';
 import WithdrawForm from './components/WithdrawForm';
 import FarmItem from './FarmItem';
+import { JLPMasterMore } from '../../constants/addresses';
 
 export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const account = useContext(UserAddressContext);
   const { chainId } = useEthers();
 
   const addresses = useAddresses();
+  const jlpToken = getTokenFromAddress(chainId, JLPMasterMore);
   const moreToken = getTokenFromAddress(chainId, addresses.MoreToken);
 
   const { yieldFarmingData, yieldMonitor } = useContext(
@@ -112,13 +114,14 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const { sendDepositLPToken, depositState } = useStakeLPToken();
   const { sendWithdrawLPToken, withdrawState } = useWithdrawLPToken();
 
-  const stakedMore = new CurrencyValue(moreToken, useLPStaked(account).amount);
-  const rewards = usePendingTokens(account);
+  const stakedJLP = new CurrencyValue(jlpToken, useLPStaked(account).amount);
+  const rewards = new CurrencyValue(
+    moreToken,
+    usePendingTokens(account).pendingMore
+  );
 
   const masterMoreTVL = useTVLMasterMore();
-  console.log('masterMoreTVL', masterMoreTVL);
   const { baseAPR, boostedAPR } = useLPAPR(account);
-  console.log('LPTAPR', baseAPR, boostedAPR);
 
   return (
     <>
@@ -156,12 +159,12 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           <FarmItem
             key={'farmRowMoreAvax'}
             asset="MORE-AVAX"
-            stake={`${stakedMore.format({})}`}
+            stake={`${stakedJLP.format({})}`}
             tvl={`$ ${masterMoreTVL.toFixed(2)}`}
             reward={`MORE`}
             apr={
               account
-                ? `${baseAPR.toFixed(1)}%+ ${boostedAPR}% boosted`
+                ? `${baseAPR.toFixed(1)}%+ ${boostedAPR.toFixed(1)}% boosted`
                 : `${baseAPR.toFixed(1)}%`
             }
             acquire={
@@ -204,7 +207,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                       position="relative"
                     >
                       <DepositForm
-                        token={moreToken}
+                        token={jlpToken}
                         stakingAddress={addresses.MasterMore}
                         sendStake={sendDepositLPToken}
                         stakeState={depositState}
@@ -218,8 +221,8 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                       position="relative"
                     >
                       <WithdrawForm
-                        token={moreToken}
-                        stakedBalance={stakedMore}
+                        token={jlpToken}
+                        stakedBalance={stakedJLP}
                         sendWithdraw={sendWithdrawLPToken}
                         withdrawState={withdrawState}
                       />
@@ -232,7 +235,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                       position="relative"
                     >
                       <ClaimReward
-                        rewards={rewards.pendingMore}
+                        rewards={rewards.format({})}
                         token={moreToken}
                       />
                     </Container>

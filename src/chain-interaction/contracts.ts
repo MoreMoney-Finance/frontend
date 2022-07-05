@@ -1135,8 +1135,9 @@ export function usePendingTokens(account: string | undefined | null) {
       method: 'pendingTokens',
       args: [0, account],
     }),
-    0,
-    'MasterMore usePendingTokens'
+    { pendingMore: BigNumber.from(1) },
+    'MasterMore usePendingTokens',
+    true
   );
 }
 

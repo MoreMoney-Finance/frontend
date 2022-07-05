@@ -51,6 +51,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
 
   const addresses = useAddresses();
   const jlpToken = getTokenFromAddress(chainId, JLPMasterMore);
+  const moreToken = getTokenFromAddress(chainId, addresses.MoreToken);
 
   const { yieldFarmingData, yieldMonitor } = useContext(
     ExternalMetadataContext
@@ -114,7 +115,10 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const { sendWithdrawLPToken, withdrawState } = useWithdrawLPToken();
 
   const stakedJLP = new CurrencyValue(jlpToken, useLPStaked(account).amount);
-  const rewards = usePendingTokens(account);
+  const rewards = new CurrencyValue(
+    moreToken,
+    usePendingTokens(account).pendingMore
+  );
 
   const masterMoreTVL = useTVLMasterMore();
   const { baseAPR, boostedAPR } = useLPAPR(account);
@@ -160,7 +164,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
             reward={`MORE`}
             apr={
               account
-                ? `${baseAPR.toFixed(1)}%+ ${boostedAPR}% boosted`
+                ? `${baseAPR.toFixed(1)}%+ ${boostedAPR.toFixed(1)}% boosted`
                 : `${baseAPR.toFixed(1)}%`
             }
             acquire={
@@ -231,8 +235,8 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                       position="relative"
                     >
                       <ClaimReward
-                        rewards={rewards.pendingMore}
-                        token={jlpToken}
+                        rewards={rewards.format({})}
+                        token={moreToken}
                       />
                     </Container>
                   </GridItem>

@@ -116,7 +116,7 @@ export default function DepositForm({
                 !allowance.gt(walletBalance)
               }
             >
-              Approve {token.name}{' '}
+              Approve MORE-AVAX JLP
             </Button>
           </EnsureWalletConnected>
         ) : (
@@ -128,7 +128,7 @@ export default function DepositForm({
               isLoading={isSubmittingDepForm}
               isDisabled={!confirmButtonEnabled}
             >
-              Confirm
+              Deposit
             </Button>
           </EnsureWalletConnected>
         )}

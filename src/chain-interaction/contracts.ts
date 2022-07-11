@@ -1045,6 +1045,15 @@ export function useLPAPR(account: string | undefined | null) {
     BigNumber.from(1),
     'useLPAPR totalAllocPoint'
   );
+  const morePerSec = handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'morePerSec',
+      args: [],
+    }),
+    BigNumber.from(0),
+    'useLPAPR morePerSec'
+  );
   const poolInfo = handleCallResultDefault(
     useCall({
       contract,
@@ -1069,6 +1078,7 @@ export function useLPAPR(account: string | undefined | null) {
     true
   );
   const poolRewardPerYear = poolInfo?.allocPoint
+    .mul(morePerSec)
     .mul(365)
     .mul(24)
     .mul(60)

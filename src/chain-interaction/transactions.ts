@@ -12,6 +12,7 @@ import DirectFlashLiquidation from '../contracts/artifacts/contracts/liquidation
 import StableLending2Liquidation from '../contracts/artifacts/contracts/liquidation/StableLending2Liquidation.sol/StableLending2Liquidation.json';
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
+import MasterMore from '../contracts/artifacts/contracts/rewards/MasterMore.sol/MasterMore.json';
 import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
@@ -220,6 +221,49 @@ export function useStakeMore() {
   };
 }
 
+export function useClaimReward() {
+  const cprAddress = useAddresses().MasterMore;
+  const cprContract = new Contract(cprAddress, new Interface(MasterMore.abi));
+  const { send, state } = useContractFunction(cprContract, 'deposit');
+
+  return {
+    sendClaim: () => {
+      return send(0, 0);
+    },
+    claimState: state,
+  };
+}
+
+export function useStakeLPToken() {
+  const cprAddress = useAddresses().MasterMore;
+  const cprContract = new Contract(cprAddress, new Interface(MasterMore.abi));
+  const { send, state } = useContractFunction(cprContract, 'deposit');
+
+  return {
+    sendDepositLPToken: (token: Token, amount: string | number) => {
+      const sAmount = parseUnits(amount.toString(), token.decimals);
+      //TODO: change the pool ID
+      return send(0, sAmount);
+    },
+    depositState: state,
+  };
+}
+
+export function useWithdrawLPToken() {
+  const cprAddress = useAddresses().MasterMore;
+  const cprContract = new Contract(cprAddress, new Interface(MasterMore.abi));
+  const { send, state } = useContractFunction(cprContract, 'withdraw');
+
+  return {
+    sendWithdrawLPToken: (token: Token, amount: string | number) => {
+      const wAmount = parseUnits(amount.toString(), token.decimals);
+      //TODO: change the pool ID
+      return send(0, wAmount);
+    },
+    withdrawState: state,
+  };
+}
+
 export function useStakeIMoney() {
   const cprAddress = useAddresses().StableLending2InterestForwarder;
   const cprContract = new Contract(
@@ -330,8 +374,10 @@ function prepRepayAmount(
 ) {
   const parsedNumber = parseFloat(repayAmount.toString());
   const repayRatio = parsedNumber / parseFloatCurrencyValue(totalDebt);
-  if (1.1 > repayRatio && repayRatio > 0.9
-    || Math.abs(parsedNumber - parseFloatCurrencyValue(totalDebt)) < 1) {
+  if (
+    (1.1 > repayRatio && repayRatio > 0.9) ||
+    Math.abs(parsedNumber - parseFloatCurrencyValue(totalDebt)) < 1
+  ) {
     return parseEther((parsedNumber * 1.1).toString());
   } else {
     return parseEther(repayAmount.toString());

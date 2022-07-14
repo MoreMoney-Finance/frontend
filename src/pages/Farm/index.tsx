@@ -1,15 +1,18 @@
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import {
   Accordion,
+  AccordionPanel,
   Box,
   Button,
+  Container,
   Flex,
   Grid,
+  GridItem,
   Link,
   Text,
 } from '@chakra-ui/react';
 import { formatEther } from '@ethersproject/units';
-import { CurrencyValue } from '@usedapp/core';
+import { CurrencyValue, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
@@ -21,14 +24,34 @@ import {
   usePlatypusAPR,
   useStable,
 } from '../../chain-interaction/contracts';
+import { getTokenFromAddress } from '../../chain-interaction/tokens';
+import {
+  useLPAPR,
+  useLPStaked,
+  usePendingTokens,
+  useTVLMasterMore,
+} from '../../chain-interaction/contracts';
+import {
+  useStakeLPToken,
+  useWithdrawLPToken,
+} from '../../chain-interaction/transactions';
 import { ExternalMetadataContext } from '../../contexts/ExternalMetadataContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
 import { formatNumber } from '../../utils';
+import ClaimReward from './components/ClaimReward';
+import DepositForm from './components/DepositForm';
+import WithdrawForm from './components/WithdrawForm';
 import FarmItem from './FarmItem';
+import { JLPMasterMore } from '../../constants/addresses';
 
 export default function FarmPage(params: React.PropsWithChildren<unknown>) {
   const account = useContext(UserAddressContext);
+  const { chainId } = useEthers();
+
+  const addresses = useAddresses();
+  const jlpToken = getTokenFromAddress(chainId, JLPMasterMore);
+  const moreToken = getTokenFromAddress(chainId, addresses.MoreToken);
 
   const { yieldFarmingData, yieldMonitor } = useContext(
     ExternalMetadataContext
@@ -42,17 +65,17 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
     avaxMorePayload && yieldFarmingData
       ? [
         ...yieldFarmingData,
-        {
-          asset: 'MORE-AVAX',
-          stake: 'n/a',
-          tvl: formatNumber(avaxMorePayload.tvl),
-          reward: 'MORE + ' + avaxMorePayload.rewardsCoin,
-          apr: formatNumber(avaxMorePayload.totalApy),
-          getTokenURL:
-              'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05',
-          stakeTokenURL:
-              'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm',
-        },
+        // {
+        //   asset: 'MORE-AVAX',
+        //   stake: 'n/a',
+        //   tvl: formatNumber(avaxMorePayload.tvl),
+        //   reward: 'MORE + ' + avaxMorePayload.rewardsCoin,
+        //   apr: formatNumber(avaxMorePayload.totalApy),
+        //   getTokenURL:
+        //       'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05',
+        //   stakeTokenURL:
+        //       'https://traderjoexyz.com/farm/0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00?fm=fm',
+        // },
         {
           asset: 'MONEY (Platypus)',
           stake: 'n/a',
@@ -88,6 +111,18 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
 
   const { baseRate, boostedRate, avgBoostedRate } = useIMoneyAPR(account!);
 
+  const { sendDepositLPToken, depositState } = useStakeLPToken();
+  const { sendWithdrawLPToken, withdrawState } = useWithdrawLPToken();
+
+  const stakedJLP = new CurrencyValue(jlpToken, useLPStaked(account).amount);
+  const rewards = new CurrencyValue(
+    moreToken,
+    usePendingTokens(account).pendingMore
+  );
+
+  const masterMoreTVL = useTVLMasterMore();
+  const { baseAPR, boostedAPR } = useLPAPR(account);
+
   return (
     <>
       <Box padding={'12'} width={'full'}>
@@ -121,6 +156,95 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           variant={'farm'}
           defaultIndex={0}
         >
+          <FarmItem
+            key={'farmRowMoreAvax'}
+            asset="MORE-AVAX"
+            stake={`${stakedJLP.format({})}`}
+            tvl={`$ ${masterMoreTVL.toFixed(2)}`}
+            reward={`MORE`}
+            apr={
+              account
+                ? `${baseAPR.toFixed(1)}%+ ${boostedAPR.toFixed(1)}% boosted`
+                : `${baseAPR.toFixed(1)}%`
+            }
+            acquire={
+              <>
+                <Button
+                  as={Link}
+                  href={
+                    'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05'
+                  }
+                  isExternal
+                  color={'white'}
+                  variant={'primary'}
+                >
+                  Get LP Token
+                  <ExternalLinkIcon />
+                </Button>
+              </>
+            }
+            content={
+              <AccordionPanel mt={'16px'} width="full">
+                <Grid
+                  templateColumns={[
+                    'repeat(1, 1fr)',
+                    'repeat(1, 1fr)',
+                    'repeat(1, 1fr)',
+                    'repeat(13, 1fr)',
+                  ]}
+                  templateRows={[
+                    'repeat(3, 1fr)',
+                    'repeat(3, 1fr)',
+                    'repeat(3, 1fr)',
+                    '1fr',
+                  ]}
+                  gap={6}
+                >
+                  <GridItem width={'100%'} colSpan={5} rowSpan={1}>
+                    <Container
+                      variant={'token'}
+                      padding={'16px'}
+                      position="relative"
+                    >
+                      <DepositForm
+                        token={jlpToken}
+                        stakingAddress={addresses.MasterMore}
+                        sendStake={sendDepositLPToken}
+                        stakeState={depositState}
+                      />
+                    </Container>
+                  </GridItem>
+                  <GridItem width={'100%'} colSpan={5} rowSpan={1}>
+                    <Container
+                      variant={'token'}
+                      padding={'16px'}
+                      position="relative"
+                    >
+                      <WithdrawForm
+                        token={jlpToken}
+                        stakedBalance={stakedJLP}
+                        sendWithdraw={sendWithdrawLPToken}
+                        withdrawState={withdrawState}
+                      />
+                    </Container>
+                  </GridItem>
+                  <GridItem width={'100%'} colSpan={[5, 5, 5, 3]} rowSpan={1}>
+                    <Container
+                      variant={'token'}
+                      padding={'16px'}
+                      position="relative"
+                    >
+                      <ClaimReward
+                        rewards={rewards.format({})}
+                        token={moreToken}
+                      />
+                    </Container>
+                  </GridItem>
+                </Grid>
+              </AccordionPanel>
+            }
+          />
+
           {externalData.length > 0 ? (
             externalData.map((item) => (
               <FarmItem

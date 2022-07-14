@@ -104,6 +104,7 @@ export type DeploymentAddresses = {
   StableLending2: string;
   YieldYakAVAXStrategy2: string;
   AltYieldYakAVAXStrategy2: string;
+  AltYieldYakStrategy2: string;
   YieldYakStrategy2: string;
   WrapNativeStableLending2: string;
   StableLending2Liquidation: string;
@@ -497,7 +498,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const addresses = useAddresses();
 
   const token2Strat = {
-    ['0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE']: addresses.YieldYakStrategy2,
+    ['0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE']:
+      addresses.AltYieldYakStrategy2,
     ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']:
       addresses.YieldYakAVAXStrategy2,
   };

@@ -49,6 +49,7 @@ import {
 import { handleCallResultDefault } from './wrapper';
 import { JLPMasterMore, WAVAX } from '../constants/addresses';
 import MasterMore from '../contracts/artifacts/contracts/rewards/MasterMore.sol/MasterMore.json';
+import { useBalanceOfVeMoreToken } from './transactions';
 // import earnedRewards from '../constants/earned-rewards.json';
 // import rewardsRewards from '../constants/rewards-rewards.json';
 /* eslint-disable */
@@ -1118,9 +1119,12 @@ export function useLPAPR(account: string | undefined | null) {
     (dilutingRepartition * 100 * parseFloat(formatEther(poolRewardPerYear)) * morePrice) /
     priceLPT /
     1000;
+
+  const veMoreBalance = useBalanceOfVeMoreToken(account);
+  const factor = sqrt(lptBalance.mul(veMoreBalance));
   const boostedAPR =
     parseFloat(
-      userInfo.factor
+      factor
         .mul(
           Math.round(
             nonDilutingRepartition * 100 * parseFloat(formatEther(poolRewardPerYear)) * morePrice

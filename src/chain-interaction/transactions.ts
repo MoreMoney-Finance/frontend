@@ -56,7 +56,7 @@ export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   };
 }
 
-export function useBalanceOfVeMoreToken(account: string) {
+export function useBalanceOfVeMoreToken(account: string | undefined | null) {
   const address = useAddresses().VeMoreToken;
   const abi = new Interface(VeMoreToken.abi);
   const contract = new Contract(address, abi);

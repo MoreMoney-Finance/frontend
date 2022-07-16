@@ -1115,7 +1115,7 @@ export function useLPAPR(account: string | undefined | null) {
   const priceLPT = usePriceOfLPTAmount(lptBalance);
 
   const baseAPR =
-    (dilutingRepartition * 100 * poolRewardPerYear * morePrice) /
+    (dilutingRepartition * 100 * parseFloat(formatEther(poolRewardPerYear)) * morePrice) /
     priceLPT /
     1000;
   const boostedAPR =
@@ -1123,7 +1123,7 @@ export function useLPAPR(account: string | undefined | null) {
       userInfo.factor
         .mul(
           Math.round(
-            nonDilutingRepartition * 100 * poolRewardPerYear * morePrice
+            nonDilutingRepartition * 100 * parseFloat(formatEther(poolRewardPerYear)) * morePrice
           )
         )
         .div(poolInfo.sumOfFactors.add(1))

@@ -65,8 +65,11 @@ export default function DepositBorrow({
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
 
+  const allowTokenExtrawurst = getAddress(token.address) === '0x9e295B5B976a184B14aD8cd72413aD846C299660'
+    ? '0x5643F4b25E36478eE1E90418d5343cb6591BcB9d'
+    : token.address;
   const allowResult = useTokenAllowance(
-    token.address,
+    allowTokenExtrawurst,
     account,
     strategyAddress
   );
@@ -440,9 +443,7 @@ export default function DepositBorrow({
           <Text variant={'h300'} color={'whiteAlpha.600'}>
             Price:
           </Text>
-          <Text variant={'bodySmall'}>{`1 ${
-            token.ticker
-          } = $ ${usdPrice.toFixed(2)}`}</Text>
+          <Text variant={'bodySmall'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(2)}`}</Text>
         </HStack>
         <TransactionErrorDialog state={approveState} title={'Approve'} />
         <TransactionErrorDialog

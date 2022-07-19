@@ -424,7 +424,10 @@ export function useDepositBorrowTrans(trancheId: number | null | undefined) {
 }
 
 export function useApproveTrans(tokenAddress: string) {
-  const tokenContract = new Contract(tokenAddress, new Interface(IERC20.abi));
+  const _tokenAddress = getAddress(tokenAddress) === '0x9e295B5B976a184B14aD8cd72413aD846C299660'
+    ? '0x5643F4b25E36478eE1E90418d5343cb6591BcB9d'
+    : tokenAddress;
+  const tokenContract = new Contract(_tokenAddress, new Interface(IERC20.abi));
   const { send, state } = useContractFunction(tokenContract, 'approve');
 
   return {

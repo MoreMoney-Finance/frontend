@@ -115,6 +115,8 @@ export type DeploymentAddresses = {
   OldYieldYakAVAXStrategy2: string;
   CurvePoolRewards: string;
   StableLending: string;
+
+  YieldYakPermissiveStrategy2: string;
   MasterMore: string;
 };
 
@@ -504,6 +506,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
     ['0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE']: addresses.YieldYakStrategy2,
     ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']:
       addresses.YieldYakAVAXStrategy2,
+    ['0x9e295B5B976a184B14aD8cd72413aD846C299660']: addresses.YieldYakPermissiveStrategy2
   };
 
   // const masterChef2Tokens = [

@@ -16,7 +16,7 @@
           "type": "uint256"
         }
       ],
-      "name": "onPtpReward",
+      "name": "onMoreReward",
       "outputs": [
         {
           "internalType": "uint256",

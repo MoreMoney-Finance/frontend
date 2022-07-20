@@ -116,6 +116,7 @@ export type DeploymentAddresses = {
   CurvePoolRewards: string;
   StableLending: string;
 
+  AltYieldYakStrategy2: string;
   YieldYakPermissiveStrategy2: string;
   MasterMore: string;
 };
@@ -522,6 +523,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   strats.push(addresses.AltYieldYakAVAXStrategy2);
   tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
   strats.push(addresses.OldYieldYakAVAXStrategy2);
+  tokens.push('0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE');
+  tokens.push(addresses.AltYieldYakStrategy2);
 
   const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
 

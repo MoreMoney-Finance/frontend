@@ -503,10 +503,12 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const addresses = useAddresses();
 
   const token2Strat = {
+    ['0x152b9d0FdC40C096757F570A51E494bd4b943E50']: addresses.YieldYakStrategy2,
     ['0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE']: addresses.YieldYakStrategy2,
     ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']:
       addresses.YieldYakAVAXStrategy2,
-    ['0x9e295B5B976a184B14aD8cd72413aD846C299660']: addresses.YieldYakPermissiveStrategy2
+    ['0x9e295B5B976a184B14aD8cd72413aD846C299660']:
+      addresses.YieldYakPermissiveStrategy2,
   };
 
   // const masterChef2Tokens = [
@@ -1119,7 +1121,10 @@ export function useLPAPR(account: string | undefined | null) {
   const priceLPT = usePriceOfLPTAmount(lptBalance);
 
   const baseAPR =
-    (dilutingRepartition * 100 * parseFloat(formatEther(poolRewardPerYear)) * morePrice) /
+    (dilutingRepartition *
+      100 *
+      parseFloat(formatEther(poolRewardPerYear)) *
+      morePrice) /
     priceLPT /
     1000;
 
@@ -1130,7 +1135,10 @@ export function useLPAPR(account: string | undefined | null) {
       factor
         .mul(
           Math.round(
-            nonDilutingRepartition * 100 * parseFloat(formatEther(poolRewardPerYear)) * morePrice
+            nonDilutingRepartition *
+              100 *
+              parseFloat(formatEther(poolRewardPerYear)) *
+              morePrice
           )
         )
         .div(poolInfo.sumOfFactors.add(1))

@@ -118,6 +118,7 @@ export type DeploymentAddresses = {
 
   YieldYakPermissiveStrategy2: string;
   MasterMore: string;
+  AltYieldYakStrategy2: string;
 };
 
 export function useAddresses() {
@@ -524,6 +525,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   strats.push(addresses.AltYieldYakAVAXStrategy2);
   tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
   strats.push(addresses.OldYieldYakAVAXStrategy2);
+  tokens.push('0x152b9d0FdC40C096757F570A51E494bd4b943E50');
+  strats.push(addresses.AltYieldYakStrategy2);
 
   const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
 

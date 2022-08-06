@@ -15,6 +15,8 @@ import { LiquidatablePositionsTable } from './LiquidatablePositionsTable';
 export default function LiquidatablePositions() {
   const addresses = useAddresses();
 
+  console.log('Starting liquidatable positions');
+
   const { sendLiquidation: sendDirectLiquidationCurrent } = useLiquidationTrans(
     addresses.DirectFlashStable2Liquidation
   );
@@ -59,9 +61,11 @@ export default function LiquidatablePositions() {
 
   const liquidatablePositions = useContext(LiquidatablePositionsContext);
 
+  console.log('liquidatable positions', liquidatablePositions);
+
   return (
     <>
-      {liquidatablePositions.length > 0 && false ? (
+      {liquidatablePositions.length > 0 ? (
         <VStack mt="40px">
           <h1>Liquidatable positions</h1>
           <LiquidatablePositionsTable

@@ -78,8 +78,8 @@ export function LiquidatablePositionsCtxProvider({
 
   const START = cachedPositions.tstamp;
   const updatedPositions = useUpdatedPositions(START);
-  // console.log('parseCachePositions', parsedCachePositions);
-  // console.log('updatedPositions', updatedPositions);
+  console.log('parseCachePositions', parsedCachePositions);
+  console.log('updatedPositions', updatedPositions);
   const jointUpdatedPositions = [...parsedCachePositions, ...updatedPositions];
   const updatedMetadata =
     useUpdatedMetadataLiquidatablePositions(parsedCachePositions);
@@ -186,7 +186,11 @@ export function LiquidatablePositionsCtxProvider({
     .filter((posMeta) => !stableTickers.includes(posMeta.token?.ticker))
     //sort liquidatable first
     .sort(function (a, b) {
-      return a.positionHealthOrder - b.positionHealthOrder;
+      if (a.positionHealthOrder === b.positionHealthOrder) {
+        return parseFloatCurrencyValue(b.debt) - parseFloatCurrencyValue(a.debt);
+      } else {
+        return a.positionHealthOrder - b.positionHealthOrder;
+      }
     });
 
   return (

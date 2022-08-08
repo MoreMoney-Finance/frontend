@@ -14,9 +14,9 @@ import {
 } from '../../chain-interaction/transactions';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
-import { parseFloatCurrencyValue } from '../../utils';
 import { LiquidatableAction } from './LiquidatablePositionsTable';
 import { TransactionErrorDialog } from '../../components/notifications/TransactionErrorDialog';
+import { formatEther, formatUnits } from 'ethers/lib/utils';
 
 export function LiquidatableRow(
   params: React.PropsWithChildren<
@@ -76,43 +76,50 @@ export function LiquidatableRow(
 
   const primitiveLiquidate = async () => {
     const lendingAddress = addresses.StableLending2Liquidation;
-    const extantCollateral = parseFloatCurrencyValue(params.collateral!);
-    const extantCollateralValue = parseFloatCurrencyValue(
-      params.collateralValue
-    );
+    const extantCollateral = params.collateral!.value;
+    const extantCollateralValue = params.collateralValue.value;
+
     const ltvPer10k = params.borrowablePercent * 100;
 
-    const debt = parseFloatCurrencyValue(params.debt);
+    const debt = params.debt.value.sub(params.yield.value);
 
-    const requestedColVal =
-      (debt +
-        (10000 * debt - ltvPer10k * extantCollateralValue) /
-          (10000 - ltvPer10k)) /
-      2;
+    if (debt.gt(extantCollateralValue.mul(87).div(100))) {
+      console.log('liquidating', params.trancheId, extantCollateral.toString(), debt.toString(), account!);
+      sendLiquidation(params.trancheId, extantCollateral, debt, account!);
+    } else {
+      const requestedColVal =
+        debt
+          .add(debt
+            .mul(10000)
+            .sub(extantCollateralValue.mul(ltvPer10k))
+            .div(10000 - ltvPer10k)
+          )
+          .div(2);
 
-    const collateralRequested =
-      (extantCollateral * requestedColVal) / extantCollateralValue;
+      const collateralRequested =
+        extantCollateral.mul(requestedColVal).div(extantCollateralValue);
 
-    const bidTarget = await viewBidTarget(
-      params.trancheId,
-      lendingAddress,
-      requestedColVal.toString(),
-      0
-    );
+      const bidTarget = await viewBidTarget(
+        params.trancheId,
+        lendingAddress,
+        requestedColVal,
+        BigNumber.from(0)
+      );
 
-    const rebalancingBid = (1000 * bidTarget) / 984;
-    console.log(
-      'rebalancingBid',
-      requestedColVal,
-      collateralRequested,
-      rebalancingBid
-    );
-    sendLiquidation(
-      params.trancheId,
-      collateralRequested.toString(),
-      rebalancingBid.toString(),
-      account!
-    );
+      const rebalancingBid = bidTarget.mul(1000).div(984);
+      console.log(
+        'rebalancingBid',
+        formatEther(requestedColVal),
+        formatUnits(collateralRequested, params.token.decimals),
+        formatEther(rebalancingBid)
+      );
+      sendLiquidation(
+        params.trancheId,
+        collateralRequested,
+        rebalancingBid,
+        account!
+      );
+    }
   };
 
   return (

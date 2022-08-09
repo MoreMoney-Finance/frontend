@@ -119,6 +119,7 @@ export type DeploymentAddresses = {
   AltYieldYakStrategy2: string;
   YieldYakPermissiveStrategy2: string;
   MasterMore: string;
+  BigMigrateStableLending2: string;
 };
 
 export function useAddresses() {

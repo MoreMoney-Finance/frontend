@@ -89,7 +89,7 @@
     "AMMYieldConverter": "0x9025B317Ce8eAd9bD5C4934BcEef7309D8e8Aa86",
     "AltYieldYakAVAXStrategy2": "0x3F898DaDf9E0Bd678B0D1513a3a6D88Ef43aeC2A",
     "ChainlinkOracle": "0x3Dc65b58ad56309349f9494eD8d920870aaa8c5B",
-    "ContractManagement": "0xefB118AA609f8F1cAe68aF4b59aC984825D2136e",
+    "ContractManagement": "0xD761fE6A6147e6e1c27DC1Ba6600f314d41d43b7",
     "CurveLPTOracle": "0xC1397F94587c6fE5946a20F3D74DBb02bb175e14",
     "CurvePool": "0xb3F21Fc59Bc06209D5fb82c474F21582AEf09a20",
     "CurvePoolRewards": "0x9727D535165e19590013bdDea8Fd85dd618b9aF7",
@@ -168,7 +168,7 @@
     "xJoeStableLiquidation": "0xab3E6e4011B76346099520DA87ab08903929B59F",
     "xMore": "0xaEcf69a09369Db3556177484298d6348c7cf9a7f",
     "AltYieldYakStrategy2": "0x3d3cd4856ceca1639150549A4F2cE3F37f92Bd91",
-    "BigMigrateStableLending2": "0x6705DBe506Fba33B21866BC899fb1DfeAacE1226",
+    "BigMigrateStableLending2": "0x43d1aB608Fd479659D253727c598DD245aeE3E91",
     "RedeemYY": "0x797f4474Cf0aACd1E50809b8496a5d63f0716E1f"
   }
 }

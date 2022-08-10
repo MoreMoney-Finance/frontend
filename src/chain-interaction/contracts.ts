@@ -50,6 +50,7 @@ import { handleCallResultDefault } from './wrapper';
 import { JLPMasterMore, WAVAX } from '../constants/addresses';
 import MasterMore from '../contracts/artifacts/contracts/rewards/MasterMore.sol/MasterMore.json';
 import { useBalanceOfVeMoreToken } from './transactions';
+import { strategyNames } from '../constants/strategies-naming';
 // import earnedRewards from '../constants/earned-rewards.json';
 // import rewardsRewards from '../constants/rewards-rewards.json';
 /* eslint-disable */
@@ -565,9 +566,9 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
                   s,
                   {
                     ...row,
-                    underlyingStrategyName: newUnderlyingNames.get(
-                      row.underlyingStrategy
-                    ),
+                    underlyingStrategyName:
+                      strategyNames[row.underlyingStrategy] ??
+                      newUnderlyingNames.get(row.underlyingStrategy),
                   },
                 ])
               ),

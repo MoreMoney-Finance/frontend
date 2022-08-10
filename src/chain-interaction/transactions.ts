@@ -31,6 +31,7 @@ import {
 } from './contracts';
 import { parseFloatCurrencyValue } from '../utils';
 import { handleCallResultDefault } from './wrapper';
+import { sAvax } from '../constants/addresses';
 
 export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   const contractsABI: Record<string, any> = {
@@ -424,9 +425,10 @@ export function useDepositBorrowTrans(trancheId: number | null | undefined) {
 }
 
 export function useApproveTrans(tokenAddress: string) {
-  const _tokenAddress = getAddress(tokenAddress) === '0x9e295B5B976a184B14aD8cd72413aD846C299660'
-    ? '0x5643F4b25E36478eE1E90418d5343cb6591BcB9d'
-    : tokenAddress;
+  const _tokenAddress =
+    getAddress(tokenAddress) === '0x9e295B5B976a184B14aD8cd72413aD846C299660'
+      ? '0x5643F4b25E36478eE1E90418d5343cb6591BcB9d'
+      : tokenAddress;
   const tokenContract = new Contract(_tokenAddress, new Interface(IERC20.abi));
   const { send, state } = useContractFunction(tokenContract, 'approve');
 
@@ -527,15 +529,20 @@ export function useHarvestPartially(strategyAddress: string) {
 }
 
 export function useMigrateStrategy(
-  lendingContractAddress: string | undefined | null
+  lendingContractAddress: string | undefined | null,
+  token: Token | undefined | null
 ) {
   const addresses = useAddresses();
   const lendingAddress = lendingContractAddress ?? addresses.StableLending2;
 
-  const strategy = new Contract(
-    lendingAddress,
-    new Interface(StableLending2.abi)
-  );
+  // if sAvax migrate to a different contract
+  const strategy =
+    token?.address === sAvax
+      ? new Contract(
+        addresses.BigMigrateStableLending2,
+        new Interface(StableLending2.abi)
+      )
+      : new Contract(lendingAddress, new Interface(StableLending2.abi));
   const { send, state } = useContractFunction(strategy, 'migrateStrategy');
 
   return {
@@ -620,7 +627,7 @@ export function useUpdatePriceOracle(token?: Token) {
 export async function viewBidTarget(
   trancheId: number,
   lendingAddress: string,
-  requestedColVal: string,
+  requestedColVal: BigNumber,
   defaultResult: any
 ) {
   const provider = new ethers.providers.JsonRpcProvider(
@@ -635,7 +642,7 @@ export async function viewBidTarget(
 
   const result = await liquidationContract.viewBidTarget(
     trancheId,
-    parseEther(requestedColVal)
+    requestedColVal
   );
   return result ?? defaultResult;
 }
@@ -652,16 +659,10 @@ export function usePrimitiveLiquidationTrans() {
   return {
     sendLiquidation: (
       trancheId: number,
-      collateralRequested: string,
-      rebalancingBid: string,
+      collateralRequested: BigNumber,
+      rebalancingBid: BigNumber,
       recipient: string
-    ) =>
-      send(
-        trancheId,
-        parseEther(collateralRequested),
-        rebalancingBid,
-        recipient
-      ),
+    ) => send(trancheId, collateralRequested, rebalancingBid, recipient),
     liquidationState: state,
   };
 }

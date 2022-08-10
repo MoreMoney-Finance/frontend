@@ -19,7 +19,8 @@ export function MigrateStrategy(
 
   const stable = useStable();
   const { sendMigrateStrategy, migrateStrategyState } = useMigrateStrategy(
-    trancheContract
+    trancheContract,
+    stable
   );
 
   return (
@@ -47,4 +48,3 @@ export function MigrateStrategy(
     </VStack>
   );
 }
-

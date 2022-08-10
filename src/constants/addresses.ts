@@ -20,3 +20,4 @@ export const WNATIVE_ADDRESS: AddressMap = {
 
 export const JLPMasterMore = '0xb8361D0E3F3B0fc5e6071f3a3C3271223C49e3d9';
 export const WAVAX = '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7';
+export const sAvax = '0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE';

@@ -12,16 +12,16 @@
       "chainId": 31337,
       "address": "0xF7D9281e8e363584973F946201b82ba72C965D27",
       "decimals": 18,
-      "name": "yyAvax",
-      "symbol": "yyAvax",
+      "name": "yyAVAX",
+      "symbol": "yyAVAX",
       "logoURI": "https://storage.googleapis.com/yak/tokens/0xF7D9281e8e363584973F946201b82ba72C965D27.png"
     },
     {
       "chainId": 43114,
       "address": "0xF7D9281e8e363584973F946201b82ba72C965D27",
       "decimals": 18,
-      "name": "yyAvax",
-      "symbol": "yyAvax",
+      "name": "yyAVAX",
+      "symbol": "yyAVAX",
       "logoURI": "https://storage.googleapis.com/yak/tokens/0xF7D9281e8e363584973F946201b82ba72C965D27.png"
     },
     {

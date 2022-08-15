@@ -326,7 +326,7 @@ export default function DepositBorrow({
               color={'whiteAlpha.600'}
               lineHeight={'14px'}
             >
-              Balance: {balance.format({})}
+              Balance: {balance.format({ suffix: '' })}
             </Text>
           </Flex>
           <HStack {...inputStyle}>

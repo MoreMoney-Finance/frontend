@@ -1134,7 +1134,7 @@ export function useLPAPR(account: string | undefined | null) {
     1000;
 
   const veMoreBalance = useBalanceOfVeMoreToken(account);
-  const putativeDepositAmount = userInfo.amount.isZero() ? parseEther('0.001') : userInfo.amount; 
+  const putativeDepositAmount = userInfo.amount.isZero() ? parseEther('10') : userInfo.amount; 
   const factor = sqrt(putativeDepositAmount.mul(veMoreBalance));
   const boostedAPR =
     parseFloat(

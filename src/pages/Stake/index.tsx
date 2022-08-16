@@ -103,8 +103,8 @@ export default function StakePage({
                     </Text>
                     <Text fontSize={'sm'}>
                       {account
-                        ? `${baseRate}% + ${boostedRate}% `
-                        : `${baseRate}% + ${avgBoostedRate}% avg`}
+                        ? `${baseRate.toFixed(2)}% + ${boostedRate.toFixed(2)}% `
+                        : `${baseRate.toFixed(2)}% + ${avgBoostedRate.toFixed(2)}% avg`}
                     </Text>
                   </Flex>
                 </Box>

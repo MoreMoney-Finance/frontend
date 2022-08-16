@@ -65,9 +65,10 @@ export default function DepositBorrow({
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
 
-  const allowTokenExtrawurst = getAddress(token.address) === '0x9e295B5B976a184B14aD8cd72413aD846C299660'
-    ? '0x5643F4b25E36478eE1E90418d5343cb6591BcB9d'
-    : token.address;
+  const allowTokenExtrawurst =
+    getAddress(token.address) === '0x9e295B5B976a184B14aD8cd72413aD846C299660'
+      ? '0x5643F4b25E36478eE1E90418d5343cb6591BcB9d'
+      : token.address;
   const allowResult = useTokenAllowance(
     allowTokenExtrawurst,
     account,
@@ -275,6 +276,8 @@ export default function DepositBorrow({
   const dangerousPosition = totalPercentage > borrowablePercent * 0.92;
   console.log('customPercentageInput', customPercentageInput);
 
+  const balance = isNativeToken ? nativeTokenBalance : walletBalance;
+
   return (
     <>
       <ConfirmPositionModal
@@ -300,7 +303,12 @@ export default function DepositBorrow({
       />
       <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
         <Flex flexDirection={'column'} justify={'start'}>
-          <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
+          <Flex
+            w={'full'}
+            marginBottom={'6px'}
+            flexDirection="row"
+            justifyContent={'space-between'}
+          >
             <WarningMessage
               message="JOE deposits currently disabled."
               isOpen={depositBorrowButtonDisabledForJoe}
@@ -313,12 +321,19 @@ export default function DepositBorrow({
                 Deposit Collateral
               </Text>
             </WarningMessage>
-          </Box>
+            <Text
+              variant={'bodyExtraSmall'}
+              color={'whiteAlpha.600'}
+              lineHeight={'14px'}
+            >
+              Balance: {balance.format({ suffix: '' })}
+            </Text>
+          </Flex>
           <HStack {...inputStyle}>
             <TokenDescription token={stratMeta.token} />
             <TokenAmountInputField
               name="collateral-deposit"
-              max={isNativeToken ? nativeTokenBalance : walletBalance}
+              max={balance}
               isDisabled={depositBorrowDisabled}
               placeholder={'Collateral Deposit'}
               registerForm={registerDepForm}
@@ -443,7 +458,9 @@ export default function DepositBorrow({
           <Text variant={'h300'} color={'whiteAlpha.600'}>
             Price:
           </Text>
-          <Text variant={'bodySmall'}>{`1 ${token.ticker} = $ ${usdPrice.toFixed(2)}`}</Text>
+          <Text variant={'bodySmall'}>{`1 ${
+            token.ticker
+          } = $ ${usdPrice.toFixed(2)}`}</Text>
         </HStack>
         <TransactionErrorDialog state={approveState} title={'Approve'} />
         <TransactionErrorDialog

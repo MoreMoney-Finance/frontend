@@ -10,6 +10,7 @@ import {
   useUnstakeVeMoreTokenForMore,
 } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
+import WarningMessage from '../../../components/notifications/WarningMessage';
 import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInputField';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { parseFloatNoNaN } from '../../../utils';
@@ -51,17 +52,24 @@ export function UnstakeMoreVeMore(props: React.PropsWithChildren<unknown>) {
   const unstakeMoreButtonDisabled =
     parseFloatNoNaN(veMoreTokenUnstakeInput) === 0;
 
+  const showWarning = veMoreTokenUnstakeInput > 0;
+
   return (
     <form onSubmit={handleSubmitDepForm(onStakeMore)}>
       <Flex flexDirection={'column'} justify={'start'}>
         <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
-          <Text
-            variant={'bodyExtraSmall'}
-            color={'whiteAlpha.600'}
-            lineHeight={'14px'}
+          <WarningMessage
+            message="You will lose all of your accumulated veMORE and pending veMORE after unstaking MORE."
+            isOpen={showWarning}
           >
-            Unstake veMore
-          </Text>
+            <Text
+              variant={'bodyExtraSmall'}
+              color={'whiteAlpha.600'}
+              lineHeight={'14px'}
+            >
+              Unstake More
+            </Text>
+          </WarningMessage>
         </Box>
         <TokenAmountInputField
           name="veMoreToken-unstake"

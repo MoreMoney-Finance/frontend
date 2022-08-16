@@ -1084,7 +1084,7 @@ export function useLPAPR(account: string | undefined | null) {
       method: 'userInfo',
       args: [0, account],
     }),
-    { factor: BigNumber.from(1) },
+    { factor: BigNumber.from(1), amount: BigNumber.from(0) },
     'useLPAPR userInfo',
     true
   );
@@ -1134,7 +1134,8 @@ export function useLPAPR(account: string | undefined | null) {
     1000;
 
   const veMoreBalance = useBalanceOfVeMoreToken(account);
-  const factor = sqrt(lptBalance.mul(veMoreBalance));
+  const putativeDepositAmount = userInfo.amount.isZero() ? parseEther('0.001') : userInfo.amount; 
+  const factor = sqrt(putativeDepositAmount.mul(veMoreBalance));
   const boostedAPR =
     parseFloat(
       factor
@@ -1146,7 +1147,9 @@ export function useLPAPR(account: string | undefined | null) {
             morePrice
           )
         )
+        .mul(lptBalance)
         .div(poolInfo.sumOfFactors.add(1))
+        .div(putativeDepositAmount)
         .toString()
     ) /
     priceLPT /

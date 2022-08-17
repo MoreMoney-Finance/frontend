@@ -38,7 +38,7 @@ export default function StrategyTokenInformation({
   // );
 
   const tokenFees = React.useContext(LiquidationFeesContext);
-  const interestRate = useInterestRate(BigNumber.from(0));
+  const interestRate = useInterestRate(BigNumber.from(0)).toNumber() / 100;
   console.log('interestRate', interestRate.toString());
 
   // const { sendHarvestPartially, harvestPartiallyState } = useHarvestPartially(

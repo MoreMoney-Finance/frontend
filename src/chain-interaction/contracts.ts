@@ -35,6 +35,7 @@ import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
+import StableLending2InterestForwarder from '../contracts/artifacts/contracts/rewards/StableLending2InterestForwarder.sol/StableLending2InterestForwarder.json';
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
 import { getContractNames, parseFloatCurrencyValue, sqrt } from '../utils';
 import { getTokenFromAddress, tokenAmount } from './tokens';
@@ -1134,7 +1135,7 @@ export function useLPAPR(account: string | undefined | null) {
     1000;
 
   const veMoreBalance = useBalanceOfVeMoreToken(account);
-  const putativeDepositAmount = userInfo.amount.isZero() ? parseEther('0.001') : userInfo.amount; 
+  const putativeDepositAmount = userInfo.amount.isZero() ? parseEther('10') : userInfo.amount;
   const factor = sqrt(putativeDepositAmount.mul(veMoreBalance));
   const boostedAPR =
     parseFloat(
@@ -1403,10 +1404,24 @@ function useTokenPerSecPlatypus(address: string, defaultResult: any) {
   );
 }
 
+function useTreasurySharePer10k() {
+  const contract = new Contract(useAddresses().StableLending2InterestForwarder, new Interface(StableLending2InterestForwarder.abi));
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'treasurySharePer10k',
+      args: []
+    }),
+    BigNumber.from(5000),
+    'useTreasurySharePer10k'
+  );
+}
+
 export function useIMoneyAPR(account: string) {
   const totalDebt = useTotalDebt(BigNumber.from(0));
   const totalSupplyIMoney = useTotalSupplyIMoney(BigNumber.from(1));
   const currentRatePer10k = useInterestRate(BigNumber.from(0));
+  const treasurySharePer10k = useTreasurySharePer10k().toNumber();
   const boostedSharePer10k = useBoostedSharePer10k(BigNumber.from(0)).toNumber();
   const accountInfo = useIMoneyAccountInfo(account!);
 
@@ -1419,7 +1434,7 @@ export function useIMoneyAPR(account: string) {
   );
   const totalWeights = useIMoneyTotalWeights(parseEther('100'));
 
-  const ratio = totalDebt.mul(currentRatePer10k).div(totalSupplyIMoney).toNumber() / 10000;
+  const ratio = totalDebt.mul(currentRatePer10k).div(totalSupplyIMoney).toNumber() * (10000 - treasurySharePer10k) / 10000 / 10000;
   const baseRate = 100 * (ratio * (10000 - boostedSharePer10k)) / 10000;
   const boostedRate = weight
     .mul(Math.round(ratio * boostedSharePer10k))

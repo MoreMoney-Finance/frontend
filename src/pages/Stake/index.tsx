@@ -27,7 +27,7 @@ export default function StakePage({
   const addresses = useAddresses();
   //xmore data
   const totalStakedXMore = formatEther(
-    useBalanceOfToken(addresses.xMore, [addresses.xMore], 0)
+    useBalanceOfToken(addresses.MoreToken, [addresses.xMore], 0)
   );
   const yourStakeXMore = formatEther(
     useBalanceOfToken(addresses.xMore, [account], 0)

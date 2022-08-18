@@ -62,8 +62,16 @@ export function StakingAPRIMoney(props: React.PropsWithChildren<unknown>) {
             <Spacer />
             <Text variant={'bodyLarge'}>
               {account
-                ? `${baseRate}% + ${boostedRate}% `
-                : `${baseRate}% + ${avgBoostedRate}% avg`}</Text>
+                ? `${baseRate.toFixed(2)}% + ${boostedRate.toFixed(2)}% `
+                : `${baseRate.toFixed(2)}% + ${avgBoostedRate.toFixed(2)}% avg`}
+            </Text>
+          </Flex>
+          <Flex w={'full'} marginTop={'30px'}>
+            <Text variant="h200" color={'whiteAlpha.400'}>
+              Average boosted APR
+            </Text>
+            <Spacer />
+            <Text variant={'bodyLarge'}>{`${avgBoostedRate.toFixed(2)}%`}</Text>
           </Flex>
           <Flex w={'full'} marginTop={'30px'}>
             <Text variant="h200" color={'whiteAlpha.400'}>

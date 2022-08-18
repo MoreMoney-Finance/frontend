@@ -102,7 +102,7 @@ export default function StakePage({
                       {'Base + Boosted APR'}
                     </Text>
                     <Text fontSize={'sm'}>
-                      {boostedRate
+                      {account
                         ? `${baseRate.toFixed(2)}% + ${boostedRate.toFixed(
                           2
                         )}% `

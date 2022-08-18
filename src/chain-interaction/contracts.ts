@@ -1427,7 +1427,7 @@ export function useIMoneyAPR(account: string) {
 
   const putativeDepositAmount =
     accountInfo.depositAmount.isZero()
-      ? parseEther('1')
+      ? parseEther('1000')
       : accountInfo.depositAmount;
   const weight = sqrt(
     accountInfo.factor.mul(putativeDepositAmount)

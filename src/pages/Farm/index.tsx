@@ -82,9 +82,8 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           tvl: formatNumber(parseFloat(MoneyTVL)),
           reward: 'n/a',
           apr: APR_MONEY.toFixed(2),
-          getTokenURL: 'https://app.platypus.finance/pool?pool_group=factory',
-          stakeTokenURL:
-              'https://app.platypus.finance/pool?pool_group=factory',
+          getTokenURL: 'https://app.platypus.finance/pool?pool_group=alt',
+          stakeTokenURL: 'https://app.platypus.finance/pool?pool_group=alt',
         },
         {
           asset: 'USDC (Platypus)',
@@ -92,9 +91,8 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
           tvl: formatNumber(parseFloat(usdcTVL)),
           reward: 'n/a',
           apr: APR_USDC.toFixed(2),
-          getTokenURL: 'https://app.platypus.finance/pool?pool_group=factory',
-          stakeTokenURL:
-              'https://app.platypus.finance/pool?pool_group=factory',
+          getTokenURL: 'https://app.platypus.finance/pool?pool_group=alt',
+          stakeTokenURL: 'https://app.platypus.finance/pool?pool_group=alt',
         },
       ]
       : [];

@@ -39,7 +39,7 @@ export function LiquidatablePositionsTable({
         {positions.map((posMeta, i) => {
           const stratMeta = allStratMeta[posMeta.token.address];
           const data = { action, ...posMeta, ...stratMeta[posMeta.strategy] };
-          if (posMeta.collateralValue.isZero()) {
+          if (posMeta.collateralValue.isZero() || posMeta.trancheId == 400000005) {
             return <></>;
           }
           return <LiquidatableRow key={`liquidatableRow${i}`} {...data} />;

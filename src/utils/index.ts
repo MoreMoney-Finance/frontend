@@ -45,7 +45,7 @@ export function useConnectWallet() {
   const { activate } = useEthers();
   const providerOptions = {
     injected:
-      typeof window.ethereum.isAvalanche !== 'undefined'
+      typeof window?.ethereum?.isAvalanche !== 'undefined'
         ? {
           display: {
             logo: CoreLogo,

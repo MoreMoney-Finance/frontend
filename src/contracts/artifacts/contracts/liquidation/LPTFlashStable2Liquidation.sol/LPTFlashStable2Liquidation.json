@@ -16,11 +16,6 @@
           "type": "address"
         },
         {
-          "internalType": "address",
-          "name": "_curveZap",
-          "type": "address"
-        },
-        {
           "internalType": "address[]",
           "name": "stables",
           "type": "address[]"

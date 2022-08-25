@@ -19,12 +19,12 @@ import MenuOptions from './MenuOptions';
 import { useMediaQuery } from '@chakra-ui/react';
 
 const Links = [
-  { title: 'Borrow', link: '/' },
-  { title: 'My Positions', link: '/positions' },
-  { title: 'Farm', link: '/farm' },
-  { title: 'Stake', link: '/stake' },
-  // { title: 'Liquidate', link: '/liquidatable-positions' },
-  { title: 'Analytics', link: '/analytics' },
+  { title: '', link: '/' },
+  // { title: 'My Positions', link: '/positions' },
+  // { title: 'Farm', link: '/farm' },
+  // { title: 'Stake', link: '/stake' },
+  // // { title: 'Liquidate', link: '/liquidatable-positions' },
+  // { title: 'Analytics', link: '/analytics' },
 ];
 
 export default function NavigationBar() {

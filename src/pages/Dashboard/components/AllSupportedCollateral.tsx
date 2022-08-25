@@ -27,7 +27,7 @@ type Entity = ParsedStratMetaRow & {
   asset: any;
   apy: string;
   MONEYavailable: string;
-  // tvlPeg: string;
+  tvlPeg: string;
   totalBorrowed: string;
   liquidationFee: string;
   balance: number;
@@ -97,7 +97,7 @@ export function AllSupportedCollateral() {
           (1 / (meta.borrowablePercent / 100)) * 100
         )}%`,
         ltv: `${5 * Math.round(meta.borrowablePercent / 5)}%`,
-        // tvlPeg: `$ ${meta.tvlInPeg.format({ suffix: '' })}`,
+        tvlPeg: `$ ${meta.tvlInPeg.format({ suffix: '' })}`,
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
         liquidationFee:
           (tokenFees.get(meta.token.address) ?? 'Loading...') + '%',
@@ -138,38 +138,17 @@ export function AllSupportedCollateral() {
       },
       {
         Header: tooltip(
-          'APY earned  ',
+          'TVL ',
+          'Total amount of this asset locked in our protocol, in US dollars'
+        ),
+        accessor: 'tvlPeg',
+      },
+      {
+        Header: tooltip(
+          'APR  ',
           'The yield you earn on your deposited collateral'
         ),
         accessor: 'apy',
-      },
-      {
-        Header: tooltip(
-          'MONEY available ',
-          'How much in total still can be borrowed against this asset'
-        ),
-        accessor: 'MONEYavailable',
-      },
-      // {
-      //   Header: tooltip(
-      //     'TVL ',
-      //     'Total amount of this asset locked in our protocol, in US dollars'
-      //   ),
-      //   accessor: 'tvlPeg',
-      // },
-      {
-        Header: tooltip(
-          'Max LTV ',
-          'How much of your deposited value you can extract as MONEY loan'
-        ),
-        accessor: 'ltv',
-      },
-      {
-        Header: tooltip(
-          'Liquidation Fee ',
-          'Percentage of loan paid if you get liquidated'
-        ),
-        accessor: 'liquidationFee',
       },
     ],
     []
@@ -180,19 +159,9 @@ export function AllSupportedCollateral() {
 
   return (
     <>
-      <Box textAlign="center" margin="100px 0">
-        <Text fontSize="24" lineHeight="56px" color="whiteAlpha.600">
-          <b>Select a collateral asset to</b>
-        </Text>
-        <Text fontSize={['36', '48', '48']} lineHeight="56px">
-          Borrow yield bearing stablecoin <b>MONEY</b>
-        </Text>
-        <Text fontSize={['36', '48', '48']} lineHeight="56px"></Text>
-        <Text fontSize={['36', '48', '48']} lineHeight="56px">
-          while still earning yield
-        </Text>
-        <Text fontSize={['36', '48', '48']} lineHeight="56px">
-          on your collateral
+      <Box textAlign="start" margin="10px 0">
+        <Text fontSize="20" lineHeight="56px" color="whiteAlpha.600">
+          <b>Normal Strategies</b>
         </Text>
       </Box>
 
@@ -215,7 +184,7 @@ export function AllSupportedCollateral() {
           display={['flex', 'flex', 'flex', 'none', 'none']}
           flexDirection={'column'}
         >
-          {rows.map((row) => {
+          {rows.slice(1, 4).map((row) => {
             prepareRow(row);
             const headers = headerGroups
               .map((headerGroup) => {
@@ -277,7 +246,118 @@ export function AllSupportedCollateral() {
             ))}
           </Thead>
           <Tbody {...getTableBodyProps()}>
-            {rows.map((row) => {
+            {rows.slice(1, 4).map((row) => {
+              prepareRow(row);
+              return (
+                // eslint-disable-next-line
+                <Tr
+                  {...row.getRowProps()}
+                  as={Link}
+                  to={`/token/${row.original.token.address}`}
+                  display="table-row"
+                >
+                  {row.cells.map((cell) => {
+                    // eslint-disable-next-line
+                    return (
+                      // eslint-disable-next-line
+                      <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
+                    );
+                  })}
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </Table>
+      </Box>
+
+      <Box textAlign="start" margin="10px 0">
+        <Text fontSize="20" lineHeight="56px" color="whiteAlpha.600">
+          <b>Protectors Strategies</b>
+        </Text>
+      </Box>
+
+      <Box width="100%">
+        <Box zIndex="var(--chakra-zIndices-header)" position="relative">
+          <Flex
+            wrap={'wrap'}
+            alignItems={'center'}
+            justifyContent="space-between"
+          >
+            <TableTabs
+              setTableTabFilter={setTableTabFilter}
+              stratMeta={stratMeta}
+            />
+            <TableSearch setSearchString={setSearchString} />
+          </Flex>
+        </Box>
+        <Flex
+          p={[0, 4, 4]}
+          display={['flex', 'flex', 'flex', 'none', 'none']}
+          flexDirection={'column'}
+        >
+          {rows.slice(1, 2).map((row) => {
+            prepareRow(row);
+            const headers = headerGroups
+              .map((headerGroup) => {
+                return headerGroup.headers.map((column) =>
+                  column.render('Header')
+                );
+              })
+              .flat(1);
+            return (
+              // eslint-disable-next-line
+              <Container variant="token" marginTop={'20px'}>
+                {row.cells.map((cell, index) => {
+                  // eslint-disable-next-line
+                  return (
+                    <Flex
+                      key={'cellMobile' + index}
+                      flexDirection={'row'}
+                      justifyContent={'space-between'}
+                      p={'4'}
+                    >
+                      <Box fontFamily={'Rubik'} color={'whiteAlpha.400'}>
+                        {headers[index]}
+                      </Box>
+                      <Box>{cell.render('Cell')}</Box>
+                    </Flex>
+                  );
+                })}
+                {/* </Tbody> */}
+                {/* </Table> */}
+                <Button
+                  as={Link}
+                  to={`/token/${row.original.token.address}`}
+                  key={row.id}
+                  w={'full'}
+                >
+                  View
+                </Button>
+              </Container>
+            );
+          })}
+        </Flex>
+
+        <Table
+          display={['none', 'none', 'none', 'table', 'table']}
+          variant="dashboard"
+          {...getTableProps()}
+        >
+          <Thead>
+            {headerGroups.map((headerGroup) => (
+              // eslint-disable-next-line
+              <Tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  // eslint-disable-next-line
+                  <Td {...column.getHeaderProps()}>
+                    {column.render('Header')}
+                  </Td>
+                ))}
+              </Tr>
+            ))}
+          </Thead>
+          <Tbody {...getTableBodyProps()}>
+            {rows.slice(1, 2).map((row) => {
               prepareRow(row);
               return (
                 // eslint-disable-next-line

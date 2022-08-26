@@ -58,6 +58,22 @@ ReactDOM.render(
                 </ErrorBoundary>
               }
             />
+            <Route
+              path="/delta/token/:tokenAddress"
+              element={
+                <ErrorBoundary>
+                  <TokenPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/lp/token/:tokenAddress"
+              element={
+                <ErrorBoundary>
+                  <TokenPage />
+                </ErrorBoundary>
+              }
+            />
             <Route path="/farm" element={<FarmPage />} />
             <Route path="/positions" element={<PositionsPage />} />
             <Route

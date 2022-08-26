@@ -1,41 +1,19 @@
-import {
-  Box,
-  Button,
-  Flex,
-  HStack,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Progress,
-  Text,
-  useDisclosure,
-  VStack,
-} from '@chakra-ui/react';
-import {
-  CurrencyValue,
-  useEtherBalance,
-  useEthers,
-  useTokenAllowance,
-} from '@usedapp/core';
+import { Flex, HStack, Text, useDisclosure } from '@chakra-ui/react';
+import { CurrencyValue, useEtherBalance, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
-  calcLiqPriceFromNum,
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
-  TxStatus,
   useStable,
 } from '../../../../chain-interaction/contracts';
 import {
-  useApproveTrans,
   useDepositBorrowTrans,
   useNativeDepositBorrowTrans,
 } from '../../../../chain-interaction/transactions';
-import { EnsureWalletConnected } from '../../../../components/account/EnsureWalletConnected';
-import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
 import WarningMessage from '../../../../components/notifications/WarningMessage';
 import { TokenAmountInputField } from '../../../../components/tokens/TokenAmountInputField';
 import { TokenDescription } from '../../../../components/tokens/TokenDescription';
@@ -65,17 +43,17 @@ export default function DepositBorrow({
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
 
-  const allowTokenExtrawurst =
-    getAddress(token.address) === '0x9e295B5B976a184B14aD8cd72413aD846C299660'
-      ? '0x5643F4b25E36478eE1E90418d5343cb6591BcB9d'
-      : token.address;
-  const allowResult = useTokenAllowance(
-    allowTokenExtrawurst,
-    account,
-    strategyAddress
-  );
-  const allowCV = new CurrencyValue(token, allowResult ?? BigNumber.from('0'));
-  const allowance = token.address && account && strategyAddress && allowCV;
+  // const allowTokenExtrawurst =
+  //   getAddress(token.address) === '0x9e295B5B976a184B14aD8cd72413aD846C299660'
+  //     ? '0x5643F4b25E36478eE1E90418d5343cb6591BcB9d'
+  //     : token.address;
+  // const allowResult = useTokenAllowance(
+  //   allowTokenExtrawurst,
+  //   account,
+  //   strategyAddress
+  // );
+  // const allowCV = new CurrencyValue(token, allowResult ?? BigNumber.from('0'));
+  // const allowance = token.address && account && strategyAddress && allowCV;
 
   const etherBalance = useEtherBalance(account);
 
@@ -87,13 +65,13 @@ export default function DepositBorrow({
     useWalletBalance(token.address) ??
     new CurrencyValue(token, BigNumber.from('0'));
 
-  const { approveState, sendApprove } = useApproveTrans(token.address);
+  // const { approveState, sendApprove } = useApproveTrans(token.address);
 
   const {
     handleSubmit: handleSubmitDepForm,
     register: registerDepForm,
     setValue: setValueDepForm,
-    formState: { errors: errorsDepForm, isSubmitting: isSubmittingDepForm },
+    formState: { errors: errorsDepForm },
     watch,
   } = useForm();
 
@@ -152,41 +130,41 @@ export default function DepositBorrow({
       : 0;
   const totalDebt = parseFloatNoNaN(borrowInput) + extantDebt;
 
-  const currentPercentage =
-    totalCollateral > 0 && usdPrice > 0
-      ? (100 * extantDebt) / (totalCollateral * usdPrice)
-      : 0;
-  const percentageRange = borrowablePercent - currentPercentage;
+  // const currentPercentage =
+  //   totalCollateral > 0 && usdPrice > 0
+  //     ? (100 * extantDebt) / (totalCollateral * usdPrice)
+  //     : 0;
+  // const percentageRange = borrowablePercent - currentPercentage;
 
-  const percentageStep = Math.max(percentageRange / 5, 10);
-  const percentageSteps =
-    10 >= percentageRange
-      ? [(currentPercentage + borrowablePercent) / 2]
-      : Array(Math.floor((percentageRange - 0.5) / percentageStep))
-        .fill(currentPercentage)
-        .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
+  // const percentageStep = Math.max(percentageRange / 5, 10);
+  // const percentageSteps =
+  //   10 >= percentageRange
+  //     ? [(currentPercentage + borrowablePercent) / 2]
+  //     : Array(Math.floor((percentageRange - 0.5) / percentageStep))
+  //       .fill(currentPercentage)
+  //       .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
 
   const totalPercentage =
     totalCollateral > 0 && usdPrice > 0
       ? (100 * totalDebt) / (totalCollateral * usdPrice)
       : 0;
 
-  const percentageLabel =
-    totalCollateral > 0 && usdPrice > 0
-      ? `${totalPercentage.toFixed(0)} %`
-      : 'LTV %';
-  const percentages = Object.fromEntries(
-    percentageSteps.map((percentage) => [
-      `${percentage.toFixed(0)} %`,
-      (percentage * totalCollateral * usdPrice) / 100 - extantDebt,
-    ])
-  );
+  // const percentageLabel =
+  //   totalCollateral > 0 && usdPrice > 0
+  //     ? `${totalPercentage.toFixed(0)} %`
+  //     : 'LTV %';
+  // const percentages = Object.fromEntries(
+  //   percentageSteps.map((percentage) => [
+  //     `${percentage.toFixed(0)} %`,
+  //     (percentage * totalCollateral * usdPrice) / 100 - extantDebt,
+  //   ])
+  // );
 
-  const showWarning =
-    !(
-      parseFloatNoNaN(collateralInput) === 0 &&
-      parseFloatNoNaN(borrowInput) === 0
-    ) && totalPercentage > borrowablePercent;
+  // const showWarning =
+  //   !(
+  //     parseFloatNoNaN(collateralInput) === 0 &&
+  //     parseFloatNoNaN(borrowInput) === 0
+  //   ) && totalPercentage > borrowablePercent;
 
   React.useEffect(() => {
     // console.log('In effect', customPercentageInput);
@@ -228,10 +206,10 @@ export default function DepositBorrow({
   const depositBorrowButtonDisabledForJoe =
     parseFloatNoNaN(collateralInput) > 0 && isJoeToken;
 
-  const depositBorrowButtonDisabled =
-    (parseFloatNoNaN(collateralInput) === 0 &&
-      parseFloatNoNaN(borrowInput) === 0) ||
-    totalPercentage > borrowablePercent;
+  // const depositBorrowButtonDisabled =
+  //   (parseFloatNoNaN(collateralInput) === 0 &&
+  //     parseFloatNoNaN(borrowInput) === 0) ||
+  //   totalPercentage > borrowablePercent;
 
   const inputStyle = {
     padding: '8px 8px 8px 20px',
@@ -240,30 +218,30 @@ export default function DepositBorrow({
     justifyContent: 'space-between',
   };
 
-  const liquidatableZone = borrowablePercent;
-  const criticalZone = (90 * borrowablePercent) / 100;
-  const riskyZone = (80 * borrowablePercent) / 100;
-  const healthyZone = (50 * borrowablePercent) / 100;
+  // const liquidatableZone = borrowablePercent;
+  // const criticalZone = (90 * borrowablePercent) / 100;
+  // const riskyZone = (80 * borrowablePercent) / 100;
+  // const healthyZone = (50 * borrowablePercent) / 100;
 
-  const positionHealthColor =
-    0.1 > totalDebt
-      ? 'accent'
-      : totalPercentage > liquidatableZone
-        ? 'purple.400'
-        : totalPercentage > criticalZone
-          ? 'red'
-          : totalPercentage > riskyZone
-            ? 'orange'
-            : totalPercentage > healthyZone
-              ? 'green'
-              : 'accent';
-  const positionHealth = {
-    accent: 'Safe',
-    green: 'Healthy',
-    orange: 'Risky',
-    red: 'Critical',
-    ['purple.400']: 'Liquidatable',
-  };
+  // const positionHealthColor =
+  //   0.1 > totalDebt
+  //     ? 'accent'
+  //     : totalPercentage > liquidatableZone
+  //       ? 'purple.400'
+  //       : totalPercentage > criticalZone
+  //         ? 'red'
+  //         : totalPercentage > riskyZone
+  //           ? 'orange'
+  //           : totalPercentage > healthyZone
+  //             ? 'green'
+  //             : 'accent';
+  // const positionHealth = {
+  //   accent: 'Safe',
+  //   green: 'Healthy',
+  //   orange: 'Risky',
+  //   red: 'Critical',
+  //   ['purple.400']: 'Liquidatable',
+  // };
 
   // console.log(
   //   'DepositBorrow',
@@ -342,7 +320,7 @@ export default function DepositBorrow({
             />
           </HStack>
         </Flex>
-        <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
+        {/* <Flex flexDirection={'column'} justify={'start'} marginTop={'20px'}>
           <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
             <WarningMessage
               message="Borrow amount too high"
@@ -501,7 +479,7 @@ export default function DepositBorrow({
               Deposit & Borrow
             </Button>
           )}
-        </Box>
+        </Box> */}
       </form>
     </>
   );

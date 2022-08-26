@@ -28,8 +28,8 @@ export default function EditPosition({
       <Container variant={'token'} padding={'35px 20px 20px 20px'}>
         <Tabs variant={'primary'}>
           <TabList>
-            <Tab>Borrow</Tab>
-            <Tab>Repay</Tab>
+            <Tab>Deposit</Tab>
+            <Tab>Withdraw</Tab>
           </TabList>
           <TabPanels>
             <TabPanel>

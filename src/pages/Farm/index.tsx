@@ -290,8 +290,10 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
             reward={`n/a`}
             apr={
               account
-                ? `${baseRate}%+ ${boostedRate}% boosted`
-                : `${baseRate}%+ ${avgBoostedRate}% avg boosted`
+                ? `${baseRate.toFixed(2)}%+ ${boostedRate.toFixed(2)}% boosted`
+                : `${baseRate.toFixed(2)}%+ ${avgBoostedRate.toFixed(
+                  2
+                )}% avg boosted`
             }
             acquire={
               <Flex flexDirection={'column'}>

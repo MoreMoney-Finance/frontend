@@ -111,7 +111,7 @@ export default function StrategyTokenInformation({
             </Text>
             <Spacer />
             <Text variant={'bodyLarge'}>
-              {Math.round(stratMeta.borrowablePercent)}%
+              {`${5 * Math.round(stratMeta.borrowablePercent / 5)}%`}
             </Text>
           </Flex>
           <Flex w={'full'} marginTop={'30px'}>

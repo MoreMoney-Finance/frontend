@@ -1,19 +1,11 @@
-import {
-  Container,
-  GridItem,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from '@chakra-ui/react';
+import { Box, Container, GridItem } from '@chakra-ui/react';
 import * as React from 'react';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
 } from '../../../../chain-interaction/contracts';
 import DepositBorrow from './DepositBorrow';
-import RepayWithdraw from './RepayWithdraw';
+import Withdraw from './Withdraw';
 
 export default function EditPosition({
   position,
@@ -24,23 +16,16 @@ export default function EditPosition({
 }>) {
   return (
     <GridItem rowSpan={[12, 12, 2]} colSpan={[12, 12, 1]}>
-      {/* <GridItem rowSpan={2} colSpan={1}> */}
-      <Container variant={'token'} padding={'35px 20px 20px 20px'}>
-        <Tabs variant={'primary'}>
-          <TabList>
-            <Tab>Deposit</Tab>
-            <Tab>Withdraw</Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <DepositBorrow position={position} stratMeta={stratMeta} />
-            </TabPanel>
-            <TabPanel>
-              <RepayWithdraw position={position} stratMeta={stratMeta} />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </Container>
+      <Box h="50%" paddingBottom="10px">
+        <Container variant={'token'} padding={'65px 20px 20px 20px'}>
+          <DepositBorrow position={position} stratMeta={stratMeta} />
+        </Container>
+      </Box>
+      <Box h="50%">
+        <Container variant={'token'} padding={'65px 20px 20px 20px'}>
+          <Withdraw position={position} stratMeta={stratMeta} />
+        </Container>
+      </Box>
     </GridItem>
   );
 }

@@ -25,7 +25,7 @@ import { useWalletBalance } from '../../../../contexts/WalletBalancesContext';
 import { parseFloatCurrencyValue, parseFloatNoNaN } from '../../../../utils';
 import { ConfirmPositionModal } from './ConfirmPositionModal';
 
-export default function DepositBorrow({
+export default function Withdraw({
   position,
   stratMeta,
 }: React.PropsWithChildren<{
@@ -297,7 +297,7 @@ export default function DepositBorrow({
                 color={'whiteAlpha.600'}
                 lineHeight={'14px'}
               >
-                Deposit Collateral
+                Withdraw Collateral
               </Text>
             </WarningMessage>
             <Text
@@ -492,7 +492,7 @@ export default function DepositBorrow({
             //   !allowance.gt(walletBalance)
             // }
           >
-            Deposit
+            Withdraw
           </Button>
         </EnsureWalletConnected>
       </form>

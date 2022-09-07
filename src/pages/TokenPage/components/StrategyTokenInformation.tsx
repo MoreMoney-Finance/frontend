@@ -84,14 +84,14 @@ export default function StrategyTokenInformation({
         >
           <Flex w={'full'}>
             <Text variant="h200" color={'whiteAlpha.400'}>
-              Interest Rate
+              Your deposited amount
             </Text>
             <Spacer />
             <Text variant={'bodyLarge'}>{interestRate.toString() ?? ''}%</Text>
           </Flex>
           <Flex w={'full'} marginTop={'30px'}>
             <Text variant="h200" color={'whiteAlpha.400'}>
-              Borrow Fee
+              APY
             </Text>
             <Spacer />
             <Text variant={'bodyLarge'}>
@@ -100,23 +100,14 @@ export default function StrategyTokenInformation({
           </Flex>
           <Flex w={'full'} marginTop={'30px'}>
             <Text variant="h200" color={'whiteAlpha.400'}>
-              Minimum cRatio
+              Slippage
             </Text>
             <Spacer />
             <Text variant={'bodyLarge'}>{calcCRatio()}</Text>
           </Flex>
           <Flex w={'full'} marginTop={'30px'}>
             <Text variant="h200" color={'whiteAlpha.400'}>
-              Max Loan-To-Value
-            </Text>
-            <Spacer />
-            <Text variant={'bodyLarge'}>
-              {Math.round(stratMeta.borrowablePercent)}%
-            </Text>
-          </Flex>
-          <Flex w={'full'} marginTop={'30px'}>
-            <Text variant="h200" color={'whiteAlpha.400'}>
-              Liquidation Fee
+              Deposit fee
             </Text>
             <Spacer />
             <Text variant={'bodyLarge'}>

@@ -29,6 +29,8 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
   const chainIdsList = config.networks!.map((network) => network.chainId);
 
   const [requestedSwitch, setRequestedSwitch] = React.useState(false);
+  const [tabHasFocus, setTabHasFocus] = React.useState(true);
+
   useEffect(() => {
     (async () => {
       const wallet = new ethers.providers.Web3Provider(window.ethereum);
@@ -43,7 +45,8 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
         accounts.length > 0 &&
         !requestedSwitch &&
         walletChainId &&
-        !chainIdsList.includes(walletChainId)
+        !chainIdsList.includes(walletChainId) &&
+        tabHasFocus
       ) {
         setRequestedSwitch(true);
         try {
@@ -81,10 +84,28 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
         activateBrowserWallet();
       }
     })();
-  }, [active, chainId]);
+  }, [active, chainId, tabHasFocus]);
 
   const location = useLocation();
   useEffect(() => window.scrollTo(0, 0), [location]);
+
+  useEffect(() => {
+    const handleFocus = () => {
+      if (document.visibilityState == "visible") {
+        setTabHasFocus(true);
+        console.log("tab is active")
+      } else {
+        setTabHasFocus(false);
+        console.log("tab is inactive")
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      window.removeEventListener('visibilitychange', handleFocus);
+    };
+  }, []);
 
   return (
     <ChakraProvider theme={theme}>

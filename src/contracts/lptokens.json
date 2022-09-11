@@ -482,27 +482,6 @@
           "0xf7d9281e8e363584973f946201b82ba72c965d27"
         ],
         "anchorName": "USDCe"
-      },
-      "JPL-WETHe-JPL-CAI-WAVAX": {
-        "addresses": [
-          "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
-          "0xe5e9d67e93ad363a50cabcb9e931279251bbefd0"
-        ],
-        "anchorName": "WETHe"
-      },
-      "JPL-WAVAX-JPL-CAI-WAVAX": {
-        "addresses": [
-          "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
-          "0xe5e9d67e93ad363a50cabcb9e931279251bbefd0"
-        ],
-        "anchorName": "WAVAX"
-      },
-      "JPL-USDCe-JPL-CAI-WAVAX": {
-        "addresses": [
-          "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
-          "0xe5e9d67e93ad363a50cabcb9e931279251bbefd0"
-        ],
-        "anchorName": "USDCe"
       }
     },
     "PGL": {
@@ -977,32 +956,19 @@
           "0xf7d9281e8e363584973f946201b82ba72c965d27"
         ],
         "anchorName": "USDCe"
-      },
-      "PGL-WETHe-JPL-CAI-WAVAX": {
-        "addresses": [
-          "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
-          "0xe5e9d67e93ad363a50cabcb9e931279251bbefd0"
-        ],
-        "anchorName": "WETHe"
-      },
-      "PGL-WAVAX-JPL-CAI-WAVAX": {
-        "addresses": [
-          "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
-          "0xe5e9d67e93ad363a50cabcb9e931279251bbefd0"
-        ],
-        "anchorName": "WAVAX"
-      },
-      "PGL-USDCe-JPL-CAI-WAVAX": {
-        "addresses": [
-          "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
-          "0xe5e9d67e93ad363a50cabcb9e931279251bbefd0"
-        ],
-        "anchorName": "USDCe"
       }
     }
   },
   "43114": {
     "JPL": {
+      "JPL-CAI-WAVAX": {
+        "addresses": [
+          "0x48f88A3fE843ccb0b5003e70B4192c1d7448bEf0",
+          "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
+        ],
+        "pairAddress": "0xE5e9d67e93aD363a50cABCB9E931279251bBEFd0",
+        "anchorName": "WAVAX"
+      },
       "JPL-USDCe-WAVAX": {
         "addresses": [
           "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",

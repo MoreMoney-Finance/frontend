@@ -59,6 +59,9 @@ export function useConnectWallet() {
     walletconnect: {
       package: WalletConnectProvider,
       options: {
+        rpc: {
+          43114: 'https://api.avax.network/ext/bc/C/rpc',
+        },
         infuraId: '27e484dcd9e3efcfd25a83a78777cdf1', // required
       },
     },

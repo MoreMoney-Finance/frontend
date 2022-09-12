@@ -91,16 +91,16 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
 
   useEffect(() => {
     const handleFocus = () => {
-      if (document.visibilityState == "visible") {
+      if (document.visibilityState == 'visible') {
         setTabHasFocus(true);
-        console.log("tab is active")
+        console.log('tab is active');
       } else {
         setTabHasFocus(false);
-        console.log("tab is inactive")
+        console.log('tab is inactive');
       }
     };
 
-    document.addEventListener("visibilitychange", handleFocus);
+    document.addEventListener('visibilitychange', handleFocus);
 
     return () => {
       window.removeEventListener('visibilitychange', handleFocus);

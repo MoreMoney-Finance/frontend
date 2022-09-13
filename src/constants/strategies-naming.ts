@@ -6,4 +6,5 @@ export const strategyNames: Record<string, string> = {
   '0xaAc0F2d0630d1D09ab2B5A400412a4840B866d95': 'Looping on Aave',
   '0x8B414448de8B609e96bd63Dcf2A8aDbd5ddf7fdd': 'Looping on Benqi',
   '0x9f637540149f922145c06e1aa3f38dcDc32Aff5C': 'GLP Staking on GMX',
+  '0xD390f59705f3F6d164d3C4b2C77d17224FCB033f': 'Joe For LP',
 };

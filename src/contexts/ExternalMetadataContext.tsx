@@ -54,6 +54,7 @@ export type ExternalMetadataType = {
   xMoreData: xMoreMetadata;
   additionalYieldData: Record<string, Record<string, number>>;
   underlyingStrategyNames: Map<string, string>;
+  yyAvaxAPY: number;
 };
 
 export const ExternalMetadataContext =
@@ -63,6 +64,7 @@ export const ExternalMetadataContext =
     yieldMonitor: {},
     xMoreData: {} as xMoreMetadata,
     additionalYieldData: {},
+    yyAvaxAPY: 0,
     underlyingStrategyNames: new Map<string, string>()
   });
 
@@ -72,6 +74,7 @@ export function ExternalMetadataCtxProvider({
   const [xMoreData, setXMoreData] = useState<xMoreMetadata>(
     {} as xMoreMetadata
   );
+  const [yyAvaxAPY, setYYAvaxAPY] = useState<number>(0);
   const [yieldFarmingData, setYieldFarmingData] = useState<YieldFarmingData>();
   const [yyMetadata, setYYMeta] = useState<YYMetadata>({});
   const [yieldMonitor, setYieldMonitor] = useState<
@@ -86,6 +89,14 @@ export function ExternalMetadataCtxProvider({
     fetch('https://staging-api.yieldyak.com/apys')
       .then((response) => response.json())
       .then(setYYMeta)
+      .catch((err) => {
+        console.error('Failed to fetch URL');
+        console.error(err);
+      });
+
+    fetch(`https://staging-api.yieldyak.com/yyavax`)
+      .then((response) => response.json())
+      .then((data) => setYYAvaxAPY(data?.yyAVAX?.apy))
       .catch((err) => {
         console.error('Failed to fetch URL');
         console.error(err);
@@ -147,6 +158,7 @@ export function ExternalMetadataCtxProvider({
           yieldMonitor,
           xMoreData,
           additionalYieldData,
+          yyAvaxAPY,
         } as unknown as ExternalMetadataType
       }
     >

@@ -25,7 +25,7 @@ import { TableTabs } from './TableTabs';
 
 type Entity = ParsedStratMetaRow & {
   asset: any;
-  apy: string;
+  apy: any;
   MONEYavailable: string;
   // tvlPeg: string;
   totalBorrowed: string;
@@ -82,14 +82,35 @@ export function AllSupportedCollateral() {
     .filter((meta) =>
       searchString.length > 0
         ? meta.token.name.toLowerCase().includes(searchString) ||
-        meta.token.ticker.toLowerCase().includes(searchString)
+          meta.token.ticker.toLowerCase().includes(searchString)
         : true
     )
     .map((meta) => {
       return {
         ...meta,
         asset: <TokenDescription token={meta.token} />,
-        apy: Math.round(meta.underlyingAPY || meta.APY) + '%',
+        apy: (
+          <>
+            {Math.round(meta.underlyingAPY || meta.APY) + '%'}&nbsp;
+            {meta.underlyingAPY ? (
+              <Tooltip
+                hasArrow
+                label={
+                  <>
+                    underlying:{' '}
+                    {Math.round(meta.underlyingAPY || meta.APY) + '%'},<br />{' '}
+                    compounding: 0 %
+                  </>
+                }
+                bg="gray.300"
+                color="black"
+                placement="right-end"
+              >
+                <InfoIcon />
+              </Tooltip>
+            ) : null}{' '}
+          </>
+        ),
         MONEYavailable: meta.debtCeiling.gt(meta.totalDebt)
           ? meta.debtCeiling.sub(meta.totalDebt).format({ suffix: '' })
           : '0',
@@ -104,7 +125,7 @@ export function AllSupportedCollateral() {
         balance: meta.balance,
       };
     })
-    .sort(function(a, b) {
+    .sort(function (a, b) {
       if (a.token.ticker < b.token.ticker) {
         return -1;
       }

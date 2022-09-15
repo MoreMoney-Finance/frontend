@@ -1,3 +1,3 @@
 export const underlyingYield: Record<string, number> = {
-  '0x21C971D78E1A398710d964Ed1AC4C80E5940ed25': 7.2,
+  '0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE': 7.2,
 };

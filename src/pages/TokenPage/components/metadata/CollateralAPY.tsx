@@ -15,7 +15,8 @@ export default function CollateralAPY({
     stratMeta[chosenStrategy].compoundingAPY > 0;
   const textVariant = 'bodySmall';
   const underlyingAPY = stratMeta[chosenStrategy].underlyingAPY;
-  const APY = stratMeta[chosenStrategy].underlyingAPY || stratMeta[chosenStrategy].APY;
+  const APY =
+    stratMeta[chosenStrategy].underlyingAPY || stratMeta[chosenStrategy].APY;
 
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
@@ -27,15 +28,26 @@ export default function CollateralAPY({
           alignItems={'center'}
           h={'100%'}
         >
-
           <Flex>
             <Text variant={textVariant} color="whiteAlpha.400">
               Collateral APY &nbsp;
             </Text>
-            {underlyingAPY ?
-              <Tooltip hasArrow label={<>underlying: {underlyingAPY}%<br /> compounding: 0%</>} bg="gray.300" color="black" placement="right-end">
+            {underlyingAPY ? (
+              <Tooltip
+                hasArrow
+                label={
+                  <>
+                    underlying: {underlyingAPY}%<br /> compounding:{' '}
+                    {stratMeta[chosenStrategy].APY.toFixed(2)}%
+                  </>
+                }
+                bg="gray.300"
+                color="black"
+                placement="right-end"
+              >
                 <InfoIcon />
-              </Tooltip> : null}
+              </Tooltip>
+            ) : null}
           </Flex>
           <Text variant="bodyExtraLarge">
             {' '}
@@ -48,8 +60,9 @@ export default function CollateralAPY({
                   {stratMeta[chosenStrategy].compoundingAPY.toFixed(2)}%
                 </Text>
                 <Text variant={'bodySmall'} color="whiteAlpha.400">
-                  &nbsp;{stratMeta[chosenStrategy].underlyingStrategyName
-                    ?? 'Compounding'}
+                  &nbsp;
+                  {stratMeta[chosenStrategy].underlyingStrategyName ??
+                    'Compounding'}
                 </Text>
               </Flex>
               <Flex flexDirection={'row'}>

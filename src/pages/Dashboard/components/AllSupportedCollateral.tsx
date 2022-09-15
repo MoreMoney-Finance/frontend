@@ -99,7 +99,7 @@ export function AllSupportedCollateral() {
                   <>
                     underlying:{' '}
                     {Math.round(meta.underlyingAPY || meta.APY) + '%'},<br />{' '}
-                    compounding: 0 %
+                    compounding: {Math.round(meta.APY)}%
                   </>
                 }
                 bg="gray.300"

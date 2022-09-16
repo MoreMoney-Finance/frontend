@@ -15,9 +15,10 @@ export default function CollateralAPY({
     stratMeta[chosenStrategy].compoundingAPY > 0;
   const textVariant = 'bodySmall';
   const underlyingAPY = stratMeta[chosenStrategy].underlyingAPY;
-  const APY =
-    stratMeta[chosenStrategy].underlyingAPY || stratMeta[chosenStrategy].APY;
-
+  const customAPY =
+    stratMeta[chosenStrategy].underlyingAPY !== undefined
+      ? stratMeta[chosenStrategy].underlyingAPY! + stratMeta[chosenStrategy].APY
+      : stratMeta[chosenStrategy].APY;
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
       {/* <GridItem colSpan={2}> */}
@@ -51,7 +52,7 @@ export default function CollateralAPY({
           </Flex>
           <Text variant="bodyExtraLarge">
             {' '}
-            <b>{APY.toFixed(2)}%</b>
+            <b>{customAPY.toFixed(2)}%</b>
           </Text>
           {multipleOptions ? (
             <Flex flexDirection={'column'} alignItems="center">

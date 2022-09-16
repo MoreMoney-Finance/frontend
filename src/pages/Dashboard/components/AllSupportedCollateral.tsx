@@ -86,12 +86,16 @@ export function AllSupportedCollateral() {
         : true
     )
     .map((meta) => {
+      const customAPY =
+        meta.underlyingAPY !== undefined
+          ? Math.round(meta.underlyingAPY) + Math.round(meta.APY)
+          : Math.round(meta.APY);
       return {
         ...meta,
         asset: <TokenDescription token={meta.token} />,
         apy: (
           <>
-            {Math.round(meta.underlyingAPY || meta.APY) + '%'}&nbsp;
+            {customAPY + '%'}&nbsp;
             {meta.underlyingAPY ? (
               <Tooltip
                 hasArrow

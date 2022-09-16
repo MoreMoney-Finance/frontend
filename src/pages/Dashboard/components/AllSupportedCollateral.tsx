@@ -25,7 +25,7 @@ import { TableTabs } from './TableTabs';
 
 type Entity = ParsedStratMetaRow & {
   asset: any;
-  apy: string;
+  apy: any;
   MONEYavailable: string;
   // tvlPeg: string;
   totalBorrowed: string;
@@ -86,10 +86,35 @@ export function AllSupportedCollateral() {
         : true
     )
     .map((meta) => {
+      const customAPY =
+        meta.underlyingAPY !== undefined
+          ? Math.round(meta.underlyingAPY) + Math.round(meta.APY)
+          : Math.round(meta.APY);
       return {
         ...meta,
         asset: <TokenDescription token={meta.token} />,
-        apy: Math.round(meta.APY) + '%',
+        apy: (
+          <>
+            {customAPY + '%'}&nbsp;
+            {meta.underlyingAPY ? (
+              <Tooltip
+                hasArrow
+                label={
+                  <>
+                    underlying:{' '}
+                    {Math.round(meta.underlyingAPY || meta.APY) + '%'},<br />{' '}
+                    compounding: {Math.round(meta.APY)}%
+                  </>
+                }
+                bg="gray.300"
+                color="black"
+                placement="right-end"
+              >
+                <InfoIcon />
+              </Tooltip>
+            ) : null}{' '}
+          </>
+        ),
         MONEYavailable: meta.debtCeiling.gt(meta.totalDebt)
           ? meta.debtCeiling.sub(meta.totalDebt).format({ suffix: '' })
           : '0',
@@ -177,7 +202,7 @@ export function AllSupportedCollateral() {
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data });
-
+  console.log('data', data);
   return (
     <>
       <Box textAlign="center" margin="100px 0">

@@ -1,4 +1,5 @@
-import { Container, Flex, GridItem, Text } from '@chakra-ui/react';
+import { InfoIcon } from '@chakra-ui/icons';
+import { Container, Tooltip, Flex, GridItem, Text } from '@chakra-ui/react';
 import * as React from 'react';
 import { ParsedStratMetaRow } from '../../../../chain-interaction/contracts';
 
@@ -13,7 +14,11 @@ export default function CollateralAPY({
     stratMeta[chosenStrategy].selfRepayingAPY > 0 &&
     stratMeta[chosenStrategy].compoundingAPY > 0;
   const textVariant = 'bodySmall';
-
+  const underlyingAPY = stratMeta[chosenStrategy].underlyingAPY;
+  const customAPY =
+    stratMeta[chosenStrategy].underlyingAPY !== undefined
+      ? stratMeta[chosenStrategy].underlyingAPY! + stratMeta[chosenStrategy].APY
+      : stratMeta[chosenStrategy].APY;
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
       {/* <GridItem colSpan={2}> */}
@@ -24,12 +29,30 @@ export default function CollateralAPY({
           alignItems={'center'}
           h={'100%'}
         >
-          <Text variant={textVariant} color="whiteAlpha.400">
-            Collateral APY
-          </Text>
+          <Flex>
+            <Text variant={textVariant} color="whiteAlpha.400">
+              Collateral APY &nbsp;
+            </Text>
+            {underlyingAPY ? (
+              <Tooltip
+                hasArrow
+                label={
+                  <>
+                    underlying: {underlyingAPY}%<br /> compounding:{' '}
+                    {stratMeta[chosenStrategy].APY.toFixed(2)}%
+                  </>
+                }
+                bg="gray.300"
+                color="black"
+                placement="right-end"
+              >
+                <InfoIcon />
+              </Tooltip>
+            ) : null}
+          </Flex>
           <Text variant="bodyExtraLarge">
             {' '}
-            <b>{stratMeta[chosenStrategy].APY.toFixed(2)}%</b>
+            <b>{customAPY.toFixed(2)}%</b>
           </Text>
           {multipleOptions ? (
             <Flex flexDirection={'column'} alignItems="center">
@@ -38,8 +61,9 @@ export default function CollateralAPY({
                   {stratMeta[chosenStrategy].compoundingAPY.toFixed(2)}%
                 </Text>
                 <Text variant={'bodySmall'} color="whiteAlpha.400">
-                  &nbsp;{stratMeta[chosenStrategy].underlyingStrategyName
-                    ?? 'Compounding'}
+                  &nbsp;
+                  {stratMeta[chosenStrategy].underlyingStrategyName ??
+                    'Compounding'}
                 </Text>
               </Flex>
               <Flex flexDirection={'row'}>

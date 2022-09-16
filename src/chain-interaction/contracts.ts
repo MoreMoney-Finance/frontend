@@ -52,6 +52,7 @@ import { JLPMasterMore, WAVAX } from '../constants/addresses';
 import MasterMore from '../contracts/artifacts/contracts/rewards/MasterMore.sol/MasterMore.json';
 import { useBalanceOfVeMoreToken } from './transactions';
 import { strategyNames } from '../constants/strategies-naming';
+import { underlyingYield } from '../constants/underlying-yield';
 // import earnedRewards from '../constants/earned-rewards.json';
 // import rewardsRewards from '../constants/rewards-rewards.json';
 /* eslint-disable */
@@ -212,6 +213,7 @@ export type ParsedStratMetaRow = {
   balance: number;
   selfRepayingAPY: number;
   compoundingAPY: number;
+  underlyingAPY?: number;
   underlyingStrategy: string;
   underlyingStrategyName: string | undefined;
 };
@@ -225,7 +227,8 @@ function parseStratMeta(
   globalMoneyAvailable: BigNumber,
   yieldMonitor: Record<string, YieldMonitorMetadata>,
   additionalYield: Record<string, Record<string, number>>,
-  underlyingStrategyName: string | undefined
+  underlyingStrategyName: string | undefined,
+  underlyingAPYs: Record<string, number>
 ): ParsedStratMetaRow | undefined {
   const token = getTokenFromAddress(chainId, row.token);
   if (token) {
@@ -243,67 +246,67 @@ function parseStratMeta(
       strategyAddress === addresses[chainId].LiquidYieldStrategy
         ? token.address === '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
           ? (yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-            ?.totalApy *
-            0.65 *
-            0.8) /
-          0.5
+              ?.totalApy *
+              0.65 *
+              0.8) /
+            0.5
           : (yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-            ?.totalApy *
-            0.3 *
-            0.2) /
-          0.5 +
-          7.2
+              ?.totalApy *
+              0.3 *
+              0.2) /
+              0.5 +
+            7.2
         : underlyingAddress in yyMetadata
-          ? yyMetadata[underlyingAddress]?.apy * 0.9
-          : token.address in yieldMonitor
-            ? yieldMonitor[token.address]?.totalApy
-            : token.address in additionalYield &&
-              strategyAddress in additionalYield[token.address]
-              ? additionalYield[token.address][strategyAddress]
-              : 0;
+        ? yyMetadata[underlyingAddress]?.apy * 0.9
+        : token.address in yieldMonitor
+        ? yieldMonitor[token.address]?.totalApy
+        : token.address in additionalYield &&
+          strategyAddress in additionalYield[token.address]
+        ? additionalYield[token.address][strategyAddress]
+        : 0;
     const selfRepayingAPY =
       row.yieldType === 0
         ? strategyAddress === addresses[chainId].LiquidYieldStrategy
           ? token.address === '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
             ? ((yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-              ?.totalApy -
-              parseFloat(
-                yieldMonitor[
-                  '0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'
-                ]?.apy.toString()
-              )) *
-              0.65 *
-              0.8) /
-            0.5
+                ?.totalApy -
+                parseFloat(
+                  yieldMonitor[
+                    '0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'
+                  ]?.apy.toString()
+                )) *
+                0.65 *
+                0.8) /
+              0.5
             : ((yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-              ?.totalApy -
-              parseFloat(
-                yieldMonitor[
-                  '0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'
-                ]?.apy.toString()
-              )) *
-              0.3 *
-              0.2) /
-            0.5
+                ?.totalApy -
+                parseFloat(
+                  yieldMonitor[
+                    '0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'
+                  ]?.apy.toString()
+                )) *
+                0.3 *
+                0.2) /
+              0.5
           : token.address in yieldMonitor
-            ? yieldMonitor[token.address]?.totalApy -
+          ? yieldMonitor[token.address]?.totalApy -
             parseFloat(yieldMonitor[token.address]?.apy.toString())
-            : token.address in additionalYield &&
-              strategyAddress in additionalYield[token.address]
-              ? additionalYield[token.address][strategyAddress]
-              : 0
+          : token.address in additionalYield &&
+            strategyAddress in additionalYield[token.address]
+          ? additionalYield[token.address][strategyAddress]
+          : 0
         : 0;
 
     const compoundingAPY =
       strategyAddress === addresses[chainId].LiquidYieldStrategy &&
-        token.address !== '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
+      token.address !== '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
         ? 7.2
         : row.yieldType === 0 && token.address in yieldMonitor
-          ? parseFloat(yieldMonitor[token.address]?.apy.toString())
-          : strategyAddress === addresses[chainId].YieldYakStrategy ||
-            strategyAddress === addresses[chainId].YieldYakAVAXStrategy
-            ? APY
-            : 0;
+        ? parseFloat(yieldMonitor[token.address]?.apy.toString())
+        : strategyAddress === addresses[chainId].YieldYakStrategy ||
+          strategyAddress === addresses[chainId].YieldYakAVAXStrategy
+        ? APY
+        : 0;
 
     let syntheticDebtCeil = globalMoneyAvailable.add(row.totalDebt);
 
@@ -323,6 +326,7 @@ function parseStratMeta(
       strategyAddress,
       token,
       APY,
+      underlyingAPY: underlyingAPYs[row.token],
       totalCollateral: tokenAmount(chainId, row.token, row.totalCollateral)!,
       borrowablePercent: row.borrowablePer10k.toNumber() / 100,
       usdPrice:
@@ -406,16 +410,14 @@ export function useBoostedSharePer10k(defaultResult: any) {
   const addresses = useAddresses();
   const abi = new Interface(iMoney.abi);
   const contract = new Contract(addresses.iMoney, abi);
-  return (
-    handleCallResultDefault(
-      useCall({
-        contract,
-        method: 'boostedSharePer10k',
-        args: [],
-      }),
-      defaultResult,
-      'useBoostedSharePer10k'
-    )
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'boostedSharePer10k',
+      args: [],
+    }),
+    defaultResult,
+    'useBoostedSharePer10k'
   );
 }
 
@@ -498,9 +500,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const totalSupply = useTotalSupply('totalSupply', [], BigNumber.from(0));
 
   const balancesCtx = useContext(WalletBalancesContext);
-  const { yyMetadata, yieldMonitor, additionalYieldData } = useContext(
-    ExternalMetadataContext
-  );
+  const { yyAvaxAPY, yyMetadata, yieldMonitor, additionalYieldData } =
+    useContext(ExternalMetadataContext);
 
   const addresses = useAddresses();
 
@@ -623,17 +624,21 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
           yieldMonitor,
           additionalYieldData,
           row.underlyingStrategy &&
-          underlyingStrategyNames.get(row.underlyingStrategy)
+            underlyingStrategyNames.get(row.underlyingStrategy),
+          {
+            ...underlyingYield,
+            '0xF7D9281e8e363584973F946201b82ba72C965D27': yyAvaxAPY,
+          }
         );
 
         return parsedRow
           ? {
-            ...result,
-            [parsedRow.token.address]: {
-              [parsedRow.strategyAddress]: parsedRow,
-              ...(result[parsedRow.token.address] || {}),
-            },
-          }
+              ...result,
+              [parsedRow.token.address]: {
+                [parsedRow.strategyAddress]: parsedRow,
+                ...(result[parsedRow.token.address] || {}),
+              },
+            }
           : result;
       };
 
@@ -746,17 +751,18 @@ export function useLegacyIsolatedStrategyMetadata(): StrategyMetadata {
           globalMoneyAvailable,
           yieldMonitor,
           additionalYieldData,
-          '0x0000000000000000000000000000000000000000'
+          '0x0000000000000000000000000000000000000000',
+          { '': 0 }
         );
 
         return parsedRow
           ? {
-            ...result,
-            [parsedRow.token.address]: {
-              [parsedRow.strategyAddress]: parsedRow,
-              ...(result[parsedRow.token.address] || {}),
-            },
-          }
+              ...result,
+              [parsedRow.token.address]: {
+                [parsedRow.strategyAddress]: parsedRow,
+                ...(result[parsedRow.token.address] || {}),
+              },
+            }
           : result;
       };
 
@@ -1138,7 +1144,9 @@ export function useLPAPR(account: string | undefined | null) {
     1000;
 
   const veMoreBalance = useBalanceOfVeMoreToken(account);
-  const putativeDepositAmount = userInfo.amount.isZero() ? parseEther('10') : userInfo.amount;
+  const putativeDepositAmount = userInfo.amount.isZero()
+    ? parseEther('10')
+    : userInfo.amount;
   const factor = sqrt(putativeDepositAmount.mul(veMoreBalance));
   const boostedAPR =
     parseFloat(
@@ -1146,9 +1154,9 @@ export function useLPAPR(account: string | undefined | null) {
         .mul(
           Math.round(
             nonDilutingRepartition *
-            100 *
-            parseFloat(formatEther(poolRewardPerYear)) *
-            morePrice
+              100 *
+              parseFloat(formatEther(poolRewardPerYear)) *
+              morePrice
           )
         )
         .mul(lptBalance)
@@ -1408,12 +1416,15 @@ function useTokenPerSecPlatypus(address: string, defaultResult: any) {
 }
 
 function useTreasurySharePer10k() {
-  const contract = new Contract(useAddresses().StableLending2InterestForwarder, new Interface(StableLending2InterestForwarder.abi));
+  const contract = new Contract(
+    useAddresses().StableLending2InterestForwarder,
+    new Interface(StableLending2InterestForwarder.abi)
+  );
   return handleCallResultDefault(
     useCall({
       contract,
       method: 'treasurySharePer10k',
-      args: []
+      args: [],
     }),
     BigNumber.from(5000),
     'useTreasurySharePer10k'
@@ -1425,27 +1436,34 @@ export function useIMoneyAPR(account: string) {
   const totalSupplyIMoney = useTotalSupplyIMoney(BigNumber.from(1));
   const currentRatePer10k = useInterestRate(BigNumber.from(0));
   const treasurySharePer10k = useTreasurySharePer10k().toNumber();
-  const boostedSharePer10k = useBoostedSharePer10k(BigNumber.from(0)).toNumber();
+  const boostedSharePer10k = useBoostedSharePer10k(
+    BigNumber.from(0)
+  ).toNumber();
   const accountInfo = useIMoneyAccountInfo(account!);
 
-  const putativeDepositAmount =
-    accountInfo.depositAmount.isZero()
-      ? parseEther('1000')
-      : accountInfo.depositAmount;
-  const weight = sqrt(
-    accountInfo.factor.mul(putativeDepositAmount)
-  );
+  const putativeDepositAmount = accountInfo.depositAmount.isZero()
+    ? parseEther('1000')
+    : accountInfo.depositAmount;
+  const weight = sqrt(accountInfo.factor.mul(putativeDepositAmount));
   const totalWeights = useIMoneyTotalWeights(parseEther('100'));
 
-  const ratio = totalDebt.mul(currentRatePer10k).div(totalSupplyIMoney).toNumber() * (10000 - treasurySharePer10k) / 10000 / 10000;
-  const baseRate = 100 * (ratio * (10000 - boostedSharePer10k)) / 10000;
-  const boostedRate = weight
-    .mul(Math.round(ratio * boostedSharePer10k))
-    .mul(totalSupplyIMoney)
-    .div(totalWeights)
-    .div(putativeDepositAmount).toNumber() * 100 / 10000;
+  const ratio =
+    (totalDebt.mul(currentRatePer10k).div(totalSupplyIMoney).toNumber() *
+      (10000 - treasurySharePer10k)) /
+    10000 /
+    10000;
+  const baseRate = (100 * (ratio * (10000 - boostedSharePer10k))) / 10000;
+  const boostedRate =
+    (weight
+      .mul(Math.round(ratio * boostedSharePer10k))
+      .mul(totalSupplyIMoney)
+      .div(totalWeights)
+      .div(putativeDepositAmount)
+      .toNumber() *
+      100) /
+    10000;
 
-  const avgBoostedRate = 100 * (ratio * boostedSharePer10k) / 10000;
+  const avgBoostedRate = (100 * (ratio * boostedSharePer10k)) / 10000;
   return { baseRate, boostedRate, avgBoostedRate };
 }
 

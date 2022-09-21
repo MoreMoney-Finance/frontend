@@ -1,7 +1,7 @@
-import { InfoIcon } from '@chakra-ui/icons';
-import { Container, Tooltip, Flex, GridItem, Text } from '@chakra-ui/react';
+import { Container, Flex, GridItem, Text } from '@chakra-ui/react';
 import * as React from 'react';
 import { ParsedStratMetaRow } from '../../../../chain-interaction/contracts';
+import CustomTooltip from '../../../../components/data-display/CustomTooltip';
 
 export default function CollateralAPY({
   stratMeta,
@@ -34,21 +34,14 @@ export default function CollateralAPY({
               Collateral APY &nbsp;
             </Text>
             {underlyingAPY ? (
-              <Tooltip
-                hasArrow
-                closeOnClick={false}
+              <CustomTooltip
                 label={
                   <>
                     underlying: {underlyingAPY}%<br /> compounding:{' '}
                     {stratMeta[chosenStrategy].APY.toFixed(2)}%
                   </>
                 }
-                bg="gray.300"
-                color="black"
-                placement="right-end"
-              >
-                <InfoIcon />
-              </Tooltip>
+              />
             ) : null}
           </Flex>
           <Text variant="bodyExtraLarge">

@@ -16,6 +16,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Column, useTable } from 'react-table';
 import { ParsedStratMetaRow } from '../../../chain-interaction/contracts';
+import CustomTooltip from '../../../components/data-display/CustomTooltip';
 import { TokenDescription } from '../../../components/tokens/TokenDescription';
 import { hiddenStrategies } from '../../../constants/hidden-strategies';
 import { LiquidationFeesContext } from '../../../contexts/LiquidationFeesContext';
@@ -97,9 +98,7 @@ export function AllSupportedCollateral() {
           <>
             {customAPY + '%'}&nbsp;
             {meta.underlyingAPY ? (
-              <Tooltip
-                hasArrow
-                closeOnClick={false}
+              <CustomTooltip
                 label={
                   <>
                     underlying:{' '}
@@ -107,12 +106,7 @@ export function AllSupportedCollateral() {
                     compounding: {Math.round(meta.APY)}%
                   </>
                 }
-                bg="gray.300"
-                color="black"
-                placement="right-end"
-              >
-                <InfoIcon />
-              </Tooltip>
+              />
             ) : null}{' '}
           </>
         ),

@@ -82,7 +82,7 @@ export function AllSupportedCollateral() {
     .filter((meta) =>
       searchString.length > 0
         ? meta.token.name.toLowerCase().includes(searchString) ||
-          meta.token.ticker.toLowerCase().includes(searchString)
+        meta.token.ticker.toLowerCase().includes(searchString)
         : true
     )
     .map((meta) => {
@@ -99,6 +99,7 @@ export function AllSupportedCollateral() {
             {meta.underlyingAPY ? (
               <Tooltip
                 hasArrow
+                closeOnClick={false}
                 label={
                   <>
                     underlying:{' '}
@@ -129,7 +130,7 @@ export function AllSupportedCollateral() {
         balance: meta.balance,
       };
     })
-    .sort(function (a, b) {
+    .sort(function(a, b) {
       if (a.token.ticker < b.token.ticker) {
         return -1;
       }

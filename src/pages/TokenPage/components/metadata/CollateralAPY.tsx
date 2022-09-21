@@ -36,6 +36,7 @@ export default function CollateralAPY({
             {underlyingAPY ? (
               <Tooltip
                 hasArrow
+                closeOnClick={false}
                 label={
                   <>
                     underlying: {underlyingAPY}%<br /> compounding:{' '}

@@ -535,7 +535,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   tokens.push('0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE');
   strats.push(addresses.AltYieldYakStrategy2);
   tokens.push('0xF7D9281e8e363584973F946201b82ba72C965D27');
-  strats.push(addresses.AltYieldYakStrategy2);
+  strats.push(addresses.YieldYakStrategy2);
 
   const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
 

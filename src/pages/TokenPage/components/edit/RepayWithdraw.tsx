@@ -37,7 +37,6 @@ import {
   useWalletBalance,
   WalletBalancesContext,
 } from '../../../../contexts/WalletBalancesContext';
-import farminfo from '../../../../contracts/farminfo.json';
 import { parseFloatCurrencyValue, parseFloatNoNaN } from '../../../../utils';
 import { ConfirmPositionModal } from './ConfirmPositionModal';
 
@@ -178,8 +177,7 @@ export default function RepayWithdraw({
   //   usdPrice,
   // ]);
 
-  const farmInfoIdx = (chainId?.toString() ?? '43114') as keyof typeof farminfo;
-  const curveLink = `https://avax.curve.fi/factory/${farminfo[farmInfoIdx].curvePoolIdx}/`;
+  const yyLink = `https://yieldyak.com/swap?outputCurrency=0x0f577433Bf59560Ef2a79c124E9Ff99fCa258948`;
 
   const repayingMoreThanBalance =
     !isNaN(parseFloat(repayInput)) &&
@@ -372,7 +370,7 @@ export default function RepayWithdraw({
 
             <Button
               as={Link}
-              href={curveLink}
+              href={yyLink}
               isExternal
               color={'white'}
               variant={'primary'}

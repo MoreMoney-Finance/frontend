@@ -509,6 +509,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
     ['0xE5e9d67e93aD363a50cABCB9E931279251bBEFd0']: addresses.YieldYakStrategy2,
     ['0x152b9d0FdC40C096757F570A51E494bd4b943E50']: addresses.YieldYakStrategy2,
     ['0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE']: addresses.YieldYakStrategy2,
+    ['0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB']: addresses.YieldYakStrategy2,
     ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']:
       addresses.YieldYakAVAXStrategy2,
     ['0x9e295B5B976a184B14aD8cd72413aD846C299660']:

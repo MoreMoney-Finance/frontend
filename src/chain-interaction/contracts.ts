@@ -31,7 +31,8 @@ import iMoney from '../contracts/artifacts/contracts/rewards/iMoney.sol/iMoney.j
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
 import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
-import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
+// import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
+import MetaLending from '../contracts/artifacts/contracts/MetaLending.sol/MetaLending.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
@@ -123,6 +124,7 @@ export type DeploymentAddresses = {
   YieldYakPermissiveStrategy2: string;
   MasterMore: string;
   BigMigrateStableLending2: string;
+  MetaLending: string;
 };
 
 export function useAddresses() {
@@ -140,8 +142,8 @@ export function useIsolatedLendingView(
 ) {
   const addresses = useAddresses();
 
-  const abi = new Interface(StableLending2.abi);
-  const contract = new Contract(addresses.StableLending2, abi);
+  const abi = new Interface(MetaLending.abi);
+  const contract = new Contract(addresses.MetaLending, abi);
   return {
     legacy: handleCallResultDefault(
       useCall({
@@ -349,8 +351,8 @@ function parseStratMeta(
 
 export function useTotalDebt(defaultResult: any) {
   const addresses = useAddresses();
-  const abi = new Interface(StableLending2.abi);
-  const contract = new Contract(addresses.StableLending2, abi);
+  const abi = new Interface(MetaLending.abi);
+  const contract = new Contract(addresses.MetaLending, abi);
   return handleCallResultDefault(
     useCall({
       contract,
@@ -509,12 +511,13 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
     ['0xE5e9d67e93aD363a50cABCB9E931279251bBEFd0']: addresses.YieldYakStrategy2,
     ['0x152b9d0FdC40C096757F570A51E494bd4b943E50']: addresses.YieldYakStrategy2,
     ['0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE']: addresses.YieldYakStrategy2,
-    ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']:
-      addresses.YieldYakAVAXStrategy2,
-    ['0x9e295B5B976a184B14aD8cd72413aD846C299660']:
-      addresses.YieldYakPermissiveStrategy2,
-    ['0xF7D9281e8e363584973F946201b82ba72C965D27']:
-      addresses.SimpleHoldingStrategy,
+    // ['0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB']: addresses.YieldYakStrategy2,
+    // ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']:
+    //   addresses.YieldYakAVAXStrategy2,
+    // ['0x9e295B5B976a184B14aD8cd72413aD846C299660']:
+    //   addresses.YieldYakPermissiveStrategy2,
+    // ['0xF7D9281e8e363584973F946201b82ba72C965D27']:
+    //   addresses.SimpleHoldingStrategy,
   };
 
   // const masterChef2Tokens = [
@@ -526,16 +529,16 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const tokens = Object.keys(token2Strat);
   const strats = Object.values(token2Strat);
 
-  tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
-  strats.push(addresses.AltYieldYakAVAXStrategy2);
-  tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
-  strats.push(addresses.OldYieldYakAVAXStrategy2);
-  tokens.push('0x152b9d0FdC40C096757F570A51E494bd4b943E50');
-  strats.push(addresses.AltYieldYakStrategy2);
-  tokens.push('0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE');
-  strats.push(addresses.AltYieldYakStrategy2);
-  tokens.push('0xF7D9281e8e363584973F946201b82ba72C965D27');
-  strats.push(addresses.YieldYakStrategy2);
+  // tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
+  // strats.push(addresses.AltYieldYakAVAXStrategy2);
+  // tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
+  // strats.push(addresses.OldYieldYakAVAXStrategy2);
+  // tokens.push('0x152b9d0FdC40C096757F570A51E494bd4b943E50');
+  // strats.push(addresses.AltYieldYakStrategy2);
+  // tokens.push('0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE');
+  // strats.push(addresses.AltYieldYakStrategy2);
+  // tokens.push('0xF7D9281e8e363584973F946201b82ba72C965D27');
+  // strats.push(addresses.YieldYakStrategy2);
 
   const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
 
@@ -586,9 +589,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
   React.useEffect(() => {
     async function getData() {
-      const provider = new ethers.providers.JsonRpcProvider(
-        'https://api.avax.network/ext/bc/C/rpc'
-      );
+      const provider = new ethers.providers.JsonRpcProvider();
+      // 'https://api.avax.network/ext/bc/C/rpc'
 
       const stratViewer = new ethers.Contract(
         addresses.StrategyViewer,
@@ -596,13 +598,13 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
         provider
       );
       const normalResults = await stratViewer.viewMetadata(
-        addresses.StableLending2,
+        addresses.MetaLending,
         tokens,
         strats
       );
       // const noHarvestBalanceResults =
       //   await stratViewer.viewMetadataNoHarvestBalance(
-      //     addresses.StableLending2,
+      //     addresses.MetaLending,
       //     addresses.OracleRegistry,
       //     addresses.Stablecoin,  const [underlyingStrategyNames, setUnderLyingStrategyNames] = React.useState(new Map<string, string>());
       //     masterChef2Tokens,
@@ -910,7 +912,7 @@ export function useIsolatedPositionMetadata(
 
   const addresses = useAddresses();
   const legacyResults = {};
-  return current.reduce(reduceFn(addresses.StableLending2), legacyResults);
+  return current.reduce(reduceFn(addresses.MetaLending), legacyResults);
 }
 export function useCustomTotalSupply(address: string, defaultResult: any) {
   const contract = new Contract(address, ERC20Interface);
@@ -1549,8 +1551,8 @@ export function useUpdatedPositions(timeStart: number) {
   const stable = useStable();
   const addresses = useAddresses();
   const contract = new Contract(
-    addresses.StableLending2,
-    new Interface(StableLending2.abi)
+    addresses.MetaLending,
+    new Interface(MetaLending.abi)
   );
 
   function args(trancheContract: string) {
@@ -1565,7 +1567,7 @@ export function useUpdatedPositions(timeStart: number) {
   }
 
   const currentRows =
-    (useCalls(args(addresses.StableLending2)).map(
+    (useCalls(args(addresses.MetaLending)).map(
       (x) => (x ?? { value: undefined }).value
     ) as RawPositionMetaRow[][][]) || [];
 
@@ -1578,7 +1580,7 @@ export function useUpdatedPositions(timeStart: number) {
   }
   return [
     ...((currentRows.length > 0 &&
-      parseRows(currentRows, addresses.StableLending2)) ||
+      parseRows(currentRows, addresses.MetaLending)) ||
       []),
   ];
 }
@@ -1587,7 +1589,7 @@ export function useUpdatedMetadataLiquidatablePositions(
   positions?: ParsedPositionMetaRow[]
 ) {
   const abi = {
-    [useAddresses().StableLending2]: new Interface(StableLending2.abi),
+    [useAddresses().StableLending2]: new Interface(MetaLending.abi),
   };
 
   const positionCalls: Call[] = positions!.map((pos) => {

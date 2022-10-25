@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react';
+import { Wrap } from '@chakra-ui/react';
 import { CurrencyValue, Token } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import { parseEther } from 'ethers/lib/utils';
@@ -12,7 +12,7 @@ import {
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 import { parseFloatCurrencyValue } from '../../utils';
 import { TrancheCard } from './TrancheCard';
-import { TrancheTable } from './TrancheTable';
+// import { TrancheTable } from './TrancheTable';
 
 export type TrancheData = {
   token: Token;
@@ -48,24 +48,24 @@ export default function CurrentlyOpenPositions({
         const { token, APY, borrowablePercent, usdPrice } = params;
 
         const collateral =
-          'collateral' in params && params.collateral
-            ? params.collateral
-            : new CurrencyValue(token, BigNumber.from(0));
+            'collateral' in params && params.collateral
+              ? params.collateral
+              : new CurrencyValue(token, BigNumber.from(0));
         const debt =
-          'debt' in params && params.debt.gt(params.yield)
-            ? params.debt.sub(params.yield)
-            : new CurrencyValue(stable, BigNumber.from(0));
+            'debt' in params && params.debt.gt(params.yield)
+              ? params.debt.sub(params.yield)
+              : new CurrencyValue(stable, BigNumber.from(0));
         const contractName = params.underlyingStrategyName;
 
         const stratLabel =
-          params.yieldType === YieldType.REPAYING
-            ? 'Self-repaying'
-            : contractName ?? 'Compounding';
+            params.yieldType === YieldType.REPAYING
+              ? 'Self-repaying'
+              : contractName ?? 'Compounding';
         const totalPercentage =
-          parseFloatCurrencyValue(collateral) > 0 && usdPrice > 0
-            ? (100 * parseFloatCurrencyValue(debt)) /
-            (parseFloatCurrencyValue(collateral) * usdPrice)
-            : 0;
+            parseFloatCurrencyValue(collateral) > 0 && usdPrice > 0
+              ? (100 * parseFloatCurrencyValue(debt)) /
+                (parseFloatCurrencyValue(collateral) * usdPrice)
+              : 0;
         const liquidatableZone = borrowablePercent;
         const criticalZone = (90 * borrowablePercent) / 100;
         const riskyZone = (80 * borrowablePercent) / 100;
@@ -120,27 +120,47 @@ export default function CurrentlyOpenPositions({
 
   return positions.length > 0 ? (
     <>
-      <Flex
-        p={[0, 4, 4]}
-        display={['flex', 'flex', 'flex', 'none', 'none']}
-        flexDirection={'column'}
-      >
+      <Wrap spacing="30px">
         {rows.map((row, i) => {
           return (
-            <TrancheCard
-              key={`isolatedTranche${i}`}
-              token={row.token}
-              row={row}
-            />
+            <>
+              <TrancheCard
+                key={`isolatedTranche${i}`}
+                token={row.token}
+                row={row}
+              />
+            </>
           );
         })}
-      </Flex>
-      <Flex
+        {rows.map((row, i) => {
+          return (
+            <>
+              <TrancheCard
+                key={`isolatedTranche${i}`}
+                token={row.token}
+                row={row}
+              />
+            </>
+          );
+        })}
+        {rows.map((row, i) => {
+          return (
+            <>
+              <TrancheCard
+                key={`isolatedTranche${i}`}
+                token={row.token}
+                row={row}
+              />
+            </>
+          );
+        })}
+      </Wrap>
+      {/* <Flex
         justifyContent={'center'}
         display={['none', 'none', 'none', 'table', 'table']}
       >
         <TrancheTable rows={rows} positions={positions} />
-      </Flex>
+      </Flex> */}
     </>
   ) : (
     <> </>

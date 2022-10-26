@@ -9,11 +9,7 @@ export const app = express();
 const storage = new Storage();
 
 function convert2Prompt(query: any) {
-  return `retro futuristic solarpunk ${query.adjective} ${query.types.join(
-    ','
-  )} with ${query.attributes.join(
-    ','
-  )}, trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on alien landscape, HQ`;
+  return `retro futuristic solarpunk ${query} trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on alien landscape, HQ`;
 }
 
 export async function fetchImg(query: any) {
@@ -32,61 +28,44 @@ export async function fetchImg(query: any) {
 app.get('/', async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET');
-  const { serializedGeneratePayload, genSig } = req.query;
-  const generatePayload = JSON.parse(
-    decodeURIComponent(serializedGeneratePayload as string)
-  );
-  const recoveredSigner = verifyMessage(
-    serializedGeneratePayload as string,
-    decodeURIComponent(genSig as string)
-  );
+  const { trancheId, asset, strategyName } = req.query;
+  try {
+    const bucket = storage.bucket('static.moremoney.com');
+    const generatedFile = bucket.file(`${asset}/${trancheId}`);
 
-  if (recoveredSigner === '0x4E7f658839BB94Cb9BBe11689e3E1060c20fc95F') {
-    // if (recoveredSigner === process.env.MAIN_SIGNER) {
-    try {
-      const bucket = storage.bucket('static.dreamerspaceguild.com');
-      const generatedFile = bucket.file(
-        `${generatePayload.collectionId}/${generatePayload.uid}`
+    if (generatedFile.exists()) {
+      const img = await fetchImg(
+        `position opened for ${asset} on ${strategyName}`
       );
 
-      if (generatedFile.exists()) {
-        const img = await fetchImg(generatePayload.query);
+      console.log('successfully got the image!');
 
-        console.log('successfully got the image!');
+      const generatedMetadata = {
+        image: `https://static.moremoney.com/images/${asset}/${trancheId}.png`,
+        generationTstamp: Date.now(),
+      };
 
-        const generatedMetadata = {
-          ...generatePayload,
-          image: `https://static.dreamerspaceguild.com/images/${generatePayload.collectionId}/${generatePayload.uid}.png`,
-          colony: 'mars',
-          generationTstamp: Date.now(),
-        };
+      const imgFile = bucket.file(`images/${asset}/${trancheId}.png`);
+      await Promise.all([
+        generatedFile.save(JSON.stringify(generatedMetadata, null, 2), {
+          metadata: { contentType: 'application/json' },
+        }),
+        imgFile.save(img, {
+          metadata: { contentType: `image/png` },
+        }),
+      ]);
 
-        const imgFile = bucket.file(
-          `images/${generatePayload.collectionId}/${generatePayload.uid}.png`
-        );
-        await Promise.all([
-          generatedFile.save(JSON.stringify(generatedMetadata, null, 2), {
-            metadata: { contentType: 'application/json' },
-          }),
-          imgFile.save(img, {
-            metadata: { contentType: `image/png` },
-          }),
-        ]);
-
-        res.writeHead(200, {
-          'Content-Type': 'image/png',
-          'Content-Length': img.length,
-        });
-        res.end(img);
-      } else {
-        res.status(409).send('Already generated image for this id');
-      }
-    } catch (error) {
-      console.error(error);
-      res.status(500).send(`Error at SD API: ${error.toString()}`);
+      res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': img.length,
+      });
+      res.end(img);
+    } else {
+      res.status(409).send('Already generated image for this id');
     }
-  } else {
-    res.status(401).send(`Error: wrong signature`);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(`Error at SD API: ${error.toString()}`);
   }
 });
 http('imgen', app);

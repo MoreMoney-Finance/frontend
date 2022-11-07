@@ -123,6 +123,7 @@ export type DeploymentAddresses = {
   YieldYakPermissiveStrategy2: string;
   MasterMore: string;
   BigMigrateStableLending2: string;
+  SimpleHoldingStrategy2: string;
 };
 
 export function useAddresses() {
@@ -514,9 +515,9 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
     ['0x9e295B5B976a184B14aD8cd72413aD846C299660']:
       addresses.YieldYakPermissiveStrategy2,
     ['0xF7D9281e8e363584973F946201b82ba72C965D27']:
-      addresses.SimpleHoldingStrategy,
+      addresses.SimpleHoldingStrategy2,
     ['0x39fC9e94Caeacb435842FADeDeCB783589F50f5f']:
-      addresses.SimpleHoldingStrategy,
+      addresses.SimpleHoldingStrategy2,
   };
 
   // const masterChef2Tokens = [

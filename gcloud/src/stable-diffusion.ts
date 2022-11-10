@@ -17,9 +17,9 @@ export const STEPS = 50;
 export const WIDTH = 512;
 
 interface GenerateImageReturn {
-	imageBuffer: Buffer;
-	mimeType: string;
-	prompt: string;
+  imageBuffer: Buffer;
+  mimeType: string;
+  prompt: string;
 }
 
 function getServiceClient() {
@@ -31,11 +31,11 @@ function getServiceClient() {
       enums: String,
       defaults: true,
       oneofs: true,
-    },
+    }
   );
 
   const pkg = grpc.loadPackageDefinition(
-    packageDefinition,
+    packageDefinition
   ) as unknown as ProtoGrpcType;
 
   const callCredentials = grpc.credentials.createFromMetadataGenerator(
@@ -47,32 +47,36 @@ function getServiceClient() {
         // `Bearer ${process.env.DS_KEY}`,
       );
       callback(null, metadata);
-    },
+    }
   );
 
   const channelCredentials = grpc.credentials.combineChannelCredentials(
     grpc.credentials.createSsl(),
-    callCredentials,
+    callCredentials
   );
 
   return new pkg.gooseai.GenerationService(ADDRESS, channelCredentials);
 }
 
-export function generateImage(prompt: string, initImagePng: string | Buffer | Uint8Array) {
+export function generateImage(
+  prompt: string,
+  initImagePng: string | Buffer | Uint8Array
+) {
   const serviceClient = getServiceClient();
 
   const stream = serviceClient.generate({
-    classifier: {},
     image: {
       height: HEIGHT,
-      parameters: [{
-        scaledStep: SCALED_STEP,
-        sampler: { cfgScale: CFG_SCALE },
-        schedule: {
-          start: 0.5,
-          end: 0.05
-        }
-      }],
+      parameters: [
+        {
+          scaledStep: SCALED_STEP,
+          sampler: { cfgScale: CFG_SCALE },
+          schedule: {
+            start: 0.5,
+            end: 0.05,
+          },
+        },
+      ],
       samples: SAMPLES,
       seed: [Math.floor(Math.random() * MAX_RANDOM_SEED)],
       steps: STEPS,
@@ -83,9 +87,10 @@ export function generateImage(prompt: string, initImagePng: string | Buffer | Ui
     prompt: [
       { text: prompt },
       {
-        artifact: { type: ArtifactType.ARTIFACT_IMAGE, binary: initImagePng},
-        parameters: { init: true}
-      }],
+        artifact: { type: ArtifactType.ARTIFACT_IMAGE, binary: initImagePng },
+        parameters: { init: true },
+      },
+    ],
     requestId: randomUUID(),
   });
 

@@ -29,7 +29,7 @@ import {
   TxStatus,
   useStable,
 } from '../../../../chain-interaction/contracts';
-import { getTokenFromAddress } from '../../../../chain-interaction/tokens';
+// import { getTokenFromAddress } from '../../../../chain-interaction/tokens';
 import {
   useApproveTrans,
   useDepositBorrowTrans,
@@ -56,6 +56,7 @@ export default function DepositBorrow({
 }>) {
   const { token, strategyAddress, borrowablePercent, usdPrice } = stratMeta;
   const { chainId } = useEthers();
+  const [isNftGenerating, setIsNftGenerating] = React.useState<boolean>(false);
   const [data, setData] = useState<{ [x: string]: any }>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { onToggle, onClose: onClosePopover } = React.useContext(
@@ -106,12 +107,18 @@ export default function DepositBorrow({
   React.useEffect(() => {
     depositBorrowState.transaction?.wait().then((txresult) => {
       if (txresult.status === 1) {
-        fetch(
-          `http://localhost:8080/?trancheId=${position?.trancheId}&asset=${position?.token.name}&strategyName=${position?.strategy}`
-        ).then((res) => res.json());
+        setIsNftGenerating(true);
       }
     });
   }, [depositBorrowState]);
+
+  React.useEffect(() => {
+    if (isNftGenerating === false && position) {
+      fetch(`http://localhost:8080?trancheId=${position?.trancheId}`).then(
+        (res) => res.json()
+      );
+    }
+  }, [isNftGenerating]);
 
   const {
     sendDepositBorrow: sendNativeDepositBorrow,
@@ -175,8 +182,8 @@ export default function DepositBorrow({
     10 >= percentageRange
       ? [(currentPercentage + borrowablePercent) / 2]
       : Array(Math.floor((percentageRange - 0.5) / percentageStep))
-        .fill(currentPercentage)
-        .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
+          .fill(currentPercentage)
+          .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
 
   const totalPercentage =
     totalCollateral > 0 && usdPrice > 0
@@ -261,14 +268,15 @@ export default function DepositBorrow({
     0.1 > totalDebt
       ? 'accent'
       : totalPercentage > liquidatableZone
-        ? 'purple.400'
-        : totalPercentage > criticalZone
-          ? 'red'
-          : totalPercentage > riskyZone
-            ? 'orange'
-            : totalPercentage > healthyZone
-              ? 'green'
-              : 'accent';
+      ? 'purple.400'
+      : totalPercentage > criticalZone
+      ? 'red'
+      : totalPercentage > riskyZone
+      ? 'orange'
+      : totalPercentage > healthyZone
+      ? 'green'
+      : 'accent';
+
   const positionHealth = {
     accent: 'Safe',
     green: 'Healthy',

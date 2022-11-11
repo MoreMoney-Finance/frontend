@@ -29,7 +29,7 @@ export function TrancheCard({
               width={['100%', '100%', '100%', '100%']}
               p="4"
               borderRadius={'25px'}
-              src="https://nft.platypus.finance/api/platypus/2587"
+              src={`https://static.moremoney.finance/${row.trancheId}.png`}
             />
           </Flex>
           <Flex flexDirection={'column'} flex="1">

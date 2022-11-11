@@ -34,18 +34,61 @@ function checkIfTrancheIdExists(trancheId: string) {
       'https://api.avax.network/ext/bc/C/rpc'
     );
     const stratViewer = new ethers.Contract(
-      "0x55E343c27B794E7FCfebEf4bEA3dE24093418c50",
-      [{ "inputs": [{ "internalType": "uint256", "name": "_trancheId", "type": "uint256" }], "name": "viewPositionMetadata", "outputs": [{ "components": [{ "internalType": "uint256", "name": "trancheId", "type": "uint256" }, { "internalType": "address", "name": "strategy", "type": "address" }, { "internalType": "uint256", "name": "collateral", "type": "uint256" }, { "internalType": "uint256", "name": "debt", "type": "uint256" }, { "internalType": "address", "name": "token", "type": "address" }, { "internalType": "uint256", "name": "yield", "type": "uint256" }, { "internalType": "uint256", "name": "collateralValue", "type": "uint256" }, { "internalType": "uint256", "name": "borrowablePer10k", "type": "uint256" }, { "internalType": "address", "name": "owner", "type": "address" }], "internalType": "struct StableLending2.PositionMetadata", "name": "", "type": "tuple" }], "stateMutability": "view", "type": "function" }],
+      // mainnet
+      '0x55E343c27B794E7FCfebEf4bEA3dE24093418c50',
+      // localhost
+      // '0x3496c8329bF5a852bF06CA2667e86c9c132015c7',
+      [
+        {
+          inputs: [
+            { internalType: 'uint256', name: '_trancheId', type: 'uint256' },
+          ],
+          name: 'viewPositionMetadata',
+          outputs: [
+            {
+              components: [
+                { internalType: 'uint256', name: 'trancheId', type: 'uint256' },
+                { internalType: 'address', name: 'strategy', type: 'address' },
+                {
+                  internalType: 'uint256',
+                  name: 'collateral',
+                  type: 'uint256',
+                },
+                { internalType: 'uint256', name: 'debt', type: 'uint256' },
+                { internalType: 'address', name: 'token', type: 'address' },
+                { internalType: 'uint256', name: 'yield', type: 'uint256' },
+                {
+                  internalType: 'uint256',
+                  name: 'collateralValue',
+                  type: 'uint256',
+                },
+                {
+                  internalType: 'uint256',
+                  name: 'borrowablePer10k',
+                  type: 'uint256',
+                },
+                { internalType: 'address', name: 'owner', type: 'address' },
+              ],
+              internalType: 'struct StableLending2.PositionMetadata',
+              name: '',
+              type: 'tuple',
+            },
+          ],
+          stateMutability: 'view',
+          type: 'function',
+        },
+      ],
       provider
     );
     try {
-      const positionMetadata = await stratViewer.viewPositionMetadata(BigNumber.from(trancheId));
+      const positionMetadata = await stratViewer.viewPositionMetadata(
+        BigNumber.from(trancheId)
+      );
       console.log('positionMetadata', positionMetadata);
-      resolve(true)
+      resolve(true);
     } catch (ex) {
       resolve(false);
     }
-
   });
 }
 
@@ -62,7 +105,7 @@ app.get('/', async (req, res) => {
     return;
   }
   try {
-    const bucket = storage.bucket('static.moremoney.com');
+    const bucket = storage.bucket('static.moremoney.finance');
     const generatedFile = bucket.file(`/${trancheId}`);
 
     if (generatedFile.exists()) {
@@ -73,7 +116,7 @@ app.get('/', async (req, res) => {
         height: 512,
         width: 512,
         samples: 1,
-        steps: 50
+        steps: 50,
       });
       console.log(res);
       const img = res.images[0];
@@ -81,7 +124,7 @@ app.get('/', async (req, res) => {
       console.log('successfully got the image!');
 
       const generatedMetadata = {
-        image: `https://static.moremoney.com/images/${trancheId}.png`,
+        image: `https://static.moremoney.finance/images/${trancheId}.png`,
         generationTstamp: Date.now(),
       };
 

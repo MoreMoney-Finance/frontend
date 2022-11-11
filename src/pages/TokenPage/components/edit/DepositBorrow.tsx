@@ -182,8 +182,8 @@ export default function DepositBorrow({
     10 >= percentageRange
       ? [(currentPercentage + borrowablePercent) / 2]
       : Array(Math.floor((percentageRange - 0.5) / percentageStep))
-          .fill(currentPercentage)
-          .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
+        .fill(currentPercentage)
+        .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
 
   const totalPercentage =
     totalCollateral > 0 && usdPrice > 0
@@ -268,14 +268,14 @@ export default function DepositBorrow({
     0.1 > totalDebt
       ? 'accent'
       : totalPercentage > liquidatableZone
-      ? 'purple.400'
-      : totalPercentage > criticalZone
-      ? 'red'
-      : totalPercentage > riskyZone
-      ? 'orange'
-      : totalPercentage > healthyZone
-      ? 'green'
-      : 'accent';
+        ? 'purple.400'
+        : totalPercentage > criticalZone
+          ? 'red'
+          : totalPercentage > riskyZone
+            ? 'orange'
+            : totalPercentage > healthyZone
+              ? 'green'
+              : 'accent';
 
   const positionHealth = {
     accent: 'Safe',

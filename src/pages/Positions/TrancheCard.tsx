@@ -20,17 +20,32 @@ export function TrancheCard({
   token: Token;
   row: TrancheData;
 }) {
+  const [imageError, setImageError] = React.useState(false);
+
+  function generateNFT(trancheId: number) {
+    fetch(`http://localhost:8080?trancheId=${trancheId}`)
+      .then((res) => res.json())
+      .then(() => window.location.reload());
+  }
+
   return (
     <WrapItem width={['100%', '100%', '100%', '47%']}>
-      <Container variant="token" marginTop={'20px'}>
+      <Container variant="token" marginTop={'20px'} padding="6px">
         <Flex flexDirection={['column', 'row']}>
-          <Flex justifyContent={'center'}>
+          <Flex flexDirection={'column'} justifyContent={'center'}>
             <Image
               width={['100%', '100%', '100%', '100%']}
+              display={imageError ? 'none' : 'inline'}
               p="4"
               borderRadius={'25px'}
               src={`https://static.moremoney.finance/${row.trancheId}.png`}
+              onError={() => setImageError(true)}
             />
+            {imageError ? (
+              <Button onClick={() => generateNFT(row.trancheId)}>
+                Generate NFT
+              </Button>
+            ) : null}
           </Flex>
           <Flex flexDirection={'column'} flex="1">
             <Flex

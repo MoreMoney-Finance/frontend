@@ -132,28 +132,6 @@ export default function CurrentlyOpenPositions({
             </>
           );
         })}
-        {rows.map((row, i) => {
-          return (
-            <>
-              <TrancheCard
-                key={`isolatedTranche${i}`}
-                token={row.token}
-                row={row}
-              />
-            </>
-          );
-        })}
-        {rows.map((row, i) => {
-          return (
-            <>
-              <TrancheCard
-                key={`isolatedTranche${i}`}
-                token={row.token}
-                row={row}
-              />
-            </>
-          );
-        })}
       </Wrap>
       {/* <Flex
         justifyContent={'center'}

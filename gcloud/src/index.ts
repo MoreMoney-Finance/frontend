@@ -9,6 +9,7 @@ import { generateAsync } from 'stability-client';
 
 export const app = express();
 const storage = new Storage();
+let nftGenerationStatus: Record<string, boolean> = {};
 
 function convert2Prompt(query: any) {
   return `retro futuristic solarpunk ${query} trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on alien landscape, HQ`;
@@ -96,8 +97,11 @@ app.get('/', async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'OPTIONS,GET');
   const { trancheId } = req.query;
-  console.log('query', req.query, trancheId);
 
+  if (nftGenerationStatus[trancheId.toString()] === true) {
+    res.status(409).send('NFT being generated');
+    return;
+  }
   // check if position exists on chain
   const positionExists = await checkIfTrancheIdExists(trancheId.toString());
   if (!positionExists) {
@@ -105,6 +109,7 @@ app.get('/', async (req, res) => {
     return;
   }
   try {
+    nftGenerationStatus[trancheId.toString()] = true;
     const bucket = storage.bucket('static.moremoney.finance');
     const generatedFile = bucket.file(`/${trancheId}`);
 
@@ -138,15 +143,18 @@ app.get('/', async (req, res) => {
         }),
       ]);
 
+      nftGenerationStatus[trancheId.toString()] = false;
       res.writeHead(200, {
         'Content-Type': 'image/png',
         'Content-Length': img.length,
       });
       res.end(img);
     } else {
+      nftGenerationStatus[trancheId.toString()] = false;
       res.status(409).send('Already generated image for this id');
     }
   } catch (error) {
+    nftGenerationStatus[trancheId.toString()] = false;
     console.error(error);
     res.status(500).send(`Error at SD API: ${error.toString()}`);
   }

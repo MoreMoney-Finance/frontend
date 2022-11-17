@@ -38,7 +38,12 @@ import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
 import StableLending2InterestForwarder from '../contracts/artifacts/contracts/rewards/StableLending2InterestForwarder.sol/StableLending2InterestForwarder.json';
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
-import { getContractNames, parseFloatCurrencyValue, sqrt } from '../utils';
+import {
+  getContractNames,
+  jsonRpcProvider,
+  parseFloatCurrencyValue,
+  sqrt,
+} from '../utils';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 import { useCoingeckoPrice } from '@usedapp/coingecko';
 import {
@@ -589,13 +594,10 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
   React.useEffect(() => {
     async function getData() {
-      const provider = new ethers.providers.JsonRpcProvider();
-      // 'https://api.avax.network/ext/bc/C/rpc'
-
       const stratViewer = new ethers.Contract(
         addresses.StrategyViewer,
         new Interface(StrategyViewer.abi),
-        provider
+        jsonRpcProvider
       );
       const normalResults = await stratViewer.viewMetadata(
         addresses.MetaLending,
@@ -728,14 +730,10 @@ export function useLegacyIsolatedStrategyMetadata(): StrategyMetadata {
 
   React.useEffect(() => {
     async function getData() {
-      const provider = new ethers.providers.JsonRpcProvider(
-        'https://api.avax.network/ext/bc/C/rpc'
-      );
-
       const stratViewer = new ethers.Contract(
         addresses.LegacyStrategyViewer,
         new Interface(StrategyViewer.abi),
-        provider
+        jsonRpcProvider
       );
       const normalResults = await stratViewer.viewMetadata(
         addresses.StableLending,

@@ -5,6 +5,12 @@ import { useEffect, useState } from 'react';
 import Web3Modal from 'web3modal';
 import CoreLogo from '../assets/img/core.svg';
 
+export const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
+  window.location.href.includes('localhost')
+    ? ''
+    : 'https://api.avax.network/ext/bc/C/rpc'
+);
+
 export function sqrt(value: BigNumber): BigNumber {
   const ONE = ethers.BigNumber.from(1);
   const TWO = ethers.BigNumber.from(2);
@@ -47,15 +53,15 @@ export function useConnectWallet() {
     injected:
       typeof window?.ethereum?.isAvalanche !== 'undefined'
         ? {
-          display: {
-            logo: CoreLogo,
-            name: 'Core Wallet',
-          },
-          package: 'metamask',
-        }
+            display: {
+              logo: CoreLogo,
+              name: 'Core Wallet',
+            },
+            package: 'metamask',
+          }
         : {
-          package: 'metamask',
-        },
+            package: 'metamask',
+          },
     walletconnect: {
       package: WalletConnectProvider,
       options: {

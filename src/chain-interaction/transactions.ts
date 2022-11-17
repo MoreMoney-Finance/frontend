@@ -29,7 +29,7 @@ import {
   useStable,
   useYieldConversionStrategyView,
 } from './contracts';
-import { parseFloatCurrencyValue } from '../utils';
+import { jsonRpcProvider, parseFloatCurrencyValue } from '../utils';
 import { handleCallResultDefault } from './wrapper';
 import { sAvax } from '../constants/addresses';
 
@@ -630,14 +630,10 @@ export async function viewBidTarget(
   requestedColVal: BigNumber,
   defaultResult: any
 ) {
-  const provider = new ethers.providers.JsonRpcProvider(
-    'https://api.avax.network/ext/bc/C/rpc'
-  );
-
   const liquidationContract = new ethers.Contract(
     lendingAddress,
     new Interface(StableLending2Liquidation.abi),
-    provider
+    jsonRpcProvider
   );
 
   const result = await liquidationContract.viewBidTarget(

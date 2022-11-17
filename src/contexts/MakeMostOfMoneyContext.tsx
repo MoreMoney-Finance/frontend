@@ -19,6 +19,7 @@ export default function MakeMostOfMoneyCtxProvider({
   children,
 }: React.PropsWithChildren<any>) {
   const { isOpen, onToggle, onClose } = useDisclosure();
+  const [nftModal, setNftModal] = React.useState(false);
 
   function MostOfMoneyPopover({ children }: { children: React.ReactNode }) {
     return (
@@ -120,7 +121,14 @@ export default function MakeMostOfMoneyCtxProvider({
 
   return (
     <MakeMostOfMoneyContext.Provider
-      value={{ onToggle, isOpen, onClose, MostOfMoneyPopover }}
+      value={{
+        onToggle,
+        isOpen,
+        onClose,
+        MostOfMoneyPopover,
+        nftModal,
+        setNftModal,
+      }}
     >
       {children}
     </MakeMostOfMoneyContext.Provider>

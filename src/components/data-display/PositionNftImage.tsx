@@ -28,8 +28,7 @@ export default function PositionNftImage({
         display={imageError ? 'none' : 'inline'}
         p={padding || '4'}
         borderRadius={'25px'}
-        // src={`https://static.moremoney.finance/${trancheId.toString()}.png`}
-        src={'https://nft.platypus.finance/api/platypus/2587'}
+        src={`https://static.moremoney.finance/${trancheId.toString()}.png`}
         onError={() => setImageError(true)}
       />
       {imageError ? (

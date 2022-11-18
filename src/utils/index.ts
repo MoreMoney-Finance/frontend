@@ -53,15 +53,15 @@ export function useConnectWallet() {
     injected:
       typeof window?.ethereum?.isAvalanche !== 'undefined'
         ? {
-            display: {
-              logo: CoreLogo,
-              name: 'Core Wallet',
-            },
-            package: 'metamask',
-          }
-        : {
-            package: 'metamask',
+          display: {
+            logo: CoreLogo,
+            name: 'Core Wallet',
           },
+          package: 'metamask',
+        }
+        : {
+          package: 'metamask',
+        },
     walletconnect: {
       package: WalletConnectProvider,
       options: {

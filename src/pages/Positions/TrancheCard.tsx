@@ -1,15 +1,8 @@
-import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  Image,
-  Text,
-  WrapItem,
-} from '@chakra-ui/react';
+import * as React from 'react';
+import { Box, Button, Container, Flex, Text, WrapItem } from '@chakra-ui/react';
 import { Token } from '@usedapp/core';
-import React from 'react';
 import { Link } from 'react-router-dom';
+import PositionNftImage from '../../components/data-display/PositionNftImage';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { TrancheData } from './CurrentlyOpenPositions';
 
@@ -20,34 +13,18 @@ export function TrancheCard({
   token: Token;
   row: TrancheData;
 }) {
-  const [imageError, setImageError] = React.useState(false);
-
-  function generateNFT(trancheId: number) {
-    fetch(`http://localhost:8080?trancheId=${trancheId}`)
-      .then((res) => res.json())
-      .then(() => window.location.reload());
-  }
-
   return (
     <WrapItem width={['100%', '100%', '100%', '47%']}>
       <Container variant="token" marginTop={'20px'} padding="6px">
         <Flex flexDirection={['column', 'row']}>
-          <Flex flexDirection={'column'} justifyContent={'center'}>
-            <Image
-              width={['100%', '100%', '100%', '100%']}
-              display={imageError ? 'none' : 'inline'}
-              p="4"
-              borderRadius={'25px'}
-              src={`https://static.moremoney.finance/${row.trancheId}.png`}
-              onError={() => setImageError(true)}
-            />
-            {imageError ? (
-              <Button onClick={() => generateNFT(row.trancheId)}>
-                Generate NFT
-              </Button>
-            ) : null}
+          <Flex
+            width={'48%'}
+            flexDirection={'column'}
+            justifyContent={'center'}
+          >
+            <PositionNftImage trancheId={row.trancheId} />
           </Flex>
-          <Flex flexDirection={'column'} flex="1">
+          <Flex flexDirection={'column'} flex="1" width={'48%'}>
             <Flex
               flexDirection={'row'}
               justifyContent={'space-between'}

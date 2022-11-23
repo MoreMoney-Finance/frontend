@@ -23,6 +23,7 @@ import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json'
 import VeMoreToken from '../contracts/artifacts/contracts/governance/VeMoreToken.sol/VeMoreToken.json';
 import VeMoreStaking from '../contracts/artifacts/contracts/governance/VeMoreStaking.sol/VeMoreStaking.json';
 import StableLending2InterestForwarder from '../contracts/artifacts/contracts/rewards/StableLending2InterestForwarder.sol/StableLending2InterestForwarder.json';
+import MigrateMetaLending from '../contracts/artifacts/contracts/MigrateMetaLending.sol/MigrateMetaLending.json';
 import {
   useAddresses,
   useRegisteredOracle,
@@ -32,6 +33,34 @@ import {
 import { jsonRpcProvider, parseFloatCurrencyValue } from '../utils';
 import { handleCallResultDefault } from './wrapper';
 import { sAvax } from '../constants/addresses';
+
+export function useMigratePosition() {
+  const addresses = useAddresses();
+  const cprAddress = useAddresses().MigrateMetaLending;
+  const cprContract = new Contract(
+    cprAddress,
+    new Interface(MigrateMetaLending.abi)
+  );
+  const migratePositionsStrategies: Record<string, string> = {
+    '0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE': addresses.YieldYakStrategy2,
+    '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7':
+      addresses.YieldYakAVAXStrategy2,
+  };
+
+  const { send, state } = useContractFunction(cprContract, 'migratePosition');
+
+  return {
+    sendMigrate: (trancheId: number, token: string) => {
+      return send(trancheId, migratePositionsStrategies[token]);
+    },
+    canMigrate: (token: string) => {
+      console.log('Migrate', Object.values(migratePositionsStrategies), token);
+      return Object.keys(migratePositionsStrategies).includes(token);
+    },
+
+    migrateState: state,
+  };
+}
 
 export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   const contractsABI: Record<string, any> = {

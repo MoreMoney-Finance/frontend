@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import PositionNftImage from '../../components/data-display/PositionNftImage';
 import { TokenDescription } from '../../components/tokens/TokenDescription';
 import { TrancheData } from './CurrentlyOpenPositions';
+import { useMigratePosition } from '../../chain-interaction/transactions';
+import { TransactionErrorDialog } from '../../components/notifications/TransactionErrorDialog';
 
 export function TrancheCard({
   token,
@@ -13,8 +15,15 @@ export function TrancheCard({
   token: Token;
   row: TrancheData;
 }) {
+  const { sendMigrate, migrateState, canMigrate } = useMigratePosition();
+
+  const migrateClick = () => {
+    sendMigrate(row.trancheId, row.token.address);
+  };
+
   return (
     <WrapItem width={['100%', '100%', '100%', '47%']}>
+      <TransactionErrorDialog state={migrateState} title="Migrate" />
       <Container variant="token" marginTop={'20px'} padding="6px">
         <Flex flexDirection={['column', 'row']}>
           <Flex
@@ -124,9 +133,22 @@ export function TrancheCard({
             </Flex>
           </Flex>
         </Flex>
-        <Button as={Link} to={`/token/${token.address}`} w={'full'}>
-          View
-        </Button>
+        {canMigrate(row.token.address) ? (
+          <Button
+            onClick={(e) => {
+              migrateClick();
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            w="full"
+          >
+            Migrate
+          </Button>
+        ) : (
+          <Button as={Link} to={`/token/${token.address}`} w={'full'}>
+            View
+          </Button>
+        )}
       </Container>
     </WrapItem>
   );

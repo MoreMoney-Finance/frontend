@@ -130,6 +130,7 @@ export type DeploymentAddresses = {
   MasterMore: string;
   BigMigrateStableLending2: string;
   MetaLending: string;
+  MigrateMetaLending: string;
 };
 
 export function useAddresses() {

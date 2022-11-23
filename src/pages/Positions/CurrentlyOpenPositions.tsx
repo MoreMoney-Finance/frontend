@@ -1,4 +1,4 @@
-import { Wrap } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import { CurrencyValue, Token } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import { parseEther } from 'ethers/lib/utils';
@@ -11,7 +11,7 @@ import {
 } from '../../chain-interaction/contracts';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 import { parseFloatCurrencyValue } from '../../utils';
-import { TrancheCard } from './TrancheCard';
+import { TrancheTable } from './TrancheTable';
 // import { TrancheTable } from './TrancheTable';
 
 export type TrancheData = {
@@ -120,7 +120,7 @@ export default function CurrentlyOpenPositions({
 
   return positions.length > 0 ? (
     <>
-      <Wrap spacing="30px">
+      {/* <Wrap spacing="30px">
         {rows.map((row, i) => {
           return (
             <>
@@ -132,13 +132,13 @@ export default function CurrentlyOpenPositions({
             </>
           );
         })}
-      </Wrap>
-      {/* <Flex
+      </Wrap> */}
+      <Flex
         justifyContent={'center'}
         display={['none', 'none', 'none', 'table', 'table']}
       >
         <TrancheTable rows={rows} positions={positions} />
-      </Flex> */}
+      </Flex>
     </>
   ) : (
     <> </>

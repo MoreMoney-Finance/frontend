@@ -110,10 +110,11 @@ app.get('/', async (req, res) => {
   // }
   try {
     nftGenerationStatus[trancheId.toString()] = true;
-    const bucket = storage.bucket('static.moremoney.finance');
+    const bucket = storage.bucket('static.dreamerspaceguild.com');
     const generatedFile = bucket.file(`/${trancheId}`);
 
-    if (generatedFile.exists()) {
+    if (true) {
+    // if (!(await generatedFile.exists())) {
       const res: any = await generateAsync({
         prompt: `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on alien landscape, HQ`,
         apiKey: 'sk-EwcMCETdgWMchODMzZqr9gYmpzFd5V7DOfgzpoq7UuFcLcsF',

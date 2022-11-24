@@ -5,11 +5,11 @@
   "main": "dist/index.js",
   "scripts": {
     "generate-proto": "npx proto-loader-gen-types --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=src/proto/ src/proto/generation.proto",
-    "build": "yarn generate-proto && ln -sfn ../../src/shared src/shared && tsc",
+    "build": "yarn generate-proto && tsc",
     "gcp-build": "tsc",
     "watch": "tsc --watch",
     "start": "functions-framework --target app",
-    "deploy": "yarn build && rm src/shared && cp -r ../src/shared src && gcloud functions deploy image-generator --region us-central1 --entry-point imgen --gen2 --env-vars-file .env.yaml --allow-unauthenticated --trigger-http --runtime nodejs16 --timeout 600 && rm -r src/shared && ln -sfn ../../src/shared src/shared"
+    "deploy": "npm run build && gcloud functions deploy smol-pp-gen --region us-central1 --entry-point imgen --gen2 --env-vars-file .env.yaml --allow-unauthenticated --trigger-http --runtime nodejs16 --timeout 600"
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^3.1.2",

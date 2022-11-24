@@ -1,6 +1,6 @@
 [
   {
-    "origin": ["https://moremoney.com"],
+    "origin": ["https://app.moremoney.finance"],
     "method": ["GET"],
     "responseHeader": ["Content-Type"],
     "maxAgeSeconds": 3600

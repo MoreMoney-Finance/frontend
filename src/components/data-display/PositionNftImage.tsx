@@ -1,5 +1,6 @@
 import { Button, Image } from '@chakra-ui/react';
 import * as React from 'react';
+import { NFT_ENDPOINT } from '../../utils';
 
 export default function PositionNftImage({
   width,
@@ -15,7 +16,7 @@ export default function PositionNftImage({
   const [imageError, setImageError] = React.useState(false);
 
   function generateNFT(trancheId: number) {
-    fetch(`http://localhost:8080?trancheId=${trancheId}`)
+    fetch(`${NFT_ENDPOINT}?trancheId=${trancheId}`)
       .then((res) => res.json())
       .then(() => window.location.reload());
   }
@@ -28,7 +29,8 @@ export default function PositionNftImage({
         display={imageError ? 'none' : 'inline'}
         p={padding || '4'}
         borderRadius={'25px'}
-        src={`https://static.moremoney.finance/${trancheId.toString()}.png`}
+        // src={`https://static.moremoney.finance/${trancheId.toString()}.png`}
+        src={`https://static.dreamerspaceguild.com/${trancheId.toString()}.png`}
         onError={() => setImageError(true)}
       />
       {imageError ? (

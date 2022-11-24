@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { NFT_ENDPOINT } from '../../../../utils';
 
 export default function GenerateNFTModal({
   trancheId,
@@ -27,7 +28,7 @@ export default function GenerateNFTModal({
 
   function handleGenerateNFT() {
     setIsLoading(true);
-    fetch(`http://localhost:8080?trancheId=${trancheId}`)
+    fetch(`${NFT_ENDPOINT}?trancheId=${trancheId}`)
       .then(() => {
         setIsLoading(false);
         navigate('/positions');

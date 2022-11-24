@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import Web3Modal from 'web3modal';
 import CoreLogo from '../assets/img/core.svg';
 
+export const NFT_ENDPOINT = 'https://smol-pp-gen-o727bibr2q-uc.a.run.app';
+
 export const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
   window.location.href.includes('localhost')
     ? ''

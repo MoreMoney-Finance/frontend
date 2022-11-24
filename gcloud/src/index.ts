@@ -103,11 +103,11 @@ app.get('/', async (req, res) => {
     return;
   }
   // check if position exists on chain
-  const positionExists = await checkIfTrancheIdExists(trancheId.toString());
-  if (!positionExists) {
-    res.status(409).send('TrancheId not found');
-    return;
-  }
+  // const positionExists = await checkIfTrancheIdExists(trancheId.toString());
+  // if (!positionExists) {
+  //   res.status(409).send('TrancheId not found');
+  //   return;
+  // }
   try {
     nftGenerationStatus[trancheId.toString()] = true;
     const bucket = storage.bucket('static.moremoney.finance');

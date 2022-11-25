@@ -12,7 +12,7 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
 } from '../../../../chain-interaction/contracts';
-import DepositBorrow from './DepositBorrow';
+// import DepositBorrow from './DepositBorrow';
 import RepayWithdraw from './RepayWithdraw';
 
 export default function EditPosition({
@@ -28,13 +28,13 @@ export default function EditPosition({
       <Container variant={'token'} padding={'35px 20px 20px 20px'}>
         <Tabs variant={'primary'}>
           <TabList>
-            <Tab>Borrow</Tab>
+            {/* <Tab>Borrow</Tab> */}
             <Tab>Repay</Tab>
           </TabList>
           <TabPanels>
-            <TabPanel>
+            {/* <TabPanel>
               <DepositBorrow position={position} stratMeta={stratMeta} />
-            </TabPanel>
+            </TabPanel> */}
             <TabPanel>
               <RepayWithdraw position={position} stratMeta={stratMeta} />
             </TabPanel>

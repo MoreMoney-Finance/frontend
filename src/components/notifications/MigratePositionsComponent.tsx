@@ -12,13 +12,13 @@ export default function MigratePositionsComponent() {
           borderRadius={'full'}
         >
           <AlertIcon />
-          Where are my positions? &nbsp;
+          <Text>Want to borrow more? After migrating: &nbsp;</Text>
           <Text textDecoration={'underline'}>
             <a
-              href="https://v1.moremoney.finance/"
+              href="https://app.moremoney.finance"
               style={{ textDecoration: 'underline' }}
             >
-              Go to V1 UI
+              check out our v3 UI
             </a>
           </Text>
         </Alert>

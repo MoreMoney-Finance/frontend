@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Container, Flex, GridItem, Text, VStack } from '@chakra-ui/react';
+import { Container, Flex, GridItem, Text } from '@chakra-ui/react';
 import { parseEther } from '@ethersproject/units';
 import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
@@ -7,7 +7,6 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
 } from '../../../chain-interaction/contracts';
-import PositionNftImage from '../../../components/data-display/PositionNftImage';
 import { TitleValue } from '../../../components/data-display/TitleValue';
 import { parseFloatCurrencyValue } from '../../../utils';
 
@@ -64,13 +63,13 @@ export function PositionData({
           justifyContent="space-between"
           alignItems={'center'}
         >
-          <VStack>
+          {/* <VStack>
             <PositionNftImage
               height={['auto', 'auto', 'auto', '120px']}
               padding={0}
               trancheId={position?.trancheId}
             />
-          </VStack>
+          </VStack> */}
           <TitleValue
             title="POSITION HEALTH"
             value={

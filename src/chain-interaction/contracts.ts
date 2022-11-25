@@ -31,8 +31,7 @@ import iMoney from '../contracts/artifacts/contracts/rewards/iMoney.sol/iMoney.j
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
 import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
-// import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
-import MetaLending from '../contracts/artifacts/contracts/MetaLending.sol/MetaLending.json';
+import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
@@ -129,7 +128,6 @@ export type DeploymentAddresses = {
   YieldYakPermissiveStrategy2: string;
   MasterMore: string;
   BigMigrateStableLending2: string;
-  MetaLending: string;
   MigrateMetaLending: string;
 };
 
@@ -148,8 +146,8 @@ export function useIsolatedLendingView(
 ) {
   const addresses = useAddresses();
 
-  const abi = new Interface(MetaLending.abi);
-  const contract = new Contract(addresses.MetaLending, abi);
+  const abi = new Interface(StableLending2.abi);
+  const contract = new Contract(addresses.StableLending2, abi);
   return {
     legacy: handleCallResultDefault(
       useCall({
@@ -357,8 +355,8 @@ function parseStratMeta(
 
 export function useTotalDebt(defaultResult: any) {
   const addresses = useAddresses();
-  const abi = new Interface(MetaLending.abi);
-  const contract = new Contract(addresses.MetaLending, abi);
+  const abi = new Interface(StableLending2.abi);
+  const contract = new Contract(addresses.StableLending2, abi);
   return handleCallResultDefault(
     useCall({
       contract,
@@ -601,13 +599,13 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
         jsonRpcProvider
       );
       const normalResults = await stratViewer.viewMetadata(
-        addresses.MetaLending,
+        addresses.StableLending2,
         tokens,
         strats
       );
       // const noHarvestBalanceResults =
       //   await stratViewer.viewMetadataNoHarvestBalance(
-      //     addresses.MetaLending,
+      //     addresses.StableLending2,
       //     addresses.OracleRegistry,
       //     addresses.Stablecoin,  const [underlyingStrategyNames, setUnderLyingStrategyNames] = React.useState(new Map<string, string>());
       //     masterChef2Tokens,
@@ -911,7 +909,7 @@ export function useIsolatedPositionMetadata(
 
   const addresses = useAddresses();
   const legacyResults = {};
-  return current.reduce(reduceFn(addresses.MetaLending), legacyResults);
+  return current.reduce(reduceFn(addresses.StableLending2), legacyResults);
 }
 export function useCustomTotalSupply(address: string, defaultResult: any) {
   const contract = new Contract(address, ERC20Interface);
@@ -1550,8 +1548,8 @@ export function useUpdatedPositions(timeStart: number) {
   const stable = useStable();
   const addresses = useAddresses();
   const contract = new Contract(
-    addresses.MetaLending,
-    new Interface(MetaLending.abi)
+    addresses.StableLending2,
+    new Interface(StableLending2.abi)
   );
 
   function args(trancheContract: string) {
@@ -1566,7 +1564,7 @@ export function useUpdatedPositions(timeStart: number) {
   }
 
   const currentRows =
-    (useCalls(args(addresses.MetaLending)).map(
+    (useCalls(args(addresses.StableLending2)).map(
       (x) => (x ?? { value: undefined }).value
     ) as RawPositionMetaRow[][][]) || [];
 
@@ -1579,7 +1577,7 @@ export function useUpdatedPositions(timeStart: number) {
   }
   return [
     ...((currentRows.length > 0 &&
-      parseRows(currentRows, addresses.MetaLending)) ||
+      parseRows(currentRows, addresses.StableLending2)) ||
       []),
   ];
 }
@@ -1588,7 +1586,7 @@ export function useUpdatedMetadataLiquidatablePositions(
   positions?: ParsedPositionMetaRow[]
 ) {
   const abi = {
-    [useAddresses().StableLending2]: new Interface(MetaLending.abi),
+    [useAddresses().StableLending2]: new Interface(StableLending2.abi),
   };
 
   const positionCalls: Call[] = positions!.map((pos) => {

@@ -13,7 +13,8 @@ import StableLending2Liquidation from '../contracts/artifacts/contracts/liquidat
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import MasterMore from '../contracts/artifacts/contracts/rewards/MasterMore.sol/MasterMore.json';
-import MetaLending from '../contracts/artifacts/contracts/MetaLending.sol/MetaLending.json';
+// import MetaLending from '../contracts/artifacts/contracts/MetaLending.sol/MetaLending.json';
+import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import YieldYakStrategy from '../contracts/artifacts/contracts/strategies/YieldYakStrategy.sol/YieldYakStrategy.json';
@@ -65,13 +66,13 @@ export function useMigratePosition() {
 export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   const contractsABI: Record<string, any> = {
     [useAddresses().YieldYakStrategy]: new Interface(YieldYakStrategy.abi),
-    [useAddresses().MetaLending]: new Interface(MetaLending.abi),
+    [useAddresses().StableLending2]: new Interface(StableLending2.abi),
   };
   const isYY = useAddresses().YieldYakStrategy === strategyAddress;
 
   const feesContract = new Contract(
     strategyAddress,
-    contractsABI[strategyAddress] ?? new Interface(MetaLending.abi)
+    contractsABI[strategyAddress] ?? new Interface(StableLending2.abi)
   );
   const { send, state } = useContractFunction(feesContract, 'withdrawFees');
 
@@ -417,8 +418,8 @@ function prepRepayAmount(
 export function useDepositBorrowTrans(trancheId: number | null | undefined) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    addresses.MetaLending,
-    new Interface(MetaLending.abi)
+    addresses.StableLending2,
+    new Interface(StableLending2.abi)
   );
   const { send, state } = useContractFunction(
     lendingContract,
@@ -475,8 +476,8 @@ export function useRepayWithdrawTrans(
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    addresses.MetaLending,
-    new Interface(MetaLending.abi)
+    addresses.StableLending2,
+    new Interface(StableLending2.abi)
   );
 
   const { send, state } = useContractFunction(
@@ -569,9 +570,9 @@ export function useMigrateStrategy(
     token?.address === sAvax
       ? new Contract(
         addresses.BigMigrateStableLending2,
-        new Interface(MetaLending.abi)
+        new Interface(StableLending2.abi)
       )
-      : new Contract(lendingAddress, new Interface(MetaLending.abi));
+      : new Contract(lendingAddress, new Interface(StableLending2.abi));
   const { send, state } = useContractFunction(strategy, 'migrateStrategy');
 
   return {

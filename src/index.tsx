@@ -26,25 +26,38 @@ import VeMoreTokenPage from './pages/vMore';
 import XMorePage from './pages/XMore';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
+import { isProduction } from './utils';
 
 ReactDOM.render(
   <React.StrictMode>
     <ColorModeScript />
     <DAppProvider
-      config={{
-        networks: [Avalanche, Hardhat, Localhost],
-        readOnlyChainId: ChainId.Hardhat,
-        readOnlyUrls: {
-          [ChainId.Avalanche]: 'https://api.avax.network/ext/bc/C/rpc',
-          [ChainId.Localhost]: 'http://localhost:8545',
-          [ChainId.Hardhat]: 'http://localhost:8545',
-        },
-        multicallAddresses: {
-          [ChainId.Localhost]: '0x0FB54156B496b5a040b51A71817aED9e2927912E',
-          [ChainId.Hardhat]: '0x0FB54156B496b5a040b51A71817aED9e2927912E',
-        },
-        bufferGasLimitPercentage: 15,
-      }}
+      config={
+        isProduction
+          ? {
+            networks: [Avalanche],
+            readOnlyChainId: ChainId.Avalanche,
+            readOnlyUrls: {
+              [ChainId.Avalanche]: 'https://api.avax.network/ext/bc/C/rpc',
+            },
+            bufferGasLimitPercentage: 15,
+          }
+          : {
+            networks: [Avalanche, Hardhat, Localhost],
+            readOnlyChainId: ChainId.Hardhat,
+            readOnlyUrls: {
+              [ChainId.Avalanche]: 'https://api.avax.network/ext/bc/C/rpc',
+              [ChainId.Localhost]: 'http://localhost:8545',
+              [ChainId.Hardhat]: 'http://localhost:8545',
+            },
+            multicallAddresses: {
+              [ChainId.Localhost]:
+                  '0x0FB54156B496b5a040b51A71817aED9e2927912E',
+              [ChainId.Hardhat]: '0x0FB54156B496b5a040b51A71817aED9e2927912E',
+            },
+            bufferGasLimitPercentage: 15,
+          }
+      }
     >
       <BrowserRouter>
         <Routes>

@@ -5,12 +5,13 @@ import { useEffect, useState } from 'react';
 import Web3Modal from 'web3modal';
 import CoreLogo from '../assets/img/core.svg';
 
+export const isProduction =
+  window.location.href.includes('localhost') === false;
+
 export const NFT_ENDPOINT = 'https://smol-pp-gen-o727bibr2q-uc.a.run.app';
 
 export const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
-  window.location.href.includes('localhost')
-    ? ''
-    : 'https://api.avax.network/ext/bc/C/rpc'
+  isProduction ? 'https://api.avax.network/ext/bc/C/rpc' : ''
 );
 
 export function sqrt(value: BigNumber): BigNumber {

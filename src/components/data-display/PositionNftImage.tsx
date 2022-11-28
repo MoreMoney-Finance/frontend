@@ -30,7 +30,7 @@ export default function PositionNftImage({
         p={padding || '4'}
         borderRadius={'25px'}
         // src={`https://static.moremoney.finance/${trancheId.toString()}.png`}
-        src={`https://static.dreamerspaceguild.com/${trancheId.toString()}.png`}
+        src={`https://static.dreamerspaceguild.com/images/${trancheId.toString()}.png`}
         onError={() => setImageError(true)}
       />
       {imageError ? (

@@ -114,8 +114,8 @@ app.get('/', async (req, res) => {
     const generatedFile = bucket.file(`/${trancheId}`);
 
     if (true) {
-    // if (!(await generatedFile.exists())) {
-      const res: any = await generateAsync({
+      // if (!(await generatedFile.exists())) {
+      const resImage: any = await generateAsync({
         prompt: `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on alien landscape, HQ`,
         apiKey: 'sk-EwcMCETdgWMchODMzZqr9gYmpzFd5V7DOfgzpoq7UuFcLcsF',
         cfgScale: 7.0,
@@ -124,8 +124,8 @@ app.get('/', async (req, res) => {
         samples: 1,
         steps: 50,
       });
-      console.log(res);
-      const img = res.images[0];
+      console.log(resImage);
+      const img = resImage.images[0];
 
       console.log('successfully got the image!');
 

@@ -132,6 +132,8 @@ app.get('/', async (req, res) => {
       const generatedMetadata = {
         image: `https://static.moremoney.finance/images/${trancheId}.png`,
         generationTstamp: Date.now(),
+        seller_fee_basis_points: 100,
+        fee_recipient: '0x55E343c27B794E7FCfebEf4bEA3dE24093418c50',
       };
 
       const imgFile = bucket.file(`images/${trancheId}.png`);

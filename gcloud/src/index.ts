@@ -6,10 +6,18 @@ import template from './sdtemplate.json';
 import { verifyMessage } from 'ethers/lib/utils';
 import { Storage } from '@google-cloud/storage';
 import { generateAsync } from 'stability-client';
+import {
+  createFileIfNotExists,
+  getCumulativeDebt,
+  readJsonFromFile,
+} from './tiers';
 
 export const app = express();
 const storage = new Storage();
 let nftGenerationStatus: Record<string, boolean> = {};
+
+//create tiers list if does not exist
+createFileIfNotExists();
 
 function convert2Prompt(query: any) {
   return `retro futuristic solarpunk ${query} trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on alien landscape, HQ`;
@@ -86,7 +94,7 @@ function checkIfTrancheIdExists(trancheId: string) {
         BigNumber.from(trancheId)
       );
       console.log('positionMetadata', positionMetadata);
-      resolve(true);
+      resolve(positionMetadata);
     } catch (ex) {
       resolve(false);
     }
@@ -103,7 +111,9 @@ app.get('/', async (req, res) => {
     return;
   }
   // check if position exists on chain
-  // const positionExists = await checkIfTrancheIdExists(trancheId.toString());
+  const positionMetadata: any = await checkIfTrancheIdExists(
+    trancheId.toString()
+  );
   // if (!positionExists) {
   //   res.status(409).send('TrancheId not found');
   //   return;
@@ -112,9 +122,10 @@ app.get('/', async (req, res) => {
     nftGenerationStatus[trancheId.toString()] = true;
     const bucket = storage.bucket('static.dreamerspaceguild.com');
     const generatedFile = bucket.file(`/${trancheId}`);
-
-    if (true) {
-      // if (!(await generatedFile.exists())) {
+    const metadata: any = await readJsonFromFile(generatedFile);
+    //
+    if (metadata) {
+      const cumulativeDebt: any = await getCumulativeDebt();
       const resImage: any = await generateAsync({
         prompt: `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on alien landscape, HQ`,
         apiKey: 'sk-EwcMCETdgWMchODMzZqr9gYmpzFd5V7DOfgzpoq7UuFcLcsF',
@@ -129,11 +140,15 @@ app.get('/', async (req, res) => {
 
       console.log('successfully got the image!');
 
+      const digits = Math.round(cumulativeDebt[trancheId.toString()]).toString()
+        .length;
+
       const generatedMetadata = {
         image: `https://static.moremoney.finance/images/${trancheId}.png`,
         generationTstamp: Date.now(),
         seller_fee_basis_points: 100,
         fee_recipient: '0x55E343c27B794E7FCfebEf4bEA3dE24093418c50',
+        tier: '1'.padEnd(digits, '0'),
       };
 
       const imgFile = bucket.file(`images/${trancheId}.png`);

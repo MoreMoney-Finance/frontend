@@ -124,7 +124,7 @@ app.get('/', async (req, res) => {
     const generatedFile = bucket.file(`/${trancheId}`);
     const metadata: any = await readJsonFromFile(generatedFile);
     //
-    if (metadata) {
+    if (true) {
       const cumulativeDebt: any = await getCumulativeDebt();
       const resImage: any = await generateAsync({
         prompt: `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on alien landscape, HQ`,
@@ -137,7 +137,7 @@ app.get('/', async (req, res) => {
       });
       console.log(resImage);
       const img = resImage.images[0];
-
+      // cumulativeDebt += (now - craptasticApiLastUpdated) * positionDebt / 24hours
       console.log('successfully got the image!');
 
       const digits = Math.round(cumulativeDebt[trancheId.toString()]).toString()

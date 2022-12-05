@@ -8,13 +8,17 @@ import { Storage } from '@google-cloud/storage';
 import { generateAsync } from 'stability-client';
 import {
   createFileIfNotExists,
+  freeSlot,
   getCumulativeDebt,
   readJsonFromFile,
 } from './tiers';
 
 export const app = express();
 const storage = new Storage();
+const bucket = storage.bucket('static.dreamerspaceguild.com');
 let nftGenerationStatus: Record<string, boolean> = {};
+const PLACEHOLDER_IMAGE_URL =
+  'https://t3.ftcdn.net/jpg/02/48/42/64/360_F_248426448_NVKLywWqArG2ADUxDq6QprtIzsF82dMF.jpg';
 
 //create tiers list if does not exist
 createFileIfNotExists();
@@ -106,10 +110,6 @@ app.get('/', async (req, res) => {
   res.set('Access-Control-Allow-Methods', 'OPTIONS,GET');
   const { trancheId } = req.query;
 
-  if (nftGenerationStatus[trancheId.toString()] === true) {
-    res.status(409).send('NFT being generated');
-    return;
-  }
   // check if position exists on chain
   const positionMetadata: any = await checkIfTrancheIdExists(
     trancheId.toString()
@@ -119,8 +119,6 @@ app.get('/', async (req, res) => {
   //   return;
   // }
   try {
-    nftGenerationStatus[trancheId.toString()] = true;
-    const bucket = storage.bucket('static.dreamerspaceguild.com');
     const generatedFile = bucket.file(`/${trancheId}`);
     const metadata: any = await readJsonFromFile(generatedFile);
     //
@@ -177,4 +175,43 @@ app.get('/', async (req, res) => {
     res.status(500).send(`Error at SD API: ${error.toString()}`);
   }
 });
+
+app.get('/demote', async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'OPTIONS,GET');
+  const { trancheIdParam } = req.query;
+  const trancheId = trancheIdParam.toString();
+  const cumulativeDebt: any = await getCumulativeDebt();
+  const generatedFile = bucket.file(`/${trancheId}`);
+  const metadata: any = await readJsonFromFile(generatedFile);
+
+  const digitsCumulativeDebt = parseFloat(
+    '1'.padEnd(
+      Math.round(cumulativeDebt[trancheId].cumulativeDebt).toString().length,
+      '0'
+    )
+  );
+  const digitsCurrentTier = parseFloat(
+    '1'.padEnd(Math.round(metadata.tier).toString().length, '0')
+  );
+
+  if (digitsCumulativeDebt < digitsCurrentTier) {
+    await freeSlot(digitsCumulativeDebt.toString());
+    generatedFile.save(
+      JSON.stringify(
+        {
+          ...metadata,
+          tier: digitsCumulativeDebt,
+          image: PLACEHOLDER_IMAGE_URL,
+        },
+        null,
+        2
+      ),
+      {
+        metadata: { contentType: 'application/json' },
+      }
+    );
+  }
+});
+
 http('imgen', app);

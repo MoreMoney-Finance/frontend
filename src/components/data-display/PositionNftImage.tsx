@@ -1,6 +1,7 @@
 import { Button, Image } from '@chakra-ui/react';
 import * as React from 'react';
 import { NFT_ENDPOINT } from '../../utils';
+import CountdownTimer from './CountdownTimer';
 
 export default function PositionNftImage({
   width,
@@ -36,6 +37,7 @@ export default function PositionNftImage({
       {imageError ? (
         <Button onClick={() => generateNFT(trancheId)}>Generate NFT</Button>
       ) : null}
+      <CountdownTimer trancheId={trancheId} endDate={1701905361000} />
     </>
   );
 }

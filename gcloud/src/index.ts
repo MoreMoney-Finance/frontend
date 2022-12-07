@@ -14,7 +14,6 @@ import {
 
 export const app = express();
 const storage = new Storage();
-let nftGenerationStatus: Record<string, boolean> = {};
 
 //create tiers list if does not exist
 createFileIfNotExists();
@@ -106,10 +105,6 @@ app.get('/', async (req, res) => {
   res.set('Access-Control-Allow-Methods', 'OPTIONS,GET');
   const { trancheId } = req.query;
 
-  if (nftGenerationStatus[trancheId.toString()] === true) {
-    res.status(409).send('NFT being generated');
-    return;
-  }
   // check if position exists on chain
   const positionMetadata: any = await checkIfTrancheIdExists(
     trancheId.toString()
@@ -119,7 +114,6 @@ app.get('/', async (req, res) => {
   //   return;
   // }
   try {
-    nftGenerationStatus[trancheId.toString()] = true;
     const bucket = storage.bucket('static.dreamerspaceguild.com');
     const generatedFile = bucket.file(`/${trancheId}`);
     const metadata: any = await readJsonFromFile(generatedFile);
@@ -161,18 +155,15 @@ app.get('/', async (req, res) => {
         }),
       ]);
 
-      nftGenerationStatus[trancheId.toString()] = false;
       res.writeHead(200, {
         'Content-Type': 'image/png',
         'Content-Length': img.length,
       });
       res.end(img);
     } else {
-      nftGenerationStatus[trancheId.toString()] = false;
       res.status(409).send('Already generated image for this id');
     }
   } catch (error) {
-    nftGenerationStatus[trancheId.toString()] = false;
     console.error(error);
     res.status(500).send(`Error at SD API: ${error.toString()}`);
   }

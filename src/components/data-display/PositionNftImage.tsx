@@ -15,7 +15,7 @@ export default function PositionNftImage({
   trancheId: number;
 }) {
   const [imageError, setImageError] = React.useState(false);
-
+  // const daysUntilUpgrade = (nextTarget - cumulativeDebt) / debtOfPosition
   function generateNFT(trancheId: number) {
     fetch(`${NFT_ENDPOINT}?trancheId=${trancheId}`)
       .then((res) => res.json())

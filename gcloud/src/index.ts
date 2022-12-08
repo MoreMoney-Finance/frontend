@@ -14,6 +14,7 @@ import {
 
 export const app = express();
 const storage = new Storage();
+const DAY_HOURS = 24 * 60 * 60;
 
 //create tiers list if does not exist
 createFileIfNotExists();
@@ -117,9 +118,26 @@ app.get('/', async (req, res) => {
     const bucket = storage.bucket('static.dreamerspaceguild.com');
     const generatedFile = bucket.file(`/${trancheId}`);
     const metadata: any = await readJsonFromFile(generatedFile);
-    //
-    if (true) {
-      const cumulativeDebt: any = await getCumulativeDebt();
+    const {
+      positions: cumulativeDebtPositions,
+      tstamp: craptasticApiLastUpdated,
+    } = await getCumulativeDebt();
+
+    // Add to that cumulativeDebt according to this formula
+    // cumulativeDebt += (now - craptasticApiLastUpdated) * positionDebt / 24hours
+    const cumulativeDebt =
+      cumulativeDebtPositions[trancheId.toString()] +
+      ((new Date().getTime() - craptasticApiLastUpdated) *
+        positionMetadata.debt) /
+        DAY_HOURS;
+
+    const oldDigits = Math.round(
+      cumulativeDebtPositions[trancheId.toString()].debt
+    ).toString().length;
+
+    const newDigits = Math.round(positionMetadata.debt).toString().length;
+
+    if (newDigits > oldDigits) {
       const resImage: any = await generateAsync({
         prompt: `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on alien landscape, HQ`,
         apiKey: 'sk-EwcMCETdgWMchODMzZqr9gYmpzFd5V7DOfgzpoq7UuFcLcsF',
@@ -131,18 +149,15 @@ app.get('/', async (req, res) => {
       });
       console.log(resImage);
       const img = resImage.images[0];
-      // cumulativeDebt += (now - craptasticApiLastUpdated) * positionDebt / 24hours
-      console.log('successfully got the image!');
 
-      const digits = Math.round(cumulativeDebt[trancheId.toString()]).toString()
-        .length;
+      console.log('successfully got the image!');
 
       const generatedMetadata = {
         image: `https://static.moremoney.finance/images/${trancheId}.png`,
         generationTstamp: Date.now(),
         seller_fee_basis_points: 100,
         fee_recipient: '0x55E343c27B794E7FCfebEf4bEA3dE24093418c50',
-        tier: '1'.padEnd(digits, '0'),
+        tier: '1'.padEnd(newDigits, '0'),
       };
 
       const imgFile = bucket.file(`images/${trancheId}.png`);
@@ -154,18 +169,18 @@ app.get('/', async (req, res) => {
           metadata: { contentType: `image/png` },
         }),
       ]);
-
       res.writeHead(200, {
         'Content-Type': 'image/png',
         'Content-Length': img.length,
       });
       res.end(img);
     } else {
-      res.status(409).send('Already generated image for this id');
+      res.status(200).send(`No debt changes detected`);
     }
   } catch (error) {
     console.error(error);
     res.status(500).send(`Error at SD API: ${error.toString()}`);
   }
 });
+
 http('imgen', app);

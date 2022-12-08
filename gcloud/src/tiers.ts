@@ -49,10 +49,13 @@ export async function getCumulativeDebt() {
     'https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/cumulative-debt-positions.json'
   );
   const contents = JSON.parse(cumulativeDebt.data);
-  return contents.reduce((map: any, obj: any) => {
-    map[obj.trancheId] = obj;
-    return map;
-  }, {});
+  return {
+    tstamp: contents.tstamp,
+    positions: contents?.positions?.reduce((map: any, obj: any) => {
+      map[obj.trancheId] = obj;
+      return map;
+    }, {}),
+  };
 }
 
 export async function freeSlot(tier: string) {

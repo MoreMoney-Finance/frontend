@@ -33,6 +33,10 @@ const CountdownTimer: React.FC<Props> = ({ endDate, trancheId }) => {
     return <UpgradeNftImage label="Upgrade NFT" trancheId={trancheId} />;
   }
 
+  if (Number.isNaN(endDate)) {
+    return <></>;
+  }
+
   const seconds = Math.floor((timeLeft / 1000) % 60);
   const minutes = Math.floor((timeLeft / 1000 / 60) % 60);
   const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);

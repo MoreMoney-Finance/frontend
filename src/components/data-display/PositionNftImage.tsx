@@ -33,7 +33,7 @@ export default function PositionNftImage({
   }
 
   const nextDate = addDays(new Date(), nextTarget);
-  console.log('nextDate', nextDate);
+  console.log('nextDate', nextDate, nextDate.getTime());
   function generateNFT(trancheId: number) {
     fetch(`${NFT_ENDPOINT}?trancheId=${trancheId}`)
       .then((res) => res.json())

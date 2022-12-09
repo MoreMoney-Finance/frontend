@@ -1,5 +1,6 @@
 import { Button, Image } from '@chakra-ui/react';
 import * as React from 'react';
+import { ExternalMetadataContext } from '../../contexts/ExternalMetadataContext';
 import { NFT_ENDPOINT } from '../../utils';
 import CountdownTimer from './CountdownTimer';
 
@@ -8,14 +9,31 @@ export default function PositionNftImage({
   height,
   padding,
   trancheId,
+  debt,
 }: {
   width?: any;
   height?: any;
   padding?: number;
   trancheId: number;
+  debt: string;
 }) {
   const [imageError, setImageError] = React.useState(false);
-  // const daysUntilUpgrade = (nextTarget - cumulativeDebt) / debtOfPosition
+  const { cumulativeDebtPositions } = React.useContext(ExternalMetadataContext);
+  const newDigits = Math.round(parseFloat(debt)).toString().length;
+  const nextTier = '1'.padEnd(newDigits <= 4 ? 5 : newDigits, '0') + '0';
+  const nextTarget =
+    (parseFloat(nextTier) -
+      cumulativeDebtPositions[trancheId]?.cumulativeDebt) /
+    parseFloat(debt);
+
+  function addDays(date: Date, days: number) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
+  const nextDate = addDays(new Date(), nextTarget);
+  console.log('nextDate', nextDate);
   function generateNFT(trancheId: number) {
     fetch(`${NFT_ENDPOINT}?trancheId=${trancheId}`)
       .then((res) => res.json())
@@ -41,7 +59,7 @@ export default function PositionNftImage({
       {imageError ? (
         <Button onClick={() => generateNFT(trancheId)}>Generate NFT</Button>
       ) : null}
-      <CountdownTimer trancheId={trancheId} endDate={1701905361000} />
+      <CountdownTimer trancheId={trancheId} endDate={nextDate.getTime()} />
     </>
   );
 }

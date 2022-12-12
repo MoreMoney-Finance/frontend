@@ -109,10 +109,10 @@ app.get('/', async (req, res) => {
   const positionMetadata: any = await checkIfTrancheIdExists(
     trancheId.toString()
   );
-  // if (!positionExists) {
-  //   res.status(409).send('TrancheId not found');
-  //   return;
-  // }
+  if (!positionMetadata) {
+    res.status(409).send('TrancheId not found');
+    return;
+  }
   try {
     const bucket = storage.bucket('static.dreamerspaceguild.com');
     const generatedFile = bucket.file(`${trancheId}`);

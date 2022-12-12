@@ -3,7 +3,6 @@ import { BigNumber, ethers } from 'ethers';
 import { generateImage } from './stable-diffusion';
 import express from 'express';
 import template from './sdtemplate.json';
-import { verifyMessage } from 'ethers/lib/utils';
 import { Storage } from '@google-cloud/storage';
 import { generateAsync } from 'stability-client';
 import {
@@ -131,11 +130,8 @@ app.get('/', async (req, res) => {
         positionMetadata.debt) /
         DAY_HOURS;
 
-    const oldDigits = Math.round(
-      cumulativeDebtPositions[trancheId.toString()].debt
-    ).toString().length;
-
-    const newDigits = Math.round(positionMetadata.debt).toString().length;
+    const oldDigits = metadata ? Math.round(metadata.tier ?? 0).toString().length : 0;
+    const newDigits = Math.round(cumulativeDebt).toString().length;
 
     if (newDigits > oldDigits) {
       const resImage: any = await generateAsync({

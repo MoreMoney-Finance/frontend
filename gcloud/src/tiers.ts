@@ -8,7 +8,7 @@ import axios from 'axios';
 export const readJsonFromFile = async (file: File) =>
   new Promise(async (resolve, reject) => {
     let buf = '';
-    if (await file.exists()) {
+    if ((await file.exists())[0]) {
       file
         .createReadStream()
         .on('data', (d) => (buf += d))

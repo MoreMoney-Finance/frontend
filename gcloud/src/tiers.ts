@@ -48,7 +48,7 @@ export async function getCumulativeDebt() {
   const cumulativeDebt = await axios.get(
     'https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/cumulative-debt-positions.json'
   );
-  const contents = JSON.parse(cumulativeDebt.data);
+  const contents = cumulativeDebt.data;
   return {
     tstamp: contents.tstamp,
     positions: contents?.positions?.reduce((map: any, obj: any) => {

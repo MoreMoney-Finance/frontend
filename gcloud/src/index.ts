@@ -116,7 +116,7 @@ app.get('/', async (req, res) => {
   // }
   try {
     const bucket = storage.bucket('static.dreamerspaceguild.com');
-    const generatedFile = bucket.file(`/${trancheId}`);
+    const generatedFile = bucket.file(`${trancheId}`);
     const metadata: any = await readJsonFromFile(generatedFile);
     const {
       positions: cumulativeDebtPositions,

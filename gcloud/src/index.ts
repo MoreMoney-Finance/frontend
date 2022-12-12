@@ -133,6 +133,9 @@ app.get('/', async (req, res) => {
     const oldDigits = metadata ? Math.round(metadata.tier ?? 0).toString().length : 0;
     const newDigits = Math.round(cumulativeDebt).toString().length;
 
+    console.log('oldDigits newDigits', oldDigits, newDigits);
+    console.log('metadata', metadata);
+
     if (newDigits > oldDigits) {
       const resImage: any = await generateAsync({
         prompt: `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on alien landscape, HQ`,

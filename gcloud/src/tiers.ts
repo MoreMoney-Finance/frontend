@@ -12,7 +12,7 @@ export const readJsonFromFile = async (file: File) =>
       file
         .createReadStream()
         .on('data', (d) => (buf += d))
-        .on('end', () => resolve(buf))
+        .on('end', () => resolve(JSON.parse(buf)))
         .on('error', (e) => reject(e));
     } else {
       resolve(null);

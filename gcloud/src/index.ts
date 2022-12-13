@@ -6,8 +6,10 @@ import template from './sdtemplate.json';
 import { Storage } from '@google-cloud/storage';
 import { generateAsync } from 'stability-client';
 import {
+  allocateSlot,
   checkSlotAvailability,
   createFileIfNotExists,
+  freeSlot,
   getCumulativeDebt,
   getPromptForTier,
   readJsonFromFile,
@@ -167,7 +169,7 @@ app.get('/', async (req, res) => {
 
     if (newDigits > oldDigits) {
       const resImage: any = await generateAsync({
-        prompt: getPromptForTier[newDigits],
+        prompt: getPromptForTier[parsedNewDigits],
         apiKey: 'sk-EwcMCETdgWMchODMzZqr9gYmpzFd5V7DOfgzpoq7UuFcLcsF',
         cfgScale: 7.0,
         height: 512,
@@ -185,7 +187,7 @@ app.get('/', async (req, res) => {
         generationTstamp: Date.now(),
         seller_fee_basis_points: 100,
         fee_recipient: '0x55E343c27B794E7FCfebEf4bEA3dE24093418c50',
-        tier: '1'.padEnd(newDigits, '0'),
+        tier: '1'.padEnd(parsedNewDigits, '0'),
       };
 
       const imgFile = bucket.file(`images/${trancheId}.png`);
@@ -197,11 +199,9 @@ app.get('/', async (req, res) => {
           metadata: { contentType: `image/png` },
         }),
       ]);
-      res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': img.length,
-      });
-      res.end(img);
+      await allocateSlot(parsedNewDigits.toString());
+      await freeSlot(parsedOldDigits.toString());
+      res.status(200).send(`NFT generated successfully`);
     } else {
       res.status(200).send(`No debt changes detected`);
     }

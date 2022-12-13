@@ -6,8 +6,10 @@ import template from './sdtemplate.json';
 import { Storage } from '@google-cloud/storage';
 import { generateAsync } from 'stability-client';
 import {
+  checkSlotAvailability,
   createFileIfNotExists,
   getCumulativeDebt,
+  getPromptForTier,
   readJsonFromFile,
 } from './tiers';
 
@@ -109,10 +111,10 @@ app.get('/', async (req, res) => {
   const positionMetadata: any = await checkIfTrancheIdExists(
     trancheId.toString()
   );
-  // if (!positionExists) {
-  //   res.status(409).send('TrancheId not found');
-  //   return;
-  // }
+  if (!positionMetadata) {
+    res.status(409).send('TrancheId not found');
+    return;
+  }
   try {
     const bucket = storage.bucket('static.dreamerspaceguild.com');
     const generatedFile = bucket.file(`${trancheId}`);
@@ -130,15 +132,42 @@ app.get('/', async (req, res) => {
         positionMetadata.debt) /
         DAY_HOURS;
 
-    const oldDigits = metadata ? Math.round(metadata.tier ?? 0).toString().length : 0;
+    const oldDigits = metadata
+      ? Math.round(metadata.tier ?? 0).toString().length
+      : 0;
     const newDigits = Math.round(cumulativeDebt).toString().length;
 
     console.log('oldDigits newDigits', oldDigits, newDigits);
     console.log('metadata', metadata);
 
+    // minimum tier is '10000' (5 digits);
+    const parsedOldDigits = oldDigits > 0 && oldDigits < 5 ? 5 : oldDigits;
+    const parsedNewDigits = newDigits > 0 && newDigits < 5 ? 5 : newDigits;
+
+    // slot avaialable for the newDigits in case the user is trying to upgrade his tier
+    if ((await checkSlotAvailability(parsedNewDigits.toString())) === false) {
+      res
+        .status(409)
+        .send(
+          'NFT generation or upgrade not available for tier ' + parsedNewDigits
+        );
+      return;
+    }
+
+    // slot avaialable for the newDigits in case the user is trying to
+    // generate NFT for the first time
+    if ((await checkSlotAvailability(parsedOldDigits.toString())) === false) {
+      res
+        .status(409)
+        .send(
+          'NFT generation or upgrade not available for tier ' + parsedOldDigits
+        );
+      return;
+    }
+
     if (newDigits > oldDigits) {
       const resImage: any = await generateAsync({
-        prompt: `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on alien landscape, HQ`,
+        prompt: getPromptForTier[newDigits],
         apiKey: 'sk-EwcMCETdgWMchODMzZqr9gYmpzFd5V7DOfgzpoq7UuFcLcsF',
         cfgScale: 7.0,
         height: 512,

@@ -72,6 +72,8 @@ export async function getPromptForTier(tier: string) {
 }
 
 export async function checkSlotAvailability(tier: number) {
+  // if the user doesn't have an NFT and he is trying to generate one
+  if (tier === 0) return true;
   const contents = await readJsonFromFile(tiersFile);
   return contents['1'.padEnd(tier, '0')] > 0;
 }

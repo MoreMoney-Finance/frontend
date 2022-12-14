@@ -37,7 +37,7 @@ export async function createFileIfNotExists() {
     '10000000000': 100,
   };
   const exists = await tiersFile.exists();
-  if (!exists) {
+  if (!exists[0]) {
     tiersFile.save(JSON.stringify(payload, null, 2), {
       metadata: { contentType: 'application/json' },
     });
@@ -56,6 +56,24 @@ export async function getCumulativeDebt() {
       return map;
     }, {}),
   };
+}
+
+export async function getPromptForTier(tier: string) {
+  const prompts = {
+    '10000': `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on robot landscape, HQ`,
+    '100000': `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on pilot landscape, HQ`,
+    '1000000': `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on explorer landscape, HQ`,
+    '10000000': `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on diva landscape, HQ`,
+    '100000000': `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on hero landscape, HQ`,
+    '1000000000': `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on villain landscape, HQ`,
+    '10000000000': `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on alien landscape, HQ`,
+  };
+  return prompts[tier];
+}
+
+export async function checkSlotAvailability(tier: string) {
+  const contents = await readJsonFromFile(tiersFile);
+  return contents[tier] > 0;
 }
 
 export async function freeSlot(tier: string) {

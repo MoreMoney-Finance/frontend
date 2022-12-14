@@ -6,8 +6,12 @@ import template from './sdtemplate.json';
 import { Storage } from '@google-cloud/storage';
 import { generateAsync } from 'stability-client';
 import {
+  allocateSlot,
+  checkSlotAvailability,
   createFileIfNotExists,
+  freeSlot,
   getCumulativeDebt,
+  getPromptForTier,
   readJsonFromFile,
 } from './tiers';
 
@@ -130,15 +134,42 @@ app.get('/', async (req, res) => {
         positionMetadata.debt) /
         DAY_HOURS;
 
-    const oldDigits = metadata ? Math.round(metadata.tier ?? 0).toString().length : 0;
+    const oldDigits = metadata
+      ? Math.round(metadata.tier ?? 0).toString().length
+      : 0;
     const newDigits = Math.round(cumulativeDebt).toString().length;
 
     console.log('oldDigits newDigits', oldDigits, newDigits);
     console.log('metadata', metadata);
 
+    // minimum tier is '10000' (5 digits);
+    const parsedOldDigits = oldDigits > 0 && oldDigits < 5 ? 5 : oldDigits;
+    const parsedNewDigits = newDigits > 0 && newDigits < 5 ? 5 : newDigits;
+
+    // slot avaialable for the newDigits in case the user is trying to upgrade his tier
+    if ((await checkSlotAvailability(parsedNewDigits.toString())) === false) {
+      res
+        .status(409)
+        .send(
+          'NFT generation or upgrade not available for tier ' + parsedNewDigits
+        );
+      return;
+    }
+
+    // slot avaialable for the newDigits in case the user is trying to
+    // generate NFT for the first time
+    if ((await checkSlotAvailability(parsedOldDigits.toString())) === false) {
+      res
+        .status(409)
+        .send(
+          'NFT generation or upgrade not available for tier ' + parsedOldDigits
+        );
+      return;
+    }
+
     if (newDigits > oldDigits) {
       const resImage: any = await generateAsync({
-        prompt: `retro futuristic solarpunk trending on artstation, synthwave, vibrant colors, sharp, with high level of detail, warm colors, on alien landscape, HQ`,
+        prompt: getPromptForTier[parsedNewDigits],
         apiKey: 'sk-EwcMCETdgWMchODMzZqr9gYmpzFd5V7DOfgzpoq7UuFcLcsF',
         cfgScale: 7.0,
         height: 512,
@@ -156,7 +187,7 @@ app.get('/', async (req, res) => {
         generationTstamp: Date.now(),
         seller_fee_basis_points: 100,
         fee_recipient: '0x55E343c27B794E7FCfebEf4bEA3dE24093418c50',
-        tier: '1'.padEnd(newDigits, '0'),
+        tier: '1'.padEnd(parsedNewDigits, '0'),
       };
 
       const imgFile = bucket.file(`images/${trancheId}.png`);
@@ -168,11 +199,9 @@ app.get('/', async (req, res) => {
           metadata: { contentType: `image/png` },
         }),
       ]);
-      res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': img.length,
-      });
-      res.end(img);
+      await allocateSlot(parsedNewDigits.toString());
+      await freeSlot(parsedOldDigits.toString());
+      res.status(200).send(`NFT generated successfully`);
     } else {
       res.status(200).send(`No debt changes detected`);
     }

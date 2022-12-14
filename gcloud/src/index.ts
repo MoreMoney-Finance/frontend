@@ -151,7 +151,7 @@ app.get('/', async (req, res) => {
       res
         .status(409)
         .send(
-          'NFT generation or upgrade not available for tier ' + parsedNewDigits
+          'NFT generation or upgrade not available for tier. New digits: ' + parsedNewDigits
         );
       return;
     }
@@ -162,7 +162,7 @@ app.get('/', async (req, res) => {
       res
         .status(409)
         .send(
-          'NFT generation or upgrade not available for tier ' + parsedOldDigits
+          'NFT generation or upgrade not available for tier. Old digits: ' + parsedOldDigits
         );
       return;
     }

@@ -1,7 +1,7 @@
 import { File, Storage } from '@google-cloud/storage';
 const storage = new Storage();
 const bucket = storage.bucket('static.dreamerspaceguild.com');
-const tiersFile = bucket.file(`/tiers.json`);
+const tiersFile = bucket.file(`tiers.json`);
 import axios from 'axios';
 
 // The function that returns a JSON string

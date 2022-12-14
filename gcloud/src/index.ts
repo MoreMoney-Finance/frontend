@@ -147,22 +147,24 @@ app.get('/', async (req, res) => {
     const parsedNewDigits = newDigits > 0 && newDigits < 5 ? 5 : newDigits;
 
     // slot avaialable for the newDigits in case the user is trying to upgrade his tier
-    if ((await checkSlotAvailability(parsedNewDigits.toString())) === false) {
+    if ((await checkSlotAvailability(parsedNewDigits)) === false) {
       res
         .status(409)
         .send(
-          'NFT generation or upgrade not available for tier. New digits: ' + parsedNewDigits
+          'NFT generation or upgrade not available for tier. New digits: ' +
+            parsedNewDigits
         );
       return;
     }
 
     // slot avaialable for the newDigits in case the user is trying to
     // generate NFT for the first time
-    if ((await checkSlotAvailability(parsedOldDigits.toString())) === false) {
+    if ((await checkSlotAvailability(parsedOldDigits)) === false) {
       res
         .status(409)
         .send(
-          'NFT generation or upgrade not available for tier. Old digits: ' + parsedOldDigits
+          'NFT generation or upgrade not available for tier. Old digits: ' +
+            parsedOldDigits
         );
       return;
     }
@@ -199,8 +201,8 @@ app.get('/', async (req, res) => {
           metadata: { contentType: `image/png` },
         }),
       ]);
-      await allocateSlot(parsedNewDigits.toString());
-      await freeSlot(parsedOldDigits.toString());
+      await allocateSlot(parsedNewDigits);
+      await freeSlot(parsedOldDigits);
       res.status(200).send(`NFT generated successfully`);
     } else {
       res.status(200).send(`No debt changes detected`);

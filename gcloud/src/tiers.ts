@@ -71,21 +71,23 @@ export async function getPromptForTier(tier: string) {
   return prompts[tier];
 }
 
-export async function checkSlotAvailability(tier: string) {
+export async function checkSlotAvailability(tier: number) {
   const contents = await readJsonFromFile(tiersFile);
-  return contents[tier] > 0;
+  return contents['1'.padEnd(tier, '0')] > 0;
 }
 
-export async function freeSlot(tier: string) {
+export async function freeSlot(tier: number) {
+  const tierKey = '1'.padEnd(tier, '0');
   const contents = await readJsonFromFile(tiersFile);
-  contents[tier] = contents[tier] + 1;
+  contents[tierKey] = contents[tierKey] + 1;
   await saveJsonFile(contents);
   return true;
 }
 
-export async function allocateSlot(tier: string) {
+export async function allocateSlot(tier: number) {
+  const tierKey = '1'.padEnd(tier, '0');
   const contents = await readJsonFromFile(tiersFile);
-  contents[tier] = contents[tier] - 1;
+  contents[tierKey] = contents[tierKey] - 1;
   await saveJsonFile(contents);
   return true;
 }

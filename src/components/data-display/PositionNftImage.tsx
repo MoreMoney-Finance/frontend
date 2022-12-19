@@ -18,22 +18,28 @@ export default function PositionNftImage({
   debt: string;
 }) {
   const [imageError, setImageError] = React.useState(false);
-  const { cumulativeDebtPositions } = React.useContext(ExternalMetadataContext);
+  const {
+    cumulativeDebtPositions,
+    cumulativeDebtPositionsTimestamp,
+    tiersJson,
+  } = React.useContext(ExternalMetadataContext);
   const newDigits = Math.round(parseFloat(debt)).toString().length;
-  const nextTier = '1'.padEnd(newDigits <= 4 ? 5 : newDigits, '0') + '0';
+  const nextTier = '1'.padEnd(newDigits < 5 ? 5 : newDigits, '0');
   const nextTarget =
-    (parseFloat(nextTier) -
-      cumulativeDebtPositions[trancheId]?.cumulativeDebt) /
-    parseFloat(debt);
+    ((parseFloat(nextTier) -
+      (cumulativeDebtPositions[trancheId]?.cumulativeDebt ?? 0)) /
+      parseFloat(debt)) *
+      (24 * 60 * 60 * 1000) +
+    cumulativeDebtPositionsTimestamp;
 
-  function addDays(date: Date, days: number) {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-  }
+  console.log(
+    'nextTier',
+    newDigits,
+    nextTier,
+    tiersJson,
+    tiersJson ? tiersJson[parseFloat(nextTier)] : null
+  );
 
-  const nextDate = addDays(new Date(), nextTarget);
-  console.log('nextDate', nextDate, nextDate.getTime());
   function generateNFT(trancheId: number) {
     fetch(`${NFT_ENDPOINT}?trancheId=${trancheId}`)
       .then((res) => res.json())
@@ -59,7 +65,7 @@ export default function PositionNftImage({
       {imageError ? (
         <Button onClick={() => generateNFT(trancheId)}>Generate NFT</Button>
       ) : null}
-      <CountdownTimer trancheId={trancheId} endDate={nextDate.getTime()} />
+      <CountdownTimer trancheId={trancheId} endDate={nextTarget} />
     </>
   );
 }

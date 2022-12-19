@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { MakeMostOfMoneyContext } from '../../../../contexts/MakeMostOfMoneyContext';
 import { NFT_ENDPOINT } from '../../../../utils';
 
 export default function GenerateNFTModal({
@@ -21,6 +22,7 @@ export default function GenerateNFTModal({
   trancheId: number | undefined;
 }) {
   const { isOpen, onClose } = useDisclosure({ defaultIsOpen: true });
+  const { setNftModal } = React.useContext(MakeMostOfMoneyContext);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const navigate = useNavigate();
@@ -33,10 +35,12 @@ export default function GenerateNFTModal({
         setIsLoading(false);
         navigate('/positions');
         onClose();
+        setNftModal(false);
       })
       .catch((e) => {
         setIsLoading(false);
         setError('Server Error generating the image=' + e.toString());
+        setNftModal(false);
       });
   }
 

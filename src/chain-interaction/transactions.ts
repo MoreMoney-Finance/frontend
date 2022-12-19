@@ -18,7 +18,7 @@ import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYi
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import YieldYakStrategy from '../contracts/artifacts/contracts/strategies/YieldYakStrategy.sol/YieldYakStrategy.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
-import WrapNativeStableLending2 from '../contracts/artifacts/contracts/WrapNativeStableLending2.sol/WrapNativeStableLending2.json';
+import WrapNativeMetaLending from '../contracts/artifacts/contracts/WrapNativeMetaLending.sol/WrapNativeMetaLending.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import VeMoreToken from '../contracts/artifacts/contracts/governance/VeMoreToken.sol/VeMoreToken.json';
 import VeMoreStaking from '../contracts/artifacts/contracts/governance/VeMoreStaking.sol/VeMoreStaking.json';
@@ -333,8 +333,8 @@ export function useNativeDepositBorrowTrans(
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    addresses.WrapNativeStableLending2,
-    new Interface(WrapNativeStableLending2.abi)
+    addresses.WrapNativeMetaLending,
+    new Interface(WrapNativeMetaLending.abi)
   );
   const { send, state } = useContractFunction(
     lendingContract,
@@ -370,8 +370,8 @@ export function useNativeRepayWithdrawTrans(
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    addresses.WrapNativeStableLending2,
-    new Interface(WrapNativeStableLending2.abi)
+    addresses.WrapNativeMetaLending,
+    new Interface(WrapNativeMetaLending.abi)
   );
 
   const { send, state } = useContractFunction(

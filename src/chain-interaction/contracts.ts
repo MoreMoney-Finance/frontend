@@ -117,7 +117,7 @@ export type DeploymentAddresses = {
   YieldYakAVAXStrategy2: string;
   AltYieldYakAVAXStrategy2: string;
   YieldYakStrategy2: string;
-  WrapNativeStableLending2: string;
+  WrapNativeMetaLending: string;
   StableLending2Liquidation: string;
   StableLending2InterestForwarder: string;
   iMoney: string;

@@ -15,10 +15,10 @@ export default function MigratePositionsComponent() {
           Where are my positions? &nbsp;
           <Text textDecoration={'underline'}>
             <a
-              href="https://v1.moremoney.finance/"
+              href="https://v2.moremoney.finance/"
               style={{ textDecoration: 'underline' }}
             >
-              Go to V1 UI
+              Go to V2 UI
             </a>
           </Text>
         </Alert>

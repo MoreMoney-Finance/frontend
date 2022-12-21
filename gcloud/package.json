@@ -1,0 +1,31 @@
+{
+  "name": "dsg-gcloud",
+  "version": "1.0.0",
+  "description": "dsg gcloud functions",
+  "main": "dist/index.js",
+  "scripts": {
+    "generate-proto": "npx proto-loader-gen-types --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=src/proto/ src/proto/generation.proto",
+    "build": "yarn generate-proto && tsc",
+    "gcp-build": "tsc",
+    "watch": "tsc --watch",
+    "start": "functions-framework --target app",
+    "deploy": "npm run build && gcloud functions deploy smol-pp-gen --region us-central1 --entry-point imgen --gen2 --env-vars-file .env.yaml --allow-unauthenticated --trigger-http --runtime nodejs16 --timeout 600"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.1.2",
+    "@google-cloud/storage": "^6.5.1",
+    "@grpc/grpc-js": "^1.6.12",
+    "@grpc/proto-loader": "^0.7.2",
+    "axios": "^1.2.0",
+    "ethers": "^5.7.2",
+    "express": "^4.18.1",
+    "google-protobuf": "^3.21.0",
+    "stability-client": "^1.7.0",
+    "uuid4": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/uuid4": "^2.0.0",
+    "api-interfaces": "stability-ai/api-interfaces",
+    "typescript": "^4.8.3"
+  }
+}

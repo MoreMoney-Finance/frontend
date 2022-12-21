@@ -13,36 +13,65 @@ import StableLending2Liquidation from '../contracts/artifacts/contracts/liquidat
 import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/OracleRegistry.json';
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import MasterMore from '../contracts/artifacts/contracts/rewards/MasterMore.sol/MasterMore.json';
-import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
+import MetaLending from '../contracts/artifacts/contracts/MetaLending.sol/MetaLending.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import YieldYakStrategy from '../contracts/artifacts/contracts/strategies/YieldYakStrategy.sol/YieldYakStrategy.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
-import WrapNativeStableLending2 from '../contracts/artifacts/contracts/WrapNativeStableLending2.sol/WrapNativeStableLending2.json';
+import WrapNativeMetaLending from '../contracts/artifacts/contracts/WrapNativeMetaLending.sol/WrapNativeMetaLending.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import VeMoreToken from '../contracts/artifacts/contracts/governance/VeMoreToken.sol/VeMoreToken.json';
 import VeMoreStaking from '../contracts/artifacts/contracts/governance/VeMoreStaking.sol/VeMoreStaking.json';
 import StableLending2InterestForwarder from '../contracts/artifacts/contracts/rewards/StableLending2InterestForwarder.sol/StableLending2InterestForwarder.json';
+import MigrateMetaLending from '../contracts/artifacts/contracts/MigrateMetaLending.sol/MigrateMetaLending.json';
 import {
   useAddresses,
   useRegisteredOracle,
   useStable,
   useYieldConversionStrategyView,
 } from './contracts';
-import { parseFloatCurrencyValue } from '../utils';
+import { jsonRpcProvider, parseFloatCurrencyValue } from '../utils';
 import { handleCallResultDefault } from './wrapper';
 import { sAvax } from '../constants/addresses';
+
+export function useMigratePosition() {
+  const addresses = useAddresses();
+  const cprAddress = useAddresses().MigrateMetaLending;
+  const cprContract = new Contract(
+    cprAddress,
+    new Interface(MigrateMetaLending.abi)
+  );
+  const migratePositionsStrategies: Record<string, string> = {
+    '0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE': addresses.YieldYakStrategy2,
+    '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7':
+      addresses.YieldYakAVAXStrategy2,
+  };
+
+  const { send, state } = useContractFunction(cprContract, 'migratePosition');
+
+  return {
+    sendMigrate: (trancheId: number, token: string) => {
+      return send(trancheId, migratePositionsStrategies[token]);
+    },
+    canMigrate: (token: string) => {
+      console.log('Migrate', Object.values(migratePositionsStrategies), token);
+      return Object.keys(migratePositionsStrategies).includes(token);
+    },
+
+    migrateState: state,
+  };
+}
 
 export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
   const contractsABI: Record<string, any> = {
     [useAddresses().YieldYakStrategy]: new Interface(YieldYakStrategy.abi),
-    [useAddresses().StableLending2]: new Interface(StableLending2.abi),
+    [useAddresses().MetaLending]: new Interface(MetaLending.abi),
   };
   const isYY = useAddresses().YieldYakStrategy === strategyAddress;
 
   const feesContract = new Contract(
     strategyAddress,
-    contractsABI[strategyAddress] ?? new Interface(StableLending2.abi)
+    contractsABI[strategyAddress] ?? new Interface(MetaLending.abi)
   );
   const { send, state } = useContractFunction(feesContract, 'withdrawFees');
 
@@ -304,8 +333,8 @@ export function useNativeDepositBorrowTrans(
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    addresses.WrapNativeStableLending2,
-    new Interface(WrapNativeStableLending2.abi)
+    addresses.WrapNativeMetaLending,
+    new Interface(WrapNativeMetaLending.abi)
   );
   const { send, state } = useContractFunction(
     lendingContract,
@@ -341,8 +370,8 @@ export function useNativeRepayWithdrawTrans(
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    addresses.WrapNativeStableLending2,
-    new Interface(WrapNativeStableLending2.abi)
+    addresses.WrapNativeMetaLending,
+    new Interface(WrapNativeMetaLending.abi)
   );
 
   const { send, state } = useContractFunction(
@@ -388,8 +417,8 @@ function prepRepayAmount(
 export function useDepositBorrowTrans(trancheId: number | null | undefined) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    addresses.StableLending2,
-    new Interface(StableLending2.abi)
+    addresses.MetaLending,
+    new Interface(MetaLending.abi)
   );
   const { send, state } = useContractFunction(
     lendingContract,
@@ -446,8 +475,8 @@ export function useRepayWithdrawTrans(
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    addresses.StableLending2,
-    new Interface(StableLending2.abi)
+    addresses.MetaLending,
+    new Interface(MetaLending.abi)
   );
 
   const { send, state } = useContractFunction(
@@ -540,9 +569,9 @@ export function useMigrateStrategy(
     token?.address === sAvax
       ? new Contract(
         addresses.BigMigrateStableLending2,
-        new Interface(StableLending2.abi)
+        new Interface(MetaLending.abi)
       )
-      : new Contract(lendingAddress, new Interface(StableLending2.abi));
+      : new Contract(lendingAddress, new Interface(MetaLending.abi));
   const { send, state } = useContractFunction(strategy, 'migrateStrategy');
 
   return {
@@ -630,14 +659,10 @@ export async function viewBidTarget(
   requestedColVal: BigNumber,
   defaultResult: any
 ) {
-  const provider = new ethers.providers.JsonRpcProvider(
-    'https://api.avax.network/ext/bc/C/rpc'
-  );
-
   const liquidationContract = new ethers.Contract(
     lendingAddress,
     new Interface(StableLending2Liquidation.abi),
-    provider
+    jsonRpcProvider
   );
 
   const result = await liquidationContract.viewBidTarget(

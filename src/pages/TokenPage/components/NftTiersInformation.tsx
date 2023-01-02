@@ -5,6 +5,8 @@ import { ExternalMetadataContext } from '../../../contexts/ExternalMetadataConte
 export default function NftTiersInformation() {
   const { tiersJson } = React.useContext(ExternalMetadataContext);
   console.log('tiersJson', tiersJson);
+  // const tiers = [1, 2, 3, 4, 5, 6, 7]
+  // const keys = Object.keys(tiersJson);
 
   return (
     <GridItem colSpan={[12, 12, 3, 3]} rowSpan={[12, 12, 3, 3]}>

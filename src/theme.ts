@@ -2,6 +2,14 @@ import { extendTheme } from '@chakra-ui/react';
 import '@fontsource/poppins';
 import '@fontsource/rubik';
 
+// Option 1
+// const primaryColor = '#040518';
+// const accentColor = '#317198';
+
+// Option 2
+const primaryColor = '#040518';
+const accentColor = '#7ADAED';
+
 const Container = {
   variants: {
     token: {
@@ -62,7 +70,7 @@ const Link = {
     headerActive: {
       fontSize: '17px',
       fontWeight: '600',
-      background: 'brand.accent',
+      background: accentColor,
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
     },
@@ -90,11 +98,11 @@ const Button = {
       borderRadius: 'lg',
     },
     primary: {
-      bg: 'brand.accent',
+      bg: accentColor,
       border: 'none',
       _hover: {
         _disabled: {
-          bg: 'brand.accent',
+          bg: accentColor,
         },
       },
     },
@@ -111,11 +119,11 @@ const Button = {
       padding: '16px',
       h: '56px',
       borderRadius: '10px',
-      bg: 'brand.accent',
+      bg: accentColor,
       border: 'none',
       _hover: {
         _disabled: {
-          bg: 'brand.accent',
+          bg: accentColor,
         },
       },
       width: '100%',
@@ -307,8 +315,7 @@ const Table = {
             border: '1px solid transparent',
             backgroundClip: 'padding-box, border-box',
             backgroundOrigin: 'padding-box, border-box',
-            backgroundImage:
-              'linear-gradient(hsla(227, 12%, 15%, 1), hsla(227, 12%, 15%, 1)), linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
+            backgroundImage: `linear-gradient(${primaryColor}, ${primaryColor}), linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)`,
             top: '0',
             left: '0',
             bottom: '0',
@@ -343,11 +350,11 @@ export const theme = extendTheme({
     white: 'hsl(0, 0%, 100%)',
     black: 'hsl(0,0%,0%)',
     brand: {
-      bg: 'hsla(227, 12%, 15%, 1)',
+      bg: primaryColor,
       bgOpacity: 'hsla(0, 0%, 0%, 0.2)',
       active: 'hsla(227, 22%, 26%, 0.59)',
       accent:
-        'linear-gradient(to bottom, hsla(166, 100%, 46%, 1), hsla(165, 86%, 34%, 1))',
+        'linear-gradient(to bottom, hsla(189, 100%, 46%, 1), hsla(189, 100%, 46%, 1))',
       gradientBg:
         'linear-gradient(to bottom, hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.03))',
     },

@@ -170,7 +170,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                 <Button
                   as={Link}
                   href={
-                    'https://traderjoexyz.com/pool/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05'
+                    'https://traderjoexyz.com/avalanche/pool/v1/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05'
                   }
                   isExternal
                   color={'white'}

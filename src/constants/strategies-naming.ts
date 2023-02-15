@@ -7,4 +7,5 @@ export const strategyNames: Record<string, string> = {
   '0x8B414448de8B609e96bd63Dcf2A8aDbd5ddf7fdd': 'Looping on Benqi',
   '0x9f637540149f922145c06e1aa3f38dcDc32Aff5C': 'GLP staking on GMX',
   '0xD390f59705f3F6d164d3C4b2C77d17224FCB033f': 'Compound Reward for More LP',
+  '0xc08986C33A714545330424fd5Fa132A8110E5E4F': 'yyAVAX Vector'
 };

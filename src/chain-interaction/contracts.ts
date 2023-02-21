@@ -504,7 +504,9 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const { yyAvaxAPY, yyMetadata, yieldMonitor, additionalYieldData } =
     useContext(ExternalMetadataContext);
   const apr = useAPRforPTPPoolInPTP();
-  const yyAvaxPlatypusAPY = parseFloat(formatUnits(apr, 8));
+  const yyAvaxPlatypusAPY = apr
+    ? parseFloat(formatUnits(apr.baseAPR.add(apr.boostedAPR), 8))
+    : 0;
 
   const addresses = useAddresses();
 

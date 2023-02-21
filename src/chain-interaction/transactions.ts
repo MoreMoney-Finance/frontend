@@ -93,8 +93,9 @@ export function useAPRforPTPPoolInPTP() {
       method: 'getAPRforPTPPoolInPTP',
       args: ['0x3BEB0D3DB537b79D377131Ce81950B683d382Ec9'],
     }),
-    BigNumber.from('0'),
-    'getAPR For PTP Poolin PTP'
+    null,
+    'getAPR For PTP Poolin PTP',
+    true
   );
 }
 

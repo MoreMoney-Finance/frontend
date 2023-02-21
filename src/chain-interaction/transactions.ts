@@ -72,6 +72,32 @@ export function useBalanceOfVeMoreToken(account: string | undefined | null) {
   );
 }
 
+export function useAPRforPTPPoolInPTP() {
+  const address = '0xD303B4CBf706650eB1A8B73683065aDA3f9d306A';
+  const abi = new Interface([
+    {
+      inputs: [{ name: 'lp', type: 'address' }],
+      name: 'getAPRforPTPPoolInPTP',
+      outputs: [
+        { name: 'baseAPR', type: 'uint256' },
+        { name: 'boostedAPR', type: 'uint256' },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+  ]);
+  const contract = new Contract(address, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'getAPRforPTPPoolInPTP',
+      args: ['0x3BEB0D3DB537b79D377131Ce81950B683d382Ec9'],
+    }),
+    BigNumber.from('0'),
+    'getAPR For PTP Poolin PTP'
+  );
+}
+
 export function useGetStakedMoreVeMoreToken(account: string) {
   const address = useAddresses().VeMoreStaking;
   const abi = new Interface(VeMoreStaking.abi);

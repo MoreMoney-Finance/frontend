@@ -221,12 +221,12 @@ export default function DepositBorrow({
     !position &&
     (isNativeToken ? nativeTokenBalance.isZero() : walletBalance.isZero());
 
-  const isJoeToken =
-    getAddress(token.address) ===
-    getAddress('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');
+  // const isJoeToken =
+  //   getAddress(token.address) ===
+  //   getAddress('0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd');
 
-  const depositBorrowButtonDisabledForJoe =
-    parseFloatNoNaN(collateralInput) > 0 && isJoeToken;
+  // const depositBorrowButtonDisabledForJoe =
+  //   parseFloatNoNaN(collateralInput) > 0 && isJoeToken;
 
   const depositBorrowButtonDisabled =
     (parseFloatNoNaN(collateralInput) === 0 &&
@@ -311,7 +311,8 @@ export default function DepositBorrow({
           >
             <WarningMessage
               message="JOE deposits currently disabled."
-              isOpen={depositBorrowButtonDisabledForJoe}
+              // isOpen={depositBorrowButtonDisabledForJoe}
+              isOpen={false}
             >
               <Text
                 variant={'bodyExtraSmall'}
@@ -495,7 +496,8 @@ export default function DepositBorrow({
               type="submit"
               isLoading={isSubmittingDepForm}
               isDisabled={
-                depositBorrowButtonDisabled || depositBorrowButtonDisabledForJoe
+                // depositBorrowButtonDisabled || depositBorrowButtonDisabledForJoe
+                depositBorrowButtonDisabled
               }
             >
               Deposit & Borrow

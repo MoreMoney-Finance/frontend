@@ -515,6 +515,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       addresses.YieldYakPermissiveStrategy2,
     ['0xF7D9281e8e363584973F946201b82ba72C965D27']:
       addresses.SimpleHoldingStrategy,
+    ['0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd']:
+      addresses.AltYieldYakStrategy2,
   };
 
   // const masterChef2Tokens = [

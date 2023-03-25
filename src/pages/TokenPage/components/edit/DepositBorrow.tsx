@@ -143,13 +143,7 @@ export default function DepositBorrow({
   const inputExceedsAllowance =
     allowCV &&
     parseFloatNoNaN(collateralInput) > parseFloatCurrencyValue(allowCV);
-  console.log(
-    'inputExceedsAllowance',
-    inputExceedsAllowance,
-    collateralInput,
-    allowCV,
-    parseFloatCurrencyValue(allowCV)
-  );
+
   const extantCollateral =
     position && position.collateral
       ? parseFloatCurrencyValue(position.collateral)

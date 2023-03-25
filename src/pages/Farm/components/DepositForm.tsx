@@ -105,7 +105,7 @@ export default function DepositForm({
       <TransactionErrorDialog state={stakeState} title={'Stake Action'} />
 
       <Box marginTop={'10px'}>
-        {allowance && !allowance.gt(walletBalance) && !isNativeToken ? (
+        {allowance && !allowance.gte(walletBalance) && !isNativeToken ? (
           <EnsureWalletConnected>
             <Button
               variant={'submit-primary'}
@@ -113,7 +113,7 @@ export default function DepositForm({
               isLoading={
                 approveState.status === TxStatus.MINING &&
                 allowance &&
-                !allowance.gt(walletBalance)
+                !allowance.gte(walletBalance)
               }
             >
               Approve MORE-AVAX JLP

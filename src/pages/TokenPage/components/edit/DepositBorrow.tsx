@@ -473,7 +473,7 @@ export default function DepositBorrow({
         />
 
         <Box marginTop={'10px'}>
-          {allowance && !allowance.gt(walletBalance) && !isNativeToken ? (
+          {allowance && !allowance.gte(walletBalance) && !isNativeToken ? (
             <EnsureWalletConnected>
               <Button
                 variant={'submit-primary'}
@@ -481,7 +481,7 @@ export default function DepositBorrow({
                 isLoading={
                   approveState.status === TxStatus.MINING &&
                   allowance &&
-                  !allowance.gt(walletBalance)
+                  !allowance.gte(walletBalance)
                 }
               >
                 Approve {token.name}{' '}

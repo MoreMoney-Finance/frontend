@@ -140,6 +140,10 @@ export default function DepositBorrow({
     'custom-percentage',
   ]);
 
+  const inputExceedsAllowance =
+    allowCV &&
+    parseFloatNoNaN(collateralInput) > parseFloatCurrencyValue(allowCV);
+
   const extantCollateral =
     position && position.collateral
       ? parseFloatCurrencyValue(position.collateral)
@@ -474,7 +478,7 @@ export default function DepositBorrow({
         />
 
         <Box marginTop={'10px'}>
-          {allowance && !allowance.gte(walletBalance) && !isNativeToken ? (
+          {allowance && inputExceedsAllowance && !isNativeToken ? (
             <EnsureWalletConnected>
               <Button
                 variant={'submit-primary'}
@@ -482,7 +486,7 @@ export default function DepositBorrow({
                 isLoading={
                   approveState.status === TxStatus.MINING &&
                   allowance &&
-                  !allowance.gte(walletBalance)
+                  inputExceedsAllowance
                 }
               >
                 Approve {token.name}{' '}

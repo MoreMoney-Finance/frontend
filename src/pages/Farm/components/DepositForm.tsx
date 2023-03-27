@@ -16,7 +16,7 @@ import { TokenAmountInputField } from '../../../components/tokens/TokenAmountInp
 import { WNATIVE_ADDRESS } from '../../../constants/addresses';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../contexts/WalletBalancesContext';
-import { parseFloatNoNaN } from '../../../utils';
+import { parseFloatCurrencyValue, parseFloatNoNaN } from '../../../utils';
 import { useTokenAllowance } from '@usedapp/core';
 import { useApproveTrans } from '../../../chain-interaction/transactions';
 import { TxStatus } from '../../../chain-interaction/contracts';
@@ -74,6 +74,9 @@ export default function DepositForm({
   const allowResult = useTokenAllowance(token.address, account, stakingAddress);
   const allowCV = new CurrencyValue(token, allowResult ?? BigNumber.from('0'));
   const allowance = token.address && account && stakingAddress && allowCV;
+  const inputExceedsAllowance =
+    allowance &&
+    parseFloatNoNaN(depositInput) > parseFloatCurrencyValue(allowCV);
 
   const { approveState, sendApprove } = useApproveTrans(token.address);
 
@@ -105,7 +108,7 @@ export default function DepositForm({
       <TransactionErrorDialog state={stakeState} title={'Stake Action'} />
 
       <Box marginTop={'10px'}>
-        {allowance && !allowance.gte(walletBalance) && !isNativeToken ? (
+        {allowance && inputExceedsAllowance && !isNativeToken ? (
           <EnsureWalletConnected>
             <Button
               variant={'submit-primary'}
@@ -113,7 +116,7 @@ export default function DepositForm({
               isLoading={
                 approveState.status === TxStatus.MINING &&
                 allowance &&
-                !allowance.gte(walletBalance)
+                inputExceedsAllowance
               }
             >
               Approve MORE-AVAX JLP

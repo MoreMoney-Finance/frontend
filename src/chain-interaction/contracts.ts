@@ -50,7 +50,7 @@ import {
 import { handleCallResultDefault } from './wrapper';
 import { JLPMasterMore, WAVAX } from '../constants/addresses';
 import MasterMore from '../contracts/artifacts/contracts/rewards/MasterMore.sol/MasterMore.json';
-import { useBalanceOfVeMoreToken } from './transactions';
+import { useAPRforPTPPoolInPTP, useBalanceOfVeMoreToken } from './transactions';
 import { strategyNames } from '../constants/strategies-naming';
 import { underlyingYield } from '../constants/underlying-yield';
 // import earnedRewards from '../constants/earned-rewards.json';
@@ -123,6 +123,7 @@ export type DeploymentAddresses = {
   YieldYakPermissiveStrategy2: string;
   MasterMore: string;
   BigMigrateStableLending2: string;
+  YieldYakCompounderStrategy: string;
 };
 
 export function useAddresses() {
@@ -502,6 +503,10 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const balancesCtx = useContext(WalletBalancesContext);
   const { yyAvaxAPY, yyMetadata, yieldMonitor, additionalYieldData } =
     useContext(ExternalMetadataContext);
+  const apr = useAPRforPTPPoolInPTP();
+  const yyAvaxPlatypusAPY = apr
+    ? parseFloat(formatUnits(apr.baseAPR.add(apr.boostedAPR), 8))
+    : 0;
 
   const addresses = useAddresses();
 
@@ -538,6 +543,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   strats.push(addresses.AltYieldYakStrategy2);
   tokens.push('0xF7D9281e8e363584973F946201b82ba72C965D27');
   strats.push(addresses.YieldYakStrategy2);
+  tokens.push('0xF7D9281e8e363584973F946201b82ba72C965D27');
+  strats.push(addresses.YieldYakCompounderStrategy);
 
   const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
 
@@ -631,7 +638,10 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
             underlyingStrategyNames.get(row.underlyingStrategy),
           {
             ...underlyingYield,
-            '0xF7D9281e8e363584973F946201b82ba72C965D27': yyAvaxAPY,
+            '0xF7D9281e8e363584973F946201b82ba72C965D27':
+              row.strategy === addresses.YieldYakCompounderStrategy
+                ? 0
+                : yyAvaxAPY,
           }
         );
 
@@ -639,7 +649,14 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
           ? {
               ...result,
               [parsedRow.token.address]: {
-                [parsedRow.strategyAddress]: parsedRow,
+                [parsedRow.strategyAddress]: {
+                  ...parsedRow,
+                  APY:
+                    parsedRow.strategyAddress ===
+                    addresses.YieldYakCompounderStrategy
+                      ? yyAvaxPlatypusAPY
+                      : parsedRow.APY,
+                },
                 ...(result[parsedRow.token.address] || {}),
               },
             }

@@ -505,7 +505,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
     useContext(ExternalMetadataContext);
   const apr = useAPRforPTPPoolInPTP();
   const yyAvaxPlatypusAPY = apr
-    ? parseFloat(formatUnits(apr.baseAPR.add(apr.boostedAPR), 8))
+    ? parseFloat(formatUnits(apr.baseAPR.add(apr.boostedAPR), 8)) + yyAvaxAPY
     : 0;
 
   const addresses = useAddresses();

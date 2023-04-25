@@ -124,6 +124,7 @@ export type DeploymentAddresses = {
   MasterMore: string;
   BigMigrateStableLending2: string;
   YieldYakCompounderStrategy: string;
+  DeltaPrimeStrategy: string;
 };
 
 export function useAddresses() {
@@ -522,6 +523,8 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       addresses.SimpleHoldingStrategy,
     ['0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd']:
       addresses.AltYieldYakStrategy2,
+    ['0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB']:
+      addresses.DeltaPrimeStrategy,
   };
 
   // const masterChef2Tokens = [

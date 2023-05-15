@@ -24,6 +24,19 @@ export type YieldFarmingData = {
   stakeTokenURL: string;
 };
 
+export type CumulativeDebtPositionType = {
+  trancheId: number;
+  strategy: string;
+  collateral: string;
+  debt: number;
+  token: string;
+  collateralValue: number;
+  borrowablePer10k: number;
+  owner: string;
+  trancheContract: string;
+  cumulativeDebt: number;
+};
+
 export type YieldMonitorMetadata = {
   poolNumber: string;
   symbol0Name: string;
@@ -55,6 +68,9 @@ export type ExternalMetadataType = {
   additionalYieldData: Record<string, Record<string, number>>;
   underlyingStrategyNames: Map<string, string>;
   yyAvaxAPY: number;
+  cumulativeDebtPositions: Record<number, CumulativeDebtPositionType>;
+  cumulativeDebtPositionsTimestamp: number;
+  tiersJson: Record<number, number>;
 };
 
 export const ExternalMetadataContext =
@@ -65,7 +81,10 @@ export const ExternalMetadataContext =
     xMoreData: {} as xMoreMetadata,
     additionalYieldData: {},
     yyAvaxAPY: 0,
-    underlyingStrategyNames: new Map<string, string>()
+    underlyingStrategyNames: new Map<string, string>(),
+    cumulativeDebtPositions: {},
+    cumulativeDebtPositionsTimestamp: 0,
+    tiersJson: {},
   });
 
 export function ExternalMetadataCtxProvider({
@@ -77,6 +96,13 @@ export function ExternalMetadataCtxProvider({
   const [yyAvaxAPY, setYYAvaxAPY] = useState<number>(0);
   const [yieldFarmingData, setYieldFarmingData] = useState<YieldFarmingData>();
   const [yyMetadata, setYYMeta] = useState<YYMetadata>({});
+  const [tiersJson, setTiersJson] = useState<Record<number, number>>();
+  const [
+    cumulativeDebtPositionsTimestamp,
+    setCumulativeDebtPositionsTimestamp,
+  ] = useState<number>(0);
+  const [cumulativeDebtPositions, setCumulativeDebtPositions] =
+    useState<CumulativeDebtPositionType>();
   const [yieldMonitor, setYieldMonitor] = useState<
     Record<string, YieldMonitorMetadata>
   >({});
@@ -148,6 +174,37 @@ export function ExternalMetadataCtxProvider({
         console.error('Failed to fetch URL');
         console.error(err);
       });
+    fetch('https://static.dreamerspaceguild.com/tiers.json')
+      .then((response) => response.json())
+      .then((response) => setTiersJson(response))
+      .catch((err) => {
+        console.error('Failed to fetch URL');
+        console.error(err);
+      });
+
+    fetch(
+      'https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/cumulative-debt-positions.json'
+    )
+      .then((response) => response.json())
+      .then((response) => {
+        setCumulativeDebtPositionsTimestamp(response?.tstamp);
+        setCumulativeDebtPositions(
+          response?.positions?.reduce(
+            (
+              map: Record<number, CumulativeDebtPositionType>,
+              obj: CumulativeDebtPositionType
+            ) => {
+              map[obj.trancheId] = obj;
+              return map;
+            },
+            {}
+          )
+        );
+      })
+      .catch((err) => {
+        console.error('Failed to fetch URL');
+        console.error(err);
+      });
   }, []);
   return (
     <ExternalMetadataContext.Provider
@@ -159,6 +216,9 @@ export function ExternalMetadataCtxProvider({
           xMoreData,
           additionalYieldData,
           yyAvaxAPY,
+          cumulativeDebtPositions,
+          cumulativeDebtPositionsTimestamp,
+          tiersJson,
         } as unknown as ExternalMetadataType
       }
     >

@@ -15,6 +15,7 @@ import StrategyNameAndSwitch, {
 } from './change-strategy/StrategyNameAndSwitch';
 import EditPosition from './edit/EditPosition';
 import CollateralAPY from './metadata/CollateralAPY';
+import NftTiersInformation from './NftTiersInformation';
 import { PositionData } from './PositionData';
 import StrategyTokenInformation from './StrategyTokenInformation';
 
@@ -113,7 +114,7 @@ export function PositionBody({
         templateRows={[
           'repeat(2, 1fr)',
           'repeat(2, 1fr)',
-          'auto 340px 240px 310px',
+          'auto 340px 0px 0px',
         ]}
         w={'full'}
         gap={'20px'}
@@ -132,6 +133,7 @@ export function PositionBody({
           chosenStrategy={chosenStrategy}
         />
         <StrategyTokenInformation stratMeta={stratMeta[chosenStrategy]} />
+        <NftTiersInformation />
       </Grid>
     </>
   );

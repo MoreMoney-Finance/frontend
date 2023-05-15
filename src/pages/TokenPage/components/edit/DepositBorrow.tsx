@@ -29,6 +29,7 @@ import {
   TxStatus,
   useStable,
 } from '../../../../chain-interaction/contracts';
+// import { getTokenFromAddress } from '../../../../chain-interaction/tokens';
 import {
   useApproveTrans,
   useDepositBorrowTrans,
@@ -45,6 +46,7 @@ import { UserAddressContext } from '../../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../../contexts/WalletBalancesContext';
 import { parseFloatCurrencyValue, parseFloatNoNaN } from '../../../../utils';
 import { ConfirmPositionModal } from './ConfirmPositionModal';
+import GenerateNFTModal from './GenerateNFTModal';
 
 export default function DepositBorrow({
   position,
@@ -55,11 +57,15 @@ export default function DepositBorrow({
 }>) {
   const { token, strategyAddress, borrowablePercent, usdPrice } = stratMeta;
   const { chainId } = useEthers();
+  // const [isNftGenerating, setIsNftGenerating] = React.useState<boolean>(false);
   const [data, setData] = useState<{ [x: string]: any }>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { onToggle, onClose: onClosePopover } = React.useContext(
-    MakeMostOfMoneyContext
-  );
+  const {
+    nftModal,
+    setNftModal,
+    onToggle,
+    onClose: onClosePopover,
+  } = React.useContext(MakeMostOfMoneyContext);
   const account = useContext(UserAddressContext);
   const stable = useStable();
 
@@ -101,6 +107,7 @@ export default function DepositBorrow({
     position ? position.trancheId : undefined
     // position ? position.trancheContract : undefined
   );
+
   const {
     sendDepositBorrow: sendNativeDepositBorrow,
     depositBorrowState: nativeDepositBorrowState,
@@ -212,6 +219,7 @@ export default function DepositBorrow({
         depositBorrowResult?.status === 1 ||
         nativeDepositBorrowResult?.status === 1
       ) {
+        setNftModal(true);
         onToggle();
         setTimeout(() => {
           onClosePopover();
@@ -261,6 +269,7 @@ export default function DepositBorrow({
             : totalPercentage > healthyZone
               ? 'green'
               : 'accent';
+
   const positionHealth = {
     accent: 'Safe',
     green: 'Healthy',
@@ -278,8 +287,7 @@ export default function DepositBorrow({
   // );
 
   const dangerousPosition = totalPercentage > borrowablePercent * 0.92;
-  console.log('customPercentageInput', customPercentageInput);
-
+  console.log('customPercentageInput', customPercentageInput, nftModal);
   const balance = isNativeToken ? nativeTokenBalance : walletBalance;
 
   return (
@@ -305,6 +313,7 @@ export default function DepositBorrow({
         ]}
         dangerous={dangerousPosition}
       />
+      {nftModal ? <GenerateNFTModal trancheId={position?.trancheId} /> : null}
       <form onSubmit={handleSubmitDepForm(onDepositBorrow)}>
         <Flex flexDirection={'column'} justify={'start'}>
           <Flex

@@ -18,12 +18,14 @@ import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYi
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import YieldYakStrategy from '../contracts/artifacts/contracts/strategies/YieldYakStrategy.sol/YieldYakStrategy.json';
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
-import WrapNativeMetaLending from '../contracts/artifacts/contracts/WrapNativeMetaLending.sol/WrapNativeMetaLending.json';
+// import WrapNativeMetaLending from '../contracts/artifacts/contracts/WrapNativeMetaLending.sol/WrapNativeMetaLending.json';
+import WrapNativeStableLending from '../contracts/artifacts/contracts/WrapNativeStableLending.sol/WrapNativeStableLending.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import VeMoreToken from '../contracts/artifacts/contracts/governance/VeMoreToken.sol/VeMoreToken.json';
 import VeMoreStaking from '../contracts/artifacts/contracts/governance/VeMoreStaking.sol/VeMoreStaking.json';
 import StableLending2InterestForwarder from '../contracts/artifacts/contracts/rewards/StableLending2InterestForwarder.sol/StableLending2InterestForwarder.json';
 import MigrateMetaLending from '../contracts/artifacts/contracts/MigrateMetaLending.sol/MigrateMetaLending.json';
+import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
 import {
   useAddresses,
   useRegisteredOracle,
@@ -360,8 +362,10 @@ export function useNativeDepositBorrowTrans(
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    addresses.WrapNativeMetaLending,
-    new Interface(WrapNativeMetaLending.abi)
+    // addresses.WrapNativeMetaLending,
+    // new Interface(WrapNativeMetaLending.abi)
+    addresses.WrapNativeStableLending,
+    new Interface(WrapNativeStableLending.abi)
   );
   const { send, state } = useContractFunction(
     lendingContract,
@@ -397,8 +401,10 @@ export function useNativeRepayWithdrawTrans(
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    addresses.WrapNativeMetaLending,
-    new Interface(WrapNativeMetaLending.abi)
+    // addresses.WrapNativeMetaLending,
+    // new Interface(WrapNativeMetaLending.abi)
+    addresses.StableLending2,
+    new Interface(StableLending2.abi)
   );
 
   const { send, state } = useContractFunction(
@@ -444,8 +450,10 @@ function prepRepayAmount(
 export function useDepositBorrowTrans(trancheId: number | null | undefined) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    addresses.MetaLending,
-    new Interface(MetaLending.abi)
+    // addresses.MetaLending,
+    // new Interface(MetaLending.abi)
+    addresses.StableLending2,
+    new Interface(StableLending2.abi)
   );
   const { send, state } = useContractFunction(
     lendingContract,
@@ -502,8 +510,10 @@ export function useRepayWithdrawTrans(
 ) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    addresses.MetaLending,
-    new Interface(MetaLending.abi)
+    // addresses.MetaLending,
+    // new Interface(MetaLending.abi)
+    addresses.StableLending2,
+    new Interface(StableLending2.abi)
   );
 
   const { send, state } = useContractFunction(

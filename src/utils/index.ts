@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 import Web3Modal from 'web3modal';
 import CoreLogo from '../assets/img/core.svg';
 
-export const isProduction =
-  window.location.href.includes('localhost') === false;
+export const isProduction = true;
+// window.location.href.includes('localhost') === false;
 
 export const NFT_ENDPOINT = 'https://smol-pp-gen-o727bibr2q-uc.a.run.app';
 

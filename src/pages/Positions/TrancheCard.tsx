@@ -22,7 +22,7 @@ export function TrancheCard({
             flexDirection={'column'}
             justifyContent={'center'}
           >
-            <PositionNftImage trancheId={row.trancheId} debt={row.debt} />
+            <PositionNftImage trancheId={row.trancheId} />
           </Flex>
           <Flex
             flexDirection={'column'}

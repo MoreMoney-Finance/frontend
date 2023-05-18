@@ -69,7 +69,6 @@ export function PositionData({
               height={['auto', 'auto', 'auto', '120px']}
               padding={0}
               trancheId={position.trancheId}
-              debt={parseFloatCurrencyValue(position.debt).toString()}
             />
           </VStack>
           <TitleValue

@@ -1,6 +1,7 @@
 import { Button, Image } from '@chakra-ui/react';
 import * as React from 'react';
-import { NFT_ENDPOINT } from '../../utils';
+import { useClaimNFTContract } from '../../chain-interaction/transactions';
+import { TransactionErrorDialog } from '../notifications/TransactionErrorDialog';
 
 export default function PositionNftImage({
   width,
@@ -15,14 +16,16 @@ export default function PositionNftImage({
 }) {
   const [imageError, setImageError] = React.useState(false);
 
+  const { sendClaim, claimState } = useClaimNFTContract();
+
   function generateNFT(trancheId: number) {
-    fetch(`${NFT_ENDPOINT}?trancheId=${trancheId}`)
-      .then((res) => res.json())
-      .then(() => window.location.reload());
+    console.log('trancheId', trancheId);
+    sendClaim();
   }
 
   return (
     <>
+      <TransactionErrorDialog state={claimState} title="Claim NFT" />
       <Image
         width={width || ['100%', '100%', '100%', '100%']}
         height={height}

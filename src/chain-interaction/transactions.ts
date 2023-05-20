@@ -82,8 +82,8 @@ export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
       contractsABI[strategyAddress] === undefined
         ? null
         : isYY
-          ? () => send(tokenAddress)
-          : () => send(),
+        ? () => send(tokenAddress)
+        : () => send(),
     withdrawState: state,
   };
 }
@@ -421,11 +421,11 @@ export function useNativeRepayWithdrawTrans(
     ) =>
       account && trancheId && collateralToken && totalDebt
         ? send(
-          trancheId,
-          parseUnits(collateralAmount.toString(), collateralToken.decimals),
-          prepRepayAmount(repayAmount, totalDebt),
-          account
-        )
+            trancheId,
+            parseUnits(collateralAmount.toString(), collateralToken.decimals),
+            prepRepayAmount(repayAmount, totalDebt),
+            account
+          )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
   };
@@ -450,10 +450,10 @@ function prepRepayAmount(
 export function useDepositBorrowTrans(trancheId: number | null | undefined) {
   const addresses = useAddresses();
   const lendingContract = new Contract(
-    // addresses.MetaLending,
-    // new Interface(MetaLending.abi)
-    addresses.StableLending2,
-    new Interface(StableLending2.abi)
+    addresses.MetaLending,
+    new Interface(MetaLending.abi)
+    // addresses.StableLending2,
+    // new Interface(StableLending2.abi)
   );
   const { send, state } = useContractFunction(
     lendingContract,
@@ -477,12 +477,12 @@ export function useDepositBorrowTrans(trancheId: number | null | undefined) {
       return trancheId
         ? send(trancheId, cAmount, bAmount, account)
         : send(
-          collateralToken.address,
-          strategyAddress,
-          cAmount,
-          bAmount,
-          account
-        );
+            collateralToken.address,
+            strategyAddress,
+            cAmount,
+            bAmount,
+            account
+          );
     },
     depositBorrowState: state,
   };
@@ -530,11 +530,11 @@ export function useRepayWithdrawTrans(
     ) =>
       account && trancheId && collateralToken && totalDebt
         ? send(
-          trancheId,
-          parseUnits(collateralAmount.toString(), collateralToken.decimals),
-          prepRepayAmount(repayAmount, totalDebt),
-          account
-        )
+            trancheId,
+            parseUnits(collateralAmount.toString(), collateralToken.decimals),
+            prepRepayAmount(repayAmount, totalDebt),
+            account
+          )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
   };
@@ -605,9 +605,9 @@ export function useMigrateStrategy(
   const strategy =
     token?.address === sAvax
       ? new Contract(
-        addresses.BigMigrateStableLending2,
-        new Interface(MetaLending.abi)
-      )
+          addresses.BigMigrateStableLending2,
+          new Interface(MetaLending.abi)
+        )
       : new Contract(lendingAddress, new Interface(MetaLending.abi));
   const { send, state } = useContractFunction(strategy, 'migrateStrategy');
 

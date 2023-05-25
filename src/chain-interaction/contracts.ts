@@ -31,7 +31,8 @@ import iMoney from '../contracts/artifacts/contracts/rewards/iMoney.sol/iMoney.j
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
 import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
-import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
+import NFTContract from '../contracts/artifacts/contracts/NFTContract.sol/NFTContract.json';
+// import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
 import MetaLending from '../contracts/artifacts/contracts/MetaLending.sol/MetaLending.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
@@ -132,6 +133,7 @@ export type DeploymentAddresses = {
   YieldYakCompounderStrategy: string;
   MetaLending: string;
   MigrateMetaLending: string;
+  NFTContract: string;
 };
 
 export function useAddresses() {
@@ -149,10 +151,10 @@ export function useIsolatedLendingView(
 ) {
   const addresses = useAddresses();
 
-  const abi = new Interface(StableLending2.abi);
-  const contract = new Contract(addresses.StableLending2, abi);
-  // const abi = new Interface(MetaLending.abi);
-  // const contract = new Contract(addresses.MetaLending, abi);
+  // const abi = new Interface(StableLending2.abi);
+  // const contract = new Contract(addresses.StableLending2, abi);
+  const abi = new Interface(MetaLending.abi);
+  const contract = new Contract(addresses.MetaLending, abi);
   return {
     legacy: handleCallResultDefault(
       useCall({
@@ -402,6 +404,86 @@ export function useIMoneyAccountInfo(account: string): IMoneyAccountInfo {
   };
 }
 
+export function useIsTimeLimitOver(defaultResult: boolean) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'isTimeLimitOver',
+      args: [],
+    }),
+    defaultResult,
+    'useIsTimeLimitOver'
+  );
+}
+
+export function useHasMinimumDebt(defaultResult: boolean) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'hasMinimumDebt',
+      args: [],
+    }),
+    defaultResult,
+    'useHasMinimumDebt'
+  );
+}
+
+export function useHasAvailableNFT(defaultResult: boolean) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'hasAvailableNFT',
+      args: [],
+    }),
+    defaultResult,
+    'useHasAvailableNFT'
+  );
+}
+
+export function useTokenIdByTrancheId(
+  trancheId: number,
+  defaultResult: number
+) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'tokenIdByTrancheId',
+      args: [trancheId],
+    }),
+
+    defaultResult,
+    'usetokenIdByTrancheId',
+    true
+  );
+}
+
+export function useHasDuplicateNFTs(defaultResult: boolean) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'hasDuplicateNFTs',
+      args: [],
+    }),
+    defaultResult,
+    'useHasDuplicateNFTs'
+  );
+}
+
 export function useIMoneyTotalWeights(defaultResult: any) {
   const addresses = useAddresses();
   const abi = new Interface(iMoney.abi);
@@ -522,7 +604,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
   const token2Strat = {
     ['0xE5e9d67e93aD363a50cABCB9E931279251bBEFd0']: addresses.YieldYakStrategy2,
-    ['0x152b9d0FdC40C096757F570A51E494bd4b943E50']: addresses.YieldYakStrategy2,
+    // ['0x152b9d0FdC40C096757F570A51E494bd4b943E50']: addresses.YieldYakStrategy2,
     ['0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE']: addresses.YieldYakStrategy2,
     // ['0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB']: addresses.YieldYakStrategy2,
     // ['0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7']:
@@ -544,16 +626,16 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   const tokens = Object.keys(token2Strat);
   const strats = Object.values(token2Strat);
 
-  tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
-  strats.push(addresses.AltYieldYakAVAXStrategy2);
+  // tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
+  // strats.push(addresses.AltYieldYakAVAXStrategy2);
   // tokens.push('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7');
   // strats.push(addresses.OldYieldYakAVAXStrategy2);
   // tokens.push('0x152b9d0FdC40C096757F570A51E494bd4b943E50');
   // strats.push(addresses.AltYieldYakStrategy2);
   // tokens.push('0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE');
   // strats.push(addresses.AltYieldYakStrategy2);
-  // tokens.push('0xF7D9281e8e363584973F946201b82ba72C965D27');
-  // strats.push(addresses.YieldYakStrategy2);
+  tokens.push('0xF7D9281e8e363584973F946201b82ba72C965D27');
+  strats.push(addresses.YieldYakStrategy2);
   // tokens.push('0xF7D9281e8e363584973F946201b82ba72C965D27');
   // strats.push(addresses.YieldYakCompounderStrategy);
 
@@ -1573,14 +1655,14 @@ export function useUpdatedPositions(timeStart: number) {
   // console.log('startPeriod', startPeriod);
   const stable = useStable();
   const addresses = useAddresses();
-  // const contract = new Contract(
-  //   addresses.MetaLending,
-  //   new Interface(MetaLending.abi)
-  // );
   const contract = new Contract(
-    addresses.StableLending2,
-    new Interface(StableLending2.abi)
+    addresses.MetaLending,
+    new Interface(MetaLending.abi)
   );
+  // const contract = new Contract(
+  //   addresses.StableLending2,
+  //   new Interface(StableLending2.abi)
+  // );
 
   function args(trancheContract: string) {
     return Array(endPeriod - startPeriod)

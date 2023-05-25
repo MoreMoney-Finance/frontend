@@ -20,6 +20,7 @@ import YieldYakStrategy from '../contracts/artifacts/contracts/strategies/YieldY
 import Strategy from '../contracts/artifacts/contracts/Strategy.sol/Strategy.json';
 // import WrapNativeMetaLending from '../contracts/artifacts/contracts/WrapNativeMetaLending.sol/WrapNativeMetaLending.json';
 import WrapNativeStableLending from '../contracts/artifacts/contracts/WrapNativeStableLending.sol/WrapNativeStableLending.json';
+import NFTContract from '../contracts/artifacts/contracts/NFTContract.sol/NFTContract.json';
 import IOracle from '../contracts/artifacts/interfaces/IOracle.sol/IOracle.json';
 import VeMoreToken from '../contracts/artifacts/contracts/governance/VeMoreToken.sol/VeMoreToken.json';
 import VeMoreStaking from '../contracts/artifacts/contracts/governance/VeMoreStaking.sol/VeMoreStaking.json';
@@ -82,8 +83,8 @@ export function useWithdrawFees(strategyAddress: string, tokenAddress: string) {
       contractsABI[strategyAddress] === undefined
         ? null
         : isYY
-        ? () => send(tokenAddress)
-        : () => send(),
+          ? () => send(tokenAddress)
+          : () => send(),
     withdrawState: state,
   };
 }
@@ -187,6 +188,20 @@ export function useClaimIMoney() {
   return {
     sendClaim: () => {
       return send(BigNumber.from(0));
+    },
+    claimState: state,
+  };
+}
+
+export function useClaimNFTContract() {
+  const addresses = useAddresses();
+  const cprAddress = addresses.NFTContract;
+  const cprContract = new Contract(cprAddress, new Interface(NFTContract.abi));
+  const { send, state } = useContractFunction(cprContract, 'claimNFT');
+
+  return {
+    sendClaim: () => {
+      return send();
     },
     claimState: state,
   };
@@ -421,11 +436,11 @@ export function useNativeRepayWithdrawTrans(
     ) =>
       account && trancheId && collateralToken && totalDebt
         ? send(
-            trancheId,
-            parseUnits(collateralAmount.toString(), collateralToken.decimals),
-            prepRepayAmount(repayAmount, totalDebt),
-            account
-          )
+          trancheId,
+          parseUnits(collateralAmount.toString(), collateralToken.decimals),
+          prepRepayAmount(repayAmount, totalDebt),
+          account
+        )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
   };
@@ -477,12 +492,12 @@ export function useDepositBorrowTrans(trancheId: number | null | undefined) {
       return trancheId
         ? send(trancheId, cAmount, bAmount, account)
         : send(
-            collateralToken.address,
-            strategyAddress,
-            cAmount,
-            bAmount,
-            account
-          );
+          collateralToken.address,
+          strategyAddress,
+          cAmount,
+          bAmount,
+          account
+        );
     },
     depositBorrowState: state,
   };
@@ -530,11 +545,11 @@ export function useRepayWithdrawTrans(
     ) =>
       account && trancheId && collateralToken && totalDebt
         ? send(
-            trancheId,
-            parseUnits(collateralAmount.toString(), collateralToken.decimals),
-            prepRepayAmount(repayAmount, totalDebt),
-            account
-          )
+          trancheId,
+          parseUnits(collateralAmount.toString(), collateralToken.decimals),
+          prepRepayAmount(repayAmount, totalDebt),
+          account
+        )
         : console.error('Trying to withdraw but parameters not set'),
     repayWithdrawState: state,
   };
@@ -605,9 +620,9 @@ export function useMigrateStrategy(
   const strategy =
     token?.address === sAvax
       ? new Contract(
-          addresses.BigMigrateStableLending2,
-          new Interface(MetaLending.abi)
-        )
+        addresses.BigMigrateStableLending2,
+        new Interface(MetaLending.abi)
+      )
       : new Contract(lendingAddress, new Interface(MetaLending.abi));
   const { send, state } = useContractFunction(strategy, 'migrateStrategy');
 

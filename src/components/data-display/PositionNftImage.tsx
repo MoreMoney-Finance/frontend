@@ -2,6 +2,13 @@ import { Button, Image } from '@chakra-ui/react';
 import * as React from 'react';
 import { useClaimNFTContract } from '../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../notifications/TransactionErrorDialog';
+import {
+  useHasAvailableNFT,
+  useHasDuplicateNFTs,
+  useHasMinimumDebt,
+  useIsTimeLimitOver,
+  useTokenIdByTrancheId,
+} from '../../chain-interaction/contracts';
 
 export default function PositionNftImage({
   width,
@@ -14,37 +21,68 @@ export default function PositionNftImage({
   padding?: number;
   trancheId: number;
 }) {
-  const [imageError, setImageError] = React.useState(false);
+  const [image, setImage] = React.useState(null);
 
   const { sendClaim, claimState } = useClaimNFTContract();
+  const isTimeLimitOver = useIsTimeLimitOver(false);
+  const minimumDebt = useHasMinimumDebt(false);
+  const hasAvailableNFT = useHasAvailableNFT(false);
+  const hasDuplicateNFTs = useHasDuplicateNFTs(false);
+  const tokenIdByTrancheId = useTokenIdByTrancheId(trancheId, 0);
+  console.log('tokenIdByTrancheId', tokenIdByTrancheId.toString());
 
   function generateNFT(trancheId: number) {
     console.log('trancheId', trancheId);
     sendClaim();
   }
 
+  function parseNFTMetadata(tokenId: number) {
+    fetch(
+      `https://raw.githubusercontent.com/MoreMoney-Finance/contracts/feature/smol-pp/nfts/metadata/${tokenId.toString()}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('data', data);
+        setImage(data.image);
+      });
+  }
+
+  React.useEffect(() => {
+    if (tokenIdByTrancheId === 0) return;
+    parseNFTMetadata(tokenIdByTrancheId.toString());
+  }, [tokenIdByTrancheId]);
+
+  const claimDisabled =
+    isTimeLimitOver || !minimumDebt || hasAvailableNFT || hasDuplicateNFTs;
+
+  const claimDisabledMessage = isTimeLimitOver
+    ? 'Time limit not over'
+    : !minimumDebt
+      ? 'Minimum debt not reached'
+      : hasAvailableNFT
+        ? 'No available NFTs'
+        : hasDuplicateNFTs
+          ? 'No duplicate NFTs'
+          : '';
+
   return (
     <>
       <TransactionErrorDialog state={claimState} title="Claim NFT" />
-      <Image
-        width={width || ['100%', '100%', '100%', '100%']}
-        height={height}
-        display={imageError ? 'none' : 'inline'}
-        p={padding || '4'}
-        borderRadius={'25px'}
-        src={`https://static.moremoney.finance/${trancheId.toString()}.png`}
-        // src={
-        //   'https://cdn.stablediffusionapi.com/generations/fcc85d4b-fd90-4866-ae94-5bebb2467539-0.png'
-        // }
-        // src={
-        //   imageError
-        //     ? 'https://t3.ftcdn.net/jpg/02/48/42/64/360_F_248426448_NVKLywWqArG2ADUxDq6QprtIzsF82dMF.jpg'
-        //     : `https://static.dreamerspaceguild.com/images/${trancheId.toString()}.png`
-        // }
-        onError={() => setImageError(true)}
-      />
-      {imageError ? (
+      {image && (
+        <Image
+          width={width || ['100%', '100%', '100%', '100%']}
+          height={height}
+          // display={imageError ? 'none' : 'inline'}
+          p={padding || '4'}
+          borderRadius={'25px'}
+          src={image}
+        />
+      )}
+
+      {!claimDisabled ? (
         <Button onClick={() => generateNFT(trancheId)}>Generate NFT</Button>
+      ) : claimDisabledMessage ? (
+        <Button disabled={true}>{claimDisabledMessage}</Button>
       ) : null}
     </>
   );

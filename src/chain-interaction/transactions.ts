@@ -14,6 +14,7 @@ import OracleRegistry from '../contracts/artifacts/contracts/OracleRegistry.sol/
 import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/VestingLaunchReward.sol/VestingLaunchReward.json';
 import MasterMore from '../contracts/artifacts/contracts/rewards/MasterMore.sol/MasterMore.json';
 import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
+import NFTContract from '../contracts/artifacts/contracts/NFTContract.sol/NFTContract.json';
 import AMMYieldConverter from '../contracts/artifacts/contracts/strategies/AMMYieldConverter.sol/AMMYieldConverter.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import YieldYakStrategy from '../contracts/artifacts/contracts/strategies/YieldYakStrategy.sol/YieldYakStrategy.json';
@@ -156,6 +157,20 @@ export function useClaimIMoney() {
   return {
     sendClaim: () => {
       return send(BigNumber.from(0));
+    },
+    claimState: state,
+  };
+}
+
+export function useClaimNFTContract() {
+  const addresses = useAddresses();
+  const cprAddress = addresses.NFTContract;
+  const cprContract = new Contract(cprAddress, new Interface(NFTContract.abi));
+  const { send, state } = useContractFunction(cprContract, 'claimNFT');
+
+  return {
+    sendClaim: () => {
+      return send();
     },
     claimState: state,
   };

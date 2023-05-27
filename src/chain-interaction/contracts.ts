@@ -32,6 +32,7 @@ import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/Vestin
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
 import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
 import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
+import NFTContract from '../contracts/artifacts/contracts/NFTContract.sol/NFTContract.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
@@ -124,6 +125,7 @@ export type DeploymentAddresses = {
   MasterMore: string;
   BigMigrateStableLending2: string;
   YieldYakCompounderStrategy: string;
+  NFTContract: string;
 };
 
 export function useAddresses() {
@@ -346,6 +348,86 @@ function parseStratMeta(
       underlyingStrategyName,
     };
   }
+}
+
+export function useIsTimeLimitOver(defaultResult: boolean) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'isTimeLimitOver',
+      args: [],
+    }),
+    defaultResult,
+    'useIsTimeLimitOver'
+  );
+}
+
+export function useHasMinimumDebt(defaultResult: boolean) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'hasMinimumDebt',
+      args: [],
+    }),
+    defaultResult,
+    'useHasMinimumDebt'
+  );
+}
+
+export function useHasAvailableNFT(defaultResult: boolean) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'hasAvailableNFT',
+      args: [],
+    }),
+    defaultResult,
+    'useHasAvailableNFT'
+  );
+}
+
+export function useTokenIdByTrancheId(
+  trancheId: number,
+  defaultResult: number
+) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'tokenIdByTrancheId',
+      args: [trancheId],
+    }),
+
+    defaultResult,
+    'usetokenIdByTrancheId',
+    true
+  );
+}
+
+export function useHasDuplicateNFTs(defaultResult: boolean) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'hasDuplicateNFTs',
+      args: [],
+    }),
+    defaultResult,
+    'useHasDuplicateNFTs'
+  );
 }
 
 export function useTotalDebt(defaultResult: any) {

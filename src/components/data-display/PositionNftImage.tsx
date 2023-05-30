@@ -25,15 +25,15 @@ export default function PositionNftImage({
 
   const { sendClaim, claimState } = useClaimNFTContract();
   const isTimeLimitOver = useIsTimeLimitOver(false);
-  const minimumDebt = useHasMinimumDebt(false);
+  const minimumDebt = useHasMinimumDebt(trancheId, false);
   const hasAvailableNFT = useHasAvailableNFT(false);
-  const hasDuplicateNFTs = useHasDuplicateNFTs(false);
+  const hasDuplicateNFTs = useHasDuplicateNFTs(trancheId, false);
   const tokenIdByTrancheId = useTokenIdByTrancheId(trancheId, 0);
   console.log('tokenIdByTrancheId', tokenIdByTrancheId.toString());
 
   function generateNFT(trancheId: number) {
     console.log('trancheId', trancheId);
-    sendClaim();
+    sendClaim(trancheId);
   }
 
   function parseNFTMetadata(tokenId: number) {

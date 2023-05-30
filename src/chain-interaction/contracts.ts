@@ -365,7 +365,10 @@ export function useIsTimeLimitOver(defaultResult: boolean) {
   );
 }
 
-export function useHasMinimumDebt(defaultResult: boolean) {
+export function useHasMinimumDebt(
+  trancheId: number | string,
+  defaultResult: boolean
+) {
   const addresses = useAddresses();
   const abi = new Interface(NFTContract.abi);
   const contract = new Contract(addresses.NFTContract, abi);
@@ -373,7 +376,7 @@ export function useHasMinimumDebt(defaultResult: boolean) {
     useCall({
       contract,
       method: 'hasMinimumDebt',
-      args: [],
+      args: [trancheId],
     }),
     defaultResult,
     'useHasMinimumDebt'
@@ -406,7 +409,7 @@ export function useTokenIdByTrancheId(
     useCall({
       contract,
       method: 'tokenIdByTrancheId',
-      args: [trancheId],
+      args: [BigNumber.from(trancheId)],
     }),
 
     defaultResult,
@@ -415,7 +418,7 @@ export function useTokenIdByTrancheId(
   );
 }
 
-export function useHasDuplicateNFTs(defaultResult: boolean) {
+export function useHasDuplicateNFTs(trancheId: number, defaultResult: boolean) {
   const addresses = useAddresses();
   const abi = new Interface(NFTContract.abi);
   const contract = new Contract(addresses.NFTContract, abi);
@@ -423,7 +426,7 @@ export function useHasDuplicateNFTs(defaultResult: boolean) {
     useCall({
       contract,
       method: 'hasDuplicateNFTs',
-      args: [],
+      args: [BigNumber.from(trancheId)],
     }),
     defaultResult,
     'useHasDuplicateNFTs'

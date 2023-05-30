@@ -169,8 +169,8 @@ export function useClaimNFTContract() {
   const { send, state } = useContractFunction(cprContract, 'claimNFT');
 
   return {
-    sendClaim: () => {
-      return send();
+    sendClaim: (trancheId: string | number) => {
+      return send(trancheId);
     },
     claimState: state,
   };

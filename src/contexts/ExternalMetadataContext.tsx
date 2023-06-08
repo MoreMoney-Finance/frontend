@@ -50,8 +50,8 @@ export type YieldMonitorMetadata = {
 export type NFTSnapshotFile = {
   tstamp: number;
   positions: Record<string, Record<string, number>>;
-  eligible: Record<string, boolean>;
-  signatures: Record<string, string>;
+  eligible: Record<string, Record<string, boolean>>;
+  signatures: Record<string, Record<string, string>>;
 };
 
 export type ExternalMetadataType = {

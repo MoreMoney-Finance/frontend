@@ -34,7 +34,7 @@ export default function PositionNftImage({
       epoch: currentEpoch,
     });
     if (nftSnapshot && account) {
-      const signature = nftSnapshot.signatures[account];
+      const signature = nftSnapshot.signatures[currentEpoch][account];
       sendClaim(
         {
           minter: account,
@@ -61,7 +61,8 @@ export default function PositionNftImage({
     parseNFTMetadata(tokenIdByTrancheId.toString());
   }, [tokenIdByTrancheId]);
 
-  const isEligible = nftSnapshot && account && nftSnapshot.eligible[account];
+  const isEligible =
+    nftSnapshot && account && nftSnapshot.eligible[currentEpoch][account];
   const claimDisabledMessage = !isEligible ? 'You are not eligible ' : null;
 
   return (

@@ -1,14 +1,14 @@
 import { Button, Image } from '@chakra-ui/react';
 import * as React from 'react';
-import { useClaimNFTContract } from '../../chain-interaction/transactions';
-import { TransactionErrorDialog } from '../notifications/TransactionErrorDialog';
 import {
-  useHasAvailableNFT,
-  useHasDuplicateNFTs,
-  useHasMinimumDebt,
-  useIsTimeLimitOver,
+  useCurrentEpoch,
   useTokenIdByTrancheId,
 } from '../../chain-interaction/contracts';
+import { useClaimNFTContract } from '../../chain-interaction/transactions';
+import { TransactionErrorDialog } from '../notifications/TransactionErrorDialog';
+import { ExternalMetadataContext } from '../../contexts/ExternalMetadataContext';
+import { UserAddressContext } from '../../contexts/UserAddressContext';
+import { BigNumber } from 'ethers';
 
 export default function PositionNftImage({
   width,
@@ -21,19 +21,28 @@ export default function PositionNftImage({
   padding?: number;
   trancheId: number;
 }) {
+  const account = React.useContext(UserAddressContext);
   const [image, setImage] = React.useState(null);
-
+  const { nftSnapshot } = React.useContext(ExternalMetadataContext);
+  const currentEpoch = useCurrentEpoch(BigNumber.from(0));
   const { sendClaim, claimState } = useClaimNFTContract();
-  const isTimeLimitOver = useIsTimeLimitOver(false);
-  const minimumDebt = useHasMinimumDebt(trancheId, false);
-  const hasAvailableNFT = useHasAvailableNFT(false);
-  const hasDuplicateNFTs = useHasDuplicateNFTs(trancheId, false);
   const tokenIdByTrancheId = useTokenIdByTrancheId(trancheId, 0);
-  console.log('tokenIdByTrancheId', tokenIdByTrancheId.toString());
 
   function generateNFT(trancheId: number) {
-    console.log('trancheId', trancheId);
-    sendClaim(trancheId);
+    console.log('trancheId', trancheId, {
+      minter: account,
+      epoch: currentEpoch,
+    });
+    if (nftSnapshot && account) {
+      const signature = nftSnapshot.signatures[account];
+      sendClaim(
+        {
+          minter: account,
+          epoch: currentEpoch,
+        },
+        signature
+      );
+    }
   }
 
   function parseNFTMetadata(tokenId: number) {
@@ -52,18 +61,8 @@ export default function PositionNftImage({
     parseNFTMetadata(tokenIdByTrancheId.toString());
   }, [tokenIdByTrancheId]);
 
-  const claimDisabled =
-    isTimeLimitOver || !minimumDebt || hasAvailableNFT || hasDuplicateNFTs;
-
-  const claimDisabledMessage = isTimeLimitOver
-    ? 'Time limit not over'
-    : !minimumDebt
-      ? 'Minimum debt not reached'
-      : hasAvailableNFT
-        ? 'No available NFTs'
-        : hasDuplicateNFTs
-          ? 'No duplicate NFTs'
-          : '';
+  const isEligible = nftSnapshot && account && nftSnapshot.eligible[account];
+  const claimDisabledMessage = !isEligible ? 'You are not eligible ' : null;
 
   return (
     <>
@@ -79,7 +78,7 @@ export default function PositionNftImage({
         />
       )}
 
-      {!claimDisabled ? (
+      {isEligible ? (
         <Button onClick={() => generateNFT(trancheId)}>Generate NFT</Button>
       ) : claimDisabledMessage ? (
         <Button disabled={true}>{claimDisabledMessage}</Button>

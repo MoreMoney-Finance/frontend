@@ -418,6 +418,21 @@ export function useTokenIdByTrancheId(
   );
 }
 
+export function useCurrentEpoch(defaultResult: BigNumber) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'currentEpoch',
+      args: [],
+    }),
+    defaultResult,
+    'useCurrentEpoch'
+  );
+}
+
 export function useHasDuplicateNFTs(trancheId: number, defaultResult: boolean) {
   const addresses = useAddresses();
   const abi = new Interface(NFTContract.abi);

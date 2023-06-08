@@ -166,11 +166,14 @@ export function useClaimNFTContract() {
   const addresses = useAddresses();
   const cprAddress = addresses.NFTContract;
   const cprContract = new Contract(cprAddress, new Interface(NFTContract.abi));
-  const { send, state } = useContractFunction(cprContract, 'claimNFT');
-
+  const { send, state } = useContractFunction(cprContract, 'mintNFT');
+  interface MintData {
+    minter: string;
+    epoch: number;
+  }
   return {
-    sendClaim: (trancheId: string | number) => {
-      return send(trancheId);
+    sendClaim: (mintData: MintData, signature: string) => {
+      return send(mintData, signature);
     },
     claimState: state,
   };

@@ -113,7 +113,7 @@ export function PositionBody({
         templateRows={[
           'repeat(2, 1fr)',
           'repeat(2, 1fr)',
-          'auto 340px 240px 310px',
+          'auto 340px 0px 0px',
         ]}
         w={'full'}
         gap={'20px'}

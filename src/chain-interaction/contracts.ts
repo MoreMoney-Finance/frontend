@@ -124,6 +124,7 @@ export type DeploymentAddresses = {
   MasterMore: string;
   BigMigrateStableLending2: string;
   YieldYakCompounderStrategy: string;
+  NFTContract: string;
 };
 
 export function useAddresses() {
@@ -605,20 +606,21 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
         provider
       );
       let normalResultsArray: any = [];
-      for (let index = 0; index < tokens.length; index++) {
-        const token = tokens[index];
+
+      const promises = tokens.map((token, index) => {
         const strat = strats[index];
-        try {
-          const normalResults = await stratViewer.viewMetadata(
-            addresses.StableLending2,
-            [token],
-            [strat]
-          );
-          normalResultsArray.push(...normalResults);
-        } catch (ex) {
-          console.log('couldnt fetch strtategy', strat, ex);
-        }
-      }
+        return stratViewer
+          .viewMetadata(addresses.StableLending2, [token], [strat])
+          .then((normalResults: any) =>
+            normalResultsArray.push(...normalResults)
+          )
+          .catch((ex: any) => {
+            console.log("couldn't fetch strategy", strat, ex);
+          });
+      });
+
+      await Promise.all(promises);
+
       // const noHarvestBalanceResults =
       //   await stratViewer.viewMetadataNoHarvestBalance(
       //     addresses.StableLending2,

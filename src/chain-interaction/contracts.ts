@@ -604,21 +604,11 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
         new Interface(StrategyViewer.abi),
         provider
       );
-      let normalResultsArray: any = [];
-      for (let index = 0; index < tokens.length; index++) {
-        const token = tokens[index];
-        const strat = strats[index];
-        try {
-          const normalResults = await stratViewer.viewMetadata(
-            addresses.StableLending2,
-            [token],
-            [strat]
-          );
-          normalResultsArray.push(...normalResults);
-        } catch (ex) {
-          console.log('couldnt fetch strtategy', strat, ex);
-        }
-      }
+      const normalResults = await stratViewer.viewMetadata(
+        addresses.StableLending2,
+        tokens,
+        strats
+      );
       // const noHarvestBalanceResults =
       //   await stratViewer.viewMetadataNoHarvestBalance(
       //     addresses.StableLending2,
@@ -632,7 +622,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       //   );
 
       // const results = [...normalResults, ...noHarvestBalanceResults];
-      const results = normalResultsArray;
+      const results = [...normalResults];
 
       const reduceFn = (result: StrategyMetadata, row: RawStratMetaRow) => {
         const parsedRow = parseStratMeta(

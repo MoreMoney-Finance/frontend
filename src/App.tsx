@@ -1,13 +1,17 @@
-import { Box, ChakraProvider } from '@chakra-ui/react';
+import { Box, ChakraProvider, Container } from '@chakra-ui/react';
 import { useConfig, useEthers } from '@usedapp/core';
 import { ethers } from 'ethers';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import robotIcon from './assets/img/Robot.png';
 import { useAddresses } from './chain-interaction/contracts';
+import Footer from './components/navigation/Footer';
+import MobileMenu from './components/navigation/MobileMenu';
 import NavigationBar from './components/navigation/NavigationBar';
 import GlobalDebtCeilingMessage from './components/notifications/GlobalDebtCeilingMessage';
-import MigratePositionsComponent from './components/notifications/MigratePositionsComponent';
 import NetworkNotSupported from './components/notifications/NetworkNotSupported';
 import PhishingAlertComponent from './components/notifications/PhishingAlertComponent';
 import { TransactionToasts } from './components/notifications/TransactionToasts';
@@ -17,10 +21,8 @@ import MakeMostOfMoneyCtxProvider from './contexts/MakeMostOfMoneyContext';
 import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext';
 import { UserAddressCtxProvider } from './contexts/UserAddressContext';
 import { WalletBalancesCtxProvider } from './contexts/WalletBalancesContext';
-import { theme } from './theme';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify';
 import './index.css';
+import { theme } from './theme';
 
 declare let window: any;
 
@@ -125,30 +127,37 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                     px={4}
                     minHeight={'100vh'}
                   >
-                    <Box
+                    {/* ROBOT IMAGE */}
+                    <Container
+                      width="641px"
+                      height="627.497px"
+                      maxWidth="100vw"
                       position="absolute"
-                      left="0"
-                      opacity="0.3"
-                      width={['0px', '0px', '500px']}
-                      height="300px"
-                      top="300px"
-                      filter="blur(200px)"
-                      pointerEvents="none"
-                      bgGradient="radial(farthest-side, hsla(0, 100%, 64%, 1), hsla(0, 100%, 64%, 0))"
-                      zIndex="var(--chakra-zIndices-docked)"
+                      top="100px"
+                      left="0px"
+                      zIndex="-1"
+                      display={['none', 'none', 'block']}
+                      backgroundImage={`url(${robotIcon})`}
+                      backgroundPosition="left"
+                      backgroundRepeat="no-repeat"
                     />
-                    <Box
+
+                    {/* ROBOT IMAGE MOBILE */}
+                    <Container
+                      width="441px"
+                      height="627.497px"
+                      maxWidth="100vw"
                       position="absolute"
-                      width={['0px', '0px', '350px']}
-                      height="230px"
-                      filter="blur(200px)"
-                      opacity="0.3"
-                      right="100px"
-                      bottom="200px"
-                      pointerEvents="none"
-                      bgGradient="radial(farthest-side, hsla(169, 100%, 46%, 1), hsla(169, 100%, 46%, 0))"
-                      zIndex="var(--chakra-zIndices-base)"
+                      top="-70px"
+                      left="-40px"
+                      zIndex="-1"
+                      display={['block', 'block', 'none']}
+                      backgroundImage={`url(${robotIcon})`}
+                      backgroundPosition="left"
+                      backgroundSize="100%"
+                      backgroundRepeat="no-repeat"
                     />
+
                     <StrategyMetadataCtxProvider>
                       <MakeMostOfMoneyCtxProvider>
                         <TransactionToasts />
@@ -156,7 +165,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                         <NavigationBar />
                         <br />
                         <GlobalDebtCeilingMessage />
-                        <MigratePositionsComponent />
+                        {/* <MigratePositionsComponent /> */}
                         {/* <LiquidatablePositionsMessage /> */}
                         <Box paddingBottom={'70px'}>
                           {params.children}
@@ -164,6 +173,8 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                         </Box>
                       </MakeMostOfMoneyCtxProvider>
                     </StrategyMetadataCtxProvider>
+                    <Footer />
+                    <MobileMenu />
                   </Box>
                 </>
               ) : (

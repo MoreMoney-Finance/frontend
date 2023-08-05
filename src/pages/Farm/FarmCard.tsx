@@ -31,7 +31,7 @@ export function FarmCard({
     <>
       <Container variant="token" marginTop={'20px'}>
         <Flex flexDirection={'row'} justifyContent={'space-between'} p={'4'}>
-          <Box fontFamily={'Rubik'} color={'whiteAlpha.400'}>
+          <Box fontFamily={'Poppins'} color={'whiteAlpha.400'}>
             Asset
           </Box>
           <Box>
@@ -40,7 +40,7 @@ export function FarmCard({
         </Flex>
 
         <Flex flexDirection={'row'} justifyContent={'space-between'} p={'4'}>
-          <Box fontFamily={'Rubik'} color={'whiteAlpha.400'}>
+          <Box fontFamily={'Poppins'} color={'whiteAlpha.400'}>
             Stake
           </Box>
           <Box>
@@ -49,7 +49,7 @@ export function FarmCard({
         </Flex>
 
         <Flex flexDirection={'row'} justifyContent={'space-between'} p={'4'}>
-          <Box fontFamily={'Rubik'} color={'whiteAlpha.400'}>
+          <Box fontFamily={'Poppins'} color={'whiteAlpha.400'}>
             TVL
           </Box>
           <Box>
@@ -58,14 +58,14 @@ export function FarmCard({
         </Flex>
 
         <Flex flexDirection={'row'} justifyContent={'space-between'} p={'4'}>
-          <Box fontFamily={'Rubik'} color={'whiteAlpha.400'}>
+          <Box fontFamily={'Poppins'} color={'whiteAlpha.400'}>
             Reward
           </Box>
           <Box>{reward}</Box>
         </Flex>
 
         <Flex flexDirection={'row'} justifyContent={'space-between'} p={'4'}>
-          <Box fontFamily={'Rubik'} color={'whiteAlpha.400'}>
+          <Box fontFamily={'Poppins'} color={'whiteAlpha.400'}>
             APR
           </Box>
           <Box>
@@ -74,7 +74,7 @@ export function FarmCard({
         </Flex>
 
         <Flex flexDirection={'row'} justifyContent={'space-between'} p={'4'}>
-          <Box fontFamily={'Rubik'} color={'whiteAlpha.400'}>
+          <Box fontFamily={'Poppins'} color={'whiteAlpha.400'}>
             Acquire
           </Box>
           <Box>{acquire}</Box>

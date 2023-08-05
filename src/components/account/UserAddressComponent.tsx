@@ -1,9 +1,16 @@
-import { Button, HStack, Image, Text, useMediaQuery } from '@chakra-ui/react';
+import {
+  Button,
+  HStack,
+  Avatar,
+  Flex,
+  Text,
+  useMediaQuery,
+} from '@chakra-ui/react';
 import { CurrencyValue, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
-import colorDot from '../../assets/img/color_dot.svg';
+import robotPfp from '../../assets/img/robot-pfp.svg';
 import { useAddresses, useStable } from '../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../chain-interaction/tokens';
 import { MakeMostOfMoneyContext } from '../../contexts/MakeMostOfMoneyContext';
@@ -40,7 +47,7 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
   return (
     <HStack
       spacing={'18px'}
-      bg={'brand.gradientBg'}
+      // bg={'brand.gradientBg'}
       padding={'4px 4px 4px 16px'}
       borderRadius={'10px'}
     >
@@ -56,7 +63,8 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
                 {moreBalance?.format({ significantDigits: 2 })}
               </Text>
             ) : (
-              <Image src={colorDot} />
+            // <Image src={colorDot} />
+              <></>
             )}
         </HStack>
       </MostOfMoneyPopover>
@@ -67,20 +75,26 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
         onClick={account ? handleOpenModal : handleConnectWallet}
       >
         {account ? (
-          <Text
-            fontSize={['12px', '14px', '14px']}
-            lineHeight={'24px'}
-            color={'brand.bg'}
-            fontWeight={'600'}
-          >
-            {account &&
-              `${account.slice(0, 6)}...${account.slice(
-                account.length - 4,
-                account.length
-              )}`}
-          </Text>
+          <Flex justifyItems="center" alignItems="center">
+            <Avatar src={robotPfp} width="25px" height="27px" />
+            <Text
+              fontSize={['12px', '14px', '16px']}
+              lineHeight={'24px'}
+              color={'brand.bg'}
+              fontWeight={'400'}
+              ml={'8px'}
+            >
+              {account &&
+                `${account.slice(0, 6)}...${account.slice(
+                  account.length - 4,
+                  account.length
+                )}`}
+            </Text>
+          </Flex>
         ) : (
-          <Text>Connect wallet</Text>
+          <Text color="black" fontWeight="400">
+            Connect wallet
+          </Text>
         )}
       </Button>
     </HStack>

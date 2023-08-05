@@ -1,70 +1,25 @@
 import { extendTheme } from '@chakra-ui/react';
 import '@fontsource/poppins';
-import '@fontsource/rubik';
+import backgroundImage from './assets/background/main-background.svg';
 
 const Container = {
   variants: {
-    gauge_mask: {
-      position: 'relative',
-      overflow: 'hidden',
-      display: 'block',
-      width: '220px',
-      height: '100px',
-      margin: '20px',
-    },
-    gauge_semi_circle_mask: {
+    backgroundLayer: {
       position: 'absolute',
-      top: '0',
-      left: '0',
-      width: '210px',
-      height: '200px',
-      background: 'transparent',
-      transform: 'rotate(120deg) translate3d(0,0,0)',
-      transformOrigin: 'center center',
-      backfaceVisibility: 'hidden',
-      transition: 'all .3s ease-in-out',
-      _before: {
-        content: '""',
-        position: 'absolute',
-        top: '0',
-        left: '0%',
-        zIndex: '2',
-        display: 'block',
-        width: '170px',
-        height: '102px',
+      top: '-200px',
+      width: '2866px',
+      height: '2286px',
+      flexShrink: '0',
+      background: '#060E33',
+    },
 
-        margin: '-1px 0 0 -1px',
-        background: '#f2f2f2',
-        borderRadius: '50% 50% 50% 50% / 100% 100% 0% 0%',
-      },
-    },
-    gauge_semi_circle: {
-      position: 'relative',
-      display: 'block',
-      width: '200px',
-      height: '100px',
-      background:
-        'linear-gradient(to right, #c0392b 0%, #f1c40f 50%, #1abc9c 100%)',
-      borderRadius: '50% 50% 50% 50% / 100% 100% 0% 0%',
-      _before: {
-        content: '""',
-        position: 'absolute',
-        bottom: '0',
-        left: '50%',
-        zIndex: '2',
-        display: 'block',
-        width: '140px',
-        height: '70px',
-        marginLeft: '-70px',
-        background: '#fff',
-        borderRadius: '50% 50% 50% 50% / 100% 100% 0% 0%',
-      },
-    },
     token: {
       position: 'relative',
       maxWidth: '100%',
       height: '100%',
-      background: 'brand.gradientBg',
+      // background: 'brand.gradientBg',
+      background: 'rgba(255, 255, 255, 0.15)',
+      boxShadow: '0px 4px 95px 0px rgba(0, 0, 0, 0.25)',
       padding: '0',
       borderRadius: '10px',
       _before: {
@@ -98,7 +53,7 @@ const Link = {
   baseStyle: {
     fontSize: '14px',
     lineHeight: '24px',
-    color: 'whiteAlpha.600',
+    color: 'white',
   },
   variants: {
     footer: {
@@ -194,19 +149,19 @@ const Text = {
       WebkitTextFillColor: 'transparent',
     },
     h200: {
-      fontFamily: 'Rubik',
+      fontFamily: 'Poppins',
       fontSize: '18px',
       lineHeight: '27px',
       fontWeight: 400,
     },
     h300: {
-      fontFamily: 'Rubik',
+      fontFamily: 'Poppins',
       fontSize: '16px',
       lineHeight: '24px',
       fontWeight: 400,
     },
     h400: {
-      fontFamily: 'Rubik',
+      fontFamily: 'Poppins',
       fontSize: '14px',
       lineHeight: '17px',
       fontWeight: 400,
@@ -337,7 +292,7 @@ const Table = {
       thead: {
         tr: {
           td: {
-            fontFamily: 'Rubik',
+            fontFamily: 'Poppins',
             fontSize: '12px',
             lineHeight: '14px',
             color: 'whiteAlpha.400',
@@ -363,8 +318,10 @@ const Table = {
             border: '1px solid transparent',
             backgroundClip: 'padding-box, border-box',
             backgroundOrigin: 'padding-box, border-box',
-            backgroundImage:
-              'linear-gradient(hsla(227, 12%, 15%, 1), hsla(227, 12%, 15%, 1)), linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
+            // backgroundImage:
+            //   'linear-gradient(hsla(227, 12%, 15%, 1), hsla(227, 12%, 15%, 1)), linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
+            background: '',
+            boxShadow: '0px 4px 95px 0px rgba(0, 0, 0, 0.25)',
             top: '0',
             left: '0',
             bottom: '0',
@@ -406,14 +363,15 @@ export const theme = extendTheme({
       grey: '#f2f2f2',
     },
     brand: {
-      bg: 'hsla(227, 12%, 15%, 1)',
+      bg: '#060E33',
       bgOpacity: 'hsla(0, 0%, 0%, 0.2)',
       active: 'hsla(227, 22%, 26%, 0.59)',
-      accent:
-        'linear-gradient(to bottom, hsla(166, 100%, 46%, 1), hsla(165, 86%, 34%, 1))',
-      gradientBg:
-        'linear-gradient(to bottom, hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.03))',
+      accent: 'linear-gradient(to bottom, #17F0FF, #0E92F7)',
+      // gradientBg:
+      //   'linear-gradient(to bottom, hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.03))',
+      gradientBg: 'var(#FFFFFF, rgba(255, 255, 255, 0.15))',
     },
+    secondary: '#FE7BFD',
     accent_color: 'hsla(166, 100%, 46%, 0.9)',
     accent: {
       100: 'accent_color',
@@ -471,6 +429,11 @@ export const theme = extendTheme({
     global: {
       body: {
         bg: 'brand.bg',
+        backgroundImage: 'url(' + backgroundImage + ')',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
         color: 'white',
       },
       a: {

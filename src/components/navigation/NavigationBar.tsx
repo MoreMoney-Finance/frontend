@@ -7,28 +7,25 @@ import {
   Image,
   Link as LinkComponent,
   Stack,
-  Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import logo from '../../assets/logo/logo.png';
+import logo from '../../assets/logo/logo.svg';
 import AccountModal from '../account/AccountModal';
 import { UserAddressComponent } from '../account/UserAddressComponent';
-import MenuOptions from './MenuOptions';
-import { useMediaQuery } from '@chakra-ui/react';
 
 const Links = [
   { title: 'Borrow', link: '/' },
-  { title: 'My Positions', link: '/positions' },
-  { title: 'Farm', link: '/farm' },
-  { title: 'Stake', link: '/stake' },
+  // { title: 'My Positions', link: '/positions' },
+  { title: 'Yield', link: '/farm' },
+  // { title: 'Stake', link: '/stake' },
   // { title: 'Liquidate', link: '/liquidatable-positions' },
-  { title: 'Analytics', link: '/analytics' },
+  { title: 'Statistics', link: '/analytics' },
 ];
 
 export default function NavigationBar() {
-  const [isLargerThan1280] = useMediaQuery('(min-width: 1280px)');
+  // const [isLargerThan1280] = useMediaQuery('(min-width: 1280px)');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenAccount,
@@ -49,26 +46,20 @@ export default function NavigationBar() {
             size={'md'}
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
             aria-label={'Open Menu'}
-            display={{ md: 'none' }}
+            display={{ md: 'none', base: 'none' }}
             onClick={isOpen ? onClose : onOpen}
           />
           <Link to="/">
             <Flex alignItems={'center'}>
-              <Image src={logo} alt="Logo" width={['30px', '40px', '50px']} />
-              &nbsp;
-              {isLargerThan1280 ? (
-                <Text fontSize={['sm', 'md', 'lg']}>
-                  <b>moremoney</b>
-                </Text>
-              ) : (
-                ''
-              )}
+              <Image src={logo} alt="Logo" width={'160px'} ml="8px" />
             </Flex>
           </Link>
           <HStack
             as={'nav'}
             spacing="48px"
+            ml="66px"
             display={{ base: 'none', md: 'flex' }}
+            width="100%"
           >
             {Links.map((link) => (
               <LinkComponent
@@ -88,7 +79,6 @@ export default function NavigationBar() {
           >
             <UserAddressComponent handleOpenModal={onOpenAccount} />
             <AccountModal isOpen={isOpenAccount} onClose={onCloseAccount} />
-            <MenuOptions />
           </HStack>
         </Flex>
         {isOpen ? (

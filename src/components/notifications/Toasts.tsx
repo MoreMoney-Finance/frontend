@@ -1,4 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react';
+import { ChainId, getExplorerTransactionLink } from '@usedapp/core';
 import * as React from 'react';
 import { Slide, toast } from 'react-toastify';
 import infoIcon from '../../assets/icons/alert-octagon.svg';
@@ -11,7 +12,12 @@ const ToastBody: React.FC<{ icon: string; title: string; hash: string }> = ({
   hash,
 }) => {
   return (
-    <Flex>
+    <Flex
+      cursor="pointer"
+      onClick={() => {
+        window.open(hash, '_blank');
+      }}
+    >
       <img src={icon} />
       <Flex direction="column" pl="4">
         <Text fontSize="16px" color="white">
@@ -26,6 +32,7 @@ const ToastBody: React.FC<{ icon: string; title: string; hash: string }> = ({
 export function showToast(
   icon: 'success' | 'info' | 'error',
   hash: string,
+  chainId: ChainId,
   title = undefined
 ) {
   const toastIcon = {
@@ -40,11 +47,13 @@ export function showToast(
     error: 'Transaction Failed',
   };
 
+  const explorerLink = getExplorerTransactionLink(hash, chainId);
+
   toast(
     <ToastBody
       icon={toastIcon[icon]}
       title={title ?? toastMessage[icon]}
-      hash={hash}
+      hash={explorerLink}
     />,
     {
       position: 'bottom-right',

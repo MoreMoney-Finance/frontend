@@ -29,6 +29,7 @@ type Entity = ParsedStratMetaRow & {
   apy: any;
   MONEYavailable: string;
   // tvlPeg: string;
+  borrowablePercentFormatted: string;
   totalBorrowed: string;
   liquidationFee: string;
   balance: number;
@@ -83,7 +84,7 @@ export function AllSupportedCollateral() {
     .filter((meta) =>
       searchString.length > 0
         ? meta.token.name.toLowerCase().includes(searchString) ||
-        meta.token.ticker.toLowerCase().includes(searchString)
+          meta.token.ticker.toLowerCase().includes(searchString)
         : true
     )
     .map((meta) => {
@@ -118,13 +119,14 @@ export function AllSupportedCollateral() {
         )}%`,
         ltv: `${5 * Math.round(meta.borrowablePercent / 5)}%`,
         // tvlPeg: `$ ${meta.tvlInPeg.format({ suffix: '' })}`,
+        borrowablePercentFormatted: `${meta.borrowablePercent}%`,
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
         liquidationFee:
           (tokenFees.get(meta.token.address) ?? 'Loading...') + '%',
         balance: meta.balance,
       };
     })
-    .sort(function(a, b) {
+    .sort(function (a, b) {
       if (a.token.ticker < b.token.ticker) {
         return -1;
       }
@@ -158,10 +160,17 @@ export function AllSupportedCollateral() {
       },
       {
         Header: tooltip(
-          'APY earned  ',
+          'APY ',
           'The yield you earn on your deposited collateral'
         ),
         accessor: 'apy',
+      },
+      {
+        Header: tooltip(
+          'Max. collateral/debt ratio ',
+          'The maximum amount of debt you can take out against your collateral'
+        ),
+        accessor: 'borrowablePercentFormatted',
       },
       {
         Header: tooltip(
@@ -200,19 +209,17 @@ export function AllSupportedCollateral() {
   console.log('data', data);
   return (
     <>
-      <Box textAlign="center" margin="100px 0">
-        <Text fontSize="24" lineHeight="56px" color="whiteAlpha.600">
-          <b>Select a collateral asset to</b>
+      <Box
+        // textAlign={['center', 'center', 'center', 'left']}
+        textAlign="left"
+        margin="100px 0"
+        ml={['0%', '20%', '20%', '40%']}
+      >
+        <Text fontSize={['36', '48', '48']} lineHeight="56px" fontWeight="700">
+          Borrow MONEY while earning
         </Text>
-        <Text fontSize={['36', '48', '48']} lineHeight="56px">
-          Borrow yield bearing stablecoin <b>MONEY</b>
-        </Text>
-        <Text fontSize={['36', '48', '48']} lineHeight="56px"></Text>
-        <Text fontSize={['36', '48', '48']} lineHeight="56px">
-          while still earning yield
-        </Text>
-        <Text fontSize={['36', '48', '48']} lineHeight="56px">
-          on your collateral
+        <Text fontSize={['36', '48', '48']} lineHeight="56px" fontWeight="700">
+          yield on your collateral
         </Text>
       </Box>
 
@@ -246,7 +253,12 @@ export function AllSupportedCollateral() {
               .flat(1);
             return (
               // eslint-disable-next-line
-              <Container variant="token" marginTop={'20px'}>
+              <Container
+                background="rgba(255, 255, 255, 0.15)"
+                borderRadius="10px"
+                marginTop={'20px'}
+                padding="8px"
+              >
                 {row.cells.map((cell, index) => {
                   // eslint-disable-next-line
                   return (
@@ -256,7 +268,7 @@ export function AllSupportedCollateral() {
                       justifyContent={'space-between'}
                       p={'4'}
                     >
-                      <Box fontFamily={'Rubik'} color={'whiteAlpha.400'}>
+                      <Box fontFamily={'Poppins'} color={'white'}>
                         {headers[index]}
                       </Box>
                       <Box>{cell.render('Cell')}</Box>

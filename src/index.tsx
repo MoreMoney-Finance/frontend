@@ -13,6 +13,7 @@ import { App } from './App';
 import { LiquidatablePositionsCtxProvider } from './contexts/LiquidatablePositionsContext';
 import AdminPage from './pages/Admin';
 import Analytics from './pages/Analytics';
+import ComponentsPage from './pages/Components';
 import Dashboard from './pages/Dashboard';
 import { ErrorBoundary } from './pages/ErrorBoundary/ErrorBoundary';
 import FarmPage from './pages/Farm';
@@ -26,7 +27,6 @@ import VeMoreTokenPage from './pages/vMore';
 import XMorePage from './pages/XMore';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
-import ComponentsPage from './pages/Components';
 
 ReactDOM.render(
   <React.StrictMode>

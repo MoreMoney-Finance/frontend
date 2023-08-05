@@ -26,6 +26,7 @@ import VeMoreTokenPage from './pages/vMore';
 import XMorePage from './pages/XMore';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
+import ComponentsPage from './pages/Components';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -68,6 +69,7 @@ ReactDOM.render(
                 </LiquidatablePositionsCtxProvider>
               }
             />
+            <Route path="/components" element={<ComponentsPage />} />
             <Route path="/loans" element={<LiquidationProtectedLoans />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/stake" element={<StakePage />} />

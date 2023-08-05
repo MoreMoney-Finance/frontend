@@ -18,6 +18,9 @@ import { StrategyMetadataCtxProvider } from './contexts/StrategyMetadataContext'
 import { UserAddressCtxProvider } from './contexts/UserAddressContext';
 import { WalletBalancesCtxProvider } from './contexts/WalletBalancesContext';
 import { theme } from './theme';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import './index.css';
 
 declare let window: any;
 
@@ -149,6 +152,7 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                     <StrategyMetadataCtxProvider>
                       <MakeMostOfMoneyCtxProvider>
                         <TransactionToasts />
+                        <ToastContainer />
                         <NavigationBar />
                         <br />
                         <GlobalDebtCeilingMessage />

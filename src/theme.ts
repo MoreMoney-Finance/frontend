@@ -4,6 +4,62 @@ import '@fontsource/rubik';
 
 const Container = {
   variants: {
+    gauge_mask: {
+      position: 'relative',
+      overflow: 'hidden',
+      display: 'block',
+      width: '220px',
+      height: '100px',
+      margin: '20px',
+    },
+    gauge_semi_circle_mask: {
+      position: 'absolute',
+      top: '0',
+      left: '0',
+      width: '210px',
+      height: '200px',
+      background: 'transparent',
+      transform: 'rotate(120deg) translate3d(0,0,0)',
+      transformOrigin: 'center center',
+      backfaceVisibility: 'hidden',
+      transition: 'all .3s ease-in-out',
+      _before: {
+        content: '""',
+        position: 'absolute',
+        top: '0',
+        left: '0%',
+        zIndex: '2',
+        display: 'block',
+        width: '170px',
+        height: '102px',
+
+        margin: '-1px 0 0 -1px',
+        background: '#f2f2f2',
+        borderRadius: '50% 50% 50% 50% / 100% 100% 0% 0%',
+      },
+    },
+    gauge_semi_circle: {
+      position: 'relative',
+      display: 'block',
+      width: '200px',
+      height: '100px',
+      background:
+        'linear-gradient(to right, #c0392b 0%, #f1c40f 50%, #1abc9c 100%)',
+      borderRadius: '50% 50% 50% 50% / 100% 100% 0% 0%',
+      _before: {
+        content: '""',
+        position: 'absolute',
+        bottom: '0',
+        left: '50%',
+        zIndex: '2',
+        display: 'block',
+        width: '140px',
+        height: '70px',
+        marginLeft: '-70px',
+        background: '#fff',
+        borderRadius: '50% 50% 50% 50% / 100% 100% 0% 0%',
+      },
+    },
     token: {
       position: 'relative',
       maxWidth: '100%',
@@ -336,12 +392,19 @@ const Table = {
 export const theme = extendTheme({
   config: { initialColorMode: 'dark' },
   fonts: {
-    heading: 'Rubik',
+    heading: 'Poppins',
     body: 'Poppins',
   },
   colors: {
     white: 'hsl(0, 0%, 100%)',
     black: 'hsl(0,0%,0%)',
+    gauges: {
+      green: '#1abc9c',
+      yellow: '#f1c40f',
+      red: '#c0392b',
+      blue: '#3498db',
+      grey: '#f2f2f2',
+    },
     brand: {
       bg: 'hsla(227, 12%, 15%, 1)',
       bgOpacity: 'hsla(0, 0%, 0%, 0.2)',

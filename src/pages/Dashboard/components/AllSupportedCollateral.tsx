@@ -186,20 +186,20 @@ export function AllSupportedCollateral() {
       //   ),
       //   accessor: 'tvlPeg',
       // },
-      {
-        Header: tooltip(
-          'Max LTV ',
-          'How much of your deposited value you can extract as MONEY loan'
-        ),
-        accessor: 'ltv',
-      },
-      {
-        Header: tooltip(
-          'Liquidation Fee ',
-          'Percentage of loan paid if you get liquidated'
-        ),
-        accessor: 'liquidationFee',
-      },
+      // {
+      //   Header: tooltip(
+      //     'Max LTV ',
+      //     'How much of your deposited value you can extract as MONEY loan'
+      //   ),
+      //   accessor: 'ltv',
+      // },
+      // {
+      //   Header: tooltip(
+      //     'Liquidation Fee ',
+      //     'Percentage of loan paid if you get liquidated'
+      //   ),
+      //   accessor: 'liquidationFee',
+      // },
     ],
     []
   );

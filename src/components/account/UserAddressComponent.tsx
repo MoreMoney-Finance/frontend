@@ -46,9 +46,7 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
 
   return (
     <HStack
-      spacing={'18px'}
       // bg={'brand.gradientBg'}
-      padding={'4px 4px 4px 16px'}
       borderRadius={'10px'}
     >
       <MostOfMoneyPopover>
@@ -58,20 +56,20 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
           !moreBalance.isZero() &&
           !walletBalance.isZero() &&
           isLargerThan1280 ? (
-              <Text fontSize={['12px', '14px', '14px']} textAlign="center">
-                {walletBalance?.format({ significantDigits: 2 })} /{' '}
-                {moreBalance?.format({ significantDigits: 2 })}
-              </Text>
-            ) : (
+            <Text fontSize={['12px', '14px', '14px']} textAlign="center">
+              {walletBalance?.format({ significantDigits: 2 })} /{' '}
+              {moreBalance?.format({ significantDigits: 2 })}
+            </Text>
+          ) : (
             // <Image src={colorDot} />
-              <></>
-            )}
+            <></>
+          )}
         </HStack>
       </MostOfMoneyPopover>
       <Button
         variant={'primary'}
         padding={'4px 20px'}
-        h={'32px'}
+        h={'35px'}
         onClick={account ? handleOpenModal : handleConnectWallet}
       >
         {account ? (

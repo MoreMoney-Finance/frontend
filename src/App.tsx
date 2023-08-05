@@ -129,16 +129,16 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                   >
                     {/* ROBOT IMAGE */}
                     <Container
-                      width="641px"
+                      width="741px"
                       height="627.497px"
-                      maxWidth="100vw"
+                      maxWidth="1280px"
                       position="absolute"
-                      top="100px"
-                      left="0px"
+                      top="60px"
                       zIndex="-1"
                       display={['none', 'none', 'block']}
                       backgroundImage={`url(${robotIcon})`}
-                      backgroundPosition="left"
+                      backgroundPosition="top"
+                      backgroundSize="120%"
                       backgroundRepeat="no-repeat"
                     />
 

@@ -1,6 +1,8 @@
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
 import {
   Box,
+  Text,
+  Avatar,
   Flex,
   HStack,
   IconButton,
@@ -77,6 +79,22 @@ export default function NavigationBar() {
             alignItems="center"
             justifyContent="center"
           >
+            <Flex
+              background="rgba(255, 255, 255, 0.15)"
+              paddingLeft="10px"
+              paddingRight="10px"
+              paddingTop="6px"
+              paddingBottom="6px"
+              borderRadius="6px"
+              alignItems="center"
+            >
+              <Avatar width="20px" height="20px">
+                <img src="https://upload.wikimedia.org/wikipedia/en/0/03/Avalanche_logo_without_text.png" />
+              </Avatar>
+              <Text fontSize="16px" ml="8px" color="white" fontWeight="400">
+                Avalanche
+              </Text>
+            </Flex>
             <UserAddressComponent handleOpenModal={onOpenAccount} />
             <AccountModal isOpen={isOpenAccount} onClose={onCloseAccount} />
           </HStack>

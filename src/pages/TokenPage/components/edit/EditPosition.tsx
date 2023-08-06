@@ -1,11 +1,13 @@
 import {
   Container,
+  Image,
   GridItem,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
+  Flex,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import {
@@ -13,7 +15,9 @@ import {
   ParsedStratMetaRow,
 } from '../../../../chain-interaction/contracts';
 import DepositBorrow from './DepositBorrow';
+import DepositForm from './DepositForm';
 import RepayWithdraw from './RepayWithdraw';
+import GroupIcon from '../../../../assets/icons/Group.svg';
 
 export default function EditPosition({
   position,
@@ -28,10 +32,23 @@ export default function EditPosition({
       <Container variant={'token'} padding={'35px 20px 20px 20px'}>
         <Tabs variant={'primary'}>
           <TabList>
-            <Tab>Borrow</Tab>
-            <Tab>Repay</Tab>
+            <Flex justifyContent="space-between" w="full">
+              <Flex w="full">
+                <Tab>Deposit</Tab>
+                <Image src={GroupIcon} />
+                <Tab>Borrow</Tab>
+              </Flex>
+              <Flex w="full">
+                <Tab>Repay</Tab>
+                <Image src={GroupIcon} />
+                <Tab>Withdraw</Tab>
+              </Flex>
+            </Flex>
           </TabList>
           <TabPanels>
+            <TabPanel>
+              <DepositForm position={position} stratMeta={stratMeta} />
+            </TabPanel>
             <TabPanel>
               <DepositBorrow position={position} stratMeta={stratMeta} />
             </TabPanel>

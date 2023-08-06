@@ -126,6 +126,8 @@ const Button = {
       borderRadius: '10px',
       bg: 'brand.accent',
       border: 'none',
+      color: 'black',
+      fontWeight: 400,
       _hover: {
         _disabled: {
           bg: 'brand.accent',

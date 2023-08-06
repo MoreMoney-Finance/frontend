@@ -88,7 +88,7 @@ export function PositionBody({
           'repeat(1, 1fr)',
           '520px 240px 240px',
         ]}
-        templateRows={['repeat(1, 1fr)', 'repeat(1, 1fr)', 'auto']}
+        templateRows={['repeat(1, 1fr)', 'repeat(1, 1fr)', '']}
         w={'full'}
         gap={'20px'}
         marginTop={'30px'}
@@ -107,11 +107,7 @@ export function PositionBody({
           'repeat(5, 1fr)',
           '390px 240px 371px',
         ]}
-        templateRows={[
-          'repeat(2, 1fr)',
-          'repeat(2, 1fr)',
-          'auto 340px 240px 310px',
-        ]}
+        templateRows={['repeat(2, 1fr)', 'repeat(2, 1fr)', 'auto']}
         w={'full'}
         gap={'20px'}
         marginTop={'30px'}

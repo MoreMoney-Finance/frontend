@@ -169,8 +169,8 @@ export default function BorrowForm({
     10 >= percentageRange
       ? [(currentPercentage + borrowablePercent) / 2]
       : Array(Math.floor((percentageRange - 0.5) / percentageStep))
-          .fill(currentPercentage)
-          .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
+        .fill(currentPercentage)
+        .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
 
   const totalPercentage =
     totalCollateral > 0 && usdPrice > 0

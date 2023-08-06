@@ -18,6 +18,7 @@ import DepositBorrow from './DepositBorrow';
 import DepositForm from './DepositForm';
 import RepayWithdraw from './RepayWithdraw';
 import GroupIcon from '../../../../assets/icons/Group.svg';
+import BorrowForm from './BorrowForm';
 
 export default function EditPosition({
   position,
@@ -48,6 +49,9 @@ export default function EditPosition({
           <TabPanels>
             <TabPanel>
               <DepositForm position={position} stratMeta={stratMeta} />
+            </TabPanel>
+            <TabPanel>
+              <BorrowForm position={position} stratMeta={stratMeta} />
             </TabPanel>
             <TabPanel>
               <DepositBorrow position={position} stratMeta={stratMeta} />

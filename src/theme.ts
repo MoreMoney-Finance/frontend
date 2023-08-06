@@ -41,7 +41,7 @@ const Container = {
         bottom: '0',
         left: '0',
         right: '0',
-        bg: 'brand.bg',
+        // bg: 'brand.bg',
         borderRadius: '10px',
         zIndex: 'var(--chakra-zIndices-hide)',
       },

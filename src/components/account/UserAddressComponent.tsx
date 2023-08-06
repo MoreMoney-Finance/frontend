@@ -56,19 +56,18 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
           !moreBalance.isZero() &&
           !walletBalance.isZero() &&
           isLargerThan1280 ? (
-              <Text fontSize={['12px', '14px', '14px']} textAlign="center">
-                {walletBalance?.format({ significantDigits: 2 })} /{' '}
-                {moreBalance?.format({ significantDigits: 2 })}
-              </Text>
-            ) : (
+            <Text fontSize={['12px', '14px', '14px']} textAlign="center">
+              {walletBalance?.format({ significantDigits: 2 })} /{' '}
+              {moreBalance?.format({ significantDigits: 2 })}
+            </Text>
+          ) : (
             // <Image src={colorDot} />
-              <></>
-            )}
+            <></>
+          )}
         </HStack>
       </MostOfMoneyPopover>
       <Button
         variant={'primary'}
-        padding={'4px 20px'}
         h={'35px'}
         onClick={account ? handleOpenModal : handleConnectWallet}
       >
@@ -80,7 +79,6 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
               lineHeight={'24px'}
               color={'brand.bg'}
               fontWeight={'400'}
-              ml={'8px'}
             >
               {account &&
                 `${account.slice(0, 6)}...${account.slice(

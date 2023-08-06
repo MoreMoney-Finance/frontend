@@ -10,6 +10,7 @@ import {
   Link as LinkComponent,
   Stack,
   useDisclosure,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -27,7 +28,7 @@ const Links = [
 ];
 
 export default function NavigationBar() {
-  // const [isLargerThan1280] = useMediaQuery('(min-width: 1280px)');
+  const [isLargerThan1280] = useMediaQuery('(min-width: 1280px)');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenAccount,
@@ -87,13 +88,16 @@ export default function NavigationBar() {
               paddingBottom="6px"
               borderRadius="6px"
               alignItems="center"
+              h={'37px'}
             >
               <Avatar width="20px" height="20px">
                 <img src="https://upload.wikimedia.org/wikipedia/en/0/03/Avalanche_logo_without_text.png" />
               </Avatar>
-              <Text fontSize="16px" ml="8px" color="white" fontWeight="400">
-                Avalanche
-              </Text>
+              {isLargerThan1280 && (
+                <Text fontSize="16px" ml="8px" color="white" fontWeight="400">
+                  Avalanche
+                </Text>
+              )}
             </Flex>
             <UserAddressComponent handleOpenModal={onOpenAccount} />
             <AccountModal isOpen={isOpenAccount} onClose={onCloseAccount} />

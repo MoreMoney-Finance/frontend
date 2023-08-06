@@ -1,4 +1,4 @@
-import { Box, ChakraProvider, Container } from '@chakra-ui/react';
+import { Box, ChakraProvider } from '@chakra-ui/react';
 import { useConfig, useEthers } from '@usedapp/core';
 import { ethers } from 'ethers';
 import * as React from 'react';
@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import robotIcon from './assets/img/Robot.png';
 import { useAddresses } from './chain-interaction/contracts';
 import Footer from './components/navigation/Footer';
 import MobileMenu from './components/navigation/MobileMenu';
@@ -127,37 +126,6 @@ export const App = (params: React.PropsWithChildren<unknown>) => {
                     px={4}
                     minHeight={'100vh'}
                   >
-                    {/* ROBOT IMAGE */}
-                    <Container
-                      width="741px"
-                      height="627.497px"
-                      maxWidth="1280px"
-                      position="absolute"
-                      top="60px"
-                      zIndex="-1"
-                      display={['none', 'none', 'block']}
-                      backgroundImage={`url(${robotIcon})`}
-                      backgroundPosition="top"
-                      backgroundSize="120%"
-                      backgroundRepeat="no-repeat"
-                    />
-
-                    {/* ROBOT IMAGE MOBILE */}
-                    <Container
-                      width="441px"
-                      height="627.497px"
-                      maxWidth="100vw"
-                      position="absolute"
-                      top="-70px"
-                      left="-40px"
-                      zIndex="-1"
-                      display={['block', 'block', 'none']}
-                      backgroundImage={`url(${robotIcon})`}
-                      backgroundPosition="left"
-                      backgroundSize="100%"
-                      backgroundRepeat="no-repeat"
-                    />
-
                     <StrategyMetadataCtxProvider>
                       <MakeMostOfMoneyCtxProvider>
                         <TransactionToasts />

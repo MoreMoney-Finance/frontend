@@ -75,6 +75,7 @@ export function TokenAmountInputField(props: {
               margin={'auto 0'}
               size="xs"
               borderRadius={'3px'}
+              zIndex="1"
               isDisabled={isDisabled}
               onClick={() =>
                 setValueForm(

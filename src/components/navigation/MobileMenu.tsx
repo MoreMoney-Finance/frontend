@@ -38,7 +38,7 @@ const MobileMenu: React.FC = () => {
       backdropFilter="blur(15px)"
       borderRadius="8.938px"
       alignItems="center"
-      //   height="60px"
+      zIndex="999999"
       padding="8px"
       justifyContent="center"
     >

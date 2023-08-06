@@ -29,8 +29,8 @@ const Container = {
         bottom: '-2px',
         left: '-2px',
         right: '-2px',
-        background:
-          'linear-gradient(to right, hsla(0, 100%, 64%, 0.06), hsla(193, 100%, 50%, 0.06))',
+        // background:
+        //   'linear-gradient(to right, hsla(0, 100%, 64%, 0.06), hsla(193, 100%, 50%, 0.06))',
         borderRadius: '10px',
         zIndex: '-2',
       },
@@ -103,6 +103,8 @@ const Button = {
     primary: {
       bg: 'brand.accent',
       border: 'none',
+      color: 'black',
+      fontWeight: 400,
       _hover: {
         _disabled: {
           bg: 'brand.accent',

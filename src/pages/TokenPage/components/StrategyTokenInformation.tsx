@@ -1,37 +1,31 @@
-import {
-  Container,
-  Flex,
-  GridItem,
-  Image,
-  Spacer,
-  Text,
-} from '@chakra-ui/react';
+import { Container, Flex, GridItem, Spacer, Text } from '@chakra-ui/react';
 import { BigNumber } from 'ethers';
 // import { CurrencyValue } from '@usedapp/core';
 // import { BigNumber } from 'ethers';
 import * as React from 'react';
-import lines from '../../../assets/img/lines.svg';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   useInterestRate,
 } from '../../../chain-interaction/contracts';
-// import {
-//   useAMMHarvest,
-//   useHarvestPartially,
-// } from '../../../chain-interaction/transactions';
-// import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { LiquidationFeesContext } from '../../../contexts/LiquidationFeesContext';
+import StrategyNameAndSwitch from './change-strategy/StrategyNameAndSwitch';
 
 export default function StrategyTokenInformation({
   stratMeta,
+  chosenStrategy,
+  chooseStrategy,
 }: React.PropsWithChildren<{
   position?: ParsedPositionMetaRow;
-  stratMeta: ParsedStratMetaRow;
+  chooseStrategy: (strategyToChoose: string) => void;
+  stratMeta: Record<string, ParsedStratMetaRow>;
+  chosenStrategy: string;
 }>) {
-  const calcCRatio = () => {
-    return `${Math.round((1 / (stratMeta.borrowablePercent / 100)) * 100)}%`;
-  };
+  // const calcCRatio = () => {
+  //   return `${Math.round(
+  //     (1 / (stratMeta[chosenStrategy].borrowablePercent / 100)) * 100
+  //   )}%`;
+  // };
 
   // const { sendAMMHarvest, AMMHarvestState } = useAMMHarvest(
   //   stratMeta.strategyAddress
@@ -40,7 +34,10 @@ export default function StrategyTokenInformation({
   const tokenFees = React.useContext(LiquidationFeesContext);
   const interestRate = useInterestRate(BigNumber.from(0)).toNumber() / 100;
   console.log('interestRate', interestRate.toString());
-
+  const customAPY =
+    chosenStrategy && stratMeta[chosenStrategy].underlyingAPY !== undefined
+      ? stratMeta[chosenStrategy].underlyingAPY! + stratMeta[chosenStrategy].APY
+      : stratMeta[chosenStrategy].APY;
   // const { sendHarvestPartially, harvestPartiallyState } = useHarvestPartially(
   //   stratMeta.strategyAddress
   // );
@@ -59,30 +56,56 @@ export default function StrategyTokenInformation({
   //   })}`
   //   : '';
   return (
-    <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 2]}>
+    <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
       <Container variant={'token'} position="relative">
-        <Image
-          src={lines}
-          position="absolute"
-          right="0"
-          bottom="0"
-          pointerEvents="none"
-          zIndex={0}
-        />
         {/* <TransactionErrorDialog state={AMMHarvestState} title={'AMM Harvest'} />
         <TransactionErrorDialog
           state={harvestPartiallyState}
           title={'Source harvest'}
         /> */}
+        <StrategyNameAndSwitch
+          stratMeta={stratMeta}
+          chooseStrategy={chooseStrategy}
+          chosenStrategy={chosenStrategy}
+        />
+        {/* <Flex direction="column" alignItems="center" p="12px">
+          <Text color={'white'}>Strategy</Text>
+          <Text fontSize="24px">{stratMeta[chosenStrategy].strategyName}</Text>
+          <Button variant="primary" colorScheme="whiteAlpha" mt="12px" w="full">
+            Change
+          </Button>
+        </Flex> */}
         <Flex
           flexDirection={'column'}
-          justifyContent={'center'}
-          alignContent={'center'}
-          alignItems={'center'}
           h={'full'}
-          padding={'30px 130px 40px 40px'}
+          padding="28px"
+          alignItems="baseline"
         >
-          <Flex w={'full'}>
+          <Flex w={'full'} alignItems="baseline">
+            <Text variant="h200">Collateral APY</Text>
+            <Spacer />
+            <Text fontSize="40px">{customAPY.toFixed(2) ?? ''}%</Text>
+          </Flex>
+          <Flex w={'full'} marginTop={'10px'} alignItems="baseline">
+            <Text variant="h200">Interest Rate</Text>
+            <Spacer />
+            <Text fontSize="40px">{interestRate.toString() ?? ''}%</Text>
+          </Flex>
+          <Flex w={'full'} marginTop={'30px'} alignItems="baseline">
+            <Text variant="h200">Liquidation Fee</Text>
+            <Spacer />
+            <Text fontSize="24px">
+              {tokenFees.get(stratMeta[chosenStrategy].token.address) + '%'}
+            </Text>
+          </Flex>
+          <Flex w={'full'} marginTop={'30px'} alignItems="baseline">
+            <Text variant="h200">Borrow Fee</Text>
+            <Spacer />
+            <Text fontSize="24px">
+              {stratMeta[chosenStrategy].mintingFeePercent.toFixed(2)}%
+            </Text>
+          </Flex>
+          {/* <Flex w={'full'}>
             <Text variant="h200" color={'whiteAlpha.400'}>
               Interest Rate
             </Text>
@@ -121,7 +144,7 @@ export default function StrategyTokenInformation({
             <Spacer />
             <Text variant={'bodyLarge'}>
               {tokenFees.get(stratMeta.token.address) + '%'}
-            </Text>
+            </Text> 
           </Flex>
           {/* <Flex w={'full'} marginTop={'30px'}>
               <Text variant="h200" color={'whiteAlpha.400'}>

@@ -19,35 +19,32 @@ export default function StrategyNameAndSwitch({
   stratMeta: Record<string, ParsedStratMetaRow>;
   chosenStrategy: string;
 }) {
-
   const stratLabel =
     stratMeta[chosenStrategy].yieldType === YieldType.REPAYING
       ? 'Self-repaying loan'
-      : stratMeta[chosenStrategy].underlyingStrategyName ?? 'Compound collateral';
+      : stratMeta[chosenStrategy].underlyingStrategyName ??
+        'Compound collateral';
 
   const options = Object.values(stratMeta).filter((strat) =>
     stratFilter(strat, position)
   );
 
   const multipleOptions = options.length > 1;
-  const textVariant = multipleOptions ? 'bodySmall' : 'bodyLarge';
 
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 1]}>
-      <Container variant={'token'}>
+      <Container>
         <Flex
           flexDirection={'column'}
           justifyContent={'center'}
           alignItems={'center'}
           h={'100%'}
         >
-          <Text variant="h400" color="whiteAlpha.400">
-            Strategy
-          </Text>
-          <Text variant={textVariant} marginTop="8px" mx="20px" align="center">
-            <b>{stratLabel}</b>
-          </Text>
-          <br />
+          <Flex direction="column" alignItems="center" p="12px">
+            <Text color={'white'}>Strategy</Text>
+            <Text fontSize="24px">{stratLabel}</Text>
+          </Flex>
+
           {multipleOptions && (
             <ChangeStrategyModal
               stratMeta={stratMeta}

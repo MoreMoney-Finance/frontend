@@ -26,10 +26,11 @@ export default function ChangeStrategyModal({
   return (
     <>
       <Button
-        borderRadius={'full'}
-        width={'auto'}
+        variant="primary"
+        width={'90%'}
         marginTop="20px"
         onClick={onOpen}
+        borderRadius="12px"
       >
         <Text variant="bodySmall">Change</Text>
       </Button>

@@ -10,11 +10,8 @@ import {
 import { useMigrateStrategy } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
-import StrategyNameAndSwitch, {
-  stratFilter,
-} from './change-strategy/StrategyNameAndSwitch';
+import { stratFilter } from './change-strategy/StrategyNameAndSwitch';
 import EditPosition from './edit/EditPosition';
-import CollateralAPY from './metadata/CollateralAPY';
 import { PositionData } from './PositionData';
 import StrategyTokenInformation from './StrategyTokenInformation';
 
@@ -77,7 +74,7 @@ export function PositionBody({
     }
   }
 
-  // console.log('strategy', chosenStrategy);
+  console.log('strategy', chooseStrategy);
 
   return (
     <>
@@ -108,7 +105,7 @@ export function PositionBody({
         templateColumns={[
           'repeat(1, 1fr)',
           'repeat(5, 1fr)',
-          '520px 240px 240px',
+          '390px 240px 371px',
         ]}
         templateRows={[
           'repeat(2, 1fr)',
@@ -124,14 +121,11 @@ export function PositionBody({
           stratMeta={stratMeta[chosenStrategy]}
         />
 
-        <CollateralAPY stratMeta={stratMeta} chosenStrategy={chosenStrategy} />
-        <StrategyNameAndSwitch
-          position={position}
-          chooseStrategy={chooseStrategy}
+        <StrategyTokenInformation
           stratMeta={stratMeta}
+          chooseStrategy={chooseStrategy}
           chosenStrategy={chosenStrategy}
         />
-        <StrategyTokenInformation stratMeta={stratMeta[chosenStrategy]} />
       </Grid>
     </>
   );

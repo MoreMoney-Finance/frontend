@@ -50,14 +50,14 @@ export function PositionData({
   const positionHealthColor = debt.value.lt(parseEther('0.1'))
     ? 'accent'
     : totalPercentage > liquidatableZone
-    ? 'purple.400'
-    : totalPercentage > criticalZone
-    ? 'red'
-    : totalPercentage > riskyZone
-    ? 'orange'
-    : totalPercentage > healthyZone
-    ? 'green'
-    : 'accent';
+      ? 'purple.400'
+      : totalPercentage > criticalZone
+        ? 'red'
+        : totalPercentage > riskyZone
+          ? 'orange'
+          : totalPercentage > healthyZone
+            ? 'green'
+            : 'accent';
   // const positionHealth = {
   //   accent: 'Safe',
   //   green: 'Healthy',
@@ -76,9 +76,9 @@ export function PositionData({
 
   const debtRatio = position.collateral
     ? new CurrencyValue(
-        position.debt.currency,
-        position.debt.value.div(position.collateral.value)
-      )
+      position.debt.currency,
+      position.debt.value.div(position.collateral.value)
+    )
     : new CurrencyValue(position.debt.currency, BigNumber.from(0));
 
   const collateralUsd =

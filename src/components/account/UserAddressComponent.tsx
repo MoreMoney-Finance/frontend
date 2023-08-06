@@ -56,14 +56,14 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
           !moreBalance.isZero() &&
           !walletBalance.isZero() &&
           isLargerThan1280 ? (
-            <Text fontSize={['12px', '14px', '14px']} textAlign="center">
-              {walletBalance?.format({ significantDigits: 2 })} /{' '}
-              {moreBalance?.format({ significantDigits: 2 })}
-            </Text>
-          ) : (
+              <Text fontSize={['12px', '14px', '14px']} textAlign="center">
+                {walletBalance?.format({ significantDigits: 2 })} /{' '}
+                {moreBalance?.format({ significantDigits: 2 })}
+              </Text>
+            ) : (
             // <Image src={colorDot} />
-            <></>
-          )}
+              <></>
+            )}
         </HStack>
       </MostOfMoneyPopover>
       <Button

@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   Flex,
   Table,
   Tbody,
@@ -17,10 +18,13 @@ import { Link } from 'react-router-dom';
 import { Column, useTable } from 'react-table';
 import { ParsedStratMetaRow } from '../../../chain-interaction/contracts';
 import CustomTooltip from '../../../components/data-display/CustomTooltip';
-import { TokenDescription } from '../../../components/tokens/TokenDescription';
+import { TokenDescriptionTable } from '../../../components/tokens/TokenDescriptionTable';
 import { hiddenStrategies } from '../../../constants/hidden-strategies';
 import { LiquidationFeesContext } from '../../../contexts/LiquidationFeesContext';
 import { StrategyMetadataContext } from '../../../contexts/StrategyMetadataContext';
+import { UserAddressContext } from '../../../contexts/UserAddressContext';
+import { useOpenPositions } from '../../../hooks/useOpenPositions';
+import { currencyFormat } from '../../../utils';
 import { TableSearch } from './TableSearch';
 import { TableTabs } from './TableTabs';
 
@@ -34,10 +38,16 @@ type Entity = ParsedStratMetaRow & {
   liquidationFee: string;
   balance: number;
   ltv: string;
+  divider?: React.ReactNode;
+  positionHealth?: React.ReactNode;
+  positionCollateral?: React.ReactNode;
+  positionDebt?: string;
 };
 
 export function AllSupportedCollateral() {
   const hiddenTokens: Set<string> = new Set([]);
+  const account = React.useContext(UserAddressContext);
+
   const stratMeta: ParsedStratMetaRow[] = Object.values(
     React.useContext(StrategyMetadataContext)
   )
@@ -67,6 +77,9 @@ export function AllSupportedCollateral() {
       });
     });
 
+  const { rows: myPositions, rowsMap: myPositionsMap } = useOpenPositions(
+    account ?? ''
+  );
   const tokenFees = React.useContext(LiquidationFeesContext);
   const [tableTabFilter, setTableTabFilter] = React.useState<string[]>([]);
   const [searchString, setSearchString] = React.useState('');
@@ -92,12 +105,56 @@ export function AllSupportedCollateral() {
         meta.underlyingAPY !== undefined
           ? Math.round(meta.underlyingAPY) + Math.round(meta.APY)
           : Math.round(meta.APY);
+
+      const positions = myPositionsMap[meta.token.address];
+
+      const positionHealth =
+        positions && positions[0] && positions[0].positionHealth;
+      const positionHealthColor =
+        positions && positions[0] && positions[0].positionHealthColor;
+
+      const positionCollateral =
+        positions &&
+        positions.reduce((agg, next) => agg + next.collateralNumber, 0);
+
+      const positionDebt =
+        positions && positions.reduce((agg, next) => agg + next.debtNumber, 0);
+      const positionCollateralUsd = positionCollateral * meta.usdPrice;
+
       return {
         ...meta,
-        asset: <TokenDescription token={meta.token} />,
+        divider: <Divider transform="rotate(90deg)" w="60px" />,
+        positionHealth: (
+          <Text
+            color={
+              positionHealthColor == 'accent'
+                ? 'accent_color'
+                : positionHealthColor
+            }
+          >
+            {positionHealth ?? '-'}
+          </Text>
+        ),
+        positionCollateral: (
+          <Flex direction="column">
+            {positionCollateral ? (
+              <Text>{positionCollateral?.toFixed(3)}</Text>
+            ) : (
+              '-'
+            )}
+            {positionCollateralUsd > 0 && (
+              <Text fontSize="14px">
+                {currencyFormat(positionCollateralUsd)}
+              </Text>
+            )}
+          </Flex>
+        ),
+        positionDebt: currencyFormat(positionDebt),
+
+        asset: <TokenDescriptionTable token={meta.token} />,
         apy: (
-          <>
-            {customAPY + '%'}&nbsp;
+          <Box position="relative">
+            <Text fontSize="26px">{customAPY + '%'} </Text>
             {meta.underlyingAPY ? (
               <CustomTooltip
                 label={
@@ -108,8 +165,8 @@ export function AllSupportedCollateral() {
                   </>
                 }
               />
-            ) : null}{' '}
-          </>
+            ) : null}
+          </Box>
         ),
         MONEYavailable: meta.debtCeiling.gt(meta.totalDebt)
           ? meta.debtCeiling.sub(meta.totalDebt).format({ suffix: '' })
@@ -140,7 +197,6 @@ export function AllSupportedCollateral() {
   function tooltip(colName: string, label: string) {
     return (
       <Flex>
-        {' '}
         {colName} &nbsp;
         <Tooltip hasArrow label={label} bg="gray.300" color="black">
           <InfoIcon />
@@ -149,64 +205,63 @@ export function AllSupportedCollateral() {
     );
   }
 
-  const columns = React.useMemo<Column<Entity>[]>(
-    () => [
-      {
-        Header: tooltip(
-          'Collateral Asset ',
-          'The kinds of collateral you can deposit to borrow MONEY'
-        ),
-        accessor: 'asset',
-      },
-      {
-        Header: tooltip(
-          'APY ',
-          'The yield you earn on your deposited collateral'
-        ),
-        accessor: 'apy',
-      },
-      {
-        Header: tooltip(
-          'Max. collateral/debt ratio ',
-          'The maximum amount of debt you can take out against your collateral'
-        ),
-        accessor: 'borrowablePercentFormatted',
-      },
-      {
-        Header: tooltip(
-          'MONEY available ',
-          'How much in total still can be borrowed against this asset'
-        ),
-        accessor: 'MONEYavailable',
-      },
-      // {
-      //   Header: tooltip(
-      //     'TVL ',
-      //     'Total amount of this asset locked in our protocol, in US dollars'
-      //   ),
-      //   accessor: 'tvlPeg',
-      // },
-      // {
-      //   Header: tooltip(
-      //     'Max LTV ',
-      //     'How much of your deposited value you can extract as MONEY loan'
-      //   ),
-      //   accessor: 'ltv',
-      // },
-      // {
-      //   Header: tooltip(
-      //     'Liquidation Fee ',
-      //     'Percentage of loan paid if you get liquidated'
-      //   ),
-      //   accessor: 'liquidationFee',
-      // },
-    ],
+  const columnsNotLoggedIn: Column<Entity>[] = [
+    {
+      Header: 'Collateral Asset ',
+      accessor: 'asset',
+    },
+    {
+      Header: tooltip(
+        'APY ',
+        'The yield you earn on your deposited collateral'
+      ),
+      accessor: 'apy',
+    },
+    {
+      Header: 'Max. collateral/debt ratio ',
+
+      accessor: 'borrowablePercentFormatted',
+    },
+    {
+      Header: 'MONEY available ',
+
+      accessor: 'MONEYavailable',
+    },
+  ];
+  const columnsLoggedIn: Column<Entity>[] = [
+    ...columnsNotLoggedIn,
+    {
+      Header: 'My position ',
+      accessor: 'positionHealth',
+    },
+    {
+      Header: 'My collateral ',
+      accessor: 'positionCollateral',
+    },
+    {
+      Header: 'My debt ',
+      accessor: 'positionDebt',
+    },
+  ];
+
+  const columnsMemoLoggedIn = React.useMemo<Column<Entity>[]>(
+    () => columnsLoggedIn,
+    []
+  );
+
+  const columnsMemoNotLoggedIn = React.useMemo<Column<Entity>[]>(
+    () => columnsNotLoggedIn,
     []
   );
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({ columns, data });
-  console.log('data', data);
+    useTable({
+      columns:
+        myPositions && myPositions.length > 0
+          ? columnsMemoLoggedIn
+          : columnsMemoNotLoggedIn,
+      data,
+    });
   return (
     <>
       <Box

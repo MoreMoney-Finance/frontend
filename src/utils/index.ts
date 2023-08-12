@@ -33,6 +33,21 @@ export function parseFloatCurrencyValue(input: CurrencyValue) {
   );
   return isNaN(parsed) ? 0 : parsed;
 }
+
+export function currencyFormat(input: number) {
+  if (input) {
+    return input.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+  } else {
+    return (0).toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+  }
+}
+
 export function formatNumber(input: number) {
   if (input) {
     return input.toLocaleString('en-US', {});

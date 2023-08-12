@@ -309,13 +309,11 @@ const Table = {
         tr: {
           td: {
             fontFamily: 'Poppins',
-            fontSize: '12px',
+            fontSize: '15px',
             lineHeight: '14px',
-            color: 'whiteAlpha.400',
-            textTransform: 'uppercase',
+            color: 'white',
             paddingTop: '20px',
-            paddingBottom: '8px',
-            borderTop: '1px solid',
+            paddingBottom: '20px',
           },
         },
         _first: {
@@ -346,7 +344,12 @@ const Table = {
           },
           td: {
             fontSize: '18px',
-            lineHeight: '27px',
+            height: '80px',
+            textAlign: 'center',
+            verticalAlign: 'center',
+            alignItems: 'center',
+            justifyContent: 'center',
+            justifyItems: 'center',
             padding: '16px 30px',
             bg: 'whiteAlpha.30',
             _first: {

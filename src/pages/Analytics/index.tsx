@@ -141,12 +141,20 @@ export default function Analytics(props: React.PropsWithChildren<unknown>) {
     : '';
 
   return (
-    <Box padding={'12'} width={'full'} textAlign={'center'}>
+    <Box padding={[0, 0, 0, '12']} width={'full'} textAlign={'center'}>
       <Text fontSize={'4xl'}>Moremoney Analytics</Text>
       <br />
       <br />
       <br />
-      <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+      <Grid
+        templateColumns={[
+          'repeat(1, 1fr)',
+          'repeat(1, 1fr)',
+          'repeat(1, 1fr)',
+          'repeat(3, 1fr)',
+        ]}
+        gap={[1, 1, 1, 6]}
+      >
         <Box w="100%" h="200">
           <Container variant={'token'} padding={'35px 20px 20px 20px'}>
             <AnalyticsBox

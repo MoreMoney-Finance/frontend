@@ -1,24 +1,24 @@
 import {
   Container,
-  Image,
+  Flex,
   GridItem,
+  Image,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
-  Flex,
 } from '@chakra-ui/react';
 import * as React from 'react';
+import GroupIcon from '../../../../assets/icons/Group.svg';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
 } from '../../../../chain-interaction/contracts';
-import DepositBorrow from './DepositBorrow';
-import DepositForm from './DepositForm';
-import RepayWithdraw from './RepayWithdraw';
-import GroupIcon from '../../../../assets/icons/Group.svg';
 import BorrowForm from './BorrowForm';
+import DepositForm from './DepositForm';
+import RepayForm from './RepayForm';
+import WithdrawForm from './WithdrawForm';
 
 export default function EditPosition({
   position,
@@ -54,10 +54,10 @@ export default function EditPosition({
               <BorrowForm position={position} stratMeta={stratMeta} />
             </TabPanel>
             <TabPanel>
-              <DepositBorrow position={position} stratMeta={stratMeta} />
+              <RepayForm position={position} stratMeta={stratMeta} />
             </TabPanel>
             <TabPanel>
-              <RepayWithdraw position={position} stratMeta={stratMeta} />
+              <WithdrawForm position={position} stratMeta={stratMeta} />
             </TabPanel>
           </TabPanels>
         </Tabs>

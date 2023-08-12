@@ -123,14 +123,14 @@ export default function BorrowForm({
       sendNativeDepositBorrow(
         token,
         strategyAddress,
-        data!['collateral-deposit'] || '0',
+        '0',
         data!['money-borrow'] || '0'
       );
     } else {
       sendDepositBorrow(
         token,
         strategyAddress,
-        data!['collateral-deposit'] || '0',
+        '0',
         data!['money-borrow'] || '0'
       );
     }
@@ -254,15 +254,11 @@ export default function BorrowForm({
   return (
     <>
       <ConfirmPositionModal
-        title="Confirm Deposit / Borrow"
+        title="Confirm Borrow"
         isOpen={isOpen}
         onClose={onClose}
         confirm={confirmDeposit}
         body={[
-          {
-            title: <TokenDescription token={stratMeta.token} />,
-            value: <Text>{data ? data!['collateral-deposit'] : ''}</Text>,
-          },
           {
             title: <TokenDescription token={stable} />,
             value: <Text>{data ? data!['money-borrow'] : ''}</Text>,
@@ -403,7 +399,7 @@ export default function BorrowForm({
                 depositBorrowButtonDisabled
               }
             >
-              Deposit
+              Borrow
             </Button>
           )}
         </Box>

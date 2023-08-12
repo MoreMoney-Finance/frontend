@@ -24,7 +24,6 @@ import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   TxStatus,
-  useStable,
 } from '../../../../chain-interaction/contracts';
 import {
   useApproveTrans,
@@ -59,7 +58,6 @@ export default function DepositForm({
     MakeMostOfMoneyContext
   );
   const account = useContext(UserAddressContext);
-  const stable = useStable();
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
 
@@ -120,14 +118,14 @@ export default function DepositForm({
         token,
         strategyAddress,
         data!['collateral-deposit'] || '0',
-        data!['money-borrow'] || '0'
+        '0'
       );
     } else {
       sendDepositBorrow(
         token,
         strategyAddress,
         data!['collateral-deposit'] || '0',
-        data!['money-borrow'] || '0'
+        '0'
       );
     }
   }
@@ -250,7 +248,7 @@ export default function DepositForm({
   return (
     <>
       <ConfirmPositionModal
-        title="Confirm Deposit / Borrow"
+        title="Confirm Deposit"
         isOpen={isOpen}
         onClose={onClose}
         confirm={confirmDeposit}
@@ -258,10 +256,6 @@ export default function DepositForm({
           {
             title: <TokenDescription token={stratMeta.token} />,
             value: <Text>{data ? data!['collateral-deposit'] : ''}</Text>,
-          },
-          {
-            title: <TokenDescription token={stable} />,
-            value: <Text>{data ? data!['money-borrow'] : ''}</Text>,
           },
           {
             title: 'At Loan-To-Value %',
@@ -293,6 +287,7 @@ export default function DepositForm({
               variant={'bodyExtraSmall'}
               color={'whiteAlpha.600'}
               lineHeight={'14px'}
+              fontSize="16px"
             >
               Balance: {balance.format({ suffix: '' })}
             </Text>

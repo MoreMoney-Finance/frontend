@@ -1,5 +1,6 @@
 import {
   Alert,
+  Container,
   AlertIcon,
   Box,
   Button,
@@ -10,7 +11,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  ModalOverlay
+  ModalOverlay,
 } from '@chakra-ui/react';
 import * as React from 'react';
 
@@ -36,10 +37,15 @@ export const ConfirmPositionModal = ({
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} returnFocusOnClose={true}>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        returnFocusOnClose={true}
+        isCentered
+      >
         <ModalOverlay />
-        <ModalContent>
-          <Box background="linear-gradient(to right, hsla(0, 100%, 64%, 0.06), hsla(193, 100%, 50%, 0.06))">
+        <ModalContent bg="transparent">
+          <Container variant="modal">
             <ModalHeader>{title}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
@@ -69,14 +75,16 @@ export const ConfirmPositionModal = ({
               )}
             </ModalBody>
             <ModalFooter>
-              <Button mr={3} onClick={onClose}>
-                Cancel
-              </Button>
-              <Button variant="primary" onClick={depositBorrow}>
-                OK
-              </Button>
+              <Flex w="full">
+                <Button w="full" mr={3} onClick={onClose} variant="pink">
+                  Cancel
+                </Button>
+                <Button w="full" variant="primary" onClick={depositBorrow}>
+                  OK
+                </Button>
+              </Flex>
             </ModalFooter>
-          </Box>
+          </Container>
         </ModalContent>
       </Modal>
     </>

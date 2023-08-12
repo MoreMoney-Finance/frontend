@@ -43,7 +43,7 @@ export function showToast(
 
   const toastMessage = {
     success: 'Transaction Succeeded',
-    info: 'Transaction Rejected',
+    info: 'Transaction Info',
     error: 'Transaction Failed',
   };
 
@@ -57,7 +57,7 @@ export function showToast(
     />,
     {
       position: 'bottom-right',
-      autoClose: 999999,
+      autoClose: 3000,
       closeButton: false,
       className: 'toastify-custom',
       icon: true,

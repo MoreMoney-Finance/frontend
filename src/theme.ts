@@ -12,7 +12,12 @@ const Container = {
       flexShrink: '0',
       background: '#060E33',
     },
-
+    modal: {
+      borderRadius: '8px',
+      background: 'rgba(0, 0, 0, 0.44)',
+      boxShadow: '11px 10px 122px -36px #98DAFF',
+      backdropFilter: 'blur(25px)',
+    },
     token: {
       position: 'relative',
       maxWidth: '100%',
@@ -111,6 +116,12 @@ const Button = {
         },
       },
     },
+    pink: {
+      fontWeight: '400',
+      color: 'black',
+      borderRadius: '6px',
+      bg: 'linear-gradient(180deg, #FE7BFD 0%, #C345FF 100%)',
+    },
     secondary: {
       bg: 'whiteAlpha.100',
       border: 'none',
@@ -141,6 +152,7 @@ const Button = {
       borderRadius: '10px',
       bg: 'whiteAlpha.200',
       width: '100%',
+      fontWeight: 400,
     },
   },
 };

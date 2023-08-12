@@ -54,7 +54,7 @@ export default function NavigationBar() {
           />
           <Link to="/">
             <Flex alignItems={'center'}>
-              <Image src={logo} alt="Logo" width={'160px'} ml="8px" />
+              <Image src={logo} alt="Logo" width={'300px'} ml="8px" />
             </Flex>
           </Link>
           <HStack

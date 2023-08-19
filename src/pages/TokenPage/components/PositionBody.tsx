@@ -11,9 +11,9 @@ import { useMigrateStrategy } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { stratFilter } from './change-strategy/StrategyNameAndSwitch';
+import ChangeStrategyComponent from './ChangeStrategyComponent';
 import EditPosition from './edit/EditPosition';
 import { PositionData } from './PositionData';
-import StrategyTokenInformation from './StrategyTokenInformation';
 
 export function PositionBody({
   position: inputPos,
@@ -117,7 +117,7 @@ export function PositionBody({
           stratMeta={stratMeta[chosenStrategy]}
         />
 
-        <StrategyTokenInformation
+        <ChangeStrategyComponent
           stratMeta={stratMeta}
           chooseStrategy={chooseStrategy}
           chosenStrategy={chosenStrategy}

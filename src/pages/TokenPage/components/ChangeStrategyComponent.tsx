@@ -147,6 +147,7 @@ export default function ChangeStrategyComponent({
               justifyContent={'center'}
               alignItems={'center'}
               h={'100%'}
+              w={'100%'}
             >
               <Flex direction="column" alignItems="center" p="12px">
                 <Text color={'white'}>Strategy</Text>
@@ -164,7 +165,7 @@ export default function ChangeStrategyComponent({
                 >
                   <Text variant="bodySmall">
                     {isThereBetterAPY
-                      ? 'Change stragegy for better APY'
+                      ? 'Change strategy for better APY'
                       : 'Change'}
                   </Text>
                 </Button>

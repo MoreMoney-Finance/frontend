@@ -418,6 +418,56 @@ export function useTokenIdByTrancheId(
   );
 }
 
+export function useNFTOwnerOf(index: number, defaultResult: BigNumber) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'ownerOf',
+      args: [index],
+    }),
+    defaultResult,
+    'useNFTOwnerOf',
+    true
+  );
+}
+
+export function useNFTTotalSupply(defaultResult: BigNumber) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'totalSupply',
+      args: [],
+    }),
+    defaultResult,
+    'useNFTTotalSupply',
+    true
+  );
+}
+
+export function useNFTBalanceOf(
+  defaultResult: BigNumber,
+  account?: string | null
+) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'balanceOf',
+      args: [account],
+    }),
+    defaultResult,
+    'useCurrentEpoch'
+  );
+}
+
 export function useCurrentEpoch(defaultResult: BigNumber) {
   const addresses = useAddresses();
   const abi = new Interface(NFTContract.abi);

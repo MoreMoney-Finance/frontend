@@ -3,18 +3,19 @@ import { useEthers } from '@usedapp/core';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import robotPfp from '../../assets/img/robot-token-page.svg';
 import { ParsedStratMetaRow } from '../../chain-interaction/contracts';
 import {
   getIconsFromTokenAddress,
   getTokenFromAddress,
 } from '../../chain-interaction/tokens';
 import { BackButton } from '../../components/navigation/BackButton';
+import NFTSection from '../../components/nft/NFTSection';
 import DeprecatedTokenMessage from '../../components/notifications/DeprecatedTokenMessage';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { PositionBody } from './components/PositionBody';
 import { TokenPageBody } from './components/TokenPageBody';
-import robotPfp from '../../assets/img/robot-token-page.svg';
 
 export default function TokenPage(props: React.PropsWithChildren<unknown>) {
   const { chainId } = useEthers();
@@ -46,7 +47,7 @@ export default function TokenPage(props: React.PropsWithChildren<unknown>) {
         zIndex="var(--chakra-zIndices-base)"
       />
       <DeprecatedTokenMessage />
-      <Box>
+      <Flex justifyContent="space-between" alignContent="space-between">
         <Flex alignItems="center" position="relative">
           <Avatar width="160px" height="160px" src={robotPfp} />
           {token && token.address && (
@@ -63,7 +64,8 @@ export default function TokenPage(props: React.PropsWithChildren<unknown>) {
             {token?.ticker}
           </Text>
         </Flex>
-      </Box>
+        <NFTSection />
+      </Flex>
       <br />
       <BackButton />
       {account ? (

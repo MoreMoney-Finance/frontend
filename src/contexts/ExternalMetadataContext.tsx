@@ -47,9 +47,17 @@ export type YieldMonitorMetadata = {
   rewardsCoin: string;
 };
 
+export type NFTSnapshotFile = {
+  tstamp: number;
+  positions: Record<string, Record<string, number>>;
+  eligible: Record<string, Record<string, boolean>>;
+  signatures: Record<string, Record<string, string>>;
+};
+
 export type ExternalMetadataType = {
   yieldFarmingData: YieldFarmingData[];
   yyMetadata: YYMetadata;
+  nftSnapshot?: NFTSnapshotFile;
   yieldMonitor: Record<string, YieldMonitorMetadata>;
   xMoreData: xMoreMetadata;
   additionalYieldData: Record<string, Record<string, number>>;
@@ -61,11 +69,12 @@ export const ExternalMetadataContext =
   React.createContext<ExternalMetadataType>({
     yieldFarmingData: [],
     yyMetadata: {},
+    nftSnapshot: {} as NFTSnapshotFile,
     yieldMonitor: {},
     xMoreData: {} as xMoreMetadata,
     additionalYieldData: {},
     yyAvaxAPY: 0,
-    underlyingStrategyNames: new Map<string, string>()
+    underlyingStrategyNames: new Map<string, string>(),
   });
 
 export function ExternalMetadataCtxProvider({
@@ -77,6 +86,7 @@ export function ExternalMetadataCtxProvider({
   const [yyAvaxAPY, setYYAvaxAPY] = useState<number>(0);
   const [yieldFarmingData, setYieldFarmingData] = useState<YieldFarmingData>();
   const [yyMetadata, setYYMeta] = useState<YYMetadata>({});
+  const [nftSnapshot, setNftSnapshot] = useState<NFTSnapshotFile>();
   const [yieldMonitor, setYieldMonitor] = useState<
     Record<string, YieldMonitorMetadata>
   >({});
@@ -97,6 +107,16 @@ export function ExternalMetadataCtxProvider({
     fetch(`https://staging-api.yieldyak.com/yyavax`)
       .then((response) => response.json())
       .then((data) => setYYAvaxAPY(data?.yyAVAX?.apy))
+      .catch((err) => {
+        console.error('Failed to fetch URL');
+        console.error(err);
+      });
+
+    fetch(
+      `https://raw.githubusercontent.com/MoreMoney-Finance/craptastic-api/main/src/nft-snapshot.json`
+    )
+      .then((response) => response.json())
+      .then((data) => setNftSnapshot(data))
       .catch((err) => {
         console.error('Failed to fetch URL');
         console.error(err);
@@ -155,6 +175,7 @@ export function ExternalMetadataCtxProvider({
         {
           yieldFarmingData,
           yyMetadata,
+          nftSnapshot,
           yieldMonitor,
           xMoreData,
           additionalYieldData,

@@ -58,6 +58,10 @@ export default function ChangeStrategyComponent({
     stratFilter(strat, position)
   );
 
+  const isThereBetterAPY = options.some(
+    (strat) => strat.APY > stratMeta[chosenStrategy].APY
+  );
+
   const multipleOptions = options.length > 1;
 
   return (
@@ -151,14 +155,18 @@ export default function ChangeStrategyComponent({
 
               {multipleOptions && (
                 <Button
-                  variant="primary"
+                  variant={isThereBetterAPY ? 'pink' : 'primary'}
                   width={'90%'}
                   onClick={() => {
                     setViewStrategies(true);
                   }}
                   borderRadius="12px"
                 >
-                  <Text variant="bodySmall">Change</Text>
+                  <Text variant="bodySmall">
+                    {isThereBetterAPY
+                      ? 'Change stragegy for better APY'
+                      : 'Change'}
+                  </Text>
                 </Button>
               )}
             </Flex>

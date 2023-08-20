@@ -75,6 +75,7 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
         {account ? (
           <Flex justifyItems="center" alignItems="center">
             <Avatar src={accountImage} width="25px" height="27px" />
+            &nbsp;
             <Text
               fontSize={['12px', '14px', '16px']}
               lineHeight={'24px'}

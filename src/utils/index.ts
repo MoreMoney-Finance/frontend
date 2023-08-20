@@ -6,9 +6,8 @@ import Web3Modal from 'web3modal';
 import CoreLogo from '../assets/img/core.svg';
 
 export const provider = window.location.href.includes('localhost')
-  ? new ethers.providers.JsonRpcProvider(
-    'https://api.avax.network/ext/bc/C/rpc'
-  )
+  ? new ethers.providers.JsonRpcProvider()
+// 'https://api.avax.network/ext/bc/C/rpc'
   : new ethers.providers.JsonRpcProvider(
     'https://api.avax.network/ext/bc/C/rpc'
   );

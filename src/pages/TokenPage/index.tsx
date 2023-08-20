@@ -3,7 +3,7 @@ import { useEthers } from '@usedapp/core';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import robotPfp from '../../assets/img/robot-token-page.svg';
+
 import { ParsedStratMetaRow } from '../../chain-interaction/contracts';
 import {
   getIconsFromTokenAddress,
@@ -12,6 +12,7 @@ import {
 import { BackButton } from '../../components/navigation/BackButton';
 import NFTSection from '../../components/nft/NFTSection';
 import DeprecatedTokenMessage from '../../components/notifications/DeprecatedTokenMessage';
+import { NFTContext } from '../../contexts/NFTContext';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { PositionBody } from './components/PositionBody';
@@ -20,6 +21,7 @@ import { TokenPageBody } from './components/TokenPageBody';
 export default function TokenPage(props: React.PropsWithChildren<unknown>) {
   const { chainId } = useEthers();
   const account = useContext(UserAddressContext);
+  const { accountImage } = useContext(NFTContext);
   const params = useParams<'tokenAddress'>();
   const tokenAddress = params.tokenAddress;
   const allStratMeta = React.useContext(StrategyMetadataContext);
@@ -49,7 +51,7 @@ export default function TokenPage(props: React.PropsWithChildren<unknown>) {
       <DeprecatedTokenMessage />
       <Flex justifyContent="space-between" alignContent="space-between">
         <Flex alignItems="center" position="relative">
-          <Avatar width="160px" height="160px" src={robotPfp} />
+          <Avatar width="160px" height="160px" src={accountImage} />
           {token && token.address && (
             <Avatar
               width="75px"

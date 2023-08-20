@@ -10,10 +10,10 @@ import { CurrencyValue, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
 import * as React from 'react';
 import { useContext } from 'react';
-import robotPfp from '../../assets/img/robot-pfp.svg';
 import { useAddresses, useStable } from '../../chain-interaction/contracts';
 import { getTokenFromAddress } from '../../chain-interaction/tokens';
 import { MakeMostOfMoneyContext } from '../../contexts/MakeMostOfMoneyContext';
+import { NFTContext } from '../../contexts/NFTContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
 import { useConnectWallet } from '../../utils';
@@ -29,6 +29,7 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
   const { MostOfMoneyPopover } = React.useContext(MakeMostOfMoneyContext);
   const account = useContext(UserAddressContext);
   const stable = useStable();
+  const { accountImage } = React.useContext(NFTContext);
   const balanceCtx = React.useContext(WalletBalancesContext);
   const moreToken = getTokenFromAddress(chainId, useAddresses().MoreToken);
 
@@ -73,7 +74,7 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
       >
         {account ? (
           <Flex justifyItems="center" alignItems="center">
-            <Avatar src={robotPfp} width="25px" height="27px" />
+            <Avatar src={accountImage} width="25px" height="27px" />
             <Text
               fontSize={['12px', '14px', '16px']}
               lineHeight={'24px'}

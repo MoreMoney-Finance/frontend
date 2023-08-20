@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { CurrencyValue, useEthers } from '@usedapp/core';
 import { BigNumber } from 'ethers';
-import { getAddress, parseEther } from 'ethers/lib/utils';
+import { getAddress, parseEther, parseUnits } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -31,6 +31,7 @@ import { TokenAmountInputField } from '../../../../components/tokens/TokenAmount
 import { TokenDescription } from '../../../../components/tokens/TokenDescription';
 import { TokenDescriptionInput } from '../../../../components/tokens/TokenDescriptionInput';
 import { WNATIVE_ADDRESS } from '../../../../constants/addresses';
+import { PositionContext } from '../../../../contexts/PositionContext';
 import { useWalletBalance } from '../../../../contexts/WalletBalancesContext';
 import { parseFloatCurrencyValue, parseFloatNoNaN } from '../../../../utils';
 import { ConfirmPositionModal } from './ConfirmPositionModal';
@@ -44,6 +45,7 @@ export default function RepayForm({
 }>) {
   const { token, usdPrice, borrowablePercent } = stratMeta;
   const { chainId } = useEthers();
+  const { setRepayInput } = React.useContext(PositionContext);
   const [data, setData] = useState<{ [x: string]: any }>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const stable = useStable();
@@ -104,6 +106,14 @@ export default function RepayForm({
     'money-repay',
     // 'custom-percentage',
   ]);
+
+  React.useEffect(() => {
+    if (repayInput) {
+      setRepayInput?.(
+        new CurrencyValue(stable, parseUnits(repayInput, stable.decimals))
+      );
+    }
+  }, [repayInput]);
 
   const extantCollateral =
     position && position.collateral

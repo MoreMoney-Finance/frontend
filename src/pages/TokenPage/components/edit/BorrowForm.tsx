@@ -16,7 +16,7 @@ import {
   useTokenAllowance,
 } from '@usedapp/core';
 import { BigNumber } from 'ethers';
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress, parseUnits } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -41,6 +41,7 @@ import { TokenDescription } from '../../../../components/tokens/TokenDescription
 import { TokenDescriptionInput } from '../../../../components/tokens/TokenDescriptionInput';
 import { WNATIVE_ADDRESS } from '../../../../constants/addresses';
 import { MakeMostOfMoneyContext } from '../../../../contexts/MakeMostOfMoneyContext';
+import { PositionContext } from '../../../../contexts/PositionContext';
 import { UserAddressContext } from '../../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../../contexts/WalletBalancesContext';
 import { parseFloatCurrencyValue, parseFloatNoNaN } from '../../../../utils';
@@ -63,6 +64,7 @@ export default function BorrowForm({
     MakeMostOfMoneyContext
   );
   const account = useContext(UserAddressContext);
+  const { setBorrowInput } = React.useContext(PositionContext);
   const stable = useStable();
 
   const isNativeToken = WNATIVE_ADDRESS[chainId!] === token.address;
@@ -141,6 +143,14 @@ export default function BorrowForm({
     'money-borrow',
     'custom-percentage',
   ]);
+
+  React.useEffect(() => {
+    if (borrowInput) {
+      setBorrowInput?.(
+        new CurrencyValue(stable, parseUnits(borrowInput, stable.decimals))
+      );
+    }
+  }, [borrowInput]);
 
   const inputExceedsAllowance =
     allowCV &&

@@ -16,7 +16,7 @@ import {
   useTokenAllowance,
 } from '@usedapp/core';
 import { BigNumber } from 'ethers';
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress, parseUnits } from 'ethers/lib/utils';
 import * as React from 'react';
 import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -38,6 +38,7 @@ import { TokenDescription } from '../../../../components/tokens/TokenDescription
 import { TokenDescriptionInput } from '../../../../components/tokens/TokenDescriptionInput';
 import { WNATIVE_ADDRESS } from '../../../../constants/addresses';
 import { MakeMostOfMoneyContext } from '../../../../contexts/MakeMostOfMoneyContext';
+import { PositionContext } from '../../../../contexts/PositionContext';
 import { UserAddressContext } from '../../../../contexts/UserAddressContext';
 import { useWalletBalance } from '../../../../contexts/WalletBalancesContext';
 import { parseFloatCurrencyValue, parseFloatNoNaN } from '../../../../utils';
@@ -52,6 +53,7 @@ export default function DepositForm({
 }>) {
   const { token, strategyAddress, borrowablePercent, usdPrice } = stratMeta;
   const { chainId } = useEthers();
+  const { setCollateralInput } = useContext(PositionContext);
   const [data, setData] = useState<{ [x: string]: any }>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { onToggle, onClose: onClosePopover } = React.useContext(
@@ -135,6 +137,14 @@ export default function DepositForm({
     'money-borrow',
     'custom-percentage',
   ]);
+
+  React.useEffect(() => {
+    if (collateralInput) {
+      setCollateralInput?.(
+        new CurrencyValue(token, parseUnits(collateralInput, token.decimals))
+      );
+    }
+  }, [collateralInput]);
 
   const inputExceedsAllowance =
     allowCV &&

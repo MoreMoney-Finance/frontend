@@ -1,27 +1,106 @@
 import {
-  Container,
   Avatar,
   AvatarGroup,
+  Container,
   Flex,
   GridItem,
   Text,
 } from '@chakra-ui/react';
 import { parseEther } from '@ethersproject/units';
 import { CurrencyValue } from '@usedapp/core';
-import { BigNumber } from 'ethers';
 import React from 'react';
+import CriticalGauge from '../../../assets/gauge/critical.svg';
+import SafeFullGauge from '../../../assets/gauge/safe-full.svg';
+import SafePartGauge from '../../../assets/gauge/safe-part.svg';
+import UnsafeGauge from '../../../assets/gauge/unsafe.svg';
 import {
+  calcLiquidationPrice,
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   useAddresses,
 } from '../../../chain-interaction/contracts';
-import { TitleValue } from '../../../components/data-display/TitleValue';
-import { parseFloatCurrencyValue } from '../../../utils';
-import CriticalGauge from '../../../assets/gauge/critical.svg';
-import UnsafeGauge from '../../../assets/gauge/unsafe.svg';
-import SafePartGauge from '../../../assets/gauge/safe-part.svg';
-import SafeFullGauge from '../../../assets/gauge/safe-full.svg';
 import { getIconsFromTokenAddress } from '../../../chain-interaction/tokens';
+import { TitleValue } from '../../../components/data-display/TitleValue';
+import { PositionContext } from '../../../contexts/PositionContext';
+import { parseFloatCurrencyValue } from '../../../utils';
+
+function usePositionValues(
+  collateral: CurrencyValue | undefined,
+  usdPrice: number,
+  debt: CurrencyValue,
+  borrowablePercent: number
+) {
+  try {
+    const totalPercentage =
+      collateral?.value.gt(0) && usdPrice > 0
+        ? (100 * parseFloatCurrencyValue(debt)) /
+          (parseFloatCurrencyValue(collateral) * usdPrice)
+        : 0;
+
+    const liquidatableZone = borrowablePercent;
+    const criticalZone = (90 * borrowablePercent) / 100;
+    const riskyZone = (80 * borrowablePercent) / 100;
+    const healthyZone = (50 * borrowablePercent) / 100;
+
+    const positionHealthColor = debt.value.lt(parseEther('0.1'))
+      ? 'accent'
+      : totalPercentage > liquidatableZone
+        ? 'purple.400'
+        : totalPercentage > criticalZone
+          ? 'red'
+          : totalPercentage > riskyZone
+            ? 'orange'
+            : totalPercentage > healthyZone
+              ? 'green'
+              : 'accent';
+
+    const gaugeImage = {
+      accent: SafeFullGauge,
+      green: SafePartGauge,
+      orange: UnsafeGauge,
+      red: CriticalGauge,
+      ['purple.400']: CriticalGauge,
+    };
+    const extantCollateral = collateral
+      ? parseFloatCurrencyValue(collateral)
+      : 0;
+
+    const totalCollateral =
+      parseFloatCurrencyValue(collateral!) + extantCollateral;
+
+    const debtRatio =
+      totalCollateral > 0 && usdPrice > 0
+        ? (100 * parseFloatCurrencyValue(debt)) / (totalCollateral * usdPrice)
+        : 0;
+
+    const collateralUsd =
+      collateral && parseFloatCurrencyValue(collateral) * usdPrice;
+
+    const newLiquidationPrice = calcLiquidationPrice(
+      borrowablePercent,
+      debt,
+      collateral!
+    );
+
+    return {
+      totalPercentage,
+      positionHealthColor,
+      gaugeImage: gaugeImage[positionHealthColor],
+      debtRatio,
+      collateralUsd,
+      newLiquidationPrice,
+    };
+  } catch (ex) {
+    return {
+      totalPercentage: 0,
+      positionHealthColor: 'accent',
+      gaugeImage: CriticalGauge,
+      debtRatio: 0,
+      collateralUsd: 0,
+      newLiquidationPrice: 0,
+    };
+  }
+}
 
 export function PositionData({
   position,
@@ -30,62 +109,47 @@ export function PositionData({
   position: ParsedPositionMetaRow;
   stratMeta: ParsedStratMetaRow;
 }) {
-  // const effectiveDebt = position.debt.gt(position.yield)
-  //   ? position.debt.sub(position.yield)
-  //   : new CurrencyValue(position.debt.currency, BigNumber.from(0));
   const addresses = useAddresses();
   const { collateral, debt, borrowablePercent } = position;
+
+  const { collateralInput, borrowInput, repayInput, collateralWithdraw } =
+    React.useContext(PositionContext);
   const { usdPrice } = stratMeta;
 
-  const totalPercentage =
-    collateral?.value.gt(0) && usdPrice > 0
-      ? (100 * parseFloatCurrencyValue(debt)) /
-        (parseFloatCurrencyValue(collateral) * usdPrice)
-      : 0;
-  const liquidatableZone = borrowablePercent;
-  const criticalZone = (90 * borrowablePercent) / 100;
-  const riskyZone = (80 * borrowablePercent) / 100;
-  const healthyZone = (50 * borrowablePercent) / 100;
+  const existingCollateralPlusInput = collateralInput
+    ? collateral?.add(collateralInput)
+    : collateral;
+  const existingDebtPlusInput = borrowInput ? debt.add(borrowInput) : debt;
 
-  const positionHealthColor = debt.value.lt(parseEther('0.1'))
-    ? 'accent'
-    : totalPercentage > liquidatableZone
-      ? 'purple.400'
-      : totalPercentage > criticalZone
-        ? 'red'
-        : totalPercentage > riskyZone
-          ? 'orange'
-          : totalPercentage > healthyZone
-            ? 'green'
-            : 'accent';
-  // const positionHealth = {
-  //   accent: 'Safe',
-  //   green: 'Healthy',
-  //   orange: 'Risky',
-  //   red: 'Critical',
-  //   ['purple.400']: 'Liquidatable',
-  // };
+  const collateralParam =
+    collateralWithdraw && existingCollateralPlusInput?.gt(collateralWithdraw)
+      ? existingCollateralPlusInput.sub(collateralWithdraw)
+      : existingCollateralPlusInput;
 
-  const gaugeImage = {
-    accent: SafeFullGauge,
-    green: SafePartGauge,
-    orange: UnsafeGauge,
-    red: CriticalGauge,
-    ['purple.400']: CriticalGauge,
-  };
+  const debtParam =
+    repayInput && existingDebtPlusInput?.gt(repayInput)
+      ? existingDebtPlusInput?.sub(repayInput)
+      : existingDebtPlusInput;
 
-  const debtRatio = position.collateral
-    ? new CurrencyValue(
-      position.debt.currency,
-      position.debt.value.div(position.collateral.value)
-    )
-    : new CurrencyValue(position.debt.currency, BigNumber.from(0));
+  const {
+    gaugeImage: orginalGaugeImage,
+    collateralUsd: originalCollateralUsd,
+    debtRatio: newDebtRatio,
+    newLiquidationPrice,
+  } = usePositionValues(
+    collateralParam,
+    usdPrice,
+    debtParam,
+    borrowablePercent
+  );
 
-  const collateralUsd =
-    position.collateral &&
-    parseFloatCurrencyValue(position.collateral) * usdPrice;
+  const { debtRatio: originalDebtRatio } = usePositionValues(
+    collateral,
+    usdPrice,
+    debt,
+    borrowablePercent
+  );
 
-  // console.log('PositionData', debt, borrowablePercent, totalPercentage);
   return (
     <GridItem colSpan={[2, 3, 3]} rowSpan={[12, 1, 1]}>
       <Container variant={'token'}>
@@ -99,7 +163,7 @@ export function PositionData({
             <Container
               width="200px"
               height="100px"
-              bg={`url(${gaugeImage[positionHealthColor]})`}
+              bg={`url(${orginalGaugeImage})`}
               backgroundSize="cover"
             />
           </Flex>
@@ -132,7 +196,7 @@ export function PositionData({
                 {Intl.NumberFormat('en-US', {
                   style: 'currency',
                   currency: 'USD',
-                }).format(collateralUsd!)}
+                }).format(originalCollateralUsd!)}
               </Flex>
             }
           />
@@ -153,25 +217,36 @@ export function PositionData({
                 />
               </Flex>
             }
-            description={<Flex>New Debt: 13k</Flex>}
+            description={
+              <Flex>
+                New Debt:{' '}
+                {Intl.NumberFormat('en', {
+                  notation: 'compact',
+                }).format(parseFloatCurrencyValue(debtParam))}
+              </Flex>
+            }
           />
           <TitleValue
             title="Debt Ratio"
             // value={effectiveDebt.format({ suffix: '' })}
             value={
-              <Flex alignItems="center">
-                {Intl.NumberFormat('en', {
-                  notation: 'compact',
-                  maximumFractionDigits: 1,
-                }).format(parseFloatCurrencyValue(debtRatio))}
-              </Flex>
+              <Flex alignItems="center">{originalDebtRatio.toFixed(1)}%</Flex>
             }
-            description={<Flex>New ratio: 130% (min 125%)</Flex>}
+            // description={<Flex>New ratio: 130% (min 125%)</Flex>}
+            description={<Flex>New ratio: {newDebtRatio.toFixed(1)}%</Flex>}
           />
           <TitleValue
             title="Liquidation Price"
             value={`$ ${position.liquidationPrice.toFixed(2)}`}
-            description={<div>New liquidation price: $ 9.01</div>}
+            description={
+              <div>
+                New liquidation price:{' '}
+                {Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                }).format(newLiquidationPrice!)}
+              </div>
+            }
           />
         </Flex>
       </Container>

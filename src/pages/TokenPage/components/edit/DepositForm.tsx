@@ -3,9 +3,6 @@ import {
   Button,
   Flex,
   HStack,
-  Input,
-  InputGroup,
-  InputRightElement,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -162,31 +159,10 @@ export default function DepositForm({
       : 0;
   const totalDebt = parseFloatNoNaN(borrowInput) + extantDebt;
 
-  const currentPercentage =
-    totalCollateral > 0 && usdPrice > 0
-      ? (100 * extantDebt) / (totalCollateral * usdPrice)
-      : 0;
-  const percentageRange = borrowablePercent - currentPercentage;
-
-  const percentageStep = Math.max(percentageRange / 5, 10);
-  const percentageSteps =
-    10 >= percentageRange
-      ? [(currentPercentage + borrowablePercent) / 2]
-      : Array(Math.floor((percentageRange - 0.5) / percentageStep))
-        .fill(currentPercentage)
-        .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
-
   const totalPercentage =
     totalCollateral > 0 && usdPrice > 0
       ? (100 * totalDebt) / (totalCollateral * usdPrice)
       : 0;
-
-  const percentages = Object.fromEntries(
-    percentageSteps.map((percentage) => [
-      `${percentage.toFixed(0)} %`,
-      (percentage * totalCollateral * usdPrice) / 100 - extantDebt,
-    ])
-  );
 
   React.useEffect(() => {
     // console.log('In effect', customPercentageInput);
@@ -330,42 +306,6 @@ export default function DepositForm({
           </HStack>
         </Flex>
 
-        <br />
-        <HStack justifyContent={'space-between'}>
-          {percentages &&
-            Object.entries(percentages).map(([key, value]) => (
-              <Button
-                w="full"
-                variant={'secondary'}
-                borderRadius={'full'}
-                padding={'6px 16px'}
-                key={'percentage' + key}
-                onClick={() => {
-                  setValueDepForm('custom-percentage', '');
-                  setValueDepForm('money-borrow', value.toFixed(10), {
-                    shouldDirty: true,
-                  });
-                }}
-              >
-                <Text variant={'bodySmall'} fontWeight={'500'}>
-                  {key}
-                </Text>
-              </Button>
-            ))}
-          <InputGroup width="120px" border={'none'}>
-            <Input
-              {...registerDepForm('custom-percentage')}
-              key={'custom'}
-              placeholder="Custom"
-              variant={
-                customPercentageInput ? 'percentage' : 'percentage_inactive'
-              }
-            />
-            <InputRightElement width="auto" marginRight="16px">
-              %
-            </InputRightElement>
-          </InputGroup>
-        </HStack>
         <br />
         <TransactionErrorDialog state={approveState} title={'Approve'} />
         <TransactionErrorDialog

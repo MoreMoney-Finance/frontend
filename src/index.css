@@ -9,3 +9,7 @@
   box-shadow: 11px 10px 122px -36px #98daff;
   backdrop-filter: blur(25px);
 }
+
+.web3modal-modal-lightbox {
+  z-index: 99999 !important;
+}

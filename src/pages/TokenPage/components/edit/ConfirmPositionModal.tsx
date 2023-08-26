@@ -1,6 +1,5 @@
 import {
   Alert,
-  Container,
   AlertIcon,
   Box,
   Button,
@@ -43,9 +42,17 @@ export const ConfirmPositionModal = ({
         returnFocusOnClose={true}
         isCentered
       >
-        <ModalOverlay />
-        <ModalContent bg="transparent">
-          <Container variant="modal">
+        <ModalOverlay
+          background="rgba(75, 75, 75, 0.40)"
+          backdropFilter="blur(15px);"
+        />
+        <ModalContent borderRadius="8px" background="transparent">
+          <Box
+            background="rgba(0, 0, 0, 0.44);"
+            boxShadow="11px 10px 122px -36px #98DAFF;"
+            backdropFilter="blur(25px);"
+            borderRadius="8px"
+          >
             <ModalHeader>{title}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
@@ -84,7 +91,7 @@ export const ConfirmPositionModal = ({
                 </Button>
               </Flex>
             </ModalFooter>
-          </Container>
+          </Box>
         </ModalContent>
       </Modal>
     </>

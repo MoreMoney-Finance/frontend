@@ -309,7 +309,7 @@ const Table = {
         tr: {
           td: {
             fontFamily: 'Poppins',
-            fontSize: '15px',
+            fontSize: '13px',
             lineHeight: '14px',
             color: 'white',
             paddingTop: '20px',
@@ -324,6 +324,7 @@ const Table = {
         /** Because the table uses tr as a link */
         a: {
           position: 'relative',
+          verticalAlign: 'middle',
           _after: {
             content: '""',
             position: 'absolute',

@@ -21,7 +21,7 @@ import { UserAddressComponent } from '../account/UserAddressComponent';
 const Links = [
   { title: 'Borrow', link: '/' },
   // { title: 'My Positions', link: '/positions' },
-  { title: 'Yield', link: '/farm' },
+  { title: 'Yield', link: 'https://app.moremoney.finance/farm' },
   // { title: 'Stake', link: '/stake' },
   // { title: 'Liquidate', link: '/liquidatable-positions' },
   { title: 'Statistics', link: '/analytics' },
@@ -71,7 +71,13 @@ export default function NavigationBar() {
                 }
                 key={link.title}
               >
-                <Link to={link.link}>{link.title}</Link>
+                {link.title === 'Yield' ? (
+                  <a href={link.link} target="_blank" rel="noopener noreferrer">
+                    {link.title}
+                  </a>
+                ) : (
+                  <Link to={link.link}>{link.title}</Link>
+                )}
               </LinkComponent>
             ))}
           </HStack>

@@ -233,7 +233,7 @@ export default function WithdrawForm({
               <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
                 <Flex
                   w={'full'}
-                  marginBottom={'6px'}
+                  marginBottom={'0px'}
                   flexDirection="row"
                   justifyContent={'space-between'}
                 >

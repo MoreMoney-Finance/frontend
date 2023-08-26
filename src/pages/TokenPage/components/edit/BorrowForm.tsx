@@ -303,6 +303,7 @@ export default function BorrowForm({
               variant={'bodyExtraSmall'}
               color={'whiteAlpha.600'}
               lineHeight={'14px'}
+              fontSize="16px"
             >
               Balance: {balance.format({ suffix: '' })}
             </Text>

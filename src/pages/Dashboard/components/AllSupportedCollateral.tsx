@@ -123,7 +123,15 @@ export function AllSupportedCollateral() {
 
       return {
         ...meta,
-        divider: <Divider transform="rotate(90deg)" w="60px" />,
+        divider: (
+          <Divider
+            orientation="vertical"
+            w="70px"
+            h="70px"
+            position="absolute"
+            top="15px"
+          />
+        ),
         positionHealth: (
           <Text
             color={
@@ -150,7 +158,6 @@ export function AllSupportedCollateral() {
           </Flex>
         ),
         positionDebt: currencyFormat(positionDebt),
-
         asset: <TokenDescriptionTable token={meta.token} />,
         apy: (
           <Box position="relative">
@@ -230,6 +237,10 @@ export function AllSupportedCollateral() {
   ];
   const columnsLoggedIn: Column<Entity>[] = [
     ...columnsNotLoggedIn,
+    {
+      Header: '',
+      accessor: 'divider',
+    },
     {
       Header: 'My position ',
       accessor: 'positionHealth',
@@ -373,6 +384,7 @@ export function AllSupportedCollateral() {
                   as={Link}
                   to={`/token/${row.original.token.address}`}
                   display="table-row"
+                  height="94px"
                 >
                   {row.cells.map((cell) => {
                     // eslint-disable-next-line

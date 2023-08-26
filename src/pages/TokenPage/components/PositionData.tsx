@@ -28,7 +28,8 @@ function usePositionValues(
   collateral: CurrencyValue | undefined,
   usdPrice: number,
   debt: CurrencyValue,
-  borrowablePercent: number
+  borrowablePercent: number,
+  collateralValue?: number
 ) {
   try {
     const totalPercentage =
@@ -61,17 +62,15 @@ function usePositionValues(
       red: CriticalGauge,
       ['purple.400']: CriticalGauge,
     };
-    const extantCollateral = collateral
-      ? parseFloatCurrencyValue(collateral)
-      : 0;
 
-    const totalCollateral =
-      parseFloatCurrencyValue(collateral!) + extantCollateral;
-
-    const debtRatio =
-      totalCollateral > 0 && usdPrice > 0
-        ? (100 * parseFloatCurrencyValue(debt)) / (totalCollateral * usdPrice)
-        : 0;
+    const debtRatio = debt.isZero()
+      ? '∞'
+      : collateralValue &&
+        (
+          (collateralValue * 10000) /
+          parseFloatCurrencyValue(debt) /
+          100
+        ).toFixed(1) + '%';
 
     const collateralUsd =
       collateral && parseFloatCurrencyValue(collateral) * usdPrice;
@@ -110,12 +109,13 @@ export function PositionData({
   stratMeta: ParsedStratMetaRow;
 }) {
   const addresses = useAddresses();
-  const { collateral, debt, borrowablePercent } = position;
+  const { collateral, collateralValue, debt, borrowablePercent } = position;
 
   const { collateralInput, borrowInput, repayInput, collateralWithdraw } =
     React.useContext(PositionContext);
   const { usdPrice } = stratMeta;
 
+  // this part of the code
   const existingCollateralPlusInput = collateralInput
     ? collateral?.add(collateralInput)
     : collateral;
@@ -131,6 +131,13 @@ export function PositionData({
       ? existingDebtPlusInput?.sub(repayInput)
       : existingDebtPlusInput;
 
+  const collateralParamFloat = parseFloatCurrencyValue(collateralParam!);
+
+  const collateralValueParam =
+    collateralInput && collateralParam
+      ? collateralParamFloat * usdPrice
+      : parseFloatCurrencyValue(collateralValue);
+
   const {
     gaugeImage: orginalGaugeImage,
     collateralUsd: originalCollateralUsd,
@@ -140,14 +147,16 @@ export function PositionData({
     collateralParam,
     usdPrice,
     debtParam,
-    borrowablePercent
+    borrowablePercent,
+    collateralValueParam
   );
 
   const { debtRatio: originalDebtRatio } = usePositionValues(
     collateral,
     usdPrice,
     debt,
-    borrowablePercent
+    borrowablePercent,
+    parseFloatCurrencyValue(collateral!) * usdPrice
   );
 
   return (
@@ -228,12 +237,8 @@ export function PositionData({
           />
           <TitleValue
             title="Debt Ratio"
-            // value={effectiveDebt.format({ suffix: '' })}
-            value={
-              <Flex alignItems="center">{originalDebtRatio.toFixed(1)}%</Flex>
-            }
-            // description={<Flex>New ratio: 130% (min 125%)</Flex>}
-            description={<Flex>New ratio: {newDebtRatio.toFixed(1)}%</Flex>}
+            value={<Flex alignItems="center">{originalDebtRatio}</Flex>}
+            description={<Flex>New ratio: {newDebtRatio}</Flex>}
           />
           <TitleValue
             title="Liquidation Price"

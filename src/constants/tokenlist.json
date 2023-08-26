@@ -30,7 +30,7 @@
       "decimals": 18,
       "name": "yyAVAX",
       "symbol": "yyAVAX",
-      "logoURI": "https://storage.googleapis.com/yak/tokens/0xF7D9281e8e363584973F946201b82ba72C965D27.png"
+      "logoURI": "https://storage.googleapis.com/yak/tokens/43114/0xF7D9281e8e363584973F946201b82ba72C965D27.png"
     },
     {
       "chainId": 43114,
@@ -38,7 +38,7 @@
       "decimals": 18,
       "name": "yyAVAX",
       "symbol": "yyAVAX",
-      "logoURI": "https://storage.googleapis.com/yak/tokens/0xF7D9281e8e363584973F946201b82ba72C965D27.png"
+      "logoURI": "https://storage.googleapis.com/yak/tokens/43114/0xF7D9281e8e363584973F946201b82ba72C965D27.png"
     },
     {
       "chainId": 31337,
@@ -46,7 +46,7 @@
       "decimals": 8,
       "name": "BTC.b",
       "symbol": "BTC.b",
-      "logoURI": "https://storage.googleapis.com/yak/tokens/0x152b9d0FdC40C096757F570A51E494bd4b943E50.png"
+      "logoURI": "https://storage.googleapis.com/yak/tokens/43114/0x152b9d0FdC40C096757F570A51E494bd4b943E50.png"
     },
     {
       "chainId": 43114,
@@ -54,7 +54,7 @@
       "decimals": 8,
       "name": "BTC.b",
       "symbol": "BTC.b",
-      "logoURI": "https://storage.googleapis.com/yak/tokens/0x152b9d0FdC40C096757F570A51E494bd4b943E50.png"
+      "logoURI": "https://storage.googleapis.com/yak/tokens/43114/0x152b9d0FdC40C096757F570A51E494bd4b943E50.png"
     },
     {
       "chainId": 43114,

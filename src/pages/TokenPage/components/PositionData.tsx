@@ -131,7 +131,9 @@ export function PositionData({
       ? existingDebtPlusInput?.sub(repayInput)
       : existingDebtPlusInput;
 
-  const collateralParamFloat = parseFloatCurrencyValue(collateralParam!);
+  const collateralParamFloat = collateralParam?.value.gt(0)
+    ? parseFloatCurrencyValue(collateralParam!)
+    : 0;
 
   const collateralValueParam =
     collateralInput && collateralParam

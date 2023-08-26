@@ -30,15 +30,20 @@ export function parseFloatNoNaN(input: string) {
   return isNaN(parsed) ? 0 : parsed;
 }
 export function parseFloatCurrencyValue(input: CurrencyValue) {
-  const parsed = parseFloatNoNaN(
-    input.format({
-      significantDigits: Infinity,
-      suffix: '',
-      thousandSeparator: '',
-      decimalSeparator: '.',
-    })
-  );
-  return isNaN(parsed) ? 0 : parsed;
+  try {
+    const parsed = parseFloatNoNaN(
+      input.format({
+        significantDigits: Infinity,
+        suffix: '',
+        thousandSeparator: '',
+        decimalSeparator: '.',
+      })
+    );
+    return isNaN(parsed) ? 0 : parsed;
+  } catch (e) {
+    console.log('Error parsing float', input);
+    return 0;
+  }
 }
 
 export function currencyFormat(input: number) {

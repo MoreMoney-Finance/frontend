@@ -86,7 +86,13 @@ export const ConfirmPositionModal = ({
                 <Button w="full" mr={3} onClick={onClose} variant="pink">
                   Cancel
                 </Button>
-                <Button w="full" variant="primary" onClick={depositBorrow}>
+                <Button
+                  w="full"
+                  variant="primary"
+                  onClick={() => {
+                    depositBorrow();
+                  }}
+                >
                   OK
                 </Button>
               </Flex>

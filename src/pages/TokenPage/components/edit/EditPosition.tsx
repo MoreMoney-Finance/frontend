@@ -11,10 +11,12 @@ import {
 } from '@chakra-ui/react';
 import * as React from 'react';
 import GroupIcon from '../../../../assets/icons/Group.svg';
+import LockIcon from '../../../../assets/icons/lock.svg';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
 } from '../../../../chain-interaction/contracts';
+import { PositionContext } from '../../../../contexts/PositionContext';
 import BorrowForm from './BorrowForm';
 import DepositForm from './DepositForm';
 import RepayForm from './RepayForm';
@@ -27,6 +29,12 @@ export default function EditPosition({
   position?: ParsedPositionMetaRow;
   stratMeta: ParsedStratMetaRow;
 }>) {
+  const {
+    lockDepositBorrow,
+    lockRepayWithdraw,
+    setLockDepositBorrow,
+    setLockRepayWithdraw,
+  } = React.useContext(PositionContext);
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 2]}>
       {/* <GridItem rowSpan={2} colSpan={1}> */}
@@ -36,19 +44,31 @@ export default function EditPosition({
             <Flex justifyContent="space-between" w="full">
               <Flex w="full">
                 <Tab>Deposit</Tab>
-                <Image src={GroupIcon} />
+                <Image
+                  src={lockDepositBorrow ? LockIcon : GroupIcon}
+                  cursor="pointer"
+                  onClick={() => {
+                    setLockDepositBorrow(!lockDepositBorrow);
+                  }}
+                />
                 <Tab>Borrow</Tab>
               </Flex>
               <Flex w="full">
                 <Tab>Repay</Tab>
-                <Image src={GroupIcon} />
+                <Image
+                  src={lockRepayWithdraw ? LockIcon : GroupIcon}
+                  cursor="pointer"
+                  onClick={() => {
+                    setLockRepayWithdraw(!lockRepayWithdraw);
+                  }}
+                />
                 <Tab>Withdraw</Tab>
               </Flex>
             </Flex>
           </TabList>
           <TabPanels>
             <TabPanel>
-              <DepositForm position={position} stratMeta={stratMeta} />
+              <DepositForm stratMeta={stratMeta} />
             </TabPanel>
             <TabPanel>
               <BorrowForm position={position} stratMeta={stratMeta} />

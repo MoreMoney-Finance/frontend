@@ -6,7 +6,6 @@ import {
   TokenStratPositionMetadata,
   useIsolatedPositionMetadata,
 } from '../../../chain-interaction/contracts';
-import { PositionCtxProvider } from '../../../contexts/PositionContext';
 import { PositionBody } from './PositionBody';
 
 export function TokenPageBody({
@@ -34,9 +33,7 @@ export function TokenPageBody({
     <>
       {positionMeta.map((position) => (
         <div key={`tranche${position.trancheId}`}>
-          <PositionCtxProvider>
-            <PositionBody stratMeta={stratMeta} position={position} />
-          </PositionCtxProvider>
+          <PositionBody stratMeta={stratMeta} position={position} />
         </div>
       ))}
     </>

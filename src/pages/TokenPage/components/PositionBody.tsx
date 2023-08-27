@@ -9,6 +9,7 @@ import {
 } from '../../../chain-interaction/contracts';
 import { useMigrateStrategy } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
+import { PositionCtxProvider } from '../../../contexts/PositionContext';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
 import { stratFilter } from './change-strategy/StrategyNameAndSwitch';
 import ChangeStrategyComponent from './ChangeStrategyComponent';
@@ -78,51 +79,58 @@ export function PositionBody({
 
   return (
     <>
-      <TransactionErrorDialog
-        state={migrateStrategyState}
-        title={'Migrate Strategy'}
-      />
-      <Grid
-        templateColumns={[
-          'repeat(1, 1fr)',
-          'repeat(1, 1fr)',
-          '520px 240px 240px',
-        ]}
-        templateRows={['repeat(1, 1fr)', 'repeat(1, 1fr)', '']}
-        w={'full'}
-        gap={'20px'}
-        marginTop={'30px'}
+      <PositionCtxProvider
+        key={position?.trancheId}
+        stratMeta={stratMeta[chosenStrategy]}
+        position={position}
       >
-        {position && position.collateralValue.value.gt(parseEther('0.01')) && (
-          <PositionData
+        <TransactionErrorDialog
+          state={migrateStrategyState}
+          title={'Migrate Strategy'}
+        />
+        <Grid
+          templateColumns={[
+            'repeat(1, 1fr)',
+            'repeat(1, 1fr)',
+            '520px 240px 240px',
+          ]}
+          templateRows={['repeat(1, 1fr)', 'repeat(1, 1fr)', '']}
+          w={'full'}
+          gap={'20px'}
+          marginTop={'30px'}
+        >
+          {position &&
+            position.collateralValue.value.gt(parseEther('0.01')) && (
+            <PositionData
+              position={position}
+              stratMeta={stratMeta[chosenStrategy]}
+            />
+          )}
+        </Grid>
+
+        <Grid
+          templateColumns={[
+            'repeat(1, 1fr)',
+            'repeat(5, 1fr)',
+            '390px 240px 371px',
+          ]}
+          templateRows={['repeat(2, 1fr)', 'repeat(2, 1fr)', 'auto']}
+          w={'full'}
+          gap={'20px'}
+          marginTop={'30px'}
+        >
+          <EditPosition
             position={position}
             stratMeta={stratMeta[chosenStrategy]}
           />
-        )}
-      </Grid>
 
-      <Grid
-        templateColumns={[
-          'repeat(1, 1fr)',
-          'repeat(5, 1fr)',
-          '390px 240px 371px',
-        ]}
-        templateRows={['repeat(2, 1fr)', 'repeat(2, 1fr)', 'auto']}
-        w={'full'}
-        gap={'20px'}
-        marginTop={'30px'}
-      >
-        <EditPosition
-          position={position}
-          stratMeta={stratMeta[chosenStrategy]}
-        />
-
-        <ChangeStrategyComponent
-          stratMeta={stratMeta}
-          chooseStrategy={chooseStrategy}
-          chosenStrategy={chosenStrategy}
-        />
-      </Grid>
+          <ChangeStrategyComponent
+            stratMeta={stratMeta}
+            chooseStrategy={chooseStrategy}
+            chosenStrategy={chosenStrategy}
+          />
+        </Grid>
+      </PositionCtxProvider>
     </>
   );
 }

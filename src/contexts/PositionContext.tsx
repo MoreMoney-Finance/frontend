@@ -8,6 +8,7 @@ import {
 } from '../chain-interaction/contracts';
 import { TokenDescription } from '../components/tokens/TokenDescription';
 import { useDepositBorrowHook } from '../hooks/useDepositBorrow';
+import { useRepayWithdrawHook } from '../hooks/useRepayWithdraw';
 import { ConfirmPositionModal } from '../pages/TokenPage/components/edit/ConfirmPositionModal';
 import { parseFloatCurrencyValue } from '../utils';
 
@@ -33,10 +34,13 @@ type Props = {
     React.SetStateAction<CurrencyValue | undefined>
   >;
   depositAndBorrowClicked: (data: { [x: string]: any }) => void;
+  repayAndWithdrawClicked: (data: { [x: string]: any }) => void;
 };
 
 export const PositionContext = React.createContext<
-  Props & ReturnType<typeof useDepositBorrowHook>
+  Props & {
+    depositAndBorrowFunctions: ReturnType<typeof useDepositBorrowHook>;
+  } & { repayAndWithdrawFunctions: ReturnType<typeof useRepayWithdrawHook> }
 >({} as any);
 
 export function PositionCtxProvider({
@@ -66,16 +70,61 @@ export function PositionCtxProvider({
     React.useState<CurrencyValue>();
   const [repayInput, setRepayInput] = React.useState<CurrencyValue>();
 
+  //
+  // REPAY AND WITHDRAW
+  //
+  const repayInputString = repayInput
+    ? parseFloatCurrencyValue(repayInput).toString()
+    : '0';
+  const collateralWithdrawString = collateralWithdraw
+    ? parseFloatCurrencyValue(collateralWithdraw).toString()
+    : '0';
+
+  const repayWithdrawHook = useRepayWithdrawHook({
+    position,
+    repayInput: repayInputString,
+    stratMeta,
+    withdrawInput: collateralWithdrawString,
+  });
+
+  function repayAndWithdrawClicked(data: { [x: string]: any }) {
+    const modalBody = [
+      {
+        title: <TokenDescription token={stable} />,
+        value: <Text>{repayInputString}</Text>,
+      },
+      {
+        title: <TokenDescription token={token} />,
+        value: <Text>{collateralWithdrawString}</Text>,
+      },
+    ];
+    if (lockRepayWithdraw) {
+      setModalAction(() => repayWithdrawHook.repayWithdraw);
+      setModalTitle('Confirm Repay / Withdraw');
+      setModalBody(modalBody);
+    } else if (lockRepayWithdraw === false) {
+      if (data['collateral-withdraw']) {
+        setModalAction(() => repayWithdrawHook.withdraw);
+        setModalTitle('Confirm Withdraw');
+        setModalBody([modalBody[1]]);
+      } else {
+        setModalAction(() => repayWithdrawHook.repay);
+        setModalTitle('Confirm Repay');
+        setModalBody([modalBody[0]]);
+      }
+    }
+    onOpen();
+  }
+
+  //
+  // DEPOSIT AND BORROW
+  //
   const collateralInputString = collateralInput
     ? parseFloatCurrencyValue(collateralInput).toString()
     : '0';
   const borrowInputString = borrowInput
     ? parseFloatCurrencyValue(borrowInput).toString()
     : '0';
-
-  //
-  // DEPOSIT AND BORROW
-  //
   const depositAndBorrowHook = useDepositBorrowHook({
     position,
     collateralInput: collateralInputString,
@@ -114,8 +163,12 @@ export function PositionCtxProvider({
     onOpen();
   }
 
-  const dangerousPosition = depositAndBorrowHook.dangerousPosition;
-  const totalPercentage = depositAndBorrowHook.totalPercentage;
+  const dangerousPosition = lockDepositBorrow
+    ? depositAndBorrowHook.dangerousPosition
+    : repayWithdrawHook.dangerousPosition;
+  const totalPercentage = lockDepositBorrow
+    ? depositAndBorrowHook.totalPercentage
+    : repayWithdrawHook.totalPercentage;
 
   return (
     <PositionContext.Provider
@@ -133,7 +186,9 @@ export function PositionCtxProvider({
         repayInput,
         setRepayInput,
         depositAndBorrowClicked,
-        ...depositAndBorrowHook,
+        repayAndWithdrawClicked,
+        depositAndBorrowFunctions: { ...depositAndBorrowHook },
+        repayAndWithdrawFunctions: { ...repayWithdrawHook },
       }}
     >
       <ConfirmPositionModal

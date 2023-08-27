@@ -61,8 +61,8 @@ export default function BorrowForm({}: React.PropsWithChildren<{
     strategyAddress,
     depositBorrowButtonDisabled,
     percentages,
-    depositAndBorrowClicked,
-  } = useContext(PositionContext);
+  } = useContext(PositionContext).depositAndBorrowFunctions;
+  const { depositAndBorrowClicked } = useContext(PositionContext);
 
   React.useEffect(() => {
     if (borrowInput) {

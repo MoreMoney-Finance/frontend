@@ -49,6 +49,7 @@ export default function EditPosition({
                   cursor="pointer"
                   onClick={() => {
                     setLockDepositBorrow(!lockDepositBorrow);
+                    setLockRepayWithdraw(false);
                   }}
                 />
                 <Tab>Borrow</Tab>
@@ -60,6 +61,7 @@ export default function EditPosition({
                   cursor="pointer"
                   onClick={() => {
                     setLockRepayWithdraw(!lockRepayWithdraw);
+                    setLockDepositBorrow(false);
                   }}
                 />
                 <Tab>Withdraw</Tab>

@@ -34,14 +34,11 @@ export default function DepositForm({
   ]);
 
   const {
-    setCollateralInput,
-    lockDepositBorrow,
     token,
     totalCollateral,
     usdPrice,
     isNativeToken,
     extantDebt,
-    depositAndBorrowClicked,
     balance,
     depositBorrowDisabled,
     collateralInputUsd,
@@ -53,7 +50,10 @@ export default function DepositForm({
     sendApprove,
     strategyAddress,
     depositBorrowButtonDisabled,
-  } = useContext(PositionContext);
+  } = useContext(PositionContext).depositAndBorrowFunctions;
+
+  const { setCollateralInput, lockDepositBorrow, depositAndBorrowClicked } =
+    useContext(PositionContext);
 
   React.useEffect(() => {
     if (collateralInput) {

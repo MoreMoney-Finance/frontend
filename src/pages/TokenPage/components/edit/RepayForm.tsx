@@ -8,50 +8,38 @@ import {
   HStack,
   Link,
   Text,
-  useDisclosure,
 } from '@chakra-ui/react';
-import { CurrencyValue, useEthers } from '@usedapp/core';
+import { CurrencyValue } from '@usedapp/core';
 import { BigNumber } from 'ethers';
-import { getAddress, parseEther, parseUnits } from 'ethers/lib/utils';
+import { parseUnits } from 'ethers/lib/utils';
 import * as React from 'react';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
   useStable,
 } from '../../../../chain-interaction/contracts';
-import {
-  useNativeRepayWithdrawTrans,
-  useRepayWithdrawTrans,
-} from '../../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../../components/notifications/TransactionErrorDialog';
 import WarningMessage from '../../../../components/notifications/WarningMessage';
 import { TokenAmountInputField } from '../../../../components/tokens/TokenAmountInputField';
-import { TokenDescription } from '../../../../components/tokens/TokenDescription';
 import { TokenDescriptionInput } from '../../../../components/tokens/TokenDescriptionInput';
-import { WNATIVE_ADDRESS } from '../../../../constants/addresses';
 import { PositionContext } from '../../../../contexts/PositionContext';
 import { useWalletBalance } from '../../../../contexts/WalletBalancesContext';
-import { parseFloatCurrencyValue, parseFloatNoNaN } from '../../../../utils';
-import { ConfirmPositionModal } from './ConfirmPositionModal';
 
-export default function RepayForm({
-  position,
-  stratMeta,
-}: React.PropsWithChildren<{
+export default function RepayForm({}: React.PropsWithChildren<{
   position?: ParsedPositionMetaRow;
   stratMeta: ParsedStratMetaRow;
 }>) {
-  const { token, usdPrice, borrowablePercent } = stratMeta;
-  const { chainId } = useEthers();
-  const { setRepayInput } = React.useContext(PositionContext);
-  const [data, setData] = useState<{ [x: string]: any }>();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { token, usdPrice, borrowablePercent } = stratMeta;
+  // const { chainId } = useEthers();
+  const { setRepayInput, lockRepayWithdraw } =
+    React.useContext(PositionContext);
+  // const [data, setData] = useState<{ [x: string]: any }>();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
   const stable = useStable();
-  const isNativeToken = chainId
-    ? getAddress(WNATIVE_ADDRESS[chainId!]) === getAddress(token.address)
-    : false;
+  // const isNativeToken = chainId
+  //   ? getAddress(WNATIVE_ADDRESS[chainId!]) === getAddress(token.address)
+  //   : false;
   // const balanceCtx = useContext(WalletBalancesContext);
 
   const {
@@ -62,50 +50,59 @@ export default function RepayForm({
     watch,
   } = useForm();
 
-  const { sendRepayWithdraw, repayWithdrawState } = useRepayWithdrawTrans(
-    position && position.trancheId,
-    token,
-    position?.debt
-  );
-  // console.log('position.trancheId', position?.trancheId);
-  const {
-    sendRepayWithdraw: sendNativeRepayWithdraw,
-    repayWithdrawState: sendNativeWithdrawState,
-  } = useNativeRepayWithdrawTrans(
-    position && position.trancheId,
-    token,
-    position?.debt
-  );
-
-  function onRepayWithdraw(data: { [x: string]: any }) {
-    // console.log('repay withdraw');
-    // console.log(data);
-    setData(data);
-    onOpen();
-  }
-
-  function repayWithdraw() {
-    if (isNativeToken) {
-      sendNativeRepayWithdraw('0', data!['money-repay'] || '0');
-    } else {
-      sendRepayWithdraw('0', data!['money-repay'] || '0');
-    }
-  }
-
-  const walletBalance =
-    useWalletBalance(stable.address) ??
-    new CurrencyValue(stable, BigNumber.from('0'));
-
-  const repayWithdrawDisabled =
-    !position ||
-    !position.collateral ||
-    (position.collateral.isZero() && position.debt.isZero());
-
-  const [collateralInput, repayInput /*customPercentageInput*/] = watch([
-    'collateral-withdraw',
+  const [repayInput /*customPercentageInput*/] = watch([
     'money-repay',
     // 'custom-percentage',
   ]);
+  const {
+    token,
+    repayWithdrawButtonDisabled,
+    repayWithdrawState,
+    sendNativeWithdrawState,
+    repayingMoreThanBalance,
+    showWarning,
+    repayWithdrawDisabled,
+  } = React.useContext(PositionContext).repayAndWithdrawFunctions;
+  const { repayAndWithdrawClicked } = React.useContext(PositionContext);
+
+  // const { sendRepayWithdraw, repayWithdrawState } = useRepayWithdrawTrans(
+  //   position && position.trancheId,
+  //   token,
+  //   position?.debt
+  // );
+  // // console.log('position.trancheId', position?.trancheId);
+  // const {
+  //   sendRepayWithdraw: sendNativeRepayWithdraw,
+  //   repayWithdrawState: sendNativeWithdrawState,
+  // } = useNativeRepayWithdrawTrans(
+  //   position && position.trancheId,
+  //   token,
+  //   position?.debt
+  // );
+
+  // function onRepayWithdraw(data: { [x: string]: any }) {
+  //   // console.log('repay withdraw');
+  //   // console.log(data);
+  //   setData(data);
+  //   onOpen();
+  // }
+
+  // function repayWithdraw() {
+  //   if (isNativeToken) {
+  //     sendNativeRepayWithdraw('0', data!['money-repay'] || '0');
+  //   } else {
+  //     sendRepayWithdraw('0', data!['money-repay'] || '0');
+  //   }
+  // }
+
+  // const walletBalance =
+  //   useWalletBalance(stable.address) ??
+  //   new CurrencyValue(stable, BigNumber.from('0'));
+
+  // const repayWithdrawDisabled =
+  //   !position ||
+  //   !position.collateral ||
+  //   (position.collateral.isZero() && position.debt.isZero());
 
   React.useEffect(() => {
     if (repayInput) {
@@ -115,17 +112,17 @@ export default function RepayForm({
     }
   }, [repayInput]);
 
-  const extantCollateral =
-    position && position.collateral
-      ? parseFloatCurrencyValue(position.collateral)
-      : 0;
-  const totalCollateral = extantCollateral - parseFloatNoNaN(collateralInput);
+  // const extantCollateral =
+  //   position && position.collateral
+  //     ? parseFloatCurrencyValue(position.collateral)
+  //     : 0;
+  // const totalCollateral = extantCollateral - parseFloatNoNaN(collateralInput);
 
-  const extantDebt =
-    position && position.debt && position.debt.gt(position.yield)
-      ? parseFloatCurrencyValue(position.debt.sub(position.yield))
-      : 0;
-  const totalDebt = extantDebt - parseFloatNoNaN(repayInput);
+  // const extantDebt =
+  //   position && position.debt && position.debt.gt(position.yield)
+  //     ? parseFloatCurrencyValue(position.debt.sub(position.yield))
+  //     : 0;
+  // const totalDebt = extantDebt - parseFloatNoNaN(repayInput);
 
   // const currentPercentage =
   //   totalCollateral > 0 ? (100 * extantDebt) / (totalCollateral * usdPrice) : 0;
@@ -138,10 +135,10 @@ export default function RepayForm({
   //       .fill(0)
   //       .map((p, i) => Math.round((p + (i + 1) * percentageStep) / 5) * 5);
 
-  const totalPercentage =
-    totalCollateral > 0 && usdPrice > 0
-      ? (100 * totalDebt) / (totalCollateral * usdPrice)
-      : 0;
+  // const totalPercentage =
+  //   totalCollateral > 0 && usdPrice > 0
+  //     ? (100 * totalDebt) / (totalCollateral * usdPrice)
+  //     : 0;
 
   // const percentageLabel =
   //   totalCollateral > 0 ? `${totalPercentage.toFixed(0)} %` : 'LTV %';
@@ -177,18 +174,6 @@ export default function RepayForm({
   // ]);
 
   const yyLink = `https://yieldyak.com/swap?outputCurrency=0x0f577433Bf59560Ef2a79c124E9Ff99fCa258948`;
-
-  const repayingMoreThanBalance =
-    !isNaN(parseFloat(repayInput)) &&
-    parseEther(repayInput || '0').gt(walletBalance.value);
-
-  const repayWithdrawButtonDisabled =
-    (parseFloatNoNaN(collateralInput) === 0 &&
-      parseFloatNoNaN(repayInput) === 0) ||
-    totalPercentage > borrowablePercent ||
-    (totalCollateral === 0 && totalDebt > 0) ||
-    repayingMoreThanBalance;
-
   const inputStyle = {
     padding: '8px 8px 8px 20px',
     bg: 'rgba(255, 255, 255, 0.65)',
@@ -197,15 +182,6 @@ export default function RepayForm({
     justifyContent: 'space-between',
     height: '112px',
   };
-
-  const showWarning =
-    (!(
-      parseFloatNoNaN(collateralInput) === 0 &&
-      parseFloatNoNaN(repayInput) === 0
-    ) &&
-      totalPercentage > borrowablePercent) ||
-    repayingMoreThanBalance ||
-    (totalCollateral === 0 && totalDebt > 0);
 
   const warningMsgText = repayingMoreThanBalance
     ? 'Input more than wallet balance: buy more MONEY'
@@ -216,8 +192,8 @@ export default function RepayForm({
   //     ? position.debt.sub(position.yield)
   //     : new CurrencyValue(stable, BigNumber.from(0));
 
-  const dangerousPosition =
-    totalPercentage > borrowablePercent * 0.92 && totalDebt > 0;
+  // const dangerousPosition =
+  //   totalPercentage > borrowablePercent * 0.92 && totalDebt > 0;
   // const liquidatableZone = borrowablePercent;
   // const criticalZone = (90 * borrowablePercent) / 100;
   // const riskyZone = (80 * borrowablePercent) / 100;
@@ -229,7 +205,7 @@ export default function RepayForm({
 
   return (
     <>
-      <ConfirmPositionModal
+      {/* <ConfirmPositionModal
         title="Confirm Repay"
         isOpen={isOpen}
         onClose={onClose}
@@ -245,8 +221,8 @@ export default function RepayForm({
           },
         ]}
         dangerous={dangerousPosition}
-      />
-      <form onSubmit={handleSubmitRepayForm(onRepayWithdraw)}>
+      /> */}
+      <form onSubmit={handleSubmitRepayForm(repayAndWithdrawClicked)}>
         <Flex flexDirection={'column'} justify={'start'}>
           <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
             <Flex
@@ -331,7 +307,9 @@ export default function RepayForm({
           isLoading={isSubmittingRepayForm}
           isDisabled={repayWithdrawButtonDisabled}
         >
-          <Text fontWeight={'400'}>Repay</Text>
+          <Text fontWeight={'400'}>
+            {lockRepayWithdraw ? 'Repay and Withdraw' : 'Repay'}
+          </Text>
         </Button>
       </form>
     </>

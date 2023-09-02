@@ -34,12 +34,19 @@ export default function EditPosition({
     lockRepayWithdraw,
     setLockDepositBorrow,
     setLockRepayWithdraw,
+    reset,
   } = React.useContext(PositionContext);
+
   return (
     <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 2]}>
       {/* <GridItem rowSpan={2} colSpan={1}> */}
       <Container variant={'token'} padding={'35px 20px 20px 20px'}>
-        <Tabs variant={'primary'}>
+        <Tabs
+          variant={'primary'}
+          onChange={() => {
+            reset();
+          }}
+        >
           <TabList>
             <Flex justifyContent="space-between" w="full">
               <Flex w="full">

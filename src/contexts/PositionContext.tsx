@@ -35,6 +35,7 @@ type Props = {
   >;
   depositAndBorrowClicked: (data: { [x: string]: any }) => void;
   repayAndWithdrawClicked: (data: { [x: string]: any }) => void;
+  reset: () => void;
 };
 
 export const PositionContext = React.createContext<
@@ -69,6 +70,16 @@ export function PositionCtxProvider({
   const [collateralWithdraw, setCollateralWithdraw] =
     React.useState<CurrencyValue>();
   const [repayInput, setRepayInput] = React.useState<CurrencyValue>();
+
+  // RESET FUNCTION
+  function reset() {
+    if (position) {
+      setCollateralInput(undefined);
+      setBorrowInput(undefined);
+      setCollateralWithdraw(undefined);
+      setRepayInput(undefined);
+    }
+  }
 
   //
   // REPAY AND WITHDRAW
@@ -187,6 +198,7 @@ export function PositionCtxProvider({
         setRepayInput,
         depositAndBorrowClicked,
         repayAndWithdrawClicked,
+        reset,
         depositAndBorrowFunctions: { ...depositAndBorrowHook },
         repayAndWithdrawFunctions: { ...repayWithdrawHook },
       }}

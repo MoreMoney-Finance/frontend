@@ -15,10 +15,18 @@ const NFTSection: React.FC<Props> = ({}) => {
   const { nftSnapshot } = React.useContext(ExternalMetadataContext);
   const { noNFTFound } = React.useContext(NFTContext);
   const currentEpoch = useCurrentEpoch(BigNumber.from(0));
-  console.log('currentEpoch', currentEpoch, account, nftSnapshot);
+  console.log(
+    'currentEpoch',
+    currentEpoch,
+    currentEpoch.toString(),
+    account,
+    nftSnapshot
+  );
 
   const isEligible =
-    nftSnapshot && account && nftSnapshot.eligible[currentEpoch][account];
+    nftSnapshot &&
+    account &&
+    nftSnapshot.eligible[currentEpoch.toString()][account];
 
   return <>{isEligible && noNFTFound && <ClaimNFT />}</>;
 };

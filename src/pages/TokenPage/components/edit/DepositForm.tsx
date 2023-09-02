@@ -125,6 +125,20 @@ export default function DepositForm({
               color={'whiteAlpha.600'}
               lineHeight={'14px'}
               fontSize="16px"
+              cursor="pointer"
+              onClick={() => {
+                setValueDepForm(
+                  'collateral-deposit',
+                  balance.format({
+                    significantDigits: Infinity,
+                    prefix: '',
+                    suffix: '',
+                    thousandSeparator: '',
+                    decimalSeparator: '.',
+                  }),
+                  { shouldDirty: true, shouldTouch: true }
+                );
+              }}
             >
               Balance: {balance.format({ suffix: '' })}
             </Text>

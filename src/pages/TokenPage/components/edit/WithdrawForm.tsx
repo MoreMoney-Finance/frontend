@@ -163,6 +163,20 @@ export default function WithdrawForm({
                     color={'whiteAlpha.600'}
                     lineHeight={'14px'}
                     fontSize="16px"
+                    cursor="pointer"
+                    onClick={() => {
+                      setValueRepayForm(
+                        'collateral-withdraw',
+                        position?.collateral?.format({
+                          significantDigits: Infinity,
+                          prefix: '',
+                          suffix: '',
+                          thousandSeparator: '',
+                          decimalSeparator: '.',
+                        }),
+                        { shouldDirty: true, shouldTouch: true }
+                      );
+                    }}
                   >
                     Balance: {position?.collateral?.format({ suffix: '' })}
                   </Text>

@@ -166,6 +166,20 @@ export default function BorrowForm({}: React.PropsWithChildren<{
               color={'whiteAlpha.600'}
               lineHeight={'14px'}
               fontSize="16px"
+              cursor="pointer"
+              onClick={() => {
+                setValueDepForm(
+                  'money-borrow',
+                  balance.format({
+                    significantDigits: Infinity,
+                    prefix: '',
+                    suffix: '',
+                    thousandSeparator: '',
+                    decimalSeparator: '.',
+                  }),
+                  { shouldDirty: true, shouldTouch: true }
+                );
+              }}
             >
               Balance: {balance.format({ suffix: '' })}
             </Text>

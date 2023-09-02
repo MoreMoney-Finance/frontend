@@ -243,6 +243,20 @@ export default function RepayForm({}: React.PropsWithChildren<{
                 color={'whiteAlpha.600'}
                 lineHeight={'14px'}
                 fontSize={'16px'}
+                cursor="pointer"
+                onClick={() => {
+                  setValueRepayForm(
+                    'money-repay',
+                    moneyBalance.format({
+                      significantDigits: Infinity,
+                      prefix: '',
+                      suffix: '',
+                      thousandSeparator: '',
+                      decimalSeparator: '.',
+                    }),
+                    { shouldDirty: true, shouldTouch: true }
+                  );
+                }}
               >
                 Balance: {moneyBalance.format({ suffix: '' })}
               </Text>

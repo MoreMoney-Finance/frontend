@@ -183,7 +183,9 @@ export function AllSupportedCollateral() {
         )}%`,
         ltv: `${5 * Math.round(meta.borrowablePercent / 5)}%`,
         // tvlPeg: `$ ${meta.tvlInPeg.format({ suffix: '' })}`,
-        borrowablePercentFormatted: `${meta.borrowablePercent}%`,
+        borrowablePercentFormatted: `${
+          5 * Math.round(meta.borrowablePercent / 5)
+        }%`,
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
         liquidationFee:
           (tokenFees.get(meta.token.address) ?? 'Loading...') + '%',

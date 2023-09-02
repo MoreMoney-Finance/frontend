@@ -218,7 +218,7 @@ export function PositionData({
                 {Intl.NumberFormat('en', {
                   notation: 'compact',
                   maximumFractionDigits: 1,
-                }).format(parseFloatCurrencyValue(position.collateralValue))}
+                }).format(parseFloatCurrencyValue(position.debt))}
                 <Avatar
                   borderColor="gray.300"
                   showBorder={true}

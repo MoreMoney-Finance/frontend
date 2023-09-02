@@ -1,6 +1,5 @@
 import { Avatar, Button, Flex, Text } from '@chakra-ui/react';
 import { BigNumber } from 'ethers';
-import { getAddress } from 'ethers/lib/utils';
 import * as React from 'react';
 import robotPfp from '../../assets/img/robot-token-page.svg';
 import { useCurrentEpoch } from '../../chain-interaction/contracts';
@@ -17,8 +16,7 @@ const ClaimNFT = () => {
 
   function generateNFT() {
     if (nftSnapshot && account) {
-      const signature =
-        nftSnapshot.signatures[currentEpoch][getAddress(account)];
+      const signature = nftSnapshot.signatures[currentEpoch][account];
 
       sendClaim(
         {

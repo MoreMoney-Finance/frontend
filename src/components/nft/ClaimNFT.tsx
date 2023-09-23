@@ -8,7 +8,16 @@ import { ExternalMetadataContext } from '../../contexts/ExternalMetadataContext'
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { TransactionErrorDialog } from '../notifications/TransactionErrorDialog';
 
-const ClaimNFT = () => {
+type Props = {
+  timeLeft: '' | 0 | Date | null | undefined;
+  timeLeftDays: number | '' | null | undefined;
+  eligible?: boolean;
+};
+
+const ClaimNFT: React.FC<Props> = ({ timeLeft, eligible, timeLeftDays }) => {
+  console.log('timeLeft', timeLeft);
+  console.log('eligible', eligible);
+
   const account = React.useContext(UserAddressContext);
   const { sendClaim, claimState } = useClaimNFTContract();
   const currentEpoch = useCurrentEpoch(BigNumber.from(0));
@@ -27,6 +36,7 @@ const ClaimNFT = () => {
       );
     }
   }
+
   return (
     <Flex>
       <TransactionErrorDialog state={claimState} title="Claim NFT" />
@@ -41,12 +51,37 @@ const ClaimNFT = () => {
         <Text fontSize="32px" fontWeight="400">
           Congratulations!
         </Text>
-        <Text fontSize="16px" fontWeight="400">
-          You received your official NFT.
-        </Text>
-        <Button onClick={() => generateNFT()} variant="primary">
-          Claim
-        </Button>
+        {eligible && (
+          <>
+            <Text fontSize="16px" fontWeight="400">
+              You received your official NFT.
+            </Text>
+            <Button onClick={() => generateNFT()} variant="primary">
+              Claim
+            </Button>
+          </>
+        )}
+        {timeLeft && timeLeftDays && !eligible && (
+          <>
+            <Text fontSize="16px" fontWeight="400">
+              You qualify for the official NFT.
+              <br /> Boost progress by increasing collateral.
+            </Text>
+            {/* Progress bar with days left inside */}
+            <Flex
+              width="100%"
+              mt={2}
+              border="1px"
+              height="30px"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Text fontSize="14px" fontWeight="400" textAlign="center">
+                {timeLeftDays.toFixed(0)} days until delivery
+              </Text>
+            </Flex>
+          </>
+        )}
       </Flex>
     </Flex>
   );

@@ -63,7 +63,7 @@ const NFTSection: React.FC<Props> = ({}) => {
   const timeLeftMilliseconds =
     accumulated &&
     currentTier &&
-    currentTier.threshold - parseFloat(accumulated.toString());
+    currentTier.threshold - parseFloat(accumulated.toString()) / debtInDollars;
   const timeLeftDays =
     timeLeftMilliseconds && timeLeftMilliseconds / 1000 / 60 / 60 / 24;
 

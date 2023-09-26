@@ -9,14 +9,12 @@ import {
 } from '../../../chain-interaction/contracts';
 import { useMigrateStrategy } from '../../../chain-interaction/transactions';
 import { TransactionErrorDialog } from '../../../components/notifications/TransactionErrorDialog';
+import { PositionCtxProvider } from '../../../contexts/PositionContext';
 import { UserAddressContext } from '../../../contexts/UserAddressContext';
-import StrategyNameAndSwitch, {
-  stratFilter,
-} from './change-strategy/StrategyNameAndSwitch';
+import { stratFilter } from './change-strategy/StrategyNameAndSwitch';
+import ChangeStrategyComponent from './ChangeStrategyComponent';
 import EditPosition from './edit/EditPosition';
-import CollateralAPY from './metadata/CollateralAPY';
 import { PositionData } from './PositionData';
-import StrategyTokenInformation from './StrategyTokenInformation';
 
 export function PositionBody({
   position: inputPos,
@@ -77,62 +75,62 @@ export function PositionBody({
     }
   }
 
-  // console.log('strategy', chosenStrategy);
+  console.log('strategy', chooseStrategy);
 
   return (
     <>
-      <TransactionErrorDialog
-        state={migrateStrategyState}
-        title={'Migrate Strategy'}
-      />
-      <Grid
-        templateColumns={[
-          'repeat(1, 1fr)',
-          'repeat(1, 1fr)',
-          '520px 240px 240px',
-        ]}
-        templateRows={['repeat(1, 1fr)', 'repeat(1, 1fr)', 'auto']}
-        w={'full'}
-        gap={'20px'}
-        marginTop={'30px'}
+      <PositionCtxProvider
+        key={position?.trancheId}
+        stratMeta={stratMeta[chosenStrategy]}
+        position={position}
       >
-        {position && position.collateralValue.value.gt(parseEther('0.01')) && (
-          <PositionData
+        <TransactionErrorDialog
+          state={migrateStrategyState}
+          title={'Migrate Strategy'}
+        />
+        <Grid
+          templateColumns={[
+            'repeat(1, 1fr)',
+            'repeat(1, 1fr)',
+            '520px 240px 240px',
+          ]}
+          templateRows={['repeat(1, 1fr)', 'repeat(1, 1fr)', '']}
+          w={'full'}
+          gap={'20px'}
+          marginTop={'30px'}
+        >
+          {position &&
+            position.collateralValue.value.gt(parseEther('0.01')) && (
+            <PositionData
+              position={position}
+              stratMeta={stratMeta[chosenStrategy]}
+            />
+          )}
+        </Grid>
+
+        <Grid
+          templateColumns={[
+            'repeat(1, 1fr)',
+            'repeat(5, 1fr)',
+            '390px 240px 371px',
+          ]}
+          templateRows={['repeat(2, 1fr)', 'repeat(2, 1fr)', 'auto']}
+          w={'full'}
+          gap={'20px'}
+          marginTop={'30px'}
+        >
+          <EditPosition
             position={position}
             stratMeta={stratMeta[chosenStrategy]}
           />
-        )}
-      </Grid>
 
-      <Grid
-        templateColumns={[
-          'repeat(1, 1fr)',
-          'repeat(5, 1fr)',
-          '520px 240px 240px',
-        ]}
-        templateRows={[
-          'repeat(2, 1fr)',
-          'repeat(2, 1fr)',
-          'auto 340px 240px 310px',
-        ]}
-        w={'full'}
-        gap={'20px'}
-        marginTop={'30px'}
-      >
-        <EditPosition
-          position={position}
-          stratMeta={stratMeta[chosenStrategy]}
-        />
-
-        <CollateralAPY stratMeta={stratMeta} chosenStrategy={chosenStrategy} />
-        <StrategyNameAndSwitch
-          position={position}
-          chooseStrategy={chooseStrategy}
-          stratMeta={stratMeta}
-          chosenStrategy={chosenStrategy}
-        />
-        <StrategyTokenInformation stratMeta={stratMeta[chosenStrategy]} />
-      </Grid>
+          <ChangeStrategyComponent
+            stratMeta={stratMeta}
+            chooseStrategy={chooseStrategy}
+            chosenStrategy={chosenStrategy}
+          />
+        </Grid>
+      </PositionCtxProvider>
     </>
   );
 }

@@ -1,5 +1,6 @@
-import { Box, Tab, TabList, Tabs } from '@chakra-ui/react';
+import { Button, Box, Tab, TabList, Tabs } from '@chakra-ui/react';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { ParsedStratMetaRow } from '../../../chain-interaction/contracts';
 import { deprecatedTokenList } from '../../../constants/deprecated-token-list';
 
@@ -56,6 +57,11 @@ export function TableTabs({
           <Tab>Single Asset</Tab>
           <Tab>LP Tokens</Tab>
           <Tab>Deprecated</Tab>
+          <Link to={'/positions'}>
+            <Button borderRadius="3xl" variant="primary">
+              My positions
+            </Button>
+          </Link>
         </TabList>
       </Tabs>
     </Box>

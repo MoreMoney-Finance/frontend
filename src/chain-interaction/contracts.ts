@@ -32,12 +32,18 @@ import VestingLaunchReward from '../contracts/artifacts/contracts/rewards/Vestin
 import VestingStakingRewards from '../contracts/artifacts/contracts/rewards/VestingStakingRewards.sol/VestingStakingRewards.json';
 import Stablecoin from '../contracts/artifacts/contracts/Stablecoin.sol/Stablecoin.json';
 import StableLending2 from '../contracts/artifacts/contracts/StableLending2.sol/StableLending2.json';
+import NFTContract from '../contracts/artifacts/contracts/NFTContract.sol/NFTContract.json';
 import YieldConversionStrategy from '../contracts/artifacts/contracts/strategies/YieldConversionStrategy.sol/YieldConversionStrategy.json';
 import StrategyViewer from '../contracts/artifacts/contracts/StrategyViewer.sol/StrategyViewer.json';
 import IFeeReporter from '../contracts/artifacts/interfaces/IFeeReporter.sol/IFeeReporter.json';
 import StableLending2InterestForwarder from '../contracts/artifacts/contracts/rewards/StableLending2InterestForwarder.sol/StableLending2InterestForwarder.json';
 import IStrategy from '../contracts/artifacts/interfaces/IStrategy.sol/IStrategy.json';
-import { getContractNames, parseFloatCurrencyValue, sqrt } from '../utils';
+import {
+  getContractNames,
+  parseFloatCurrencyValue,
+  provider,
+  sqrt,
+} from '../utils';
 import { getTokenFromAddress, tokenAmount } from './tokens';
 import { useCoingeckoPrice } from '@usedapp/coingecko';
 import {
@@ -124,6 +130,7 @@ export type DeploymentAddresses = {
   MasterMore: string;
   BigMigrateStableLending2: string;
   YieldYakCompounderStrategy: string;
+  NFTContract: string;
 };
 
 export function useAddresses() {
@@ -346,6 +353,154 @@ function parseStratMeta(
       underlyingStrategyName,
     };
   }
+}
+
+export function useIsTimeLimitOver(defaultResult: boolean) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'isTimeLimitOver',
+      args: [],
+    }),
+    defaultResult,
+    'useIsTimeLimitOver'
+  );
+}
+
+export function useHasMinimumDebt(
+  trancheId: number | string,
+  defaultResult: boolean
+) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'hasMinimumDebt',
+      args: [trancheId],
+    }),
+    defaultResult,
+    'useHasMinimumDebt'
+  );
+}
+
+export function useHasAvailableNFT(defaultResult: boolean) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'hasAvailableNFT',
+      args: [],
+    }),
+    defaultResult,
+    'useHasAvailableNFT'
+  );
+}
+
+export function useTokenIdByTrancheId(
+  trancheId: number,
+  defaultResult: number
+) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'tokenIdByTrancheId',
+      args: [BigNumber.from(trancheId)],
+    }),
+
+    defaultResult,
+    'usetokenIdByTrancheId',
+    true
+  );
+}
+
+export function useNFTOwnerOf(index: number, defaultResult: BigNumber) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'ownerOf',
+      args: [index],
+    }),
+    defaultResult,
+    'useNFTOwnerOf',
+    true
+  );
+}
+
+export function useNFTTotalSupply(defaultResult: BigNumber) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'totalSupply',
+      args: [],
+    }),
+    defaultResult,
+    'useNFTTotalSupply',
+    true
+  );
+}
+
+export function useNFTBalanceOf(
+  defaultResult: BigNumber,
+  account?: string | null
+) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'balanceOf',
+      args: [account],
+    }),
+    defaultResult,
+    'useCurrentEpoch'
+  );
+}
+
+export function useCurrentEpoch(defaultResult: BigNumber) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'currentEpoch',
+      args: [],
+    }),
+    defaultResult,
+    'useCurrentEpoch'
+  );
+}
+
+export function useHasDuplicateNFTs(trancheId: number, defaultResult: boolean) {
+  const addresses = useAddresses();
+  const abi = new Interface(NFTContract.abi);
+  const contract = new Contract(addresses.NFTContract, abi);
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method: 'hasDuplicateNFTs',
+      args: [BigNumber.from(trancheId)],
+    }),
+    defaultResult,
+    'useHasDuplicateNFTs'
+  );
 }
 
 export function useTotalDebt(defaultResult: any) {
@@ -595,30 +750,16 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
   React.useEffect(() => {
     async function getData() {
-      const provider = new ethers.providers.JsonRpcProvider(
-        'https://api.avax.network/ext/bc/C/rpc'
-      );
-
       const stratViewer = new ethers.Contract(
         addresses.StrategyViewer,
         new Interface(StrategyViewer.abi),
         provider
       );
-      let normalResultsArray: any = [];
-      for (let index = 0; index < tokens.length; index++) {
-        const token = tokens[index];
-        const strat = strats[index];
-        try {
-          const normalResults = await stratViewer.viewMetadata(
-            addresses.StableLending2,
-            [token],
-            [strat]
-          );
-          normalResultsArray.push(...normalResults);
-        } catch (ex) {
-          console.log('couldnt fetch strtategy', strat, ex);
-        }
-      }
+      const normalResults = await stratViewer.viewMetadata(
+        addresses.StableLending2,
+        tokens,
+        strats
+      );
       // const noHarvestBalanceResults =
       //   await stratViewer.viewMetadataNoHarvestBalance(
       //     addresses.StableLending2,
@@ -632,7 +773,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
       //   );
 
       // const results = [...normalResults, ...noHarvestBalanceResults];
-      const results = normalResultsArray;
+      const results = [...normalResults];
 
       const reduceFn = (result: StrategyMetadata, row: RawStratMetaRow) => {
         const parsedRow = parseStratMeta(

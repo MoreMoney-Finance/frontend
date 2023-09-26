@@ -45,13 +45,15 @@ export function TokenAmountInputField(props: {
       isDisabled={isDisabled}
       borderRadius={'10px'}
       w={width}
-      bg={'brand.bgOpacity'}
+      color="black"
+      // bg={'brand.bgOpacity'}
     >
       <InputGroup>
         <Input
           {...registerForm(name, {
             required: '',
           })}
+          _placeholder={{ color: 'gray' }}
           placeholder={placeholder}
           type="number"
           inputMode="numeric"
@@ -64,7 +66,10 @@ export function TokenAmountInputField(props: {
           spellCheck="false"
           pattern="^[0-9][.,]?[0-9]$"
           border={'none'}
-          h={'44px'}
+          // h={'44px'}
+          fontSize="48px"
+          h="70px"
+          textAlign="right"
         />
         <InputRightElement width="auto" padding={'10px'}>
           {max ? (
@@ -75,6 +80,7 @@ export function TokenAmountInputField(props: {
               margin={'auto 0'}
               size="xs"
               borderRadius={'3px'}
+              zIndex="1"
               isDisabled={isDisabled}
               onClick={() =>
                 setValueForm(

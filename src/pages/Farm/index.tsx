@@ -173,7 +173,6 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                     'https://traderjoexyz.com/avalanche/pool/v1/AVAX/0xd9d90f882cddd6063959a9d837b05cb748718a05'
                   }
                   isExternal
-                  color={'white'}
                   variant={'primary'}
                 >
                   Get LP Token
@@ -258,7 +257,6 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                       as={Link}
                       href={item.getTokenURL}
                       isExternal
-                      color={'white'}
                       variant={'primary'}
                     >
                       Get LP Token
@@ -268,7 +266,6 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
                       as={Link}
                       href={item.stakeTokenURL}
                       isExternal
-                      color={'white'}
                       variant={'primary'}
                       marginTop={'8px'}
                     >
@@ -297,12 +294,7 @@ export default function FarmPage(params: React.PropsWithChildren<unknown>) {
             }
             acquire={
               <Flex flexDirection={'column'}>
-                <Button
-                  as={RouterLink}
-                  to={'/imoney'}
-                  color={'white'}
-                  variant={'primary'}
-                >
+                <Button as={RouterLink} to={'/imoney'} variant={'primary'}>
                   Earn MONEY
                 </Button>
               </Flex>

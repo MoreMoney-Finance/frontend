@@ -32,8 +32,7 @@ export default function FarmRow({
     border: '1px solid transparent',
     backgroundClip: 'padding-box, border-box',
     backgroundOrigin: 'padding-box, border-box',
-    backgroundImage:
-      'linear-gradient(hsla(227, 12%, 15%, 1), hsla(227, 12%, 15%, 1)), linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
+    background: 'rgba(255, 255, 255, 0.15)',
     zIndex: 'var(--chakra-zIndices-hide)',
     fontSize: '18px',
     lineHeight: '27px',

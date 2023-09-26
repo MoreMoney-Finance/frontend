@@ -35,7 +35,7 @@ export default function MakeMostOfMoneyCtxProvider({
         >
           <PopoverTrigger>{children}</PopoverTrigger>
           <PopoverContent
-            background="transparent"
+            // background="transparent"
             border={'none'}
             width="400px"
           >

@@ -1,6 +1,8 @@
 import {
   Container,
+  Flex,
   GridItem,
+  Image,
   Tab,
   TabList,
   TabPanel,
@@ -8,12 +10,17 @@ import {
   Tabs,
 } from '@chakra-ui/react';
 import * as React from 'react';
+import GroupIcon from '../../../../assets/icons/Group.svg';
+import LockIcon from '../../../../assets/icons/lock.svg';
 import {
   ParsedPositionMetaRow,
   ParsedStratMetaRow,
 } from '../../../../chain-interaction/contracts';
-import DepositBorrow from './DepositBorrow';
-import RepayWithdraw from './RepayWithdraw';
+import { PositionContext } from '../../../../contexts/PositionContext';
+import BorrowForm from './BorrowForm';
+import DepositForm from './DepositForm';
+import RepayForm from './RepayForm';
+import WithdrawForm from './WithdrawForm';
 
 export default function EditPosition({
   position,
@@ -22,21 +29,64 @@ export default function EditPosition({
   position?: ParsedPositionMetaRow;
   stratMeta: ParsedStratMetaRow;
 }>) {
+  const {
+    lockDepositBorrow,
+    lockRepayWithdraw,
+    setLockDepositBorrow,
+    setLockRepayWithdraw,
+    reset,
+  } = React.useContext(PositionContext);
+
   return (
-    <GridItem rowSpan={[12, 12, 2]} colSpan={[12, 12, 1]}>
+    <GridItem rowSpan={[12, 12, 1]} colSpan={[12, 12, 2]}>
       {/* <GridItem rowSpan={2} colSpan={1}> */}
       <Container variant={'token'} padding={'35px 20px 20px 20px'}>
-        <Tabs variant={'primary'}>
+        <Tabs
+          variant={'primary'}
+          onChange={() => {
+            reset();
+          }}
+        >
           <TabList>
-            <Tab>Borrow</Tab>
-            <Tab>Repay</Tab>
+            <Flex justifyContent="space-between" w="full">
+              <Flex w="full">
+                <Tab>Deposit</Tab>
+                <Image
+                  src={lockDepositBorrow ? LockIcon : GroupIcon}
+                  cursor="pointer"
+                  onClick={() => {
+                    setLockDepositBorrow(!lockDepositBorrow);
+                    setLockRepayWithdraw(false);
+                  }}
+                />
+                <Tab>Borrow</Tab>
+              </Flex>
+              <Flex w="full">
+                <Tab>Repay</Tab>
+                <Image
+                  src={lockRepayWithdraw ? LockIcon : GroupIcon}
+                  cursor="pointer"
+                  onClick={() => {
+                    setLockRepayWithdraw(!lockRepayWithdraw);
+                    setLockDepositBorrow(false);
+                  }}
+                />
+                <Tab>Withdraw</Tab>
+              </Flex>
+            </Flex>
           </TabList>
           <TabPanels>
             <TabPanel>
-              <DepositBorrow position={position} stratMeta={stratMeta} />
+              <DepositForm stratMeta={stratMeta} />
             </TabPanel>
             <TabPanel>
-              <RepayWithdraw position={position} stratMeta={stratMeta} />
+              <BorrowForm position={position} stratMeta={stratMeta} />
+            </TabPanel>
+            <TabPanel>
+              <RepayForm position={position} stratMeta={stratMeta} />
+            </TabPanel>
+            <TabPanel>
+              <WithdrawForm position={position} stratMeta={stratMeta} />
             </TabPanel>
           </TabPanels>
         </Tabs>

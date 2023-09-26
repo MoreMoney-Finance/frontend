@@ -1,14 +1,30 @@
 import { extendTheme } from '@chakra-ui/react';
 import '@fontsource/poppins';
-import '@fontsource/rubik';
+import backgroundImage from './assets/background/main-background.svg';
 
 const Container = {
   variants: {
+    backgroundLayer: {
+      position: 'absolute',
+      top: '-200px',
+      width: '2866px',
+      height: '2286px',
+      flexShrink: '0',
+      background: '#060E33',
+    },
+    modal: {
+      borderRadius: '8px',
+      background: 'rgba(0, 0, 0, 0.44)',
+      boxShadow: '11px 10px 122px -36px #98DAFF',
+      backdropFilter: 'blur(25px)',
+    },
     token: {
       position: 'relative',
       maxWidth: '100%',
       height: '100%',
-      background: 'brand.gradientBg',
+      // background: 'brand.gradientBg',
+      background: 'rgba(255, 255, 255, 0.15)',
+      boxShadow: '0px 4px 95px 0px rgba(0, 0, 0, 0.25)',
       padding: '0',
       borderRadius: '10px',
       _before: {
@@ -18,8 +34,8 @@ const Container = {
         bottom: '-2px',
         left: '-2px',
         right: '-2px',
-        background:
-          'linear-gradient(to right, hsla(0, 100%, 64%, 0.06), hsla(193, 100%, 50%, 0.06))',
+        // background:
+        //   'linear-gradient(to right, hsla(0, 100%, 64%, 0.06), hsla(193, 100%, 50%, 0.06))',
         borderRadius: '10px',
         zIndex: '-2',
       },
@@ -30,7 +46,7 @@ const Container = {
         bottom: '0',
         left: '0',
         right: '0',
-        bg: 'brand.bg',
+        // bg: 'brand.bg',
         borderRadius: '10px',
         zIndex: 'var(--chakra-zIndices-hide)',
       },
@@ -42,7 +58,7 @@ const Link = {
   baseStyle: {
     fontSize: '14px',
     lineHeight: '24px',
-    color: 'whiteAlpha.600',
+    color: 'white',
   },
   variants: {
     footer: {
@@ -92,11 +108,19 @@ const Button = {
     primary: {
       bg: 'brand.accent',
       border: 'none',
+      color: 'black',
+      fontWeight: 400,
       _hover: {
         _disabled: {
           bg: 'brand.accent',
         },
       },
+    },
+    pink: {
+      fontWeight: '400',
+      color: 'black',
+      borderRadius: '6px',
+      bg: 'linear-gradient(180deg, #FE7BFD 0%, #C345FF 100%)',
     },
     secondary: {
       bg: 'whiteAlpha.100',
@@ -113,6 +137,8 @@ const Button = {
       borderRadius: '10px',
       bg: 'brand.accent',
       border: 'none',
+      color: 'black',
+      fontWeight: 400,
       _hover: {
         _disabled: {
           bg: 'brand.accent',
@@ -126,6 +152,7 @@ const Button = {
       borderRadius: '10px',
       bg: 'whiteAlpha.200',
       width: '100%',
+      fontWeight: 400,
     },
   },
 };
@@ -138,19 +165,19 @@ const Text = {
       WebkitTextFillColor: 'transparent',
     },
     h200: {
-      fontFamily: 'Rubik',
+      fontFamily: 'Poppins',
       fontSize: '18px',
       lineHeight: '27px',
       fontWeight: 400,
     },
     h300: {
-      fontFamily: 'Rubik',
+      fontFamily: 'Poppins',
       fontSize: '16px',
       lineHeight: '24px',
       fontWeight: 400,
     },
     h400: {
-      fontFamily: 'Rubik',
+      fontFamily: 'Poppins',
       fontSize: '14px',
       lineHeight: '17px',
       fontWeight: 400,
@@ -281,14 +308,12 @@ const Table = {
       thead: {
         tr: {
           td: {
-            fontFamily: 'Rubik',
-            fontSize: '12px',
+            fontFamily: 'Poppins',
+            fontSize: '13px',
             lineHeight: '14px',
-            color: 'whiteAlpha.400',
-            textTransform: 'uppercase',
+            color: 'white',
             paddingTop: '20px',
-            paddingBottom: '8px',
-            borderTop: '1px solid',
+            paddingBottom: '20px',
           },
         },
         _first: {
@@ -299,6 +324,7 @@ const Table = {
         /** Because the table uses tr as a link */
         a: {
           position: 'relative',
+          verticalAlign: 'middle',
           _after: {
             content: '""',
             position: 'absolute',
@@ -307,8 +333,10 @@ const Table = {
             border: '1px solid transparent',
             backgroundClip: 'padding-box, border-box',
             backgroundOrigin: 'padding-box, border-box',
-            backgroundImage:
-              'linear-gradient(hsla(227, 12%, 15%, 1), hsla(227, 12%, 15%, 1)), linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
+            // backgroundImage:
+            //   'linear-gradient(hsla(227, 12%, 15%, 1), hsla(227, 12%, 15%, 1)), linear-gradient(to right, hsla(0, 100%, 64%, 0.3) 0%, hsla(193, 100%, 50%, 0.3) 100%)',
+            background: '',
+            boxShadow: '0px 4px 95px 0px rgba(0, 0, 0, 0.25)',
             top: '0',
             left: '0',
             bottom: '0',
@@ -317,7 +345,12 @@ const Table = {
           },
           td: {
             fontSize: '18px',
-            lineHeight: '27px',
+            height: '80px',
+            textAlign: 'center',
+            verticalAlign: 'center',
+            alignItems: 'center',
+            justifyContent: 'center',
+            justifyItems: 'center',
             padding: '16px 30px',
             bg: 'whiteAlpha.30',
             _first: {
@@ -336,21 +369,29 @@ const Table = {
 export const theme = extendTheme({
   config: { initialColorMode: 'dark' },
   fonts: {
-    heading: 'Rubik',
+    heading: 'Poppins',
     body: 'Poppins',
   },
   colors: {
     white: 'hsl(0, 0%, 100%)',
     black: 'hsl(0,0%,0%)',
+    gauges: {
+      green: '#1abc9c',
+      yellow: '#f1c40f',
+      red: '#c0392b',
+      blue: '#3498db',
+      grey: '#f2f2f2',
+    },
     brand: {
-      bg: 'hsla(227, 12%, 15%, 1)',
+      bg: '#060E33',
       bgOpacity: 'hsla(0, 0%, 0%, 0.2)',
       active: 'hsla(227, 22%, 26%, 0.59)',
-      accent:
-        'linear-gradient(to bottom, hsla(166, 100%, 46%, 1), hsla(165, 86%, 34%, 1))',
-      gradientBg:
-        'linear-gradient(to bottom, hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.03))',
+      accent: 'linear-gradient(to bottom, #17F0FF, #0E92F7)',
+      // gradientBg:
+      //   'linear-gradient(to bottom, hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.03))',
+      gradientBg: 'var(#FFFFFF, rgba(255, 255, 255, 0.15))',
     },
+    secondary: '#FE7BFD',
     accent_color: 'hsla(166, 100%, 46%, 0.9)',
     accent: {
       100: 'accent_color',
@@ -408,6 +449,11 @@ export const theme = extendTheme({
     global: {
       body: {
         bg: 'brand.bg',
+        backgroundImage: 'url(' + backgroundImage + ')',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
         color: 'white',
       },
       a: {

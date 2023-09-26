@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   Flex,
   Table,
   Tbody,
@@ -17,10 +18,13 @@ import { Link } from 'react-router-dom';
 import { Column, useTable } from 'react-table';
 import { ParsedStratMetaRow } from '../../../chain-interaction/contracts';
 import CustomTooltip from '../../../components/data-display/CustomTooltip';
-import { TokenDescription } from '../../../components/tokens/TokenDescription';
+import { TokenDescriptionTable } from '../../../components/tokens/TokenDescriptionTable';
 import { hiddenStrategies } from '../../../constants/hidden-strategies';
 import { LiquidationFeesContext } from '../../../contexts/LiquidationFeesContext';
 import { StrategyMetadataContext } from '../../../contexts/StrategyMetadataContext';
+import { UserAddressContext } from '../../../contexts/UserAddressContext';
+import { useOpenPositions } from '../../../hooks/useOpenPositions';
+import { currencyFormat } from '../../../utils';
 import { TableSearch } from './TableSearch';
 import { TableTabs } from './TableTabs';
 
@@ -29,14 +33,21 @@ type Entity = ParsedStratMetaRow & {
   apy: any;
   MONEYavailable: string;
   // tvlPeg: string;
+  borrowablePercentFormatted: string;
   totalBorrowed: string;
   liquidationFee: string;
   balance: number;
   ltv: string;
+  divider?: React.ReactNode;
+  positionHealth?: React.ReactNode;
+  positionCollateral?: React.ReactNode;
+  positionDebt?: string;
 };
 
 export function AllSupportedCollateral() {
   const hiddenTokens: Set<string> = new Set([]);
+  const account = React.useContext(UserAddressContext);
+
   const stratMeta: ParsedStratMetaRow[] = Object.values(
     React.useContext(StrategyMetadataContext)
   )
@@ -66,6 +77,9 @@ export function AllSupportedCollateral() {
       });
     });
 
+  const { rows: myPositions, rowsMap: myPositionsMap } = useOpenPositions(
+    account ?? ''
+  );
   const tokenFees = React.useContext(LiquidationFeesContext);
   const [tableTabFilter, setTableTabFilter] = React.useState<string[]>([]);
   const [searchString, setSearchString] = React.useState('');
@@ -83,7 +97,7 @@ export function AllSupportedCollateral() {
     .filter((meta) =>
       searchString.length > 0
         ? meta.token.name.toLowerCase().includes(searchString) ||
-        meta.token.ticker.toLowerCase().includes(searchString)
+          meta.token.ticker.toLowerCase().includes(searchString)
         : true
     )
     .map((meta) => {
@@ -91,12 +105,63 @@ export function AllSupportedCollateral() {
         meta.underlyingAPY !== undefined
           ? Math.round(meta.underlyingAPY) + Math.round(meta.APY)
           : Math.round(meta.APY);
+
+      const positions = myPositionsMap[meta.token.address];
+
+      const positionHealth =
+        positions && positions[0] && positions[0].positionHealth;
+      const positionHealthColor =
+        positions && positions[0] && positions[0].positionHealthColor;
+
+      const positionCollateral =
+        positions &&
+        positions.reduce((agg, next) => agg + next.collateralNumber, 0);
+
+      const positionDebt =
+        positions && positions.reduce((agg, next) => agg + next.debtNumber, 0);
+      const positionCollateralUsd = positionCollateral * meta.usdPrice;
+
       return {
         ...meta,
-        asset: <TokenDescription token={meta.token} />,
+        divider: (
+          <Divider
+            orientation="vertical"
+            w="70px"
+            h="70px"
+            position="absolute"
+            top="15px"
+          />
+        ),
+        positionHealth: (
+          <Text
+            color={
+              positionHealthColor == 'accent'
+                ? 'accent_color'
+                : positionHealthColor
+            }
+          >
+            {positionHealth ?? '-'}
+          </Text>
+        ),
+        positionCollateral: (
+          <Flex direction="column">
+            {positionCollateral ? (
+              <Text>{positionCollateral?.toFixed(3)}</Text>
+            ) : (
+              '-'
+            )}
+            {positionCollateralUsd > 0 && (
+              <Text fontSize="14px">
+                {currencyFormat(positionCollateralUsd)}
+              </Text>
+            )}
+          </Flex>
+        ),
+        positionDebt: currencyFormat(positionDebt),
+        asset: <TokenDescriptionTable token={meta.token} />,
         apy: (
-          <>
-            {customAPY + '%'}&nbsp;
+          <Box position="relative">
+            <Text fontSize="26px">{customAPY + '%'} </Text>
             {meta.underlyingAPY ? (
               <CustomTooltip
                 label={
@@ -107,8 +172,8 @@ export function AllSupportedCollateral() {
                   </>
                 }
               />
-            ) : null}{' '}
-          </>
+            ) : null}
+          </Box>
         ),
         MONEYavailable: meta.debtCeiling.gt(meta.totalDebt)
           ? meta.debtCeiling.sub(meta.totalDebt).format({ suffix: '' })
@@ -118,13 +183,16 @@ export function AllSupportedCollateral() {
         )}%`,
         ltv: `${5 * Math.round(meta.borrowablePercent / 5)}%`,
         // tvlPeg: `$ ${meta.tvlInPeg.format({ suffix: '' })}`,
+        borrowablePercentFormatted: `${
+          5 * Math.round(meta.borrowablePercent / 5)
+        }%`,
         totalBorrowed: meta.totalDebt.format({ significantDigits: 2 }),
         liquidationFee:
           (tokenFees.get(meta.token.address) ?? 'Loading...') + '%',
         balance: meta.balance,
       };
     })
-    .sort(function(a, b) {
+    .sort(function (a, b) {
       if (a.token.ticker < b.token.ticker) {
         return -1;
       }
@@ -138,7 +206,6 @@ export function AllSupportedCollateral() {
   function tooltip(colName: string, label: string) {
     return (
       <Flex>
-        {' '}
         {colName} &nbsp;
         <Tooltip hasArrow label={label} bg="gray.300" color="black">
           <InfoIcon />
@@ -147,72 +214,80 @@ export function AllSupportedCollateral() {
     );
   }
 
-  const columns = React.useMemo<Column<Entity>[]>(
-    () => [
-      {
-        Header: tooltip(
-          'Collateral Asset ',
-          'The kinds of collateral you can deposit to borrow MONEY'
-        ),
-        accessor: 'asset',
-      },
-      {
-        Header: tooltip(
-          'APY earned  ',
-          'The yield you earn on your deposited collateral'
-        ),
-        accessor: 'apy',
-      },
-      {
-        Header: tooltip(
-          'MONEY available ',
-          'How much in total still can be borrowed against this asset'
-        ),
-        accessor: 'MONEYavailable',
-      },
-      // {
-      //   Header: tooltip(
-      //     'TVL ',
-      //     'Total amount of this asset locked in our protocol, in US dollars'
-      //   ),
-      //   accessor: 'tvlPeg',
-      // },
-      {
-        Header: tooltip(
-          'Max LTV ',
-          'How much of your deposited value you can extract as MONEY loan'
-        ),
-        accessor: 'ltv',
-      },
-      {
-        Header: tooltip(
-          'Liquidation Fee ',
-          'Percentage of loan paid if you get liquidated'
-        ),
-        accessor: 'liquidationFee',
-      },
-    ],
+  const columnsNotLoggedIn: Column<Entity>[] = [
+    {
+      Header: 'Collateral Asset ',
+      accessor: 'asset',
+    },
+    {
+      Header: tooltip(
+        'APY ',
+        'The yield you earn on your deposited collateral'
+      ),
+      accessor: 'apy',
+    },
+    {
+      Header: 'Max. collateral/debt ratio ',
+
+      accessor: 'borrowablePercentFormatted',
+    },
+    {
+      Header: 'MONEY available ',
+
+      accessor: 'MONEYavailable',
+    },
+  ];
+  const columnsLoggedIn: Column<Entity>[] = [
+    ...columnsNotLoggedIn,
+    {
+      Header: '',
+      accessor: 'divider',
+    },
+    {
+      Header: 'My position ',
+      accessor: 'positionHealth',
+    },
+    {
+      Header: 'My collateral ',
+      accessor: 'positionCollateral',
+    },
+    {
+      Header: 'My debt ',
+      accessor: 'positionDebt',
+    },
+  ];
+
+  const columnsMemoLoggedIn = React.useMemo<Column<Entity>[]>(
+    () => columnsLoggedIn,
+    []
+  );
+
+  const columnsMemoNotLoggedIn = React.useMemo<Column<Entity>[]>(
+    () => columnsNotLoggedIn,
     []
   );
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({ columns, data });
-  console.log('data', data);
+    useTable({
+      columns:
+        myPositions && myPositions.length > 0
+          ? columnsMemoLoggedIn
+          : columnsMemoNotLoggedIn,
+      data,
+    });
   return (
     <>
-      <Box textAlign="center" margin="100px 0">
-        <Text fontSize="24" lineHeight="56px" color="whiteAlpha.600">
-          <b>Select a collateral asset to</b>
+      <Box
+        // textAlign={['center', 'center', 'center', 'left']}
+        textAlign="left"
+        margin="100px 0"
+        ml={['0%', '20%', '20%', '40%']}
+      >
+        <Text fontSize={['36', '48', '48']} lineHeight="56px" fontWeight="700">
+          Borrow MONEY while earning
         </Text>
-        <Text fontSize={['36', '48', '48']} lineHeight="56px">
-          Borrow yield bearing stablecoin <b>MONEY</b>
-        </Text>
-        <Text fontSize={['36', '48', '48']} lineHeight="56px"></Text>
-        <Text fontSize={['36', '48', '48']} lineHeight="56px">
-          while still earning yield
-        </Text>
-        <Text fontSize={['36', '48', '48']} lineHeight="56px">
-          on your collateral
+        <Text fontSize={['36', '48', '48']} lineHeight="56px" fontWeight="700">
+          yield on your collateral
         </Text>
       </Box>
 
@@ -246,7 +321,12 @@ export function AllSupportedCollateral() {
               .flat(1);
             return (
               // eslint-disable-next-line
-              <Container variant="token" marginTop={'20px'}>
+              <Container
+                background="rgba(255, 255, 255, 0.15)"
+                borderRadius="10px"
+                marginTop={'20px'}
+                padding="8px"
+              >
                 {row.cells.map((cell, index) => {
                   // eslint-disable-next-line
                   return (
@@ -256,7 +336,7 @@ export function AllSupportedCollateral() {
                       justifyContent={'space-between'}
                       p={'4'}
                     >
-                      <Box fontFamily={'Rubik'} color={'whiteAlpha.400'}>
+                      <Box fontFamily={'Poppins'} color={'white'}>
                         {headers[index]}
                       </Box>
                       <Box>{cell.render('Cell')}</Box>
@@ -306,6 +386,7 @@ export function AllSupportedCollateral() {
                   as={Link}
                   to={`/token/${row.original.token.address}`}
                   display="table-row"
+                  height="94px"
                 >
                   {row.cells.map((cell) => {
                     // eslint-disable-next-line

@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { HStack, Box, Button, Flex, Text } from '@chakra-ui/react';
 import {
   CurrencyValue,
   Token,
@@ -69,29 +69,64 @@ export default function WithdrawForm({
   const depositBorrowDisabled = isNativeToken
     ? nativeTokenBalance.isZero()
     : walletBalance.isZero();
-
+  const inputStyle = {
+    bg: 'rgba(255, 255, 255, 0.65)',
+    backdropFilter: 'blur(2px)',
+    borderRadius: '12px',
+    justifyContent: 'space-between',
+  };
   return (
     <form onSubmit={handleSubmitDepForm(onWithdraw)}>
       <Flex flexDirection={'column'} justify={'start'}>
-        <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
+        <Flex
+          w={'full'}
+          justifyContent="space-between"
+          textAlign={'start'}
+          marginBottom={'16px'}
+        >
           <Text
             variant={'bodyExtraSmall'}
             color={'whiteAlpha.600'}
             lineHeight={'14px'}
+            fontSize="16px"
           >
             Withdraw
           </Text>
-        </Box>
-        <TokenAmountInputField
-          name="amount-withdraw"
-          width="full"
-          max={walletBalance}
-          isDisabled={depositBorrowDisabled}
-          placeholder={'Withdraw'}
-          registerForm={registerDepForm}
-          setValueForm={setValueDepForm}
-          errorsForm={errorsDepForm}
-        />
+          <Text
+            variant={'bodyExtraSmall'}
+            color={'whiteAlpha.600'}
+            lineHeight={'14px'}
+            fontSize="16px"
+            cursor="pointer"
+            onClick={() => {
+              setValueDepForm(
+                'amount-withdraw',
+                walletBalance.format({
+                  significantDigits: Infinity,
+                  prefix: '',
+                  suffix: '',
+                  thousandSeparator: '',
+                  decimalSeparator: '.',
+                }),
+                { shouldDirty: true, shouldTouch: true }
+              );
+            }}
+          >
+            Balance: {walletBalance.format({ suffix: '' })}
+          </Text>
+        </Flex>
+        <HStack {...inputStyle}>
+          <TokenAmountInputField
+            name="amount-withdraw"
+            width="full"
+            // max={walletBalance}
+            isDisabled={depositBorrowDisabled}
+            placeholder={'Withdraw'}
+            registerForm={registerDepForm}
+            setValueForm={setValueDepForm}
+            errorsForm={errorsDepForm}
+          />
+        </HStack>
       </Flex>
 
       <TransactionErrorDialog state={withdrawState} title={'Withdraw Action'} />

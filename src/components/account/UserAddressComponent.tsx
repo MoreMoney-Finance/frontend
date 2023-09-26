@@ -1,14 +1,9 @@
-import { Button, HStack, Image, Text, useMediaQuery } from '@chakra-ui/react';
-import { CurrencyValue, useEthers } from '@usedapp/core';
-import { BigNumber } from 'ethers';
+import { Avatar, Button, Flex, HStack, Text } from '@chakra-ui/react';
 import * as React from 'react';
 import { useContext } from 'react';
-import colorDot from '../../assets/img/color_dot.svg';
-import { useAddresses, useStable } from '../../chain-interaction/contracts';
-import { getTokenFromAddress } from '../../chain-interaction/tokens';
 import { MakeMostOfMoneyContext } from '../../contexts/MakeMostOfMoneyContext';
+import { NFTContext } from '../../contexts/NFTContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
-import { WalletBalancesContext } from '../../contexts/WalletBalancesContext';
 import { useConnectWallet } from '../../utils';
 
 type Props = {
@@ -16,22 +11,10 @@ type Props = {
 };
 
 export function UserAddressComponent({ handleOpenModal }: Props) {
-  const [isLargerThan1280] = useMediaQuery('(min-width: 1280px)');
-  const { chainId } = useEthers();
   const { onConnect } = useConnectWallet();
   const { MostOfMoneyPopover } = React.useContext(MakeMostOfMoneyContext);
   const account = useContext(UserAddressContext);
-  const stable = useStable();
-  const balanceCtx = React.useContext(WalletBalancesContext);
-  const moreToken = getTokenFromAddress(chainId, useAddresses().MoreToken);
-
-  const walletBalance =
-    balanceCtx.get(stable.address) ||
-    new CurrencyValue(stable, BigNumber.from('0'));
-
-  const moreBalance =
-    balanceCtx.get(moreToken.address) ||
-    new CurrencyValue(moreToken, BigNumber.from('0'));
+  const { accountImage } = React.useContext(NFTContext);
 
   function handleConnectWallet() {
     onConnect();
@@ -39,48 +22,38 @@ export function UserAddressComponent({ handleOpenModal }: Props) {
 
   return (
     <HStack
-      spacing={'18px'}
-      bg={'brand.gradientBg'}
-      padding={'4px 4px 4px 16px'}
+      // bg={'brand.gradientBg'}
       borderRadius={'10px'}
     >
       <MostOfMoneyPopover>
-        <HStack alignContent={'center'}>
-          {walletBalance &&
-          moreBalance &&
-          !moreBalance.isZero() &&
-          !walletBalance.isZero() &&
-          isLargerThan1280 ? (
-              <Text fontSize={['12px', '14px', '14px']} textAlign="center">
-                {walletBalance?.format({ significantDigits: 2 })} /{' '}
-                {moreBalance?.format({ significantDigits: 2 })}
-              </Text>
-            ) : (
-              <Image src={colorDot} />
-            )}
-        </HStack>
+        <HStack alignContent={'center'}>&nbsp;</HStack>
       </MostOfMoneyPopover>
       <Button
         variant={'primary'}
-        padding={'4px 20px'}
-        h={'32px'}
+        h={'35px'}
         onClick={account ? handleOpenModal : handleConnectWallet}
       >
         {account ? (
-          <Text
-            fontSize={['12px', '14px', '14px']}
-            lineHeight={'24px'}
-            color={'brand.bg'}
-            fontWeight={'600'}
-          >
-            {account &&
-              `${account.slice(0, 6)}...${account.slice(
-                account.length - 4,
-                account.length
-              )}`}
-          </Text>
+          <Flex justifyItems="center" alignItems="center">
+            <Avatar src={accountImage} width="25px" height="27px" />
+            &nbsp;
+            <Text
+              fontSize={['12px', '14px', '16px']}
+              lineHeight={'24px'}
+              color={'brand.bg'}
+              fontWeight={'400'}
+            >
+              {account &&
+                `${account.slice(0, 6)}...${account.slice(
+                  account.length - 4,
+                  account.length
+                )}`}
+            </Text>
+          </Flex>
         ) : (
-          <Text>Connect wallet</Text>
+          <Text color="black" fontWeight="400">
+            Connect wallet
+          </Text>
         )}
       </Button>
     </HStack>

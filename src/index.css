@@ -1,0 +1,15 @@
+.toastify-custom {
+  width: 330px;
+  height: 69px;
+  flex-shrink: 0;
+  padding-bottom: 20px;
+  margin-right: 20px;
+  border-radius: 8px;
+  background: var(--mod-2, rgba(255, 255, 255, 0.15));
+  box-shadow: 11px 10px 122px -36px #98daff;
+  backdrop-filter: blur(25px);
+}
+
+.web3modal-modal-lightbox {
+  z-index: 99999 !important;
+}

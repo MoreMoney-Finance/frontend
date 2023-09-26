@@ -5,6 +5,13 @@ import { useEffect, useState } from 'react';
 import Web3Modal from 'web3modal';
 import CoreLogo from '../assets/img/core.svg';
 
+export const provider = window.location.href.includes('localhost')
+  ? new ethers.providers.JsonRpcProvider()
+// 'https://api.avax.network/ext/bc/C/rpc'
+  : new ethers.providers.JsonRpcProvider(
+    'https://api.avax.network/ext/bc/C/rpc'
+  );
+
 export function sqrt(value: BigNumber): BigNumber {
   const ONE = ethers.BigNumber.from(1);
   const TWO = ethers.BigNumber.from(2);
@@ -23,16 +30,36 @@ export function parseFloatNoNaN(input: string) {
   return isNaN(parsed) ? 0 : parsed;
 }
 export function parseFloatCurrencyValue(input: CurrencyValue) {
-  const parsed = parseFloatNoNaN(
-    input.format({
-      significantDigits: Infinity,
-      suffix: '',
-      thousandSeparator: '',
-      decimalSeparator: '.',
-    })
-  );
-  return isNaN(parsed) ? 0 : parsed;
+  try {
+    const parsed = parseFloatNoNaN(
+      input.format({
+        significantDigits: Infinity,
+        suffix: '',
+        thousandSeparator: '',
+        decimalSeparator: '.',
+      })
+    );
+    return isNaN(parsed) ? 0 : parsed;
+  } catch (e) {
+    console.log('Error parsing float', input);
+    return 0;
+  }
 }
+
+export function currencyFormat(input: number) {
+  if (input) {
+    return input.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+  } else {
+    return (0).toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+  }
+}
+
 export function formatNumber(input: number) {
   if (input) {
     return input.toLocaleString('en-US', {});

@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { HStack, Box, Button, Flex, Text } from '@chakra-ui/react';
 import {
   CurrencyValue,
   Token,
@@ -79,11 +79,22 @@ export default function DepositForm({
     parseFloatNoNaN(depositInput) > parseFloatCurrencyValue(allowCV);
 
   const { approveState, sendApprove } = useApproveTrans(token.address);
-
+  const inputStyle = {
+    bg: 'rgba(255, 255, 255, 0.65)',
+    backdropFilter: 'blur(2px)',
+    borderRadius: '12px',
+    justifyContent: 'space-between',
+  };
+  const balance = isNativeToken ? nativeTokenBalance : walletBalance;
   return (
     <form onSubmit={handleSubmitDepForm(onDeposit)}>
       <Flex flexDirection={'column'} justify={'start'}>
-        <Box w={'full'} textAlign={'start'} marginBottom={'6px'}>
+        <Flex
+          w={'full'}
+          textAlign={'start'}
+          marginBottom={'16px'}
+          justifyContent="space-between"
+        >
           <Text
             variant={'bodyExtraSmall'}
             color={'whiteAlpha.600'}
@@ -91,17 +102,40 @@ export default function DepositForm({
           >
             Deposit
           </Text>
-        </Box>
-        <TokenAmountInputField
-          name="amount-stake"
-          width="full"
-          max={isNativeToken ? nativeTokenBalance : walletBalance}
-          isDisabled={depositBorrowDisabled}
-          placeholder={'Deposit'}
-          registerForm={registerDepForm}
-          setValueForm={setValueDepForm}
-          errorsForm={errorsDepForm}
-        />
+          <Text
+            variant={'bodyExtraSmall'}
+            color={'whiteAlpha.600'}
+            lineHeight={'14px'}
+            fontSize="16px"
+            cursor="pointer"
+            onClick={() => {
+              setValueDepForm(
+                'amount-stake',
+                balance.format({
+                  significantDigits: Infinity,
+                  prefix: '',
+                  suffix: '',
+                  thousandSeparator: '',
+                  decimalSeparator: '.',
+                }),
+                { shouldDirty: true, shouldTouch: true }
+              );
+            }}
+          >
+            Balance: {balance.format({ suffix: '' })}
+          </Text>
+        </Flex>
+        <HStack {...inputStyle}>
+          <TokenAmountInputField
+            name="amount-stake"
+            width="full"
+            isDisabled={depositBorrowDisabled}
+            placeholder={'Deposit'}
+            registerForm={registerDepForm}
+            setValueForm={setValueDepForm}
+            errorsForm={errorsDepForm}
+          />
+        </HStack>
       </Flex>
 
       <TransactionErrorDialog state={approveState} title={'Approve'} />

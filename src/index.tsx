@@ -13,6 +13,7 @@ import { App } from './App';
 import { LiquidatablePositionsCtxProvider } from './contexts/LiquidatablePositionsContext';
 import AdminPage from './pages/Admin';
 import Analytics from './pages/Analytics';
+import ComponentsPage from './pages/Components';
 import Dashboard from './pages/Dashboard';
 import { ErrorBoundary } from './pages/ErrorBoundary/ErrorBoundary';
 import FarmPage from './pages/Farm';
@@ -68,6 +69,7 @@ ReactDOM.render(
                 </LiquidatablePositionsCtxProvider>
               }
             />
+            <Route path="/components" element={<ComponentsPage />} />
             <Route path="/loans" element={<LiquidationProtectedLoans />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/stake" element={<StakePage />} />

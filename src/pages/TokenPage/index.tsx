@@ -1,13 +1,18 @@
-import { Box, HStack } from '@chakra-ui/react';
+import { Avatar, Box, Flex, Text } from '@chakra-ui/react';
 import { useEthers } from '@usedapp/core';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
+
 import { ParsedStratMetaRow } from '../../chain-interaction/contracts';
-import { getTokenFromAddress } from '../../chain-interaction/tokens';
+import {
+  getIconsFromTokenAddress,
+  getTokenFromAddress,
+} from '../../chain-interaction/tokens';
 import { BackButton } from '../../components/navigation/BackButton';
+import NFTSection from '../../components/nft/NFTSection';
 import DeprecatedTokenMessage from '../../components/notifications/DeprecatedTokenMessage';
-import { TokenDescription } from '../../components/tokens/TokenDescription';
+import { NFTContext } from '../../contexts/NFTContext';
 import { StrategyMetadataContext } from '../../contexts/StrategyMetadataContext';
 import { UserAddressContext } from '../../contexts/UserAddressContext';
 import { PositionBody } from './components/PositionBody';
@@ -16,6 +21,7 @@ import { TokenPageBody } from './components/TokenPageBody';
 export default function TokenPage(props: React.PropsWithChildren<unknown>) {
   const { chainId } = useEthers();
   const account = useContext(UserAddressContext);
+  const { accountImage } = useContext(NFTContext);
   const params = useParams<'tokenAddress'>();
   const tokenAddress = params.tokenAddress;
   const allStratMeta = React.useContext(StrategyMetadataContext);
@@ -43,12 +49,27 @@ export default function TokenPage(props: React.PropsWithChildren<unknown>) {
         zIndex="var(--chakra-zIndices-base)"
       />
       <DeprecatedTokenMessage />
-      <HStack spacing={'20px'}>
-        <BackButton />
-        {token ? (
-          <TokenDescription token={token} iconSize="xs" textSize="6xl" />
-        ) : undefined}
-      </HStack>
+      <Flex justifyContent="space-between" alignContent="space-between">
+        <Flex alignItems="center" position="relative">
+          <Avatar width="160px" height="160px" src={accountImage} />
+          {token && token.address && (
+            <Avatar
+              width="75px"
+              height="75px"
+              position="absolute"
+              bottom="0"
+              left="100px"
+              src={getIconsFromTokenAddress(token.address)[0]}
+            />
+          )}
+          <Text fontSize="88px" fontWeight="700" ml="15px">
+            {token?.ticker}
+          </Text>
+        </Flex>
+        <NFTSection />
+      </Flex>
+      <br />
+      <BackButton />
       {account ? (
         <TokenPageBody
           tokenAddress={tokenAddress}

@@ -32,11 +32,9 @@ export function TokenPageBody({
   ) : (
     <>
       {positionMeta.map((position) => (
-        <PositionBody
-          key={`tranche${position.trancheId}`}
-          stratMeta={stratMeta}
-          position={position}
-        />
+        <div key={`tranche${position.trancheId}`}>
+          <PositionBody stratMeta={stratMeta} position={position} />
+        </div>
       ))}
     </>
   );

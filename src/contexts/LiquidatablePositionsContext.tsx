@@ -81,13 +81,7 @@ export function LiquidatablePositionsCtxProvider({
   console.log('parseCachePositions', parsedCachePositions);
   console.log('updatedPositions', updatedPositions);
   const jointUpdatedPositions = [...parsedCachePositions, ...updatedPositions];
-  const updatedMetadata =
-    useUpdatedMetadataLiquidatablePositions(parsedCachePositions);
-  const updatedPositionMetadata = updatedMetadata
-    .map((x) => (x && x[0] != undefined ? x[0] : []))
-    .map((pos) => {
-      return parsePositionMeta(pos, stable, pos.trancheContract);
-    });
+  const updatedPositionMetadata = useUpdatedMetadataLiquidatablePositions(parsedCachePositions);
 
   const updatedDataMap = updatedPositionMetadata.reduce((acc, x) => {
     acc[x.trancheId] = x;

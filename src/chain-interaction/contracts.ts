@@ -1619,19 +1619,39 @@ export function useUpdatedMetadataLiquidatablePositions(
     [useAddresses().StableLending2]: new Interface(StableLending2.abi),
   };
 
-  const positionCalls: Call[] = positions!.map((pos) => {
+  console.log('position ids', positions!.map((pos) => pos.trancheId));
+
+  const debtCalls: Call[] = positions!.map((pos) => {
     return {
       contract: new Contract(pos.trancheContract, abi[pos.trancheContract]),
-      method: 'viewPositionMetadata',
-      args: [pos.trancheId],
-    };
+      method: 'trancheDebt',
+      args: [pos.trancheId]
+    }
   });
 
-  const updatedData = useCalls(positionCalls).map(
-    (x) => (x ?? { value: undefined }).value
-  );
+  const collateralCalls: Call[] = positions!.map((pos) => {
+    return {
+      contract: new Contract(pos.trancheContract, abi[pos.trancheContract]),
+      method: 'viewTargetCollateralAmount',
+      args: [pos.trancheId]
+    }
+  });
 
-  return updatedData.filter((x) => x !== undefined);
+  const updatedDebt = useCalls(debtCalls).map(
+    (x) => (x ?? { value: undefined }).value
+  ).map((x) => (x && x[0] != undefined ? x[0] : undefined));
+  const updatedCollateral = useCalls(collateralCalls).map(
+    (x) => (x ?? { value: undefined }).value
+  ).map((x) => (x && x[0] != undefined ? x[0] : undefined));
+
+  const updatedData = positions!.map((pos, i) => {
+    return {
+      ...pos,
+      debt: updatedDebt[i] ? new CurrencyValue(pos.debt.currency, updatedDebt[i]) : pos.debt,
+      collateral: updatedCollateral[i] ? new CurrencyValue(pos.collateral!.currency, updatedCollateral[i]): pos.collateral
+    }
+  })
+  return updatedData;
 }
 
 export function useRegisteredOracle(tokenAddress?: string) {

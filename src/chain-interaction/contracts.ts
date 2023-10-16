@@ -143,26 +143,15 @@ export function useIsolatedLendingView(
 
   const abi = new Interface(StableLending2.abi);
   const contract = new Contract(addresses.StableLending2, abi);
-  return {
-    legacy: handleCallResultDefault(
-      useCall({
-        contract,
-        method,
-        args,
-      }),
-      defaultResult,
-      'legacy isolated lending view'
-    ),
-    current: handleCallResultDefault(
-      useCall({
-        contract,
-        method,
-        args,
-      }),
-      defaultResult,
-      'current isolated lending view'
-    ),
-  };
+  return handleCallResultDefault(
+    useCall({
+      contract,
+      method,
+      args,
+    }),
+    defaultResult,
+    'current isolated lending view'
+  );
 }
 
 type RawStratMetaRow = {
@@ -918,28 +907,110 @@ export type TokenStratPositionMetadata = Record<
 export function useIsolatedPositionMetadata(
   account: string
 ): TokenStratPositionMetadata {
-  const { legacy, current } = useIsolatedLendingView(
-    'viewPositionsByOwner',
+  const _trancheIds = useIsolatedLendingView(
+    'viewTranchesByOwner',
     [account],
     []
   );
   const stable = useStable();
 
-  function reduceFn(trancheContract: string) {
-    return (result: TokenStratPositionMetadata, row: RawPositionMetaRow) => {
-      const parsedRow = parsePositionMeta(row, stable, trancheContract);
-      const tokenAddress = parsedRow.token?.address;
-      const list = result[tokenAddress] || [];
-      return {
-        ...result,
-        [tokenAddress]: [...list, parsedRow],
-      };
+  const addresses = useAddresses();
+  const trancheContract = addresses.StableLending2;
+  const abi = new Interface(StableLending2.abi);
+
+  const strategyCalls: Call[] = _trancheIds.map((ti:any) => {
+    return {
+      contract: new Contract(trancheContract, abi),
+      method: '_holdingStrategies',
+      args: [ti]
+    }
+  });
+
+  function callAndClean(calls:Call<Contract, string>[]) {
+    return useCalls(calls).map((x) => (x ?? { value: undefined }).value
+    ).map((x) => (x && x[0] != undefined ? x[0] : undefined))
+    .filter((x) => x);
+  }
+
+  const _strategies = callAndClean(strategyCalls);
+
+  const stratAbi = new Interface(IStrategy.abi);
+  const tokenCalls: Call[] = _strategies.map((strat, i) => {
+    return {
+      contract: new Contract(strat, stratAbi),
+      method: 'trancheToken',
+      args: [_trancheIds[i]]
+    }
+  });
+
+  function filterBroken(results:any[]) {
+    return results.filter((x, i) => i < _strategies.length && i < _tokens.length && _strategies[i] && _tokens[i] && !(_strategies[i].toLowerCase() === addresses.YieldYakStrategy2.toLowerCase() && _tokens[i].toLowerCase() === '0xF7D9281e8e363584973F946201b82ba72C965D27'.toLowerCase()));
+  }
+
+  const _tokens = callAndClean(tokenCalls);
+  const trancheIds = filterBroken(_trancheIds);
+  const tokens = filterBroken(_tokens);
+  const strategies = filterBroken(_strategies);
+
+  const debtCalls: Call[] = trancheIds.map((ti:any) => {
+    return {
+      contract: new Contract(trancheContract, abi),
+      method: 'trancheDebt',
+      args: [ti]
+    }
+  });
+
+  const collateralCalls: Call[] = trancheIds.map((ti:any) => {
+    return {
+      contract: new Contract(trancheContract, abi),
+      method: 'viewTargetCollateralAmount',
+      args: [ti]
+    }
+  });
+
+  const debts = callAndClean(debtCalls);
+  const collaterals = callAndClean(collateralCalls);
+  const orAbi = new Interface(OracleRegistry.abi);
+  const colValueCalls = tokens.map((tok,i) => {
+    return {
+      contract: new Contract(addresses.OracleRegistry, orAbi),
+      method: 'viewAmountInPeg',
+      args: [tok, collaterals[i], stable.address]
+    }
+  });
+  const borrowableCalls = tokens.map((tok,i) => {
+    return {
+      contract: new Contract(addresses.OracleRegistry, orAbi),
+      method: 'borrowablePer10ks',
+      args: [tok]
+    }
+  });
+
+  const colValues = callAndClean(colValueCalls);
+  const borrowables = callAndClean(borrowableCalls);
+
+  function reduceFn(result: TokenStratPositionMetadata, bor:BigNumber, i:number) {
+    const parsedRow = parsePositionMeta(
+      {
+        trancheId: trancheIds[i],
+        owner: account,
+        yield: BigNumber.from('0'),
+        token: tokens[i],
+        collateral: collaterals[i],
+        borrowablePer10k: bor,
+        debt: debts[i],
+        strategy: strategies[i],
+        collateralValue: colValues[i]
+      }, stable, trancheContract);
+    const tokenAddress = parsedRow.token?.address;
+    const list = result[tokenAddress] || [];
+    return {
+      ...result,
+      [tokenAddress]: [...list, parsedRow],
     };
   }
 
-  const addresses = useAddresses();
-  const legacyResults = {};
-  return current.reduce(reduceFn(addresses.StableLending2), legacyResults);
+  return colValues.length > 0 && borrowables.reduce(reduceFn, {});
 }
 export function useCustomTotalSupply(address: string, defaultResult: any) {
   const contract = new Contract(address, ERC20Interface);

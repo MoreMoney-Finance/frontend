@@ -247,67 +247,67 @@ function parseStratMeta(
       strategyAddress === addresses[chainId].LiquidYieldStrategy
         ? token.address === '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
           ? (yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-              ?.totalApy *
-              0.65 *
-              0.8) /
-            0.5
+            ?.totalApy *
+            0.65 *
+            0.8) /
+          0.5
           : (yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-              ?.totalApy *
-              0.3 *
-              0.2) /
-              0.5 +
-            7.2
+            ?.totalApy *
+            0.3 *
+            0.2) /
+          0.5 +
+          7.2
         : underlyingAddress in yyMetadata
-        ? yyMetadata[underlyingAddress]?.apy * 0.9
-        : token.address in yieldMonitor
-        ? yieldMonitor[token.address]?.totalApy
-        : token.address in additionalYield &&
-          strategyAddress in additionalYield[token.address]
-        ? additionalYield[token.address][strategyAddress]
-        : 0;
+          ? yyMetadata[underlyingAddress]?.apy * 0.9
+          : token.address in yieldMonitor
+            ? yieldMonitor[token.address]?.totalApy
+            : token.address in additionalYield &&
+              strategyAddress in additionalYield[token.address]
+              ? additionalYield[token.address][strategyAddress]
+              : 0;
     const selfRepayingAPY =
       row.yieldType === 0
         ? strategyAddress === addresses[chainId].LiquidYieldStrategy
           ? token.address === '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
             ? ((yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-                ?.totalApy -
-                parseFloat(
-                  yieldMonitor[
-                    '0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'
-                  ]?.apy.toString()
-                )) *
-                0.65 *
-                0.8) /
-              0.5
+              ?.totalApy -
+              parseFloat(
+                yieldMonitor[
+                  '0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'
+                ]?.apy.toString()
+              )) *
+              0.65 *
+              0.8) /
+            0.5
             : ((yieldMonitor['0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d']
-                ?.totalApy -
-                parseFloat(
-                  yieldMonitor[
-                    '0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'
-                  ]?.apy.toString()
-                )) *
-                0.3 *
-                0.2) /
-              0.5
+              ?.totalApy -
+              parseFloat(
+                yieldMonitor[
+                  '0x4b946c91C2B1a7d7C40FB3C130CdfBaf8389094d'
+                ]?.apy.toString()
+              )) *
+              0.3 *
+              0.2) /
+            0.5
           : token.address in yieldMonitor
-          ? yieldMonitor[token.address]?.totalApy -
+            ? yieldMonitor[token.address]?.totalApy -
             parseFloat(yieldMonitor[token.address]?.apy.toString())
-          : token.address in additionalYield &&
-            strategyAddress in additionalYield[token.address]
-          ? additionalYield[token.address][strategyAddress]
-          : 0
+            : token.address in additionalYield &&
+              strategyAddress in additionalYield[token.address]
+              ? additionalYield[token.address][strategyAddress]
+              : 0
         : 0;
 
     const compoundingAPY =
       strategyAddress === addresses[chainId].LiquidYieldStrategy &&
-      token.address !== '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
+        token.address !== '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
         ? 7.2
         : row.yieldType === 0 && token.address in yieldMonitor
-        ? parseFloat(yieldMonitor[token.address]?.apy.toString())
-        : strategyAddress === addresses[chainId].YieldYakStrategy ||
-          strategyAddress === addresses[chainId].YieldYakAVAXStrategy
-        ? APY
-        : 0;
+          ? parseFloat(yieldMonitor[token.address]?.apy.toString())
+          : strategyAddress === addresses[chainId].YieldYakStrategy ||
+            strategyAddress === addresses[chainId].YieldYakAVAXStrategy
+            ? APY
+            : 0;
 
     let syntheticDebtCeil = globalMoneyAvailable.add(row.totalDebt);
 
@@ -645,7 +645,7 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
           yieldMonitor,
           additionalYieldData,
           row.underlyingStrategy &&
-            underlyingStrategyNames.get(row.underlyingStrategy),
+          underlyingStrategyNames.get(row.underlyingStrategy),
           {
             ...underlyingYield,
             '0xF7D9281e8e363584973F946201b82ba72C965D27':
@@ -657,19 +657,19 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
 
         return parsedRow
           ? {
-              ...result,
-              [parsedRow.token.address]: {
-                [parsedRow.strategyAddress]: {
-                  ...parsedRow,
-                  APY:
-                    parsedRow.strategyAddress ===
+            ...result,
+            [parsedRow.token.address]: {
+              [parsedRow.strategyAddress]: {
+                ...parsedRow,
+                APY:
+                  parsedRow.strategyAddress ===
                     addresses.YieldYakCompounderStrategy
-                      ? yyAvaxPlatypusAPY
-                      : parsedRow.APY,
-                },
-                ...(result[parsedRow.token.address] || {}),
+                    ? yyAvaxPlatypusAPY
+                    : parsedRow.APY,
               },
-            }
+              ...(result[parsedRow.token.address] || {}),
+            },
+          }
           : result;
       };
 
@@ -788,12 +788,12 @@ export function useLegacyIsolatedStrategyMetadata(): StrategyMetadata {
 
         return parsedRow
           ? {
-              ...result,
-              [parsedRow.token.address]: {
-                [parsedRow.strategyAddress]: parsedRow,
-                ...(result[parsedRow.token.address] || {}),
-              },
-            }
+            ...result,
+            [parsedRow.token.address]: {
+              [parsedRow.strategyAddress]: parsedRow,
+              ...(result[parsedRow.token.address] || {}),
+            },
+          }
           : result;
       };
 
@@ -911,6 +911,44 @@ export function parsePositionMeta(
   };
 }
 
+async function viewPositionsByOwner(addresses: DeploymentAddresses, account: string) {
+  
+  const provider = new ethers.providers.JsonRpcProvider(
+    'https://api.avax.network/ext/bc/C/rpc'
+  );
+
+  const stableLending2 = new ethers.Contract(
+    addresses.StableLending2,
+    new Interface(StableLending2.abi),
+    provider
+  );
+  try {
+    // Retrieve tranche IDs for the owner
+    const trancheIds = await stableLending2.viewTranchesByOwner(account);
+    console.log({ trancheIds, account });
+
+    // Initialize an array to hold PositionMetadata
+    const positions = [];
+
+    // Loop through each tranche ID to get PositionMetadata
+    for (let i = 0; i < trancheIds.length; i++) {
+      try {
+        const positionMetadata = await stableLending2.viewPositionMetadata(trancheIds[i]);
+        positions.push(positionMetadata);
+      } catch (ex) {
+        console.log('fail to fetch positon', trancheIds[i], ex);
+      }
+
+    }
+
+    // Log the result
+    console.log("PositionMetadata Array:", positions);
+    return positions;
+  } catch (error) {
+    console.error("Error in viewPositionsByOwner:", error);
+  }
+}
+
 export type TokenStratPositionMetadata = Record<
   string,
   ParsedPositionMetaRow[]
@@ -918,11 +956,15 @@ export type TokenStratPositionMetadata = Record<
 export function useIsolatedPositionMetadata(
   account: string
 ): TokenStratPositionMetadata {
-  const { legacy, current } = useIsolatedLendingView(
-    'viewPositionsByOwner',
-    [account],
-    []
-  );
+  const addresses = useAddresses();
+  const [current, setCurrent] = React.useState([]);
+
+  React.useEffect(() => {
+    viewPositionsByOwner(addresses, account).then((res:any) => {
+      console.log('viewPositionsByOwner', res);
+      setCurrent(res)
+    });
+  }, []);
   const stable = useStable();
 
   function reduceFn(trancheContract: string) {
@@ -937,7 +979,6 @@ export function useIsolatedPositionMetadata(
     };
   }
 
-  const addresses = useAddresses();
   const legacyResults = {};
   return current.reduce(reduceFn(addresses.StableLending2), legacyResults);
 }
@@ -1185,9 +1226,9 @@ export function useLPAPR(account: string | undefined | null) {
         .mul(
           Math.round(
             nonDilutingRepartition *
-              100 *
-              parseFloat(formatEther(poolRewardPerYear)) *
-              morePrice
+            100 *
+            parseFloat(formatEther(poolRewardPerYear)) *
+            morePrice
           )
         )
         .mul(lptBalance)
@@ -1648,7 +1689,7 @@ export function useUpdatedMetadataLiquidatablePositions(
     return {
       ...pos,
       debt: updatedDebt[i] ? new CurrencyValue(pos.debt.currency, updatedDebt[i]) : pos.debt,
-      collateral: updatedCollateral[i] ? new CurrencyValue(pos.collateral!.currency, updatedCollateral[i]): pos.collateral
+      collateral: updatedCollateral[i] ? new CurrencyValue(pos.collateral!.currency, updatedCollateral[i]) : pos.collateral
     }
   })
   return updatedData;

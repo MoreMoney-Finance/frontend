@@ -904,6 +904,18 @@ export type TokenStratPositionMetadata = Record<
   string,
   ParsedPositionMetaRow[]
 >;
+
+const filterPositions = new Set<string>(
+  [
+    88300000005, 87800000005, 87100000005, 85100000005, 69400000005,
+    69300000005, 68800000005, 56900000005, 54600000005, 44200000005,
+    43800000005, 42800000005, 41900000005, 36500000005, 31400000005,
+    26900000005, 20400000005, 17400000005, 87400000005, 85900000005,
+    55100000005, 82400000005, 81700000005, 81400000005, 64700000005,
+    77500000005, 27100000005, 68100000005, 28800000005, 52500000005,
+    54800000005, 78200000005,
+  ].map((n) => n.toString())
+);
 export function useIsolatedPositionMetadata(
   account: string
 ): TokenStratPositionMetadata {
@@ -911,25 +923,26 @@ export function useIsolatedPositionMetadata(
     'viewTranchesByOwner',
     [account],
     []
-  );
+  ).filter((id: any) => !filterPositions.has(id.toString()));
   const stable = useStable();
 
   const addresses = useAddresses();
   const trancheContract = addresses.StableLending2;
   const abi = new Interface(StableLending2.abi);
 
-  const strategyCalls: Call[] = _trancheIds.map((ti:any) => {
+  const strategyCalls: Call[] = _trancheIds.map((ti: any) => {
     return {
       contract: new Contract(trancheContract, abi),
       method: '_holdingStrategies',
-      args: [ti]
-    }
+      args: [ti],
+    };
   });
 
-  function callAndClean(calls:Call<Contract, string>[]) {
-    return useCalls(calls).map((x) => (x ?? { value: undefined }).value
-    ).map((x) => (x && x[0] != undefined ? x[0] : undefined))
-    .filter((x) => x);
+  function callAndClean(calls: Call<Contract, string>[]) {
+    return useCalls(calls)
+      .map((x) => (x ?? { value: undefined }).value)
+      .map((x) => (x && x[0] != undefined ? x[0] : undefined))
+      .filter((x) => x);
   }
 
   const _strategies = callAndClean(strategyCalls);
@@ -939,12 +952,24 @@ export function useIsolatedPositionMetadata(
     return {
       contract: new Contract(strat, stratAbi),
       method: 'trancheToken',
-      args: [_trancheIds[i]]
-    }
+      args: [_trancheIds[i]],
+    };
   });
 
-  function filterBroken(results:any[]) {
-    return results.filter((x, i) => i < _strategies.length && i < _tokens.length && _strategies[i] && _tokens[i] && !(_strategies[i].toLowerCase() === addresses.YieldYakStrategy2.toLowerCase() && _tokens[i].toLowerCase() === '0xF7D9281e8e363584973F946201b82ba72C965D27'.toLowerCase()));
+  function filterBroken(results: any[]) {
+    return results.filter(
+      (x, i) =>
+        i < _strategies.length &&
+        i < _tokens.length &&
+        _strategies[i] &&
+        _tokens[i] &&
+        !(
+          _strategies[i].toLowerCase() ===
+            addresses.YieldYakStrategy2.toLowerCase() &&
+          _tokens[i].toLowerCase() ===
+            '0xF7D9281e8e363584973F946201b82ba72C965D27'.toLowerCase()
+        )
+    );
   }
 
   const _tokens = callAndClean(tokenCalls);
@@ -952,44 +977,48 @@ export function useIsolatedPositionMetadata(
   const tokens = filterBroken(_tokens);
   const strategies = filterBroken(_strategies);
 
-  const debtCalls: Call[] = trancheIds.map((ti:any) => {
+  const debtCalls: Call[] = trancheIds.map((ti: any) => {
     return {
       contract: new Contract(trancheContract, abi),
       method: 'trancheDebt',
-      args: [ti]
-    }
+      args: [ti],
+    };
   });
 
-  const collateralCalls: Call[] = trancheIds.map((ti:any) => {
+  const collateralCalls: Call[] = trancheIds.map((ti: any) => {
     return {
       contract: new Contract(trancheContract, abi),
       method: 'viewTargetCollateralAmount',
-      args: [ti]
-    }
+      args: [ti],
+    };
   });
 
   const debts = callAndClean(debtCalls);
   const collaterals = callAndClean(collateralCalls);
   const orAbi = new Interface(OracleRegistry.abi);
-  const colValueCalls = tokens.map((tok,i) => {
+  const colValueCalls = tokens.map((tok, i) => {
     return {
       contract: new Contract(addresses.OracleRegistry, orAbi),
       method: 'viewAmountInPeg',
-      args: [tok, collaterals[i], stable.address]
-    }
+      args: [tok, collaterals[i], stable.address],
+    };
   });
-  const borrowableCalls = tokens.map((tok,i) => {
+  const borrowableCalls = tokens.map((tok, i) => {
     return {
       contract: new Contract(addresses.OracleRegistry, orAbi),
       method: 'borrowablePer10ks',
-      args: [tok]
-    }
+      args: [tok],
+    };
   });
 
   const colValues = callAndClean(colValueCalls);
   const borrowables = callAndClean(borrowableCalls);
 
-  function reduceFn(result: TokenStratPositionMetadata, bor:BigNumber, i:number) {
+  function reduceFn(
+    result: TokenStratPositionMetadata,
+    bor: BigNumber,
+    i: number
+  ) {
     const parsedRow = parsePositionMeta(
       {
         trancheId: trancheIds[i],
@@ -1000,8 +1029,11 @@ export function useIsolatedPositionMetadata(
         borrowablePer10k: bor,
         debt: debts[i],
         strategy: strategies[i],
-        collateralValue: colValues[i]
-      }, stable, trancheContract);
+        collateralValue: colValues[i],
+      },
+      stable,
+      trancheContract
+    );
     const tokenAddress = parsedRow.token?.address;
     const list = result[tokenAddress] || [];
     return {
@@ -1690,38 +1722,45 @@ export function useUpdatedMetadataLiquidatablePositions(
     [useAddresses().StableLending2]: new Interface(StableLending2.abi),
   };
 
-  console.log('position ids', positions!.map((pos) => pos.trancheId));
+  console.log(
+    'position ids',
+    positions!.map((pos) => pos.trancheId)
+  );
 
   const debtCalls: Call[] = positions!.map((pos) => {
     return {
       contract: new Contract(pos.trancheContract, abi[pos.trancheContract]),
       method: 'trancheDebt',
-      args: [pos.trancheId]
-    }
+      args: [pos.trancheId],
+    };
   });
 
   const collateralCalls: Call[] = positions!.map((pos) => {
     return {
       contract: new Contract(pos.trancheContract, abi[pos.trancheContract]),
       method: 'viewTargetCollateralAmount',
-      args: [pos.trancheId]
-    }
+      args: [pos.trancheId],
+    };
   });
 
-  const updatedDebt = useCalls(debtCalls).map(
-    (x) => (x ?? { value: undefined }).value
-  ).map((x) => (x && x[0] != undefined ? x[0] : undefined));
-  const updatedCollateral = useCalls(collateralCalls).map(
-    (x) => (x ?? { value: undefined }).value
-  ).map((x) => (x && x[0] != undefined ? x[0] : undefined));
+  const updatedDebt = useCalls(debtCalls)
+    .map((x) => (x ?? { value: undefined }).value)
+    .map((x) => (x && x[0] != undefined ? x[0] : undefined));
+  const updatedCollateral = useCalls(collateralCalls)
+    .map((x) => (x ?? { value: undefined }).value)
+    .map((x) => (x && x[0] != undefined ? x[0] : undefined));
 
   const updatedData = positions!.map((pos, i) => {
     return {
       ...pos,
-      debt: updatedDebt[i] ? new CurrencyValue(pos.debt.currency, updatedDebt[i]) : pos.debt,
-      collateral: updatedCollateral[i] ? new CurrencyValue(pos.collateral!.currency, updatedCollateral[i]): pos.collateral
-    }
-  })
+      debt: updatedDebt[i]
+        ? new CurrencyValue(pos.debt.currency, updatedDebt[i])
+        : pos.debt,
+      collateral: updatedCollateral[i]
+        ? new CurrencyValue(pos.collateral!.currency, updatedCollateral[i])
+        : pos.collateral,
+    };
+  });
   return updatedData;
 }
 

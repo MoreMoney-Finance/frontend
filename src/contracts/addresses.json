@@ -3,7 +3,7 @@
     "AMMYieldConverter": "0x9025B317Ce8eAd9bD5C4934BcEef7309D8e8Aa86",
     "AltYieldYakAVAXStrategy2": "0x3F898DaDf9E0Bd678B0D1513a3a6D88Ef43aeC2A",
     "ChainlinkOracle": "0x3Dc65b58ad56309349f9494eD8d920870aaa8c5B",
-    "ContractManagement": "0x361bd1BA9700068da5F9677cFa3ca3e193365d6D",
+    "ContractManagement": "0x5cC9B723FBa793bf921868d2D60eb96dBc745956",
     "CurveLPTOracle": "0xC1397F94587c6fE5946a20F3D74DBb02bb175e14",
     "CurvePool": "0xb3F21Fc59Bc06209D5fb82c474F21582AEf09a20",
     "CurvePoolRewards": "0x9727D535165e19590013bdDea8Fd85dd618b9aF7",
@@ -47,10 +47,10 @@
     "StableLendingLiquidation": "0xB9961f2E9C9Caa52AaBdf83ADC1Ca0AD9A2DeC4f",
     "Stablecoin": "0x0f577433Bf59560Ef2a79c124E9Ff99fCa258948",
     "StrategyRegistry": "0x5C836f816732F064D6e985D8e38f4f78d594716e",
-    "StrategyTokenActivation": "0x2a703974e84C1aD18d3fcBB0D6a38E452d6e9488",
+    "StrategyTokenActivation": "0xF5333FBD53c44fd6E245304C32421F9A4C972Af9",
     "StrategyViewer": "0xC05760b4Fc55A3b1a0fB48009810CDE293C076d9",
     "LegacyStrategyViewer": "0x079126585b0a96fD0A76B45B59be0c54F93b6424",
-    "TokenActivation": "0x28D1789ABe480eAD25d912694D582Dfb6f0c1793",
+    "TokenActivation": "0x25644B0ab8F7d3a5B235c5C1A37c52dD8fDCF9DE",
     "TraderJoeMasterChef2Strategy": "0x10d71115360F9129623096E8108bC6856cf86D3A",
     "TraderJoeMasterChefStrategy": "0x0Db20d1643112fA00C4D3DDB58369Ad26c1F7c1d",
     "TrancheIDService": "0xc83f27c0180e8e29419f4Cab189c3529a2A3Fa8a",
@@ -87,13 +87,15 @@
     "yyAvaxOracle": "0x6e5A0a870a33e671f30631C76a2380bdcf246b11",
     "SimpleHoldingStrategy2": "0x76108f8c992552840578569E51924a79C4fF0f75",
     "VeMoreWhitelistStaking": "0x2448E71769817ecc0e8d7Fb628cd56EEFfd99dDa",
-    "YieldYakCompounderStrategy": "0x277319D7FC467d70dc9e8671c42dCb5d551B17D4"
+    "YieldYakCompounderStrategy": "0x277319D7FC467d70dc9e8671c42dCb5d551B17D4",
+    "SetupWithdrawals": "0xA0995cc99818eE90399A0D59304147465754AA00",
+    "WithdrawalStrategy": "0xE25b117146f528C45eB414EB956e62CB800256bC"
   },
   "43114": {
     "AMMYieldConverter": "0x9025B317Ce8eAd9bD5C4934BcEef7309D8e8Aa86",
     "AltYieldYakAVAXStrategy2": "0x3F898DaDf9E0Bd678B0D1513a3a6D88Ef43aeC2A",
     "ChainlinkOracle": "0x3Dc65b58ad56309349f9494eD8d920870aaa8c5B",
-    "ContractManagement": "0x361bd1BA9700068da5F9677cFa3ca3e193365d6D",
+    "ContractManagement": "0x36a3d9fdc29398827770852079a7a9a746187faC",
     "CurveLPTOracle": "0xC1397F94587c6fE5946a20F3D74DBb02bb175e14",
     "CurvePool": "0xb3F21Fc59Bc06209D5fb82c474F21582AEf09a20",
     "CurvePoolRewards": "0x9727D535165e19590013bdDea8Fd85dd618b9aF7",
@@ -137,10 +139,10 @@
     "StableLendingLiquidation": "0xB9961f2E9C9Caa52AaBdf83ADC1Ca0AD9A2DeC4f",
     "Stablecoin": "0x0f577433Bf59560Ef2a79c124E9Ff99fCa258948",
     "StrategyRegistry": "0x5C836f816732F064D6e985D8e38f4f78d594716e",
-    "StrategyTokenActivation": "0x28D1789ABe480eAD25d912694D582Dfb6f0c1793",
+    "StrategyTokenActivation": "0xF5333FBD53c44fd6E245304C32421F9A4C972Af9",
     "StrategyViewer": "0xC05760b4Fc55A3b1a0fB48009810CDE293C076d9",
     "LegacyStrategyViewer": "0x079126585b0a96fD0A76B45B59be0c54F93b6424",
-    "TokenActivation": "0x19341Cb1840D85eB18588c278f27D497665f4d7D",
+    "TokenActivation": "0x25644B0ab8F7d3a5B235c5C1A37c52dD8fDCF9DE",
     "TraderJoeMasterChef2Strategy": "0x10d71115360F9129623096E8108bC6856cf86D3A",
     "TraderJoeMasterChefStrategy": "0x0Db20d1643112fA00C4D3DDB58369Ad26c1F7c1d",
     "TrancheIDService": "0xc83f27c0180e8e29419f4Cab189c3529a2A3Fa8a",
@@ -177,6 +179,8 @@
     "yyAvaxOracle": "0x6e5A0a870a33e671f30631C76a2380bdcf246b11",
     "SimpleHoldingStrategy2": "0x76108f8c992552840578569E51924a79C4fF0f75",
     "VeMoreWhitelistStaking": "0x2448E71769817ecc0e8d7Fb628cd56EEFfd99dDa",
-    "YieldYakCompounderStrategy": "0x277319D7FC467d70dc9e8671c42dCb5d551B17D4"
+    "YieldYakCompounderStrategy": "0x277319D7FC467d70dc9e8671c42dCb5d551B17D4",
+    "SetupWithdrawals": "0xBA9AEe1B20bBdbF6D93E3e6234aCf11B85d5aA0B",
+    "WithdrawalStrategy": "0x5cC9B723FBa793bf921868d2D60eb96dBc745956"
   }
 }

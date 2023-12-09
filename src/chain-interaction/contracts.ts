@@ -124,6 +124,7 @@ export type DeploymentAddresses = {
   MasterMore: string;
   BigMigrateStableLending2: string;
   YieldYakCompounderStrategy: string;
+  WithdrawalStrategy: string;
 };
 
 export function useAddresses() {
@@ -545,6 +546,12 @@ export function useIsolatedStrategyMetadata(): StrategyMetadata {
   strats.push(addresses.YieldYakStrategy2);
   tokens.push('0xF7D9281e8e363584973F946201b82ba72C965D27');
   strats.push(addresses.YieldYakCompounderStrategy);
+  tokens.push('0x152b9d0FdC40C096757F570A51E494bd4b943E50');
+  strats.push(addresses.WithdrawalStrategy);
+  tokens.push('0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE');
+  strats.push(addresses.WithdrawalStrategy);
+  tokens.push('0xF7D9281e8e363584973F946201b82ba72C965D27');
+  strats.push(addresses.WithdrawalStrategy);
 
   const globalMoneyAvailable = globalDebtCeiling.sub(totalSupply);
 
